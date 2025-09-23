@@ -12,6 +12,16 @@ class PacienteSeeder extends Seeder
      */
     public function run(): void
     {
-        //
+         $faker = Faker::create();
+
+        for ($i = 0; $i < 10; $i++) {
+            Paciente::create([
+                'nombre' => $faker->name,
+                'email' => $faker->unique()->safeEmail,
+                'telefono' => $faker->phoneNumber,
+                'direccion' => $faker->address,
+                'fecha_nacimiento' => $faker->date(),
+            ]);
+        }
     }
 }
