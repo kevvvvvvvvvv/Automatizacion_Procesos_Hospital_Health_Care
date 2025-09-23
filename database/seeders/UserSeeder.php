@@ -12,6 +12,11 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        //
+         Doctor::create([
+            'nombre' => 'Dr. Juan Pérez',
+            'especialidad' => 'Cardiología',
+            'email' => 'juan.perez@hospital.com',
+            'telefono' => '555-1234',
+        ]);
     }
 }
