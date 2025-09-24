@@ -16,6 +16,7 @@ return new class extends Migration
             $table->date('fecha_ingreso');
             $table->date('fecha_egreso')->nullable();
             $table->string('num_habitacion')->nullable();
+            $table->string('tipo_estancia');
             $table->string('curpp');
             $table->foreign('curpp')
                 ->references('curpp')

@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('apellidom',100);
             $table->enum('sexo',['Masculino','Femenino']);
             $table->date('fechaNacimiento');
-            $table->string('id_colaborador_responsable',18);
+            $table->string('id_colaborador_responsable',18)->nullable();
 
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
