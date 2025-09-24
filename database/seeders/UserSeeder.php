@@ -4,6 +4,9 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
+
 
 class UserSeeder extends Seeder
 {
@@ -12,6 +15,7 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
+
     User::create([
         'curpc' => 'JUAP850101HDFLRS01',
         'nombre' => 'Juan',
@@ -82,6 +86,17 @@ class UserSeeder extends Seeder
         'id_colaborador_responsable' => 'ANGG910923HDFGLZ05', // responsable: Andrés González
         'email' => 'sofia.martinez@hospital.com',
         'password' => Hash::make('password123'),
+    ]);
+
+    User::create([
+        'curpc' => 'TIMK040210HMSRDVA6',
+        'nombre' => 'Kevin Yahir',
+        'apellidop' => 'Trinidad',
+        'apellidom' => 'Medina',
+        'sexo' => 1,
+        'fechaNacimiento' => '2004-02-10',
+        'email' => 'kevinyahirt@gmail.com',
+        'password' => Hash::make('12345678'),
     ]);
 
     }
