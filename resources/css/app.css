@@ -131,6 +131,142 @@
     --sidebar-border: oklch(0.269 0 0);
     --sidebar-ring: oklch(0.439 0 0);
 }
+/* PacienteForm.css - Estilos para inputs, selects y formulario */
+
+/* Clase principal para inputs y selects */
+.input-personalizado, .select-personalizado {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 2px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+  box-sizing: border-box;
+  transition: border-color 0.3s ease;
+}
+
+/* Efecto al enfocar */
+.input-personalizado:focus, .select-personalizado:focus {
+  border-color: #007bff;
+  outline: none;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+}
+
+/* Estilo para labels*/
+.label-input {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+  color: #333;
+}
+
+/* Secciones del formulario */
+.seccion {
+  margin-bottom: 30px;
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+}
+
+.seccion h3 {
+  margin-top: 0;
+  color: #007bff;
+}
+
+/* Contenedor principal (mejorado para responsive) */
+.contenedor-form {
+  max-width: 600px;
+  margin: 20px auto;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
+
+
+/* Estilos base para todos los botones */
+.boton-enviar, .boton-limpiar {
+  padding: 12px 24px;  
+  border: none;
+  border-radius: 8px;  
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;  
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);  
+  position: relative;  
+  min-width: 120px;  
+  display: inline-block;  
+}
+
+/* Botón Enviar: Verde, con icono de check */
+.boton-enviar {
+  background-color: #28a745;
+  color: white;
+  margin-right: 15px;  
+}
+
+.boton-enviar:hover {
+  background-color: #218838;  
+  transform: scale(1.05);  
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);  
+}
+
+.boton-enviar:active {
+  transform: scale(0.98);  
+}
+
+/* Icono para botón Enviar (usando pseudo-elemento) */
+.boton-enviar::before {
+  content: '✓ '; 
+  font-weight: bold;
+  margin-right: 5px;
+}
+
+/* Botón Limpiar: Rojo, con icono de X */
+.boton-limpiar {
+  background-color: #dc3545;
+  color: white;
+}
+
+.boton-limpiar:hover {
+  background-color: #c82333; 
+  transform: scale(1.05);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.boton-limpiar:active {
+  transform: scale(0.98);
+}
+
+/* Icono para botón Limpiar */
+.boton-limpiar::before {
+  content: '× ';  
+  font-weight: bold;
+  margin-right: 5px;
+}
+
+/* Estado disabled (opcional: gris, sin interacciones) */
+.boton-enviar:disabled, .boton-limpiar:disabled {
+  background-color: #6c757d;
+  color: #ccc;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+  opacity: 0.6;
+}
+
+/* Responsive: En pantallas pequeñas, botones se apilan */
+@media (max-width: 768px) {
+  .boton-enviar, .boton-limpiar {
+    display: block;  
+    width: 100%;
+    margin: 10px 0;
+  }
+  
+  .boton-enviar {
+    margin-right: 0; 
+  }
+}
 
 @layer base {
     * {
