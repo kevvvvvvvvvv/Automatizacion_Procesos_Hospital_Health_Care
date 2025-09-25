@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\PacienteController;
+use App\Models\Paciente;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -14,7 +15,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     })->name('dashboard');
 });
 
-Route::get('/pacientes',[PacienteController::class,'index']);
+Route::resource('pacientes', PacienteController::class);
 
 require __DIR__.'/settings.php';
 require __DIR__.'/auth.php';
