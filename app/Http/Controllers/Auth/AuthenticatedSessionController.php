@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Inertia\Response;
 use Laravel\Fortify\Features;
+use Illuminate\Support\Facades\Hash; 
+use App\Models\User;
 
 class AuthenticatedSessionController extends Controller
 {
@@ -47,7 +49,7 @@ class AuthenticatedSessionController extends Controller
 
         return redirect()->intended(route('dashboard', absolute: false));
     }
-
+    
     /**
      * Destroy an authenticated session.
      */
