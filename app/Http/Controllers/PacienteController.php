@@ -12,12 +12,12 @@ class PacienteController extends Controller
     {
         $pacientes=Paciente::all();
         
-        return Inertia::render('pacientes/Index',['pacientes'=>$pacientes]);
+        return Inertia::render('pacientes/index',['pacientes'=>$pacientes]);
     }
 
     public function show(Paciente $paciente)
     {
-        return Inertia::render('pacientes/Show', [
+        return Inertia::render('pacientes/show', [
             'paciente' => $paciente
         ]);
     }
