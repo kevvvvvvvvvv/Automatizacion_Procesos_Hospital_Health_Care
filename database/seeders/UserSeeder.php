@@ -15,7 +15,7 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        // Primero, creamos los usuarios que no dependen de otros o que son sus propios responsables
+        
         $userJuan = User::create([
             'curp' => 'JUAP850101HDFLRS01',
             'nombre' => 'Juan',
@@ -26,7 +26,7 @@ class UserSeeder extends Seeder
             'email' => 'juan.perez@hospital.com',
             'password' => Hash::make('password123'),
         ]);
-        // Hacemos que Juan sea su propio responsable actualizando su registro
+
         $userJuan->colaborador_responsable_id = $userJuan->id;
         $userJuan->save();
 
@@ -37,8 +37,8 @@ class UserSeeder extends Seeder
             'apellido_materno' => 'Santos',
             'sexo' => 'Femenino',
             'fecha_nacimiento' => '1990-02-14',
-            'colaborador_responsable_id' => $userJuan->id, // Usamos el ID numérico de Juan
             'email' => 'maria.lopez@hospital.com',
+            'colaborador_responsable_id' => $userJuan->id, 
             'password' => Hash::make('password123'),
         ]);
 
@@ -49,12 +49,12 @@ class UserSeeder extends Seeder
             'apellido_materno' => 'Moreno',
             'sexo' => 'Masculino',
             'fecha_nacimiento' => '1982-07-10',
-            'colaborador_responsable_id' => $userJuan->id, // Usamos el ID numérico de Juan
+            'colaborador_responsable_id' => $userJuan->id, 
             'email' => 'carlos.ramirez@hospital.com',
             'password' => Hash::make('password123'),
         ]);
 
-        // Ahora, creamos los usuarios que dependen de los que acabamos de crear
+       
         User::create([
             'curp' => 'LAHE880320MDFHND04',
             'nombre' => 'Laura',
@@ -62,7 +62,7 @@ class UserSeeder extends Seeder
             'apellido_materno' => 'Díaz',
             'sexo' => 'Femenino',
             'fecha_nacimiento' => '1988-03-20',
-            'colaborador_responsable_id' => $userCarlos->id, // Usamos el ID numérico de Carlos
+            'colaborador_responsable_id' => $userCarlos->id, 
             'email' => 'laura.hernandez@hospital.com',
             'password' => Hash::make('password123'),
         ]);
@@ -74,7 +74,7 @@ class UserSeeder extends Seeder
             'apellido_materno' => 'Luna',
             'sexo' => 'Masculino',
             'fecha_nacimiento' => '1991-09-23',
-            'colaborador_responsable_id' => $userMaria->id, // Usamos el ID numérico de María
+            'colaborador_responsable_id' => $userMaria->id, 
             'email' => 'andres.gonzalez@hospital.com',
             'password' => Hash::make('password123'),
         ]);
@@ -86,7 +86,7 @@ class UserSeeder extends Seeder
             'apellido_materno' => 'Rojas',
             'sexo' => 'Femenino',
             'fecha_nacimiento' => '1995-01-05',
-            'colaborador_responsable_id' => $userAndres->id, // Usamos el ID numérico de Andrés
+            'colaborador_responsable_id' => $userAndres->id, 
             'email' => 'sofia.martinez@hospital.com',
             'password' => Hash::make('password123'),
         ]);
@@ -96,7 +96,7 @@ class UserSeeder extends Seeder
             'nombre' => 'Kevin Yahir',
             'apellido_paterno' => 'Trinidad',
             'apellido_materno' => 'Medina',
-            'sexo' => 'Masculino', // Corregido de 1 a 'Masculino'
+            'sexo' => 'Masculino', 
             'fecha_nacimiento' => '2004-02-10',
             'email' => 'kevinyahirt@gmail.com',
             'password' => Hash::make('12345678'),
