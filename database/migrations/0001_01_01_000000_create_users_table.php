@@ -12,23 +12,28 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('users', function (Blueprint $table) {
-            $table->string('curpc',18)->primary();
-            $table->string('nombre',100);
-            $table->string('apellidop',100);
-            $table->string('apellidom',100);
-            $table->enum('sexo',['Masculino','Femenino']);
-            $table->date('fechaNacimiento');
-            $table->string('id_colaborador_responsable',18)->nullable();
+            // 1. Clave primaria numérica estándar.
+            $table->id();
+
+            // 2. CURP como campo único, no como clave primaria.
+            $table->string('curp', 18)->unique();
+
+            // 3. Nombres de columnas en snake_case.
+            $table->string('nombre', 100);
+            $table->string('apellido_paterno', 100);
+            $table->string('apellido_materno', 100);
+            $table->enum('sexo', ['Masculino', 'Femenino']);
+            $table->date('fecha_nacimiento');
+
+            // 4. Clave foránea a sí misma, usando el id numérico.
+            $table->foreignId('colaborador_responsable_id')
+                  ->nullable()
+                  ->constrained('users') // Apunta a la columna 'id' de esta misma tabla
+                  ->onDelete('set null'); // Más seguro que 'cascade'
 
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-
-            $table->foreign('id_colaborador_responsable')
-                ->references('curpc')   
-                ->on('users') 
-                ->onDelete('cascade');
-
             $table->rememberToken();
             $table->timestamps();
         });
@@ -41,7 +46,8 @@ return new class extends Migration
 
         Schema::create('sessions', function (Blueprint $table) {
             $table->string('id')->primary();
-            $table->foreignId('user_id')->nullable()->index();
+            // 5. Esta relación ahora funcionará correctamente.
+            $table->foreignId('user_id')->nullable()->constrained()->onDelete('cascade');
             $table->string('ip_address', 45)->nullable();
             $table->text('user_agent')->nullable();
             $table->longText('payload');

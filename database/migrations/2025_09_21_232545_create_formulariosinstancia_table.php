@@ -11,27 +11,24 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('formulariosinstancia', function (Blueprint $table) {
-            $table->bigIncrements('id_formulario_instancia');
+
+        Schema::create('formulario_instancias', function (Blueprint $table) {
+            $table->id();
             $table->datetime('fecha_hora');
-            $table->unsignedBigInteger('id_estancia');
-            $table->unsignedBigInteger('id_formulario_catalogo');
-            $table->string('curpc',18);
+            $table->foreignId('estancia_id')
+                  ->constrained('estancias')
+                  ->onDelete('cascade');
 
-            $table->foreign('id_estancia')
-                ->references('id_estancia')
-                ->on('estancias')
-                ->onDelete('cascade');
+            $table->foreignId('formulario_catalogo_id')
+                  ->constrained('formulario_catalogos') 
+                  ->onDelete('cascade');
 
-            $table->foreign('id_formulario_catalogo')
-                ->references('id_formulario_catalogo')
-                ->on('formularioscatalogo')
-                ->onDelete('cascade');
 
-            $table->foreign('curpc')
-                ->references('curpc')
-                ->on('users')
-                ->onDelete('cascade');
+            $table->foreignId('user_id')
+                  ->constrained('users')
+                  ->onDelete('cascade');
+
+            $table->timestamps();
         });
     }
 
@@ -40,6 +37,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('formulariosinstancia');
+        Schema::dropIfExists('formulario_instancias');
     }
 };

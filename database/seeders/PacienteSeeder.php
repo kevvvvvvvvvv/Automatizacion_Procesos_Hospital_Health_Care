@@ -14,7 +14,7 @@ class PacienteSeeder extends Seeder
     public function run(): void
     {
     Paciente::create([
-        'curpp' => 'MARP850101HDFLRS01',
+        'curp' => 'MARP850101HDFLRS01',
         'nombre' => 'María',
         'apellidop' => 'Ramírez',
         'apellidom' => 'López',
@@ -37,7 +37,7 @@ class PacienteSeeder extends Seeder
     ]);
 
     Paciente::create([
-        'curpp' => 'LOPE900305HDFGNS02',
+        'curp' => 'LOPE900305HDFGNS02',
         'nombre' => 'José',
         'apellidop' => 'López',
         'apellidom' => 'González',
@@ -60,7 +60,7 @@ class PacienteSeeder extends Seeder
     ]);
 
     Paciente::create([
-        'curpp' => 'FERL750712MMNGRZ03',
+        'curp' => 'FERL750712MMNGRZ03',
         'nombre' => 'Lucía',
         'apellidop' => 'Fernández',
         'apellidom' => 'Martínez',
@@ -83,7 +83,7 @@ class PacienteSeeder extends Seeder
     ]);
 
     Paciente::create([
-        'curpp' => 'GOME820914HGTPLD04',
+        'curp' => 'GOME820914HGTPLD04',
         'nombre' => 'Pedro',
         'apellidop' => 'Gómez',
         'apellidom' => 'Paredes',
@@ -106,7 +106,7 @@ class PacienteSeeder extends Seeder
     ]);
 
     Paciente::create([
-        'curpp' => 'RUIE950221HNLTRS05',
+        'curp' => 'RUIE950221HNLTRS05',
         'nombre' => 'Elena',
         'apellidop' => 'Ruiz',
         'apellidom' => 'Treviño',
@@ -129,7 +129,7 @@ class PacienteSeeder extends Seeder
     ]);
 
     Paciente::create([
-        'curpp' => 'SANM700811HOCGRD06',
+        'curp' => 'SANM700811HOCGRD06',
         'nombre' => 'Miguel',
         'apellidop' => 'Sánchez',
         'apellidom' => 'Morales',
