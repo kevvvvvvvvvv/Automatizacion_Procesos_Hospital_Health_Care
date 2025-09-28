@@ -12,16 +12,24 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('estancias', function (Blueprint $table) {
-            $table->bigIncrements('id_estancia');
-            $table->date('fecha_ingreso');
-            $table->date('fecha_egreso')->nullable();
+
+            $table->id();
+            $table->string('folio')->unique();
+            $table->foreignId('paciente_id')
+                  ->constrained('pacientes')
+                  ->onDelete('cascade');
+
+            $table->datetime('fecha_ingreso');
+            $table->datetime('fecha_egreso')->nullable();
             $table->string('num_habitacion')->nullable();
-            $table->string('tipo_estancia');
-            $table->string('curpp');
-            $table->foreign('curpp')
-                ->references('curpp')
-                ->on('pacientes')
-                ->onDelete('cascade');
+            $table->enum('tipo_estancia', ['interconsulta', 'hospitalizacion']);
+
+            $table->foreignId('estancia_anterior_id')
+                  ->nullable()
+                  ->constrained('estancias')
+                  ->onDelete('set null');
+
+            $table->timestamps();
         });
     }
 

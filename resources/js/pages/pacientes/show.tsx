@@ -1,7 +1,9 @@
 import React from 'react';
-import { Head, Link } from '@inertiajs/react';
+import { Head } from '@inertiajs/react';
 import MainLayout from '@/layouts/MainLayout';
-import { route } from 'ziggy-js';
+//import { route } from 'ziggy-js';
+import InputText from '@/components/ui/input-text';
+import BackButton from '@/components/ui/back-button';
 
 // Definimos un tipo más completo para el paciente, incluyendo todos sus datos.
 type Paciente = {
@@ -42,12 +44,12 @@ const Show = ({ paciente }: ShowProps) => {
           <h1 className="text-3xl font-bold text-black">
             Ficha del Paciente
           </h1>
-          <Link 
-            href={route('pacientes.index')} 
-            className="text-blue-600 hover:underline"
-          >
-            &larr; Volver al listado
-          </Link>
+
+
+        <div>
+          <BackButton />
+        </div>
+          
         </div>
         
         <div className="mt-6 p-6 bg-white rounded-lg shadow-md">
@@ -97,6 +99,17 @@ const Show = ({ paciente }: ShowProps) => {
           </div>
         </div>
       </div>
+      <InputText
+        id="nombre"
+        name="nombre"
+        label="Nombre Completo"
+        value=""
+        onChange={() => {}}
+        placeholder="Escribe tu nombre aquí..."
+      >
+      </InputText>
+
+
     </>
   );
 };

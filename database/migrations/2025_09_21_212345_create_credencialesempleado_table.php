@@ -11,15 +11,21 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('credencialesempleado', function (Blueprint $table) {
-            $table->bigIncrements('id_credenciales_empleado');
-            $table->string('titulo',100);
-            $table->string('cedula_profesional',100);
-            $table->string('curpc',18);
-            $table->foreign('curpc')
-                ->references('curpc')
-                ->on('users')
-                ->onDelete('cascade');
+        Schema::create('credencial_empleados', function (Blueprint $table) {
+            // 1. Clave primaria estándar
+            $table->id();
+
+            // 2. Clave foránea numérica que apunta a la tabla 'users'
+            $table->foreignId('user_id')
+                  ->unique() // Un usuario solo debe tener un registro de credenciales
+                  ->constrained('users')
+                  ->onDelete('cascade');
+
+            $table->string('titulo', 100);
+            $table->string('cedula_profesional', 100);
+
+            // 3. Timestamps para control de registros
+            $table->timestamps();
         });
     }
 
@@ -28,6 +34,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('credencialesempleado');
+        Schema::dropIfExists('credencial_empleados');
     }
 };

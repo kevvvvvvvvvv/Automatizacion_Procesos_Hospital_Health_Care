@@ -12,33 +12,47 @@ class User extends Authenticatable
 {
     use HasFactory, Notifiable, TwoFactorAuthenticatable;
 
-    protected $table = 'users';
-    protected $primaryKey = 'curpc';
-    public $incrementing = false;   
-    protected $keyType = 'string'; 
 
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
     protected $fillable = [
-        'curpc',
+        // 2. NOMBRES DE COLUMNAS ACTUALIZADOS A SNAKE_CASE
+        'curp',
         'nombre',
-        'apellidop',
-        'apellidom',
+        'apellido_paterno',
+        'apellido_materno',
         'sexo',
-        'fechaNacimiento',
-        'id_colaborador_responsable',
+        'fecha_nacimiento',
+        'colaborador_responsable_id',
         'email',
         'password',
     ];
 
+    /**
+     * The attributes that should be hidden for serialization.
+     *
+     * @var array<int, string>
+     */
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
-    protected $casts = [
-        'email_verified_at' => 'datetime',
-        'password' => 'hashed',
-    ];
+    /**
+     * The accessors to append to the model's array form.
+     *
+     * @var array
+     */
+    protected $appends = ['name'];
 
+    /**
+     * Get the attributes that should be cast.
+     *
+     * @return array<string, string>
+     */
     protected function casts(): array
     {
         return [
@@ -47,20 +61,20 @@ class User extends Authenticatable
         ];
     }
 
+    // 3. RELACIONES ACTUALIZADAS PARA USAR LOS IDs NUMÉRICOS
     public function responsable()
     {
-        return $this->belongsTo(User::class, 'id_colaborador_responsable', 'curpc');
+        return $this->belongsTo(User::class, 'colaborador_responsable_id');
     }
 
     public function colaboradores()
     {
-        return $this->hasMany(User::class, 'id_colaborador_responsable', 'curpc');
+        return $this->hasMany(User::class, 'colaborador_responsable_id');
     }
 
+    // 4. ACCESSOR 'name' ACTUALIZADO CON LOS NOMBRES DE COLUMNA CORRECTOS
     public function getNameAttribute()
     {
-        return trim("{$this->nombre} {$this->apellidop} {$this->apellidom}");
+        return trim("{$this->nombre} {$this->apellido_paterno} {$this->apellido_materno}");
     }
-
 }
-

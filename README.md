@@ -9,3 +9,9 @@ npm install @tanstack/react-table
 ```bash 
 composer require tightenco/ziggy
 ```
+
+<h2>Instalar iconos</h2>
+
+```bash 
+npm install lucide-react
+```

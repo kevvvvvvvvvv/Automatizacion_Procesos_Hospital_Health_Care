@@ -12,31 +12,35 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('pacientes', function (Blueprint $table) {
-            $table->string('curpp',18)->primary();
-            $table->string('nombre',100);
-            $table->string('apellidop',100);
-            $table->string('apellidom',100);
-            $table->enum('sexo',['Masculino','Femenino']);
-            $table->date('fechaNacimiento');
-            $table->string('calle',100);
-            $table->string('numeroExterior',50);
-            $table->string('numeroInterior',50)->nullable();
-            $table->string('colonia',100);
-            $table->string('municipio',100);
-            $table->string('estado',100);
-            $table->string('pais',100);
-            $table->string('cp',100);
-            $table->string('telefono',20);
-            $table->enum('estadoCivil', ['soltero(a)', 'casado(a)', 'divorciado(a)', 'viudo(a)', 'union_libre']);
-            $table->string('ocupacion',100);
-            $table->string('lugarOrigen',100);
-            $table->string('nombrePadre')->nullable();
-            $table->string('nombreMadre')->nullable();
+            $table->id();
+
+            $table->string('curp', 18)->unique();
+
+            $table->string('nombre', 100);
+            $table->string('apellido_paterno', 100);
+            $table->string('apellido_materno', 100);
+            $table->enum('sexo', ['Masculino', 'Femenino']);
+            $table->date('fecha_nacimiento');
+
+            $table->string('calle', 100);
+            $table->string('numero_exterior', 50);
+            $table->string('numero_interior', 50)->nullable();
+            $table->string('colonia', 100);
+            $table->string('municipio', 100);
+            $table->string('estado', 100);
+            $table->string('pais', 100);
+            $table->string('cp', 10);
+
+            $table->string('telefono', 20);
+            $table->enum('estado_civil', ['Soltero(a)', 'Casado(a)', 'Divorciado(a)', 'Viudo(a)', 'Union libre']);
+            $table->string('ocupacion', 100);
+            $table->string('lugar_origen', 100);
+            $table->string('nombre_padre')->nullable();
+            $table->string('nombre_madre')->nullable();
 
             $table->timestamps();
         });
     }
-
     /**
      * Reverse the migrations.
      */
