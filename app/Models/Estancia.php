@@ -19,11 +19,11 @@ class Estancia extends Model
         'fecha_egreso',
         'num_habitacion',
         'tipo_estancia',
-        'curpp',
+        'user_id',
     ];
 
     public function paciente()
     {
-        return $this->belongsTo(Paciente::class, 'curpp', 'curpp');
+        return $this->belongsTo(Paciente::class, 'user_id', 'id');
     }
 }
