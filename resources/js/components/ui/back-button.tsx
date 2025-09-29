@@ -1,34 +1,31 @@
 // resources/js/components/BackButton.tsx
 
-import { ArrowLeft } from 'lucide-react'; // 1. Importamos el ícono
-import Button from '@/components/button';     // 2. Importamos nuestro botón genérico
+import { ArrowLeft } from 'lucide-react'; 
+import Button from '@/components/button';     
 
 interface BackButtonProps {
-  // Hacemos onClick opcional para que pueda tener un comportamiento por defecto
   onClick?: () => void;
   className?: string;
 }
 
 const BackButton = ({ onClick, className }: BackButtonProps) => {
   
-  // 3. Define la acción por defecto: regresar en el historial del navegador
   const handleBack = () => {
     if (onClick) {
-      onClick(); // Si se provee una función, úsala
+      onClick(); 
     } else {
-      window.history.back(); // Si no, usa la función nativa del navegador
+      window.history.back(); 
     }
   };
 
   return (
-    // 4. Usamos el componente Button con un estilo predefinido
     <Button
-      variant="secondary" // Le damos un estilo secundario para diferenciarlo del botón de "Enviar"
+      variant="secondary" 
       onClick={handleBack}
       className={`flex items-center gap-2 ${className || ''}`}
-      type="button" // Importante para que no envíe formularios por defecto
+      type="button" 
     >
-      <ArrowLeft size={16} /> {/* El ícono */}
+      <ArrowLeft size={16} /> 
       Regresar
     </Button>
   );

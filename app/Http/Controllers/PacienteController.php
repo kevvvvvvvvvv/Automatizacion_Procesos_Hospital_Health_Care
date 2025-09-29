@@ -17,8 +17,9 @@ class PacienteController extends Controller
 
     public function show(Paciente $paciente)
     {
+        $paciente = Paciente::with('estancias')->findOrFail($paciente->id);
         return Inertia::render('pacientes/show', [
-            'paciente' => $paciente
+            'paciente' => $paciente,
         ]);
     }
 }
