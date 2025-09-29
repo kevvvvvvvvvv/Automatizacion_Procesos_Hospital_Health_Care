@@ -10,7 +10,6 @@ class Estancia extends Model
     use HasFactory;
 
     protected $table = 'estancias';
-    protected $primaryKey = 'id_estancia';
     public $incrementing = true; 
     protected $keyType = 'int';
 

@@ -3,7 +3,7 @@ import { Head, router } from '@inertiajs/react';
 import MainLayout from '@/layouts/MainLayout';
 import { route } from 'ziggy-js';
 
-// Importaciones de TanStack Table
+
 import {
   useReactTable,
   getCoreRowModel,
@@ -15,37 +15,36 @@ import {
   SortingState,
 } from '@tanstack/react-table';
 
-// 1. Definimos el TIPO para nuestros datos de paciente
+
 type Paciente = {
-  curpp: string;
+  id: number;
+  curp: string;
   nombre: string;
-  apellidop: string;
-  apellidom: string;
+  apellido_paterno: string;
+  apellido_materno: string;
   telefono: string;
 };
 
-// Props que el componente recibe desde el controlador de Laravel
 type IndexProps = {
   pacientes: Paciente[];
 };
 
 const Index = ({ pacientes }: IndexProps) => {
-  // Estado para el filtro de búsqueda global
+
   const [globalFilter, setGlobalFilter] = useState('');
-  // Estado para el ordenamiento de columnas
+
   const [sorting, setSorting] = useState<SortingState>([]);
 
-  // 2. Definición de las COLUMNAS para la tabla (sin la columna de acciones)
   const columns = useMemo<ColumnDef<Paciente>[]>(
     () => [
       {
-        accessorKey: 'curpp',
+        accessorKey: 'curp',
         header: 'CURP',
       },
       {
         id: 'nombreCompleto',
         header: 'Nombre Completo',
-        accessorFn: row => `${row.nombre} ${row.apellidop} ${row.apellidom}`,
+        accessorFn: row => `${row.nombre} ${row.apellido_paterno} ${row.apellido_materno}`,
       },
       {
         accessorKey: 'telefono',
@@ -55,10 +54,8 @@ const Index = ({ pacientes }: IndexProps) => {
     []
   );
 
-  // Memoizamos los datos
   const data = useMemo(() => pacientes, [pacientes]);
 
-  // 3. Hook principal de TanStack Table
   const table = useReactTable({
     data,
     columns,
@@ -82,7 +79,7 @@ const Index = ({ pacientes }: IndexProps) => {
           <h1 className="text-3xl font-bold text-black">Listado de Pacientes</h1>
         </div>
 
-        {/* Campo de búsqueda */}
+
         <div className="mb-4">
           <input
             type="text"
@@ -93,7 +90,7 @@ const Index = ({ pacientes }: IndexProps) => {
           />
         </div>
 
-        {/* 4. Renderizado de la TABLA */}
+
         <div className="overflow-x-auto bg-white rounded-lg shadow">
           <table className="w-full text-sm text-left text-gray-700">
             <thead className="text-xs text-gray-700 uppercase bg-gray-50">
@@ -119,7 +116,7 @@ const Index = ({ pacientes }: IndexProps) => {
                     key={row.id} 
                     className="border-b hover:bg-gray-100 cursor-pointer" 
                     onClick={() => {
-                        router.get(route('pacientes.show', row.original.curpp));
+                        router.get(route('pacientes.show', row.original.id));
                     }}
                   >
                     {row.getVisibleCells().map(cell => (
@@ -133,7 +130,6 @@ const Index = ({ pacientes }: IndexProps) => {
           </table>
         </div>
 
-        {/* 5. Controles de PAGINACIÓN */}
         <div className="flex items-center justify-between mt-4">
           <button
             onClick={() => table.previousPage()}
@@ -161,7 +157,7 @@ const Index = ({ pacientes }: IndexProps) => {
   );
 };
 
-// Asigna el layout persistente
+
 Index.layout = (page: React.ReactNode) => <MainLayout children={page} />;
 
 export default Index;
