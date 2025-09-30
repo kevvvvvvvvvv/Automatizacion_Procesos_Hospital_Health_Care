@@ -41,3 +41,38 @@ export interface User {
     updated_at: string;
     [key: string]: unknown; // This allows for additional properties...
 }
+
+
+export interface Estancia {
+    id: number;
+    folio: string;
+    fecha_ingreso: string;
+    fecha_egreso: string | null; 
+    num_habitacion: string | null;
+    tipo_estancia: string;
+}
+
+export interface Paciente {
+    id: number;
+    curp: string;
+    nombre: string;
+    apellido_paterno: string;
+    apellido_materno: string;
+    sexo: string;
+    fecha_nacimiento: string;
+    calle: string;
+    numero_exterior: string;
+    numero_interior: string | null;
+    colonia: string;
+    municipio: string;
+    estado: string;
+    pais: string;
+    cp: string;
+    telefono: string;
+    estado_civil: string;
+    ocupacion: string;
+    lugar_origen: string;
+    nombre_padre: string;
+    nombre_madre: string;
+    estancias: Estancia[];
+}

@@ -2,47 +2,48 @@ import React from 'react';
 import { Head, router } from '@inertiajs/react';
 import MainLayout from '@/layouts/MainLayout';
 import {route} from 'ziggy-js';
-import InputText from '@/components/ui/input-text';
+
 import BackButton from '@/components/ui/back-button';
 import AddButton from '@/components/ui/add-button';
 
 
 type Estancia = {
-  id: number;
-  folio: string;
-  fecha_ingreso: string;
-  fecha_egreso: string | null; 
-  num_habitacion: string | null;
-  tipo_estancia: string;
+    id: number;
+    folio: string;
+    fecha_ingreso: string;
+    fecha_egreso: string | null; 
+    num_habitacion: string | null;
+    tipo_estancia: string;
 };
 
 
 type Paciente = {
-  curp: string;
-  nombre: string;
-  apellido_paterno: string;
-  apellido_materno: string;
-  sexo: string;
-  fecha_nacimiento: string;
-  calle: string;
-  numero_exterior: string;
-  numero_interior: string | null;
-  colonia: string;
-  municipio: string;
-  estado: string;
-  pais: string;
-  cp: string;
-  telefono: string;
-  estado_civil: string;
-  ocupacion: string;
-  lugar_origen: string;
-  nombre_padre: string;
-  nombre_madre: string;
-  estancias: Estancia[];
+    id: number;
+    curp: string;
+    nombre: string;
+    apellido_paterno: string;
+    apellido_materno: string;
+    sexo: string;
+    fecha_nacimiento: string;
+    calle: string;
+    numero_exterior: string;
+    numero_interior: string | null;
+    colonia: string;
+    municipio: string;
+    estado: string;
+    pais: string;
+    cp: string;
+    telefono: string;
+    estado_civil: string;
+    ocupacion: string;
+    lugar_origen: string;
+    nombre_padre: string;
+    nombre_madre: string;
+    estancias: Estancia[];
 };
 
 type ShowProps = {
-  paciente: Paciente;
+    paciente: Paciente;
 };
 
 const Show = ({ paciente }: ShowProps) => {
@@ -53,9 +54,7 @@ const Show = ({ paciente }: ShowProps) => {
       
       <div className="p-4 md:p-8">
         <div className="flex justify-between items-center mb-6">
-          <h1 className="text-3xl font-bold text-black">
-            Ficha del Paciente
-          </h1>
+
 
 
         <div>
@@ -109,9 +108,9 @@ const Show = ({ paciente }: ShowProps) => {
           </div>
         </div>
 
-            <AddButton href={route('estancias.create')}>
-                Añadir Estancia
-            </AddButton>
+        <AddButton href={route('pacientes.estancias.create', { paciente: paciente.id })}>
+            Añadir Estancia
+        </AddButton>
 
       </div>
           <h2 className="text-xl font-semibold border-b pb-2 mt-8 mb-4">Historial de Estancias</h2>
@@ -136,22 +135,12 @@ const Show = ({ paciente }: ShowProps) => {
               <p className="text-gray-500 italic">No hay estancias registradas para este paciente.</p>
             )}
           </div>
-
-      <InputText
-        id="nombre"
-        name="nombre"
-        label="Nombre Completo"
-        value=""
-        onChange={() => {}}
-        placeholder="Escribe tu nombre aquí..."
-      >
-      </InputText>
-
-
     </>
   );
 };
 
-Show.layout = (page: React.ReactNode) => <MainLayout children={page} />;
+Show.layout = (page: React.ReactElement) => (
+  <MainLayout title="Ficha del Paciente" children={page} />
+);
 
 export default Show;
