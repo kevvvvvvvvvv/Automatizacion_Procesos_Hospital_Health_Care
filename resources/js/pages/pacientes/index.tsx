@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { Head, router } from '@inertiajs/react';
 import MainLayout from '@/layouts/MainLayout';
-import { route } from 'ziggy-js';
+import {route}  from 'ziggy-js';
 
 
 import {
@@ -72,7 +72,7 @@ const Index = ({ pacientes }: IndexProps) => {
   });
 
   return (
-    <MainLayout>
+    <>
       <Head title="Pacientes" />
       <div className="p-4 md:p-8">
         <div className="flex items-center justify-between mb-6">
@@ -153,11 +153,11 @@ const Index = ({ pacientes }: IndexProps) => {
           </button>
         </div>
       </div>
-    </MainLayout>
+    </>
   );
 };
 
 
-Index.layout = (page: React.ReactNode) => <MainLayout children={page} />;
+Index.layout = (page: React.ReactNode) => <MainLayout title="Consulta de pacientes" children={page} />;
 
 export default Index;
