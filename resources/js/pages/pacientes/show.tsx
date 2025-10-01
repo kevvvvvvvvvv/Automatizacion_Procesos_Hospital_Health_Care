@@ -1,5 +1,6 @@
 import React from 'react';
-import { Head, router } from '@inertiajs/react';
+import { Head, Link } from '@inertiajs/react';
+import { Eye, Pencil } from 'lucide-react';
 import MainLayout from '@/layouts/MainLayout';
 import {route} from 'ziggy-js';
 
@@ -114,21 +115,47 @@ const Show = ({ paciente }: ShowProps) => {
 
       </div>
           <h2 className="text-xl font-semibold border-b pb-2 mt-8 mb-4">Historial de Estancias</h2>
-          <div className="space-y-4">
+<div className="space-y-4">
             {paciente.estancias && paciente.estancias.length > 0 ? (
               paciente.estancias.map((estancia) => (
-                <div key={estancia.id} className="p-4 border rounded-md bg-gray-50" onClick={() => {
-                    router.get(route('estancias.show',estancia.id))
-                }}>
-                    <p className="text-sm text-gray-600">
+                // 2. Contenedor principal ahora usa flexbox para alinear los elementos
+                <div key={estancia.id} className="p-4 border rounded-md bg-gray-50 flex justify-between items-center">
+                  
+                  {/* Div para la información de la estancia */}
+                  <div>
+                    <p className="text-sm font-semibold text-gray-700">
                         Folio: {estancia.folio}
                     </p>
-                  <p className="text-sm text-gray-600">
-                    Fecha de Ingreso: {estancia.fecha_ingreso}
-                  </p>
-                  <p className="text-sm text-gray-600">
-                    Fecha de Alta: {estancia.fecha_egreso || (estancia.tipo_estancia === "Hospitalizacion" ? 'Aún hospitalizado(a)' : '')}
-                  </p>
+                    <p className="text-sm text-gray-600">
+                      Fecha de Ingreso: {estancia.fecha_ingreso}
+                    </p>
+                    <p className="text-sm text-gray-600">
+                      Fecha de Alta: {estancia.fecha_egreso || (estancia.tipo_estancia === "Hospitalizacion" ? 'Aún hospitalizado(a)' : '')}
+                    </p>
+                  </div>
+
+                  {/* 3. Div para los botones de acción */}
+                  <div className="flex items-center space-x-2">
+                    
+                    {/* Botón para Visualizar */}
+                    <Link 
+                      href={route('estancias.show', estancia.id)}
+                      className="p-2 text-gray-500 hover:bg-gray-200 hover:text-gray-800 rounded-full transition"
+                      title="Ver detalles"
+                    >
+                      <Eye size={18} />
+                    </Link>
+
+                    {/* Botón para Editar */}
+                    <Link 
+                      href={route('estancias.edit', estancia.id)}
+                      className="p-2 text-blue-500 hover:bg-blue-100 hover:text-blue-700 rounded-full transition"
+                      title="Editar estancia"
+                    >
+                      <Pencil size={18} />
+                    </Link>
+
+                  </div>
                 </div>
               ))
             ) : (

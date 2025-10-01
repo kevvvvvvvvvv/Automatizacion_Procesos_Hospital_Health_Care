@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use App\Models\User;
 
 return new class extends Migration
 {
@@ -28,6 +29,9 @@ return new class extends Migration
                   ->nullable()
                   ->constrained('estancias')
                   ->onDelete('set null');
+        
+            $table->foreignIdFor(User::class, 'created_by')->constrained('users');
+            $table->foreignIdFor(User::class, 'updated_by')->nullable()->constrained('users');
 
             $table->timestamps();
         });
