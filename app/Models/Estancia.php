@@ -6,10 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use App\Auditable;
 
 class Estancia extends Model
 {
-    use HasFactory;
+    use HasFactory, Auditable;
 
     protected $table = 'estancias';
     public $incrementing = true; 
@@ -23,6 +24,8 @@ class Estancia extends Model
         'tipo_estancia',
         'paciente_id',
         'estancia_anterior_id',
+        'created_by', 
+        'updated_by'
     ];
 
     public function paciente()
@@ -38,5 +41,15 @@ class Estancia extends Model
     public function reingresos(): HasMany
     {
         return $this->hasMany(Estancia::class, 'estancia_anterior_id');
+    }
+
+    public function creator(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
+
+    public function updater(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'updated_by');
     }
 }

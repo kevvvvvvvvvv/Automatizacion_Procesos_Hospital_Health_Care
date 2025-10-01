@@ -39,7 +39,7 @@ export interface User {
     two_factor_enabled?: boolean;
     created_at: string;
     updated_at: string;
-    [key: string]: unknown; // This allows for additional properties...
+    [key: string]: unknown; 
 }
 
 
@@ -49,7 +49,7 @@ export interface Estancia {
     fecha_ingreso: string;
     fecha_egreso: string | null; 
     num_habitacion: string | null;
-    tipo_estancia: string;
+    tipo_estancia: 'Hospitalizacion' | 'Interconsulta';
 }
 
 export interface Paciente {

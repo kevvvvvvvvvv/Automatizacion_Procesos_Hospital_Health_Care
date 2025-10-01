@@ -29,3 +29,8 @@ npm install date-fns
 npm install react-select
 ```
 
+<h2>Instalar servidor</h2>
+
+```bash
+composer require beyondcode/expose
+```
