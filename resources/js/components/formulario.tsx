@@ -161,6 +161,7 @@ function PacienteForm() {
         <h3>Domicilio</h3>
         <div>
           <label className="label-input">Calle:</label>
+
           <input type="text" placeholder="Ingresa la calle" value={calle} onChange={(e) => setCalle(e.target.value)} className="input-personalizado" />
         </div>
         <div>
