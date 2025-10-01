@@ -24,6 +24,7 @@ return new class extends Migration
             $table->datetime('fecha_egreso')->nullable();
             $table->string('num_habitacion')->nullable();
             $table->enum('tipo_estancia', ['Interconsulta', 'Hospitalizacion']);
+            $table->string('modalidad_ingreso');
 
             $table->foreignId('estancia_anterior_id')
                   ->nullable()

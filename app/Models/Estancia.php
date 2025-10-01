@@ -22,6 +22,7 @@ class Estancia extends Model
         'fecha_egreso',
         'num_habitacion',
         'tipo_estancia',
+        'modalidad_ingreso',
         'paciente_id',
         'estancia_anterior_id',
         'created_by', 

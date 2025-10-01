@@ -30,7 +30,7 @@ export interface SharedData {
     [key: string]: unknown;
 }
 
-export interface User {
+/*export interface User {
     id: number;
     name: string;
     email: string;
@@ -40,7 +40,7 @@ export interface User {
     created_at: string;
     updated_at: string;
     [key: string]: unknown; 
-}
+}*/
 
 
 export interface Estancia {
@@ -50,6 +50,7 @@ export interface Estancia {
     fecha_egreso: string | null; 
     num_habitacion: string | null;
     tipo_estancia: 'Hospitalizacion' | 'Interconsulta';
+    modalidad_ingreso: string;
 }
 
 export interface Paciente {
@@ -76,3 +77,17 @@ export interface Paciente {
     nombre_madre: string;
     estancias: Estancia[];
 }
+
+export interface User {
+  id: number;
+  curp: string;
+  nombre: string;
+  apellido_paterno: string;
+  apellido_materno: string;
+  sexo: 'Masculino' | 'Femenino';
+  fecha_nacimiento: string; 
+  colaborador_responsable_id: number | null;
+  email: string;
+  created_at: string; 
+  updated_at: string;
+};

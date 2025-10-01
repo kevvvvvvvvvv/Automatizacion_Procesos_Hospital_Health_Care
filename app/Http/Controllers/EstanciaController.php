@@ -112,11 +112,16 @@ class EstanciaController extends Controller
             ->with('success', 'Estancia actualizada correctamente.');
     }
 
-    public function show($id)
+    public function show(Estancia $estancia)
     {
-        $estancia = Estancia::findOrFail($id);
-        return Inertia::render('estancias/show',[
-            'estancia' => $estancia
+        $estancia->load(['paciente', 'creator', 'updater']);
+
+        return Inertia::render('estancias/show', [
+            'estancia' => $estancia,
+            'paciente' => $estancia->paciente,
+            'creator'  => $estancia->creator,
+            'updater'  => $estancia->updater,
+            'actualizador' => $estancia->updater,
         ]);
     }
 }
