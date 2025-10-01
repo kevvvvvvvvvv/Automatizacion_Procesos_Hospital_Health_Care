@@ -7,6 +7,9 @@ import {route} from 'ziggy-js';
 import BackButton from '@/components/ui/back-button';
 import AddButton from '@/components/ui/add-button';
 
+import InfoCard from '@/components/ui/info-card';
+import InfoField from '@/components/ui/info-field';
+
 
 type Estancia = {
     id: number;
@@ -64,50 +67,55 @@ const Show = ({ paciente }: ShowProps) => {
           
         </div>
         
-        <div className="mt-6 p-6 bg-white rounded-lg shadow-md">
-          <h2 className="text-xl font-semibold border-b pb-2 mb-4">Datos Personales</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div>
-              <p className="text-sm text-gray-500">Nombre Completo</p>
-              <p className="text-lg text-black">{`${paciente.nombre} ${paciente.apellido_paterno} ${paciente.apellido_materno}`}</p>
-            </div>
-            <div>
-              <p className="text-sm text-gray-500">CURP</p>
-              <p className="text-lg font-mono text-black">{paciente.curp}</p>
-            </div>
-             <div>
-              <p className="text-sm text-gray-500">Fecha de Nacimiento</p>
-              <p className="text-lg text-black">{paciente.fecha_nacimiento}</p>
-            </div>
-             <div>
-              <p className="text-sm text-gray-500">Sexo</p>
-              <p className="text-lg text-black">{paciente.sexo}</p>
-            </div>
-            <div>
-              <p className="text-sm text-gray-500">Estado Civil</p>
-              <p className="text-lg text-black">{paciente.estado_civil}</p>
-            </div>
-             <div>
-              <p className="text-sm text-gray-500">Ocupación</p>
-              <p className="text-lg text-black">{paciente.ocupacion}</p>
-            </div>
-          </div>
-
-          <h2 className="text-xl font-semibold border-b pb-2 mt-8 mb-4">Información de Contacto</h2>
-           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div>
-                <p className="text-sm text-gray-500">Teléfono</p>
-                <p className="text-lg text-black">{paciente.telefono || 'No registrado'}</p>
-            </div>
-            <div className="col-span-2">
-                <p className="text-sm text-gray-500">Dirección</p>
-                <p className="text-lg text-black">
-                    {`${paciente.calle} ${paciente.numero_exterior} ${paciente.numero_interior || ''}, Col. ${paciente.colonia}, C.P. ${paciente.cp}`}
-                </p>
-                <p className="text-base text-black">{`${paciente.municipio}, ${paciente.estado}, ${paciente.pais}`}</p>
-            </div>
-          </div>
+    <InfoCard title="Datos Personales">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <InfoField
+                label="Nombre Completo"
+                value={`${paciente.nombre} ${paciente.apellido_paterno} ${paciente.apellido_materno}`}
+            />
+            <InfoField
+                label="CURP"
+                value={paciente.curp}
+            />
+            <InfoField
+                label="Fecha de Nacimiento"
+                value={paciente.fecha_nacimiento}
+            />
+            <InfoField
+                label="Sexo"
+                value={paciente.sexo}
+            />
+            <InfoField
+                label="Estado Civil"
+                value={paciente.estado_civil}
+            />
+            <InfoField
+                label="Ocupación"
+                value={paciente.ocupacion}
+            />
         </div>
+    </InfoCard>
+
+    <InfoCard title="Información de Contacto" className="mt-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <InfoField
+                label="Teléfono"
+                value={paciente.telefono}
+            />
+            <InfoField
+                label="Dirección"
+                className="md:col-span-2"
+                value={
+                    <>
+                        <p className="text-lg text-black">
+                            {`${paciente.calle} ${paciente.numero_exterior} ${paciente.numero_interior || ''}, Col. ${paciente.colonia}, C.P. ${paciente.cp}`}
+                        </p>
+                        <p className="text-base text-black">{`${paciente.municipio}, ${paciente.estado}, ${paciente.pais}`}</p>
+                    </>
+                }
+            />
+        </div>
+    </InfoCard>
 
         <AddButton href={route('pacientes.estancias.create', { paciente: paciente.id })}>
             Añadir Estancia
