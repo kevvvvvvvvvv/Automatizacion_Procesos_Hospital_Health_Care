@@ -57,6 +57,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, userName, pageTitle }
       </div>
     </div>
   );
+
 };
 
 export default MainLayout;

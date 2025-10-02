@@ -8,6 +8,7 @@ interface AddButtonProps {
 }
 
 const AddButton = ({ href, className, children = 'Añadir' }: AddButtonProps) => {
+
   return (
     <Link
       href={href}
@@ -25,6 +26,7 @@ const AddButton = ({ href, className, children = 'Añadir' }: AddButtonProps) =>
       {children}
     </Link>
   );
+
 };
 
 export default AddButton;

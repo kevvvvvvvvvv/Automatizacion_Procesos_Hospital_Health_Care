@@ -19,7 +19,6 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        // 2. NOMBRES DE COLUMNAS ACTUALIZADOS A SNAKE_CASE
         'curp',
         'nombre',
         'apellido_paterno',

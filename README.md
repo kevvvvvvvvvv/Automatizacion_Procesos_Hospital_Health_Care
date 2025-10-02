@@ -15,3 +15,22 @@ composer require tightenco/ziggy
 ```bash 
 npm install lucide-react
 ```
+
+<h2>Instalar dependencia para el input de fechas</h2>
+
+```bash
+npm install react-datepicker
+npm install date-fns
+```
+
+<h2>Instalar dependencia para el input de select</h2>
+
+```bash
+npm install react-select
+```
+
+<h2>Instalar servidor</h2>
+
+```bash
+composer require beyondcode/expose
+```
