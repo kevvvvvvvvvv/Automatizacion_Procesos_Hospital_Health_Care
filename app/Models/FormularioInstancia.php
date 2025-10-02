@@ -38,4 +38,10 @@ class FormularioInstancia extends Model
     {
         return $this->hasOne(HojaFrontal::class, 'id', 'id');
     }
+
+    public function catalogo(): BelongsTo
+    {
+        return $this->belongsTo(FormularioCatalogo::class, 'formulario_catalogo_id');
+    }
+
 }
