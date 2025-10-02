@@ -53,4 +53,9 @@ class Estancia extends Model
     {
         return $this->belongsTo(User::class, 'updated_by');
     }
+
+    public function formularioInstancias(): HasMany
+    {
+        return $this->hasMany(FormularioInstancia::class);
+    }
 }

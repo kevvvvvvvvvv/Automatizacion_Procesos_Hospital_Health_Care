@@ -41,14 +41,10 @@ class FormularioHojaFrontalController extends Controller
             'notas' => $request->notas
         ]);
 
-        $estancia->load(['paciente', 'creator', 'updater']);
+        $estancia->load(['paciente', 'creator', 'updater','formularioInstancias.catalogo','formularioInstancias.user']);
 
         return Inertia::render('estancias/show', [
             'estancia' => $estancia,
-            'paciente' => $estancia->paciente,
-            'creator'  => $estancia->creator,
-            'updater'  => $estancia->updater,
-            'actualizador' => $estancia->updater,
         ]);
     }
 }

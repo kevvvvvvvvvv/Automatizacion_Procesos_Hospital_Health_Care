@@ -49,6 +49,7 @@ class EstanciaController extends Controller
                 'folio' => $folio, 
                 'fecha_ingreso' => $fechaHoraCarbon->format('Y-m-d H:i:s'), 
                 'estancia_anterior_id' => $validatedData['estancia_referencia_id'] ?? null,
+                'modalidad_ingreso' => 'Particular',
             ]
         );
 
@@ -103,6 +104,7 @@ class EstanciaController extends Controller
             'fecha_ingreso' => $fechaHoraCarbon->format('Y-m-d H:i:s'),
             'tipo_estancia' => $validatedData['tipo_estancia'],
             'tipo_ingreso' => $validatedData['tipo_ingreso'],
+            'modalidad_ingreso' => 'Particular',
             'num_habitacion' => $numHabitacion,
             'estancia_anterior_id' => $validatedData['estancia_referencia_id'] ?? null,
         ];
@@ -115,18 +117,16 @@ class EstanciaController extends Controller
 
     public function show(Estancia $estancia)
     {
-        $estancia->load(['paciente', 'creator', 'updater']);
-
-        $formularios = DB::select('
-        SELECT 
-        ');
+        $estancia->load([
+            'paciente', 
+            'creator', 
+            'updater', 
+            'formularioInstancias.catalogo',
+            'formularioInstancias.user'     
+        ]);
 
         return Inertia::render('estancias/show', [
             'estancia' => $estancia,
-            'paciente' => $estancia->paciente,
-            'creator'  => $estancia->creator,
-            'updater'  => $estancia->updater,
-            'actualizador' => $estancia->updater,
         ]);
     }
 }

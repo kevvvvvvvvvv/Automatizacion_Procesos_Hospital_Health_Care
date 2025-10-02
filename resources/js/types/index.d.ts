@@ -96,3 +96,13 @@ export interface FormularioCatalogo {
     nombre_formulario: string;
     nombre_tabla_fisica: string;
 }
+
+export interface FormularioInstancia {
+  id: number;
+  fecha_hora: string; 
+  estancia_id: number;
+  formulario_catalogo_id: number;
+  user_id: number;
+  created_at: string;
+  updated_at: string;
+}
