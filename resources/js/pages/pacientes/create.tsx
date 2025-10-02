@@ -44,7 +44,7 @@ const PacienteCreate: React.FC = () => {
   ) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
-
+// hola para prbar el git
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     router.post('/pacientes', form);
