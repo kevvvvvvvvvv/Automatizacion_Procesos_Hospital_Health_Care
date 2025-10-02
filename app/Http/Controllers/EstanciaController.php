@@ -59,6 +59,7 @@ class EstanciaController extends Controller
             ->with('success', 'Estancia registrada correctamente.');
     }
 
+
     public function edit(Estancia $estancia)
     {
         $paciente = $estancia->paciente;
