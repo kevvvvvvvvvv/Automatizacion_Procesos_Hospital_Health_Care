@@ -114,7 +114,7 @@ const Create = ({ paciente }: CreateEstanciaProps) => {
         )}
 
         <PrimaryButton type="submit" disabled={processing}>
-        {processing ? 'Guardando...' : 'Guardar Estancia'}
+          {processing ? 'Guardando...' : 'Guardar Estancia'}
         </PrimaryButton>
     </form>
   );

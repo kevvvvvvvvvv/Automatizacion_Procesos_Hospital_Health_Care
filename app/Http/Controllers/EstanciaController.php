@@ -11,6 +11,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\DB;
 
 class EstanciaController extends Controller
 {
@@ -115,6 +116,10 @@ class EstanciaController extends Controller
     public function show(Estancia $estancia)
     {
         $estancia->load(['paciente', 'creator', 'updater']);
+
+        $formularios = DB::select('
+        SELECT 
+        ');
 
         return Inertia::render('estancias/show', [
             'estancia' => $estancia,
