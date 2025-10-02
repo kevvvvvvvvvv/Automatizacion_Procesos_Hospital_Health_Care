@@ -91,3 +91,8 @@ export interface User {
   created_at: string; 
   updated_at: string;
 };
+
+export interface FormularioCatalogo {
+    nombre_formulario: string;
+    nombre_tabla_fisica: string;
+}

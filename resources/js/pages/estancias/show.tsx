@@ -17,25 +17,27 @@ interface ShowEstanciaProps {
 const Show = ({ estancia, paciente, creator, updater }: ShowEstanciaProps) => {
     return (
         <>
-        <Head title={`Detalles de estancia: ${estancia.folio}`} />
+            <Head title={`Detalles de estancia: ${estancia.folio}`} />
 
-        <InfoCard title={`Estancia para: ${paciente.nombre} ${paciente.apellido_paterno}`}>
-            <div className="grid grid-cols-2 gap-4">
-                <InfoField label="Folio" value={estancia.folio} />
-                <InfoField label="Fecha de Ingreso" value={estancia.fecha_ingreso} />
-                <InfoField label="Fecha de egreso" value={estancia.fecha_egreso} />
-                <InfoField label="Número de habitación" value={estancia.num_habitacion} />
-                <InfoField label="Tipo de estancia" value={estancia.tipo_estancia} />
-                <InfoField label="Creado por" value={creator ? creator.nombre : 'N/A'} />
-                <InfoField 
-                    label="Última actualización por" 
-                    value={updater ? updater.nombre : 'N/A'} 
-                />
-            </div>
-        </InfoCard>
-            <AddButton href={route('pacientes.estancias.formulario.create', { paciente: paciente.id })}>
-                Añadir formulario
+            <InfoCard title={`Estancia para: ${paciente.nombre} ${paciente.apellido_paterno}`}>
+                <div className="grid grid-cols-2 gap-4">
+                    <InfoField label="Folio" value={estancia.folio} />
+                    <InfoField label="Fecha de Ingreso" value={estancia.fecha_ingreso} />
+                    <InfoField label="Fecha de egreso" value={estancia.fecha_egreso} />
+                    <InfoField label="Número de habitación" value={estancia.num_habitacion} />
+                    <InfoField label="Tipo de estancia" value={estancia.tipo_estancia} />
+                    <InfoField label="Creado por" value={creator ? creator.nombre : 'N/A'} />
+                    <InfoField 
+                        label="Última actualización por" 
+                        value={updater ? updater.nombre : 'N/A'} 
+                    />
+                </div>
+            </InfoCard>
+            <AddButton href={route('pacientes.estancias.hojasfrontales.create', { paciente: paciente.id, estancia:estancia.id })}>
+                Hoja frontal
             </AddButton>
+
+            
         </>
     );
 };
