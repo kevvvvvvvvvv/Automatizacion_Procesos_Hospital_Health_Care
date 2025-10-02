@@ -15,7 +15,6 @@ return new class extends Migration
             $table->id();
             $table->string('nombre_formulario', 100);
             $table->string('nombre_tabla_fisica');
-            $table->timestamps();
         });
     }
 
