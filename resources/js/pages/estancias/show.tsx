@@ -115,7 +115,7 @@ const Show = ({ estancia }: ShowEstanciaProps) => {
 Show.layout = (page: React.ReactElement) => {
     const { estancia } = page.props as ShowEstanciaProps;
     return (
-        <MainLayout title={`Detalles de estancia de ${estancia.paciente.nombre}`} children={page} />
+        <MainLayout pageTitle={`Detalles de estancia de ${estancia.paciente.nombre}`} children={page} />
     );
 };
 
