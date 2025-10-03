@@ -22,7 +22,12 @@ return new class extends Migration
 
             $table->datetime('fecha_ingreso');
             $table->datetime('fecha_egreso')->nullable();
-            $table->string('num_habitacion')->nullable();
+            
+            $table->foreignId('habitacion_id')
+                ->nullable()
+                ->constrained('habitaciones')
+                ->onDelete('cascade');
+
             $table->enum('tipo_estancia', ['Interconsulta', 'Hospitalizacion']);
             $table->string('modalidad_ingreso');
 
@@ -30,6 +35,11 @@ return new class extends Migration
                   ->nullable()
                   ->constrained('estancias')
                   ->onDelete('set null');
+
+            $table->foreignId('familiar_responsable_id')
+                ->nullable()
+                ->constrained('familiar_responsables')
+                ->onDelete('cascade');
         
             $table->foreignIdFor(User::class, 'created_by')->constrained('users');
             $table->foreignIdFor(User::class, 'updated_by')->nullable()->constrained('users');

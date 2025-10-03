@@ -94,7 +94,7 @@ const Show = ({ estancia }: ShowEstanciaProps) => {
                                     </Link>*/}
                                 </div>
                                     <a 
-                                        href={route('hoja-frontales.pdf', formulario.id)}
+                                        href={route('hojasfrontales.pdf', formulario.id)}
                                         target="_blank"
                                         className="p-2 text-red-500 hover:bg-red-100 hover:text-red-700 rounded-full transition"
                                         title="Imprimir / Descargar PDF"
@@ -115,7 +115,7 @@ const Show = ({ estancia }: ShowEstanciaProps) => {
 Show.layout = (page: React.ReactElement) => {
     const { estancia } = page.props as ShowEstanciaProps;
     return (
-        <MainLayout title={`Detalles de estancia de ${estancia.paciente.nombre}`} children={page} />
+        <MainLayout pageTitle={`Detalles de estancia de ${estancia.paciente.nombre}`} children={page} />
     );
 };
 

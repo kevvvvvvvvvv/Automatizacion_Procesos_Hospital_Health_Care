@@ -42,17 +42,6 @@ export interface SharedData {
     [key: string]: unknown; 
 }*/
 
-
-export interface Estancia {
-    id: number;
-    folio: string;
-    fecha_ingreso: string;
-    fecha_egreso: string | null; 
-    num_habitacion: string | null;
-    tipo_estancia: 'Hospitalizacion' | 'Interconsulta';
-    modalidad_ingreso: string;
-}
-
 export interface Paciente {
     id: number;
     curp: string;
@@ -93,8 +82,38 @@ export interface User {
 };
 
 export interface FormularioCatalogo {
+    id: number;
     nombre_formulario: string;
     nombre_tabla_fisica: string;
+    route_prefix: string;
+}
+
+export interface FamiliarResponsable {
+    id: number;
+    parentesco: string;
+    nombre_completo:string;
+    paciente_id: number;
+}
+
+export interface Habitacion {
+    id: number;
+    identificar: string;
+    piso: string,
+    estado: 'Ocupado' | 'Libre',
+}
+
+export interface Estancia {
+    id: number;
+    folio: string;
+    fecha_ingreso: string;
+    fecha_egreso: string | null; 
+    tipo_estancia: 'Hospitalizacion' | 'Interconsulta';
+    modalidad_ingreso: string;
+    
+    paciente_id : number;
+    habitacion_id: number | null;
+    familiar_responsable_id: number | null;
+    estancia_anterior_id: number | null;
 }
 
 export interface FormularioInstancia {
