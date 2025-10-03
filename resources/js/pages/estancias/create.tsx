@@ -123,7 +123,7 @@ const Create = ({ paciente }: CreateEstanciaProps) => {
 Create.layout = (page: React.ReactElement) => {
     const { paciente } = page.props as CreateEstanciaProps;
     return (
-        <MainLayout title={`Registrar Estancia para: ${paciente.nombre}`} children={page} />
+        <MainLayout pageTitle={`Registrar Estancia para: ${paciente.nombre}`} children={page} />
     );
 };
 

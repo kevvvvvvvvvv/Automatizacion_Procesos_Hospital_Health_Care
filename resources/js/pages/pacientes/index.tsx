@@ -14,6 +14,8 @@ import {
   flexRender,
   SortingState,
 } from '@tanstack/react-table';
+import AddButton from '@/components/ui/add-button';
+import BackButton from '@/components/ui/back-button';
 
 
 type Paciente = {
@@ -78,7 +80,17 @@ const Index = ({ pacientes }: IndexProps) => {
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-3xl font-bold text-black">Listado de Pacientes</h1>
         </div>
-
+             <div className="flex justify-between items-center mb-6">
+                {/* Lado izquierdo: BackButton */}
+                <div className="flex items-center space-x-4">
+                  <BackButton />
+                </div>
+                
+                {/* Lado derecho: Botón Agregar Paciente pegado a la derecha */}
+                <AddButton href={route('pacientes.create')}>
+                  Agregar Paciente
+                </AddButton>
+            </div>
 
         <div className="mb-4">
           <input
@@ -158,6 +170,6 @@ const Index = ({ pacientes }: IndexProps) => {
 };
 
 
-Index.layout = (page: React.ReactNode) => <MainLayout title="Consulta de pacientes" children={page} />;
+Index.layout = (page: React.ReactNode) => <MainLayout pageTitle="Consulta de pacientes" children={page} />;
 
 export default Index;
