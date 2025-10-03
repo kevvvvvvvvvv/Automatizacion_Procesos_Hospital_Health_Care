@@ -175,7 +175,7 @@ const Show = ({ paciente }: ShowProps) => {
 };
 
 Show.layout = (page: React.ReactElement) => (
-  <MainLayout title="Ficha del Paciente" children={page} />
+  <MainLayout pageTitle="Ficha del Paciente" children={page} />
 );
 
 export default Show;
