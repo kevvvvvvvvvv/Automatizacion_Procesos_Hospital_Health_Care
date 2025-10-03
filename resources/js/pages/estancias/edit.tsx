@@ -138,7 +138,7 @@ const Edit = ({ paciente, estancia }: EditEstanciaProps) => {
 Edit.layout = (page: React.ReactElement) => {
     const { paciente } = page.props as EditEstanciaProps;
     return (
-        <MainLayout title={`Editando Estancia de: ${paciente.nombre}`} children={page} />
+        <MainLayout pageTitle={`Editando Estancia de: ${paciente.nombre}`} children={page} />
     );
 };
 
