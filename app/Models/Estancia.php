@@ -60,12 +60,12 @@ class Estancia extends Model
         return $this->hasMany(FormularioInstancia::class);
     }
 
-    public function familiarResponsables():BelongsTo
+    public function familiarResponsable():BelongsTo
     {
         return $this->belongsTo(FamiliarResponsable::class,'familiar_responsable_id');
     }
 
-    public function habitaciones():BelongsTo
+    public function habitacion():BelongsTo
     {
         return $this->belongsTo(Habitacion::class,'habitacion_id');
     }

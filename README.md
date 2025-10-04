@@ -40,3 +40,9 @@ composer require beyondcode/expose
 ```bash
 composer require spatie/laravel-pdf
 ```
+
+<h2>Instalar paquete para la generación de PDF</h2>
+
+```bash
+npm install puppeteer
+```

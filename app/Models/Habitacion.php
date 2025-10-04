@@ -16,6 +16,8 @@ class Habitacion extends Model
         'piso',
     ];
 
+    public $timestamps = false;
+
     public function estancias():HasOne
     {
         return $this->hasOne(Estancia::class.'habitacion_id');

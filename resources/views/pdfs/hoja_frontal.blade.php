@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <title>Expediente Clínico - Hoja Frontal</title>
     <style>
-        /* Usamos A4 para un estándar de impresión común */
         @page {
             size: A4;
             margin: 0;
@@ -12,12 +11,12 @@
 
         body {
             font-family: Arial, sans-serif;
-            margin: 2.5cm 2cm; /* Márgenes generosos como en el documento */
+            margin: 2.5cm 2cm; 
             font-size: 11pt;
             color: #333;
         }
 
-        /* --- HEADER --- */
+
         .header {
             display: flex;
             justify-content: space-between;
@@ -39,16 +38,17 @@
             line-height: 1.4;
         }
 
-        /* --- TÍTULOS --- */
         .main-title {
             text-align: center;
             margin: 30px 0;
         }
+
         .main-title h1 {
             margin: 0;
             font-size: 16pt;
             font-weight: bold;
         }
+
         .main-title h2 {
             margin: 5px 0 0 0;
             font-size: 14pt;
@@ -58,7 +58,6 @@
             padding-bottom: 2px;
         }
 
-        /* --- CONTENEDOR DE CAMPOS --- */
         .field-container {
             width: 100%;
         }
@@ -70,12 +69,25 @@
             margin-bottom: 15px;
         }
 
+        .field-row-checkbox {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+        }
+
         .field {
             display: flex;
             flex-direction: column;
             border-bottom: 1px solid #999;
             padding-bottom: 2px;
         }
+
+        .field-checkbox{
+            display: flex;
+            flex-direction: column;
+            padding-bottom: 2px;
+        }
+
         .field.full-width {
             width: 100%;
         }
@@ -92,10 +104,9 @@
         }
         .field .data {
             font-weight: bold;
-            min-height: 1.2em; /* Para que la línea no desaparezca si no hay dato */
+            min-height: 1.2em; 
         }
         
-        /* --- CHECKBOXES --- */
         .checkbox-area {
             display: flex;
             align-items: center;
@@ -117,16 +128,35 @@
             margin-top: 20px;
         }
 
+        .checkbox-new{
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin-bottom: 20px
+        }
+
+        .mark {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            border: 1px solid black;
+            border-radius: 5px;
+            text-align: center;
+            line-height: 18px;
+            font-weight: bold;
+            font-size: 12px;
+        }
+
     </style>
 </head>
 <body>
 
     <header class="header">
-        {{-- 🔧 AJUSTA AQUÍ: Cambia la ruta a tu logo. Usa una ruta absoluta. --}}
-        <img src="{{ public_path('images/logo.png') }}" alt="Logo Hospital" class="logo">
+        <img src="{{ public_path('images/Logo_HC_1.png') }}" alt="Logo Hospital" class="logo">
         <div class="hospital-info">
+            <p><strong>1</strong></p>
             <p><strong>PLAN DE AYUTLA 413 COL. REFORMA</strong></p>
-            <p>CUERNAVACA, MORELOS, C.P. 62260 TEL: 777 323 0371</p>
+            <p><strong> CUERNAVACA, MORELOS, C.P. 62260 TEL: 777 323 0371</strong></p>
             <p>Licencia sanitaria No. 23-AM-17-007-0002</p>
             <p>Responsable Sanitario Dr. Juan Manuel Ahumada Trujillo.</p>
         </div>
@@ -165,7 +195,9 @@
             <div class="field-row">
                 <div class="field full-width">
                     <label for="direccion">Dirección:</label>
-                    <div class="data" id="direccion">{{ $paciente->direccion ?? '' }}</div>
+                    <div class="data" id="direccion">
+                        {{ "{$paciente->calle} {$paciente->numero_exterior}, {$paciente->cp} {$paciente->colonia}, {$paciente->municipio}, {$paciente->estado}, {$paciente->pais}" }}
+                    </div>
                 </div>
             </div>
 
@@ -183,7 +215,6 @@
             <div class="field-row">
                  <div class="field full-width">
                     <label for="medico">Médico tratante:</label>
-                    {{-- Asumiendo que la hoja frontal tiene relación con el médico (User) --}}
                     <div class="data" id="medico">{{ $hojafrontal->medico->name ?? '' }}</div>
                 </div>
             </div>
@@ -191,7 +222,6 @@
             <div class="field-row">
                 <div class="field half-width">
                     <label for="especialidad">Especialidad:</label>
-                     {{-- 🔧 AJUSTA AQUÍ: Asumiendo que tu modelo User (medico) tiene un campo 'especialidad' --}}
                     <div class="data" id="especialidad">{{ $hojafrontal->medico->especialidad ?? '' }}</div>
                 </div>
                 <div class="field half-width">
@@ -199,35 +229,61 @@
                     <div class="data" id="firma"></div>
                 </div>
             </div>
-            
-            <div class="field-row">
-                <div class="field half-width checkbox-area">
-                    <div class="checkbox">
-                        {{-- 🔧 AJUSTA AQUÍ: La lógica para marcar la casilla (ej. $estancia->tipo == 'Ingreso') --}}
-                        @if(true) X @endif
-                    </div>
-                    Ingreso
-                    <div class="checkbox" style="margin-left: 20px;">
-                        @if(false) X @endif
-                    </div>
-                    Reingreso
+
+            <div style="display:flex; gap:20px;">
+                <div class="checkbox-new">
+                    Ingreso:
+                    @if(!$estancia->estancia_anterior_id) 
+                        <span class="mark">X</span>
+                    @else
+                         <span class="mark"></span>
+                    @endif
                 </div>
-                <div class="field half-width checkbox-area">
-                     <div class="checkbox">
-                        @if(true) X @endif
-                    </div>
-                    Particular
-                    <div class="checkbox" style="margin-left: 20px;">
-                         @if(false) X @endif
-                    </div>
-                    Compañía aseguradora
+                
+                <div class="checkbox-new">
+                    Reingreso:
+                    @if($estancia->estancia_anterior_id)
+                        <span class="mark">X</span>
+                    @else
+                         <span class="mark"></span>
+                    @endif
                 </div>
             </div>
 
-            <div class="field-row notes">
+
+            <div style="display:flex; gap:20px; margin-bottom:10px">
+                <div class="checkbox-new">
+                    Particular:
+                    @if($estancia->modalidad_ingreso == 'Particular') 
+                        <span class="mark">X</span>
+                    @else
+                         <span class="mark"></span>
+                    @endif
+                </div>
+                
+                <div class="checkbox-new">
+                    Compañía aseguradora:
+                    @if(!$estancia->modalidad_ingreso == 'Particular') 
+                        <span class="mark">X</span>
+                    @else
+                         <span class="mark"></span>
+                    @endif
+                </div>
+            </div>
+
+            <div class="field-row">
                 <div class="field full-width">
+                    @if(!$estancia->modalidad_ingreso == 'Particular')
+                        <div class="data">{{$estancia->modalidad_ingreso}}</div>
+                    @else
+                        <div class="data"></div>
+                    @endif
+                </div>
+            </div>
+            <div class="field-row">
+                <div class="full-width">
                     <label for="notas">Notas:</label>
-                    <div class="data" id="notas" style="height: 80px;">{{ $hojafrontal->notas ?? '' }}</div>
+                    <div class="data" id="notas" style="height: 80px;"><strong>{{ $hojafrontal->notas ?? '' }}</strong></div>
                 </div>
             </div>
         </div>
