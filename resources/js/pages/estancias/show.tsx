@@ -4,7 +4,7 @@ import { Plus } from 'lucide-react';
 import { route } from 'ziggy-js';
 import { Printer } from 'lucide-react'; 
 import MainLayout from '@/layouts/MainLayout';
-import { Estancia, Paciente, User, FormularioInstancia } from '@/types'; 
+import { Estancia, Paciente, User, FormularioInstancia, Habitacion, FamiliarResponsable} from '@/types'; 
 import InfoCard from '@/components/ui/info-card';
 import InfoField from '@/components/ui/info-field';
 
@@ -13,6 +13,9 @@ interface ShowEstanciaProps {
         paciente: Paciente;
         creator: User | null;
         updater: User | null;
+        familiar_responsable: FamiliarResponsable | null;
+        habitacion: Habitacion | null;
+
         formulario_instancias: (FormularioInstancia & {
             catalogo: { nombre_formulario: string };
             user: User;
@@ -48,11 +51,16 @@ const Show = ({ estancia }: ShowEstanciaProps) => {
                             ? new Date(estancia.fecha_egreso).toLocaleString('es-MX', dateOptions) 
                             : 'Aún hospitalizado(a)'} 
                     />
-                    <InfoField label="Número de habitación" value={estancia.num_habitacion || 'N/A'} />
+                    <InfoField label="Número de habitación" value={estancia.habitacion?.identificador ?? 'N/A'} />
                     <InfoField label="Creado por" value={creator ? creator.nombre : 'N/A'} />
                     <InfoField 
                         label="Última actualización por" 
                         value={updater ? updater.nombre : 'N/A'} 
+                    />
+
+                    <InfoField 
+                        label="Familiar resposable" 
+                        value={estancia.familiar_responsable?.nombre_completo ?? 'N/A'} 
                     />
                 </div>
             </InfoCard>

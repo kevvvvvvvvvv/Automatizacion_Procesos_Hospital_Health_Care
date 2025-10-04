@@ -121,11 +121,13 @@ class EstanciaController extends Controller
         $estancia->load([
             'paciente', 
             'creator', 
-            'updater', 
+            'updater',
+            'familiarResponsable',
+            'habitacion',
             'formularioInstancias.catalogo',
             'formularioInstancias.user'     
         ]);
-
+        
         return Inertia::render('estancias/show', [
             'estancia' => $estancia,
         ]);

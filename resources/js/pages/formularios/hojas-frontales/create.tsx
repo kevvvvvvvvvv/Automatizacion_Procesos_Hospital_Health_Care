@@ -4,7 +4,6 @@ import MainLayout from '@/layouts/MainLayout';
 import SelectInput from '@/components/ui/input-select';
 import PrimaryButton from '@/components/ui/primary-button';
 import TextareaInput from '@/components/ui/input-text-area'; 
-import InputText from '@/components/ui/input-text'; 
 import { route } from 'ziggy-js';
 import { FormularioCatalogo, User, Paciente, Estancia} from '@/types'; 
 
@@ -18,10 +17,8 @@ interface CreateFormularioProps {
 interface FormularioFormData {
   formulario_catalogo_id: number | string;
   medico_id: number | string;
-  responsable:string;
   notas: string;
 }
-
 
 const Create = ({ medicos, paciente, estancia }: CreateFormularioProps) => {
 
@@ -29,7 +26,6 @@ const Create = ({ medicos, paciente, estancia }: CreateFormularioProps) => {
     formulario_catalogo_id: '',
     medico_id: '',
     notas: '',
-	responsable: '',
   });
 
 
@@ -69,16 +65,6 @@ const Create = ({ medicos, paciente, estancia }: CreateFormularioProps) => {
         rows={4}
       />
 
-	  <InputText
-	        id="responsable"
-			name="responsable"
-			label="Familiar responsable"
-			value={data.responsable}
-			onChange={(e) => setData('responsable', e.target.value)}
-			placeholder="Familiar responsable"
-			error={errors.responsable}>
-	  
-	  </InputText>
 
       <PrimaryButton type="submit" disabled={processing}>
         {processing ? 'Guardando...' : 'Guardar Formulario'}

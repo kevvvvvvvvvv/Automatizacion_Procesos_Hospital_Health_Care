@@ -97,7 +97,7 @@ export interface FamiliarResponsable {
 
 export interface Habitacion {
     id: number;
-    identificar: string;
+    identificador: string;
     piso: string,
     estado: 'Ocupado' | 'Libre',
 }
@@ -114,6 +114,11 @@ export interface Estancia {
     habitacion_id: number | null;
     familiar_responsable_id: number | null;
     estancia_anterior_id: number | null;
+
+    created_at: string;
+    updated_at: string | null;
+    created_by: number;
+    updated_by: number | null;
 }
 
 export interface FormularioInstancia {

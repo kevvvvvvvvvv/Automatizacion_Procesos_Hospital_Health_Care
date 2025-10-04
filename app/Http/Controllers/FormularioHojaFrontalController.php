@@ -59,7 +59,7 @@ class FormularioHojaFrontalController extends Controller
             'hojafrontal' => $hojafrontal,
             'estancia'    => $estancia,
             'paciente'    => $paciente,
-        ])->stream('hoja-frontal-' . $paciente->id . '.pdf');
-
+        ])->inline('hoja-frontal-' . $paciente->id . '.pdf');
     }
+
 }
