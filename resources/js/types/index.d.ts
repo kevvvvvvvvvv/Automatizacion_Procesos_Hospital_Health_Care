@@ -100,6 +100,14 @@ export interface Habitacion {
     identificador: string;
     piso: string,
     estado: 'Ocupado' | 'Libre',
+    estancia_activa?: { 
+        paciente?: {
+        id: number;
+        nombre: string;
+        apellido_paterno: string;
+        apellido_materno: string;
+        };
+    };
 }
 
 export interface Estancia {
@@ -109,6 +117,7 @@ export interface Estancia {
     fecha_egreso: string | null; 
     tipo_estancia: 'Hospitalizacion' | 'Interconsulta';
     modalidad_ingreso: string;
+    tipo_ingreso: string;
     
     paciente_id : number;
     habitacion_id: number | null;

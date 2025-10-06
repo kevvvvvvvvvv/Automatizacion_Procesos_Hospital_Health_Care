@@ -23,4 +23,10 @@ class Habitacion extends Model
         return $this->hasOne(Estancia::class.'habitacion_id');
     }
 
+    public function estanciaActiva()
+    {
+        return $this->hasOne(Estancia::class)
+                    ->where('tipo_estancia', 'Hospitalizacion') 
+                    ->whereNull('fecha_egreso');              
+    }
 }

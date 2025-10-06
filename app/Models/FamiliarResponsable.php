@@ -10,6 +10,7 @@ class FamiliarResponsable extends Model
 {
     protected $table = 'familiar_responsables';
     public $incrementing = true;
+    
     protected $fillable = [
         'parentesco',
         'nombre_completo',

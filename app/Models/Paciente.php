@@ -16,7 +16,6 @@ class Paciente extends Model
      * @var array
      */
     protected $fillable = [
-        // 2. Nombres de columnas actualizados a snake_case para coincidir con la migración.
         'curp',
         'nombre',
         'apellido_paterno',
@@ -39,11 +38,13 @@ class Paciente extends Model
         'nombre_madre',
     ];
 
-    /**
-     * Define la relación: un paciente puede tener muchas estancias.
-     */
     public function estancias(): HasMany
     {
         return $this->hasMany(Estancia::class);
+    }
+
+    public function familiarResponsables(): HasMany
+    {
+        return $this->hasMany(FamiliarResponsable::class);
     }
 }
