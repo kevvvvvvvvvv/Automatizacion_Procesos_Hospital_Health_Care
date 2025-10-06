@@ -179,7 +179,6 @@
             <div class="field-row">
                 <div class="field third-width">
                     <label for="edad">Edad:</label>
-                    {{-- La edad se calcula a partir de la fecha de nacimiento --}}
                     <div class="data" id="edad">{{ $paciente->fecha_nacimiento ? \Carbon\Carbon::parse($paciente->fecha_nacimiento)->age : '' }}</div>
                 </div>
                 <div class="field third-width">
@@ -263,7 +262,7 @@
                 
                 <div class="checkbox-new">
                     Compañía aseguradora:
-                    @if(!$estancia->modalidad_ingreso == 'Particular') 
+                    @if($estancia->modalidad_ingreso != 'Particular') 
                         <span class="mark">X</span>
                     @else
                          <span class="mark"></span>
@@ -273,7 +272,7 @@
 
             <div class="field-row">
                 <div class="field full-width">
-                    @if(!$estancia->modalidad_ingreso == 'Particular')
+                    @if($estancia->modalidad_ingreso != 'Particular')
                         <div class="data">{{$estancia->modalidad_ingreso}}</div>
                     @else
                         <div class="data"></div>
@@ -286,6 +285,15 @@
                     <div class="data" id="notas" style="height: 80px;"><strong>{{ $hojafrontal->notas ?? '' }}</strong></div>
                 </div>
             </div>
+
+
+            <div class="field-row">
+                <div class="field full-width">
+                    <label for="familiar">Nombre del familiar responsable</label>
+                    <div class="data" id="familair">{{$familiar_responsable->nombre_completo}}</div>
+                </div>
+            </div>
+
         </div>
     </main>
 

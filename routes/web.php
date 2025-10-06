@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\PacienteController;
 use App\Http\Controllers\EstanciaController;
+use App\Http\Controllers\HabitacionController;
 use App\Http\Controllers\FormularioHojaFrontalController;
 use App\Http\Controllers\FormularioInstanciaController;
 use App\Models\Paciente;
@@ -18,9 +19,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
     })->name('dashboard');
 });
 
+Route::resource('habitaciones',HabitacionController::class)->middleware('auth');
 Route::resource('pacientes', PacienteController::class)->middleware('auth');
 Route::resource('pacientes.estancias', EstanciaController::class)->shallow()->middleware('auth');
 Route::resource('pacientes.estancias.hojasfrontales', FormularioHojaFrontalController::class)->shallow()->middleware('auth');
+
+
+
 
 Route::get('/hojasfrontales/{hojafrontal}/pdf', [FormularioHojaFrontalController::class, 'generarPDF'])
     ->name('hojasfrontales.pdf')
