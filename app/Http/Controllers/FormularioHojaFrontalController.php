@@ -12,6 +12,7 @@ use App\Models\FormularioInstancia;
 use App\Models\HojaFrontal;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
+use Spatie\LaravelPdf\Facades\Pdf;
 
 class FormularioHojaFrontalController extends Controller
 {
@@ -47,4 +48,20 @@ class FormularioHojaFrontalController extends Controller
             'estancia' => $estancia,
         ]);
     }
+
+    public function generarPDF(HojaFrontal $hojafrontal)
+    {
+        $hojafrontal->load('formularioInstancia.estancia.paciente','formularioInstancia.estancia.familiarResponsable');
+        $estancia = $hojafrontal->formularioInstancia->estancia;
+        $paciente = $estancia->paciente;
+        $familiar_responsable = $hojafrontal->formularioInstancia->estancia->familiarResponsable;
+
+        return Pdf::view('pdfs.hoja_frontal', [
+            'hojafrontal' => $hojafrontal,
+            'estancia'    => $estancia,
+            'paciente'    => $paciente,
+            'familiar_responsable' => $familiar_responsable,
+        ])->inline('hoja-frontal-' . $paciente->id . '.pdf');
+    }
+
 }
