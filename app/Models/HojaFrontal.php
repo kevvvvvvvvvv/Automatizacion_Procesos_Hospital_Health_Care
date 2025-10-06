@@ -30,7 +30,6 @@ class HojaFrontal extends Model
     protected $fillable = [
         'id', 
         'medico_id',
-        'responsable',
         'notas'
     ];
 

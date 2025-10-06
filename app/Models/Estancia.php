@@ -20,11 +20,12 @@ class Estancia extends Model
         'folio',
         'fecha_ingreso',
         'fecha_egreso',
-        'num_habitacion',
+        'habitacion_id',
         'tipo_estancia',
         'modalidad_ingreso',
         'paciente_id',
         'estancia_anterior_id',
+        'familiar_responsable_id',
         'created_by', 
         'updated_by'
     ];
@@ -57,5 +58,15 @@ class Estancia extends Model
     public function formularioInstancias(): HasMany
     {
         return $this->hasMany(FormularioInstancia::class);
+    }
+
+    public function familiarResponsable():BelongsTo
+    {
+        return $this->belongsTo(FamiliarResponsable::class,'familiar_responsable_id');
+    }
+
+    public function habitacion():BelongsTo
+    {
+        return $this->belongsTo(Habitacion::class,'habitacion_id');
     }
 }

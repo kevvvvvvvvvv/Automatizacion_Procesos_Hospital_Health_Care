@@ -34,3 +34,15 @@ npm install react-select
 ```bash
 composer require beyondcode/expose
 ```
+
+<h2>Instalar paquete para la generación de PDF</h2>
+
+```bash
+composer require spatie/laravel-pdf
+```
+
+<h2>Instalar paquete para la generación de PDF</h2>
+
+```bash
+npm install puppeteer
+```

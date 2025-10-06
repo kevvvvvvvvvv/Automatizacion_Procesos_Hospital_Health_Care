@@ -15,7 +15,8 @@ class FormularioCatalogoSeeder extends Seeder
     {
         FormularioCatalogo::create([
             'nombre_formulario' => 'Hoja frontal',
-            'nombre_tabla_fisica' => 'hoja_frontales'
+            'nombre_tabla_fisica' => 'hoja_frontales',
+            'route_prefix' => 'hoja-frontales',
         ]);
     }
 }
