@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::create('detalle_ventas', function (Blueprint $table) {
             $table->id();
-            $table->datetime('fecha');
-            $table->decimal('subtotal',8,2);
+            $table->decimal('precio_unitario',8,2);
             $table->integer('cantidad');
+            $table->decimal('subtotal',8,2);
             $table->decimal('descuento',8,2)->nullable();
             $table->string('estado');
             $table->foreignId('venta_id')
@@ -24,7 +24,7 @@ return new class extends Migration
             $table->foreignId('producto_servicio_id')
                 ->constrained('producto_servicios')
                 ->onDelete('cascade');
-
+            $table->timestamps();
         });
     }
 
