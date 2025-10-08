@@ -58,3 +58,15 @@ composer require spatie/laravel-permission
 ```bash
 php artisan install:broadcasting
 ```
+
+<h2>Instalar paquete de iconos</h2>
+
+```bash
+npm install react-icons
+```
+
+<h2>Instalar paquete para el manejo de archivos CSV</h2>
+
+```bash
+composer require league/csv
+```
