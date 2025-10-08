@@ -1,62 +1,59 @@
 import React, { useState, useMemo } from 'react';
 import { Head, router } from '@inertiajs/react';
 import MainLayout from '@/layouts/MainLayout';
-import {route}  from 'ziggy-js';
-
+import { route } from 'ziggy-js';
 
 import {
-    useReactTable,
-    getCoreRowModel,
-    getPaginationRowModel,
-    getSortedRowModel,
-    getFilteredRowModel,
-    ColumnDef,
-    flexRender,
-    SortingState,
+  useReactTable,
+  getCoreRowModel,
+  getPaginationRowModel,
+  getSortedRowModel,
+  getFilteredRowModel,
+  ColumnDef,
+  flexRender,
+  SortingState,
 } from '@tanstack/react-table';
 import AddButton from '@/components/ui/add-button';
 import BackButton from '@/components/ui/back-button';
+import { ProductoServicio } from '@/types';
 
-
-type Paciente = {
-  id: number;
-  curp: string;
-  nombre: string;
-  apellido_paterno: string;
-  apellido_materno: string;
-  telefono: string;
-};
-
+// 2. Props del componente actualizados
 type IndexProps = {
-  pacientes: Paciente[];
+  productoServicios: ProductoServicio[];
 };
 
-const Index = ({ pacientes }: IndexProps) => {
+const Index = ({ productoServicios }: IndexProps) => {
 
   const [globalFilter, setGlobalFilter] = useState('');
-
   const [sorting, setSorting] = useState<SortingState>([]);
 
-  const columns = useMemo<ColumnDef<Paciente>[]>(
+  // 3. Definición de columnas adaptada a ProductoServicio
+  const columns = useMemo<ColumnDef<ProductoServicio>[]>(
     () => [
-      {
-        accessorKey: 'curp',
-        header: 'CURP',
-      },
-      {
-        id: 'nombreCompleto',
-        header: 'Nombre Completo',
-        accessorFn: row => `${row.nombre} ${row.apellido_paterno} ${row.apellido_materno}`,
-      },
-      {
-        accessorKey: 'telefono',
-        header: 'Teléfono',
-      },
+        {
+            accessorKey: 'codigo_prestacion',
+            header: 'Código',
+        },
+        {
+            accessorKey: 'nombre_prestacion',
+            header: 'Nombre de Prestación',
+        },
+        {
+            accessorKey: 'tipo',
+            header: 'Tipo',
+        },
+        {
+            accessorKey: 'importe',
+            header: 'Importe',
+            // Opcional: Formatear la celda para mostrar como moneda
+            cell: info => `$${Number(info.getValue()).toFixed(2)}`
+        },
     ],
     []
   );
 
-  const data = useMemo(() => pacientes, [pacientes]);
+  // 4. Se utiliza el nuevo prop para los datos
+  const data = useMemo(() => productoServicios, [productoServicios]);
 
   const table = useReactTable({
     data,
@@ -75,20 +72,20 @@ const Index = ({ pacientes }: IndexProps) => {
 
   return (
     <>
-      <Head title="Pacientes" />
+      {/* 5. Textos y títulos actualizados */}
+      <Head title="Productos y Servicios" />
       <div className="p-4 md:p-8">
         <div className="flex items-center justify-between mb-6">
-          <h1 className="text-3xl font-bold text-black">Listado de Pacientes</h1>
+          <h1 className="text-3xl font-bold text-black">Listado de Productos y Servicios</h1>
         </div>
              <div className="flex justify-between items-center mb-6">
-                {/* Lado izquierdo: BackButton */}
                 <div className="flex items-center space-x-4">
                   <BackButton />
                 </div>
                 
-                {/* Lado derecho: Botón Agregar Paciente pegado a la derecha */}
-                <AddButton href={route('pacientes.create')}>
-                  Agregar Paciente
+                {/* 6. Rutas y texto del botón actualizados */}
+                <AddButton href={route('producto-servicios.create')}>
+                  Agregar Producto/Servicio
                 </AddButton>
             </div>
 
@@ -101,7 +98,6 @@ const Index = ({ pacientes }: IndexProps) => {
             className="w-full max-w-sm p-2 border border-gray-300 rounded-lg text-black"
           />
         </div>
-
 
         <div className="overflow-x-auto bg-white rounded-lg shadow">
           <table className="w-full text-sm text-left text-gray-700">
@@ -127,8 +123,9 @@ const Index = ({ pacientes }: IndexProps) => {
                   <tr 
                     key={row.id} 
                     className="border-b hover:bg-gray-100 cursor-pointer" 
+                    // 7. Ruta de navegación actualizada
                     onClick={() => {
-                        router.get(route('pacientes.show', row.original.id));
+                        router.get(route('producto-servicios.show', row.original.id));
                     }}
                   >
                     {row.getVisibleCells().map(cell => (
@@ -169,7 +166,7 @@ const Index = ({ pacientes }: IndexProps) => {
   );
 };
 
-
-Index.layout = (page: React.ReactNode) => <MainLayout pageTitle="Consulta de pacientes" children={page} />;
+// 8. Título del layout actualizado
+Index.layout = (page: React.ReactNode) => <MainLayout pageTitle="Consulta de Productos y Servicios" children={page} />;
 
 export default Index;

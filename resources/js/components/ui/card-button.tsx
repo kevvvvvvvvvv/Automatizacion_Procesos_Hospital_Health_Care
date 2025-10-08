@@ -17,7 +17,7 @@ const IconButtonCard: React.FC<IconButtonCardProps> = ({
     return (
         <button
         onClick={onClick}
-        className="w-full flex items-center justify-between px-4 py-3 rounded-2xl shadow-md transition-all duration-200 hover:opacity-90 active:scale-[0.98] focus:outline-none hover:cursor-pointer"
+        className="w-full flex items-center justify-between px-4 py-3 rounded-2xl shadow-md transition-all duration-200 hover:opacity-90 active:scale-[0.98] focus:outline-none hover:cursor-pointer mb-5"
         style={{ backgroundColor: bgColor }}
         >
         <div className="flex items-center gap-3">
