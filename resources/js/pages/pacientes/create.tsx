@@ -2,6 +2,7 @@ import { Head, router } from '@inertiajs/react';
 import React, { useState } from "react";
 import MainLayout from '@/layouts/MainLayout';
 import InputField from "@/components/ui/input-text";
+import AddButton from '@/components/ui/add-button';
 
 
 const initialState = {
@@ -54,6 +55,8 @@ const PacienteCreate: React.FC = () => {
     <MainLayout>
         <form className="max-w-4xl mx-auto p-6 bg-text-white rounded-lg shadow-lg text-black space-y-8" onSubmit={handleSubmit}>
         <h1 className="text-2xl font-bold mb-6 text-center">Registrar Paciente</h1>
+        <div className="flex justify-between items-center mb-6"></div>    
+        
         
         {/* Datos Personales */}
         <fieldset className="border border-gray-600 rounded-md p-4">
