@@ -22,10 +22,10 @@ class EstanciaRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'fechaIngreso'           => 'required|date',
+            'fecha_ingreso'           => 'required|date',
             'tipo_estancia'          => 'required|string|in:Hospitalizacion,Interconsulta',
             'tipo_ingreso'           => 'required|string|in:Ingreso,Reingreso',
-            'num_habitacion'         => 'nullable|string|max:255',
+            'modalidad_ingreso'      => 'required|string',
             'estancia_referencia_id' => 'nullable|required_if:tipo_ingreso,Reingreso|exists:estancias,id',
         ];
     }
@@ -47,6 +47,8 @@ class EstanciaRequest extends FormRequest
 
             'estancia_referencia_id.required_if' => 'La estancia de referencia es obligatoria cuando el tipo de ingreso es "Reingreso".',
             'estancia_referencia_id.exists' => 'La estancia de referencia seleccionada no existe o no es válida.',
+        
+            'modalidad_ingreso' => 'El campo de modalidad de ingreso es obligatorio.'
         ];
     }
 }

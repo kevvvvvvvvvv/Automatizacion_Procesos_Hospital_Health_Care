@@ -21,8 +21,7 @@ return new class extends Migration
             $table->foreignId('medico_id')
                 ->constrained('users')
                 ->onDelete('cascade');
-                
-            $table->string('responsable');
+
             $table->text('notas')->nullable();
             $table->timestamps();
         });
