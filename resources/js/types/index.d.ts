@@ -131,11 +131,21 @@ export interface Estancia {
 }
 
 export interface FormularioInstancia {
-  id: number;
-  fecha_hora: string; 
-  estancia_id: number;
-  formulario_catalogo_id: number;
-  user_id: number;
-  created_at: string;
-  updated_at: string;
+    id: number;
+    fecha_hora: string; 
+    estancia_id: number;
+    formulario_catalogo_id: number;
+    user_id: number;
+    created_at: string;
+    updated_at: string;
+}
+
+export interface ProductoServicio {
+    id: number;
+    tipo: string;
+    subtipo: string;
+    codigo_prestacion: string;
+    nombre_prestacion: string;
+    importe: number;
+    cantidad: number | null;
 }

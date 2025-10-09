@@ -69,4 +69,10 @@ class Estancia extends Model
     {
         return $this->belongsTo(Habitacion::class,'habitacion_id');
     }
+
+    public function ventas(): HasMany
+    {
+        return $this->hasMany(Venta::class);
+    }
+
 }

@@ -46,3 +46,27 @@ composer require spatie/laravel-pdf
 ```bash
 npm install puppeteer
 ```
+
+<h2>Instalar libreria de permisos</h2>
+
+```bash
+composer require spatie/laravel-permission
+```
+
+<h2>Instalar paquete para las notificaciones en tiempo real</h2>
+
+```bash
+php artisan install:broadcasting
+```
+
+<h2>Instalar paquete de iconos</h2>
+
+```bash
+npm install react-icons
+```
+
+<h2>Instalar paquete para el manejo de archivos CSV</h2>
+
+```bash
+composer require league/csv
+```
