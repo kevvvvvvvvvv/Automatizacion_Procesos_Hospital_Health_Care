@@ -12,6 +12,7 @@ use Laravel\Sanctum\HasApiTokens; // Para API tokens (opcional, remueve si no us
 use Carbon\Carbon;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 // use Spatie\Permission\Traits\HasRoles;
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable // Ahora debería reconocer Authenticatable
 {
