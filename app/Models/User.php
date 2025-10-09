@@ -11,8 +11,6 @@ use Laravel\Fortify\TwoFactorAuthenticatable; // Para 2FA (opcional, remueve si 
 
 // Import para fechas (opcional)
 use Carbon\Carbon;
-use Laravel\Fortify\TwoFactorAuthenticatable;
-use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable // Ahora debería reconocer Authenticatable
