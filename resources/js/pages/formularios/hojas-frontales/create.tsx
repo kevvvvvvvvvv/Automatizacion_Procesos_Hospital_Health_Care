@@ -73,7 +73,6 @@ const Create = ({ medicos, paciente, estancia }: CreateFormularioProps) => {
   );
 };
 
-// Layout del componente
 Create.layout = (page: React.ReactElement) => {
     return (
         <MainLayout pageTitle="Registrar hoja frontal" children={page} />
