@@ -7,6 +7,7 @@ use App\Http\Controllers\FormularioHojaFrontalController;
 use App\Http\Controllers\FormularioInstanciaController;
 use App\Http\Controllers\DoctorController; 
 use App\Http\Controllers\ProductoServicioController;
+use App\Http\Controllers\CargoController;
 use App\Models\Paciente;
 use App\Models\ProductoServicio;
 use Illuminate\Support\Facades\Route;
@@ -21,7 +22,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         return Inertia::render('dashboard-healthcare');
     })->name('dashboard');
 });
-
+Route::post('/cargos', [CargoController::class, 'store'])->name('cargos.store');
 Route::resource('habitaciones',HabitacionController::class)->middleware('auth');
 Route::resource('producto-servicios',ProductoServicioController::class)->middleware('auth');
 Route::resource('pacientes', PacienteController::class)->middleware('auth');

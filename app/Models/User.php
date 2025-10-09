@@ -7,17 +7,15 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Laravel\Sanctum\HasApiTokens; // Para API tokens (opcional, remueve si no usas Sanctum)
-use Laravel\Fortify\TwoFactorAuthenticatable; // Para 2FA (opcional, remueve si no usas Fortify)
 
 // Import para fechas (opcional)
 use Carbon\Carbon;
 use Laravel\Fortify\TwoFactorAuthenticatable;
-use Laravel\Sanctum\HasApiTokens;
-use Spatie\Permission\Traits\HasRoles;
+// use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable // Ahora debería reconocer Authenticatable
 {
-    use HasFactory, Notifiable, TwoFactorAuthenticatable, HasRoles;
+    use HasFactory, Notifiable, TwoFactorAuthenticatable;
 
     // Traits opcionales: Descomenta si los usas
     // use TwoFactorAuthenticatable, HasApiTokens;
