@@ -42,17 +42,6 @@ export interface SharedData {
     [key: string]: unknown; 
 }*/
 
-
-export interface Estancia {
-    id: number;
-    folio: string;
-    fecha_ingreso: string;
-    fecha_egreso: string | null; 
-    num_habitacion: string | null;
-    tipo_estancia: 'Hospitalizacion' | 'Interconsulta';
-    modalidad_ingreso: string;
-}
-
 export interface Paciente {
     id: number;
     curp: string;
@@ -93,16 +82,70 @@ export interface User {
 };
 
 export interface FormularioCatalogo {
+    id: number;
     nombre_formulario: string;
     nombre_tabla_fisica: string;
+    route_prefix: string;
+}
+
+export interface FamiliarResponsable {
+    id: number;
+    parentesco: string;
+    nombre_completo:string;
+    paciente_id: number;
+}
+
+export interface Habitacion {
+    id: number;
+    identificador: string;
+    piso: string,
+    estado: 'Ocupado' | 'Libre',
+    estancia_activa?: { 
+        paciente?: {
+        id: number;
+        nombre: string;
+        apellido_paterno: string;
+        apellido_materno: string;
+        };
+    };
+}
+
+export interface Estancia {
+    id: number;
+    folio: string;
+    fecha_ingreso: string;
+    fecha_egreso: string | null; 
+    tipo_estancia: 'Hospitalizacion' | 'Interconsulta';
+    modalidad_ingreso: string;
+    tipo_ingreso: string;
+    
+    paciente_id : number;
+    habitacion_id: number | null;
+    familiar_responsable_id: number | null;
+    estancia_anterior_id: number | null;
+
+    created_at: string;
+    updated_at: string | null;
+    created_by: number;
+    updated_by: number | null;
 }
 
 export interface FormularioInstancia {
-  id: number;
-  fecha_hora: string; 
-  estancia_id: number;
-  formulario_catalogo_id: number;
-  user_id: number;
-  created_at: string;
-  updated_at: string;
+    id: number;
+    fecha_hora: string; 
+    estancia_id: number;
+    formulario_catalogo_id: number;
+    user_id: number;
+    created_at: string;
+    updated_at: string;
+}
+
+export interface ProductoServicio {
+    id: number;
+    tipo: string;
+    subtipo: string;
+    codigo_prestacion: string;
+    nombre_prestacion: string;
+    importe: number;
+    cantidad: number | null;
 }

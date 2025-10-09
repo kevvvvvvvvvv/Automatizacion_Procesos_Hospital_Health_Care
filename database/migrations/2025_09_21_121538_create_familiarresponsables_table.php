@@ -11,11 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('formulario_catalogos', function (Blueprint $table) {
+        Schema::create('familiar_responsables', function (Blueprint $table) {
             $table->id();
-            $table->string('nombre_formulario', 100);
-            $table->string('nombre_tabla_fisica');
-            $table->string('route_prefix');
+            $table->string('parentesco');
+            $table->string('nombre_completo');
+            $table->foreignId('paciente_id')
+                ->constrained('pacientes')
+                ->onDelete('cascade');
         });
     }
 
@@ -24,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('formulario_catalogos');
+        Schema::dropIfExists('familiar_responsables');
     }
 };

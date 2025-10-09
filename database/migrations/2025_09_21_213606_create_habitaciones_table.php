@@ -11,11 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('formulario_catalogos', function (Blueprint $table) {
+        Schema::create('habitaciones', function (Blueprint $table) {
             $table->id();
-            $table->string('nombre_formulario', 100);
-            $table->string('nombre_tabla_fisica');
-            $table->string('route_prefix');
+            $table->string('identificador');
+            $table->enum('estado',['Ocupado','Libre']);
+            $table->string('piso');
         });
     }
 
@@ -24,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('formulario_catalogos');
+        Schema::dropIfExists('habitaciones');
     }
 };
