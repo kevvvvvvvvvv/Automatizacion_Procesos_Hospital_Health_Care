@@ -16,4 +16,26 @@ class ProductoServicioController extends Controller
             'productoServicios' => $productoServicios 
         ]);
     }
+
+
+    public function create()
+    {
+        return Inertia::render('producto-servicios/create');
+    }
+
+    public function store()
+    {
+
+    }
+
+    public function update()
+    {
+
+    }
+
+    public function delete()
+    {
+        
+    }
+    
 }
