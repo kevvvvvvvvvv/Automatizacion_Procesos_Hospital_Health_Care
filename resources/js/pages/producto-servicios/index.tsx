@@ -1,7 +1,8 @@
 import React, { useState, useMemo } from 'react';
-import { Head, router } from '@inertiajs/react';
+import { Head, router, Link } from '@inertiajs/react';
 import MainLayout from '@/layouts/MainLayout';
 import { route } from 'ziggy-js';
+import { Pencil, Trash2 } from 'lucide-react';
 
 import {
   useReactTable,
@@ -17,7 +18,7 @@ import AddButton from '@/components/ui/add-button';
 import BackButton from '@/components/ui/back-button';
 import { ProductoServicio } from '@/types';
 
-// 2. Props del componente actualizados
+
 type IndexProps = {
   productoServicios: ProductoServicio[];
 };
@@ -27,7 +28,14 @@ const Index = ({ productoServicios }: IndexProps) => {
   const [globalFilter, setGlobalFilter] = useState('');
   const [sorting, setSorting] = useState<SortingState>([]);
 
-  // 3. Definición de columnas adaptada a ProductoServicio
+  const handleDelete = (id: number) => {
+    if (confirm('¿Estás seguro de que deseas eliminar este elemento?')) {
+      router.delete(route('producto-servicios.destroy', id), {
+        preserveScroll: true, 
+      });
+    }
+  };
+
   const columns = useMemo<ColumnDef<ProductoServicio>[]>(
     () => [
         {
@@ -43,16 +51,43 @@ const Index = ({ productoServicios }: IndexProps) => {
             header: 'Tipo',
         },
         {
+          accessorKey: 'subtipo',
+          header: 'Subtipo',
+        },
+        {
             accessorKey: 'importe',
             header: 'Importe',
-            // Opcional: Formatear la celda para mostrar como moneda
             cell: info => `$${Number(info.getValue()).toFixed(2)}`
         },
+        {
+            id: 'actions',
+            header: 'Acciones',
+            cell: ({ row }) => (
+                <div className="flex items-center space-x-3">
+                    <Link
+                        href={route('producto-servicios.edit', row.original.id)}
+                        className="text-blue-600 hover:text-blue-800"
+                        onClick={(e) => e.stopPropagation()} 
+                    >
+                        <Pencil size={18} />
+                    </Link>
+
+                    <button
+                        onClick={(e) => {
+                            e.stopPropagation(); 
+                            handleDelete(row.original.id);
+                        }}
+                        className="text-red-600 hover:text-red-800"
+                    >
+                        <Trash2 size={18} />
+                    </button>
+                </div>
+            )
+        }
     ],
     []
   );
 
-  // 4. Se utiliza el nuevo prop para los datos
   const data = useMemo(() => productoServicios, [productoServicios]);
 
   const table = useReactTable({
@@ -72,7 +107,6 @@ const Index = ({ productoServicios }: IndexProps) => {
 
   return (
     <>
-      {/* 5. Textos y títulos actualizados */}
       <Head title="Productos y Servicios" />
       <div className="p-4 md:p-8">
         <div className="flex items-center justify-between mb-6">
@@ -83,7 +117,6 @@ const Index = ({ productoServicios }: IndexProps) => {
                   <BackButton />
                 </div>
                 
-                {/* 6. Rutas y texto del botón actualizados */}
                 <AddButton href={route('producto-servicios.create')}>
                   Agregar Producto/Servicio
                 </AddButton>
@@ -123,10 +156,7 @@ const Index = ({ productoServicios }: IndexProps) => {
                   <tr 
                     key={row.id} 
                     className="border-b hover:bg-gray-100 cursor-pointer" 
-                    // 7. Ruta de navegación actualizada
-                    onClick={() => {
-                        router.get(route('producto-servicios.show', row.original.id));
-                    }}
+                    //onClick={() => {router.get(route('producto-servicios.show', row.original.id));}}
                   >
                     {row.getVisibleCells().map(cell => (
                       <td key={cell.id} className="px-6 py-4">
@@ -166,7 +196,6 @@ const Index = ({ productoServicios }: IndexProps) => {
   );
 };
 
-// 8. Título del layout actualizado
-Index.layout = (page: React.ReactNode) => <MainLayout pageTitle="Consulta de Productos y Servicios" children={page} />;
+Index.layout = (page: React.ReactNode) => <MainLayout pageTitle="Consulta de productos y servicios" children={page} />;
 
 export default Index;
