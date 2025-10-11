@@ -10,15 +10,12 @@ interface BackButtonProps {
 
 const BackButton = ({ onClick, className }: BackButtonProps) => {
   const handleBack = () => {
-    if (onClick) {
-      onClick();
-    } else {
-      // 👇 Redirige directamente a la vista dashboard-healthcare
-      router.visit('/dashboard-healthcare');
-      // Si usas Ziggy con nombre de ruta:
-      // router.visit(route('dashboard.healthcare'));
-    }
-  };
+  if (onClick) {
+    onClick();
+  } else {
+    window.history.back(); // vuelve a la página anterior
+  }
+};
 
   return (
     <Button
