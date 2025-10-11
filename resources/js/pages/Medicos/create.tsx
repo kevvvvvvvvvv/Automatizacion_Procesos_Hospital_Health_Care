@@ -259,6 +259,7 @@ const CreateDoctor: React.FC<Props> = ({ cargos = [], usuarios = [] }) => {
                 className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               >
                 <option value="">Seleccionar Cargo</option>
+                <option value="">Especialista</option>
                 {localCargos.map((cargo) => (
                   <option key={cargo.id} value={cargo.id.toString()}>
                     {cargo.nombre}

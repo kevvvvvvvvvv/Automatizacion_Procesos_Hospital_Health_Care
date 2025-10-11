@@ -70,9 +70,7 @@ class DoctorController extends Controller
             'professional_qualifications' => $doctor->professional_qualifications ?? [],  // AGREGADO: Array de {titulo, cedula}
         ];
 
-        // DEBUG TEMPORAL: Comenta después – ve en pantalla o log
-        // dd('Doctor en show:', $doctorData);  // O Log::info('Doctor show:', $doctorData);
-
+        
         return Inertia::render('Medicos/show', [
             'doctor' => $doctorData,
         ]);
@@ -131,9 +129,18 @@ class DoctorController extends Controller
     // En create: Pasa props para selects (si no lo tienes)
     public function create()
     {
-        return Inertia::render('doctores/create', [
-            'cargos' => \App\Models\Cargo::all(['id', 'nombre']), // Asumiendo modelo Cargo
-            'usuarios' => User::whereNotNull('nombre_completo')->get(['id', 'nombre_completo']), // Otros usuarios
+        return Inertia::render('Medicos/create', [  // Nota: Corrige el nombre si es 'Medicos/create'
+            'cargos' => \App\Models\Cargo::all(['id', 'nombre']), // Asumiendo modelo Cargo existe
+            'usuarios' => User::whereNotNull('nombre')  // Filtra por columna real (nombre no null)
+                ->select(['id', 'nombre', 'apellido_paterno', 'apellido_materno'])  // Solo columnas reales
+                ->orderBy('nombre')  // Ordena por columna real
+                ->get()
+                ->map(function ($user) {
+                    return [
+                        'id' => $user->id,
+                        'nombre_completo' => $user->nombre_completo,  // Accessor: Se computa en memoria
+                    ];
+                })->toArray(),  // Convierte a array para Inertia
         ]);
     }
 
