@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from 'react';
-import { Head, router } from '@inertiajs/react';
+import { Head, Link, router } from '@inertiajs/react';  // AGREGADO: Link para editar
+import { Edit, Trash2 } from 'lucide-react';  // AGREGADO: Icons para botones (instala lucide-react si no tienes)
 import MainLayout from '@/layouts/MainLayout';
 import { route } from 'ziggy-js';
 
@@ -37,8 +38,9 @@ interface Props {
 const DoctorIndex: React.FC<Props> = ({ doctores, flash }) => {
   const [globalFilter, setGlobalFilter] = useState('');
   const [sorting, setSorting] = useState<SortingState>([]);
+  const [deletingId, setDeletingId] = useState<number | null>(null);  // AGREGADO: Para loading en delete
 
-  // Columnas: Incluye 'sexo' para toda la info
+  // Columnas: AGREGADO: Nueva columna 'actions' al final
   const columns = useMemo<ColumnDef<Doctor>[]>(
     () => [
       {
@@ -69,8 +71,50 @@ const DoctorIndex: React.FC<Props> = ({ doctores, flash }) => {
         accessorKey: 'created_at',
         header: 'Creado',
       },
+      // AGREGADO: Columna de acciones (no sortable, fixed width)
+      {
+        id: 'actions',
+        header: 'Acciones',
+        enableSorting: false,
+        size: 120,  // Ancho fijo para botones
+        cell: ({ row }) => {
+          const doctorId = row.original.id;
+          const isDeleting = deletingId === doctorId;
+
+          return (
+            <div className="flex space-x-2">
+              {/* Botón Editar */}
+              <Link
+                href={route('doctores.edit', doctorId)}
+                className="p-1 text-blue-600 hover:bg-blue-100 rounded transition-colors"
+                title="Editar doctor"
+                onClick={(e) => e.stopPropagation()}  // AGREGADO: Evita click en fila
+              >
+                <Edit size={16} />
+              </Link>
+              
+              {/* Botón Eliminar */}
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();  // AGREGADO: Evita click en fila
+                  handleDelete(doctorId);
+                }}
+                disabled={isDeleting}
+                className="p-1 text-red-600 hover:bg-red-100 rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                title="Eliminar doctor"
+              >
+                {isDeleting ? (
+                  <span className="text-xs">...</span>  // Loading simple
+                ) : (
+                  <Trash2 size={16} />
+                )}
+              </button>
+            </div>
+          );
+        },
+      },
     ],
-    []
+    [deletingId]  // Dependencia para re-render si cambia deletingId
   );
 
   const data = useMemo(() => doctores, [doctores]);
@@ -90,14 +134,39 @@ const DoctorIndex: React.FC<Props> = ({ doctores, flash }) => {
     getPaginationRowModel: getPaginationRowModel(),
   });
 
-  // Función para handle clic en fila (evita conflictos con sorting)
+  // AGREGADO: Función para eliminar
+  const handleDelete = (id: number) => {
+    if (!window.confirm(`¿Estás seguro de eliminar al doctor con ID ${id}? Esta acción no se puede deshacer.`)) {
+      return;
+    }
+
+    setDeletingId(id);  // Inicia loading
+
+    router.delete(route('doctores.destroy', id), {
+      preserveState: true,
+      preserveScroll: true,
+      onSuccess: (page) => {
+        // Recarga solo los doctores para actualizar la lista
+        router.reload({ only: ['doctores'] });
+        setDeletingId(null);  // Limpia loading
+        // Opcional: Muestra flash success si el backend lo envía
+      },
+      onError: (errors) => {
+        console.error('Error al eliminar:', errors);
+        alert('Error al eliminar el doctor. Inténtalo de nuevo.');
+        setDeletingId(null);  // Limpia loading
+      },
+    });
+  };
+
+  // Función para handle clic en fila (mantenida, va a show)
   const handleRowClick = (e: React.MouseEvent, id: number) => {
-    e.preventDefault();  // Opcional: Previene default si hay links en celdas
-    router.get(route('doctores.show', id));  //  CORREGIDO: Usa 'doctores.show' (nombre de ruta correcto)
+    e.preventDefault();
+    router.get(route('doctores.show', id));
   };
 
   return (
-    <>
+    <MainLayout>
       <Head title="Doctores" />
       <div className="p-4 md:p-8">
         <div className="flex items-center justify-between mb-6">
@@ -153,7 +222,7 @@ const DoctorIndex: React.FC<Props> = ({ doctores, flash }) => {
                 <tr
                   key={row.id}
                   className="border-b hover:bg-gray-100 cursor-pointer"
-                  onClick={(e) => handleRowClick(e, row.original.id)}  //  CORREGIDO: Usa función con ruta correcta
+                  onClick={(e) => handleRowClick(e, row.original.id)}
                 >
                   {row.getVisibleCells().map((cell) => (
                     <td key={cell.id} className="px-6 py-4">
@@ -195,12 +264,10 @@ const DoctorIndex: React.FC<Props> = ({ doctores, flash }) => {
           </button>
         </div>
       </div>
-    </>
+    </MainLayout>
   );
 };
 
-DoctorIndex.layout = (page: React.ReactNode) => (
-  <MainLayout pageTitle="Consulta de doctores" children={page} />
-);
+
 
 export default DoctorIndex;
