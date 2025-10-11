@@ -4,6 +4,7 @@ import MainLayout from '@/layouts/MainLayout';
 import { route } from 'ziggy-js';
 import InputText from '@/components/ui/input-text';
 import InputSelect from '@/components/ui/input-select';
+import BackButton from '@/components/ui/back-button';
 
 type Props = {
   cargos?: { id: number; nombre: string }[];
@@ -163,9 +164,12 @@ const CreateDoctor: React.FC<Props> = ({ cargos = [], usuarios = [] }) => {
           <div className="flex items-center space-x-4">
             {/* Opcional: BackButton */}
           </div>
+          <BackButton/>
           <h1 className="flex-1 text-center text-3xl font-bold text-black">
             Crear Nuevo Doctor
+
           </h1>
+          
         </div>
 
         <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow p-6 max-w-4xl mx-auto">
@@ -259,7 +263,7 @@ const CreateDoctor: React.FC<Props> = ({ cargos = [], usuarios = [] }) => {
                 className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               >
                 <option value="">Seleccionar Cargo</option>
-                <option value="">Especialista</option>
+                
                 {localCargos.map((cargo) => (
                   <option key={cargo.id} value={cargo.id.toString()}>
                     {cargo.nombre}
