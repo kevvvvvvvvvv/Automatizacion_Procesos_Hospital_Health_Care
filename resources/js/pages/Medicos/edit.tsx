@@ -1,73 +1,78 @@
-import React, { useState, useEffect } from 'react'; // Agregué useEffect para el console.log
-import { Head, useForm, router } from '@inertiajs/react';
+import React, { useState, useEffect } from 'react';
+import { Head, useForm, router, Link } from '@inertiajs/react';
 import MainLayout from '@/layouts/MainLayout';
 import { route } from 'ziggy-js';
+
+import BackButton from '@/components/ui/back-button';
 import InputText from '@/components/ui/input-text';
-import InputSelect from '@/components/ui/input-select';
+import InputDate from '@/components/ui/input-date';
+import SelectInput from '@/components/ui/input-select';
+import PrimaryButton from '@/components/ui/primary-button';
 
 type Props = {
+  doctor: {
+    id: number;
+    nombre: string;
+    apellido_paterno: string;
+    apellido_materno?: string | null;
+    curp?: string;
+    sexo?: string;
+    fecha_nacimiento?: string;
+    cargo_id?: number | string;
+    colaborador_responsable_id?: number | string;
+    email: string;
+    professional_qualifications?: { titulo: string; cedula?: string }[];
+  };
   cargos?: { id: number; nombre: string }[];
   usuarios?: { id: number; nombre_completo: string }[];
 };
 
-const CreateDoctor: React.FC<Props> = ({ cargos = [], usuarios = [] }) => {
+type DoctorFormData = {
+  nombre: string;
+  apellido_paterno: string;
+  apellido_materno: string;
+  curp: string;
+  sexo: string;
+  fecha_nacimiento: string;
+  cargo_id: string;
+  colaborador_responsable_id: string;
+  email: string;
+  password: string;
+  password_confirmation: string;
+  professional_qualifications: { titulo: string; cedula?: string }[];
+};
 
-  useEffect(() => { // Movido a useEffect para evitar warnings
-    console.log('Props recibidas en CreateDoctor:', { 
-      cargos: cargos || 'UNDEFINED!', 
-      numCargos: cargos?.length || 0, 
-      usuarios: usuarios || 'UNDEFINED!', 
-      numUsuarios: usuarios?.length || 0 
-    });
-  }, [cargos, usuarios]);
+const optionsSexo = [
+  { value: '', label: 'Seleccionar' },
+  { value: 'Masculino', label: 'Masculino' },
+  { value: 'Femenino', label: 'Femenino' },
+];
 
-  // Estado local para manejar la creación de nuevo cargo (mantenido)
-  const [showCargoModal, setShowCargoModal] = useState(false);
-  const [nuevoCargoNombre, setNuevoCargoNombre] = useState('');
-  const [creatingCargo, setCreatingCargo] = useState(false);
+const EditDoctor: React.FC<Props> = ({ doctor, cargos = [], usuarios = [] }) => {
+  // DEBUG: Ver props en consola
+  useEffect(() => {
+    console.log('Props en EditDoctor:', { doctor, numCargos: cargos.length, numUsuarios: usuarios.length });
+  }, [doctor, cargos, usuarios]);
 
-  // Función para crear un nuevo cargo (asíncrona, mantenida)
-  const handleCreateCargo = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!nuevoCargoNombre.trim()) return;
-
-    setCreatingCargo(true);
-    try {
-      await router.post(route('cargos.store'), {
-        nombre: nuevoCargoNombre.trim(),
-      }, {
-        preserveState: true,
-        preserveScroll: true,
-        onSuccess: () => {
-          const nuevoCargo = { id: Date.now(), nombre: nuevoCargoNombre.trim() };
-          setLocalCargos(prev => [...prev, nuevoCargo]);
-          setData('cargo_id', nuevoCargo.id.toString());
-          setShowCargoModal(false);
-          setNuevoCargoNombre('');
-        },
-        onError: (errors) => {
-          console.error('Error al crear cargo:', errors);
-          alert('Error al crear cargo: ' + (errors.nombre || 'Inténtalo de nuevo'));
-        },
-      });
-    } catch (error) {
-      console.error('Error en creación de cargo:', error);
-      alert('Error inesperado al crear cargo');
-    } finally {
-      setCreatingCargo(false);
-    }
-  };
-
-  // Hook para estado local de cargos (mantenido)
+  // Estado local para cargos (actualizable) - Simplificado, ya que el modal no se activa en el código actual
   const [localCargos, setLocalCargos] = useState(cargos);
 
-  // Estados para títulos y cédulas (múltiples) - Se envía como array a professional_qualifications
-  const [qualifications, setQualifications] = useState<{ titulo: string; cedula: string }[]>([]);
+  // Estados para professional_qualifications (precarga si existe) - Solo título y cédula
+  const [qualifications, setQualifications] = useState<{ titulo: string; cedula: string }[]>(
+    doctor.professional_qualifications?.map(q => ({
+      titulo: q.titulo,
+      cedula: q.cedula || '',
+    })) || []
+  );
   const [newTitulo, setNewTitulo] = useState('');
   const [newCedula, setNewCedula] = useState('');
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
 
-  // Función para agregar o actualizar una calificación
+  // Opciones para selects
+  const optionsCargos = localCargos.map(cargo => ({ value: cargo.id.toString(), label: cargo.nombre }));
+  const optionsUsuarios = usuarios.map(usuario => ({ value: usuario.id.toString(), label: usuario.nombre_completo }));
+
+  // Funciones para qualifications (solo maneja título y cédula, se envía como array a professional_qualifications)
   const handleAddOrUpdateQualification = () => {
     if (!newTitulo.trim()) {
       alert('El título es requerido para agregar/editar una calificación.');
@@ -76,38 +81,32 @@ const CreateDoctor: React.FC<Props> = ({ cargos = [], usuarios = [] }) => {
 
     const newQual = {
       titulo: newTitulo.trim(),
-      cedula: newCedula.trim() || '', // String vacío si no hay cédula (nullable en BD)
+      cedula: newCedula.trim(),
     };
 
-    let updatedQualifications: { titulo: string; cedula: string }[];
-
+    let updatedQualifications;
     if (editingIndex !== null) {
       updatedQualifications = [...qualifications];
       updatedQualifications[editingIndex] = newQual;
-      setQualifications(updatedQualifications);
       setEditingIndex(null);
     } else {
       updatedQualifications = [...qualifications, newQual];
-      setQualifications(updatedQualifications);
     }
 
-    // Sincronizar con el form data de Inertia (backend lo procesa para credencial_empleados)
+    setQualifications(updatedQualifications);
     setData('professional_qualifications', updatedQualifications);
 
-    // Resetear inputs
     setNewTitulo('');
     setNewCedula('');
   };
 
-  // Función para editar una calificación (poblar inputs)
   const handleEditQualification = (index: number) => {
     const qual = qualifications[index];
     setNewTitulo(qual.titulo);
-    setNewCedula(qual.cedula);
+    setNewCedula(qual.cedula || '');
     setEditingIndex(index);
   };
 
-  // Función para eliminar una calificación
   const handleRemoveQualification = (index: number) => {
     const updatedQualifications = qualifications.filter((_, i) => i !== index);
     setQualifications(updatedQualifications);
@@ -119,27 +118,32 @@ const CreateDoctor: React.FC<Props> = ({ cargos = [], usuarios = [] }) => {
     }
   };
 
-  // Función para cancelar edición
   const handleCancelEdit = () => {
     setEditingIndex(null);
     setNewTitulo('');
     setNewCedula('');
   };
 
-  const { data, setData, post, processing, errors } = useForm({
-    nombre: '',
-    apellido_paterno: '',
-    apellido_materno: '',
-    curp: '',
-    sexo: '',
-    fecha_nacimiento: '',
-    cargo_id: '',
-    colaborador_responsable_id: '',
-    email: '',
-    password: '',
+  // Inicializa useForm con datos del doctor (password vacío)
+  const { data, setData, put, processing, errors, setError, clearErrors } = useForm<DoctorFormData>({
+    nombre: doctor.nombre || '',
+    apellido_paterno: doctor.apellido_paterno || '',
+    apellido_materno: doctor.apellido_materno || '',
+    curp: doctor.curp || '',
+    sexo: doctor.sexo || '',
+    fecha_nacimiento: doctor.fecha_nacimiento || '',
+    cargo_id: doctor.cargo_id?.toString() || '',
+    colaborador_responsable_id: doctor.colaborador_responsable_id?.toString() || '',
+    email: doctor.email || '',
+    password: '',  // Vacío por default (opcional)
     password_confirmation: '',
-    professional_qualifications: [],  // Array de {titulo, cedula} - Backend lo guarda en credencial_empleados
+    professional_qualifications: qualifications,  // Inicializado con datos precargados
   });
+
+  // Actualiza qualifications en data cuando cambie el estado local
+  useEffect(() => {
+    setData('professional_qualifications', qualifications);
+  }, [qualifications, setData]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -151,30 +155,51 @@ const CreateDoctor: React.FC<Props> = ({ cargos = [], usuarios = [] }) => {
       alert('Debe agregar al menos un título profesional.');
       return;
     }
-    // El array ya está en data.professional_qualifications
-    post(route('doctores.store'));
+
+    // Validación condicional para password (solo si se ingresa)
+    if (data.password && data.password !== data.password_confirmation) {
+      setError('password_confirmation', 'Las contraseñas no coinciden.');
+      return;
+    }
+    if (data.password && data.password.length < 8) {
+      setError('password', 'La contraseña debe tener al menos 8 caracteres.');
+      return;
+    }
+
+    clearErrors();  // Limpia errores previos
+
+    put(route('doctores.update', doctor.id));
   };
 
   return (
-    <MainLayout>
-      <Head title="Crear Doctor" />
+    <>
+      <Head title={`Editar Doctor: ${data.nombre}`} />
       <div className="p-4 md:p-8">
         <div className="flex justify-between items-center mb-6">
           <div className="flex items-center space-x-4">
-            {/* Opcional: BackButton */}
+            <BackButton href={route('doctores.index')} />
           </div>
           <h1 className="flex-1 text-center text-3xl font-bold text-black">
-            Crear Nuevo Doctor
+            Editar Doctor
           </h1>
+          <div className="flex items-center space-x-2">
+            <Link
+              href={route('doctores.show', doctor.id)}
+              className="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition"
+              style={{ backgroundColor: '#1B1C38' }}
+            >
+              Ver Ficha
+            </Link>
+          </div>
         </div>
 
-        <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow p-6 max-w-4xl mx-auto">
+        <form onSubmit={handleSubmit} className="space-y-6 bg-white rounded-lg shadow p-6 max-w-4xl mx-auto">
           {/* Sección 1: Datos Personales */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <InputText
               id="nombre"
-              label="Nombre *"
               name="nombre"
+              label="Nombre *"
               value={data.nombre}
               onChange={(e) => setData('nombre', e.target.value)}
               placeholder="Ej: Juan"
@@ -184,8 +209,8 @@ const CreateDoctor: React.FC<Props> = ({ cargos = [], usuarios = [] }) => {
 
             <InputText
               id="apellido_paterno"
-              label="Apellido Paterno *"
               name="apellido_paterno"
+              label="Apellido Paterno *"
               value={data.apellido_paterno}
               onChange={(e) => setData('apellido_paterno', e.target.value)}
               placeholder="Ej: Pérez"
@@ -195,8 +220,8 @@ const CreateDoctor: React.FC<Props> = ({ cargos = [], usuarios = [] }) => {
 
             <InputText
               id="apellido_materno"
-              label="Apellido Materno (Opcional)"
               name="apellido_materno"
+              label="Apellido Materno (Opcional)"
               value={data.apellido_materno}
               onChange={(e) => setData('apellido_materno', e.target.value)}
               placeholder="Ej: García"
@@ -205,8 +230,8 @@ const CreateDoctor: React.FC<Props> = ({ cargos = [], usuarios = [] }) => {
 
             <InputText
               id="curp"
-              label="CURP (Opcional)"
               name="curp"
+              label="CURP (Opcional)"
               value={data.curp}
               onChange={(e) => setData('curp', e.target.value.toUpperCase())}
               placeholder="Ej: PEJG800101HDFR0001"
@@ -214,101 +239,79 @@ const CreateDoctor: React.FC<Props> = ({ cargos = [], usuarios = [] }) => {
               error={errors.curp}
             />
 
-            <div className="flex flex-col">
-              <label htmlFor="sexo" className="block text-sm font-medium text-gray-700 mb-2">
-                Sexo (Opcional)
-              </label>
-              <select
-                id="sexo"
-                name="sexo"
-                value={data.sexo}
-                onChange={(e) => setData('sexo', e.target.value)}
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              >
-                <option value="">Seleccionar</option>
-                <option value="Masculino">Masculino</option>
-                <option value="Femenino">Femenino</option>
-              </select>
-              {errors.sexo && <p className="text-red-500 text-sm mt-1">{errors.sexo}</p>}
-            </div>
+            <SelectInput
+              label="Sexo (Opcional)"
+              options={optionsSexo}
+              value={data.sexo}
+              onChange={(value) => setData('sexo', value)}
+              error={errors.sexo}
+              placeholder="Seleccionar"
+            />
 
-            <InputText
+            <InputDate
+              description="Fecha de Nacimiento *"
               id="fecha_nacimiento"
-              label="Fecha de Nacimiento *"
               name="fecha_nacimiento"
-              type="date"
-              value={data.fecha_nacimiento}
-              onChange={(e) => setData('fecha_nacimiento', e.target.value)}
+              value={data.fecha_nacimiento ? new Date(data.fecha_nacimiento) : null}
+              onChange={(date) => setData('fecha_nacimiento', date ? date.toISOString().split('T')[0] : '')}
+              error={errors.fecha_nacimiento}
               max={new Date().toISOString().split('T')[0]}
               required
-              error={errors.fecha_nacimiento}
             />
           </div>
+
+          {/* Sección 2: Cargo y Responsable */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Select Nativo para Cargo Principal */}
-            <div className="flex flex-col">
-              <label htmlFor="cargo_id" className="block text-sm font-medium text-gray-700 mb-2">
-                Cargo Principal *
-              </label>
-              <select
-                id="cargo_id"
-                name="cargo_id"
+            <div>
+              <SelectInput
+                label="Cargo Principal *"
+                options={[
+                  { value: '', label: 'Seleccionar Cargo' },
+                  ...optionsCargos,
+                ]}
                 value={data.cargo_id}
-                onChange={(e) => setData('cargo_id', e.target.value)}
+                onChange={(value) => setData('cargo_id', value)}
+                error={errors.cargo_id}
+                placeholder="Seleccionar Cargo"
                 required
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              >
-                <option value="">Seleccionar Cargo</option>
-                {localCargos.map((cargo) => (
-                  <option key={cargo.id} value={cargo.id.toString()}>
-                    {cargo.nombre}
-                  </option>
-                ))}
-              </select>
-              {errors.cargo_id && <p className="text-red-500 text-sm mt-1">{errors.cargo_id}</p>}
-            </div>
-        </div>
-          {/* Sección 2: Cargo Principal y Colaborador Responsable */}
-           <div className="flex flex-col">
-              <label htmlFor="colaborador_responsable_id" className="block text-sm font-medium text-gray-700 mb-2">
-                Colaborador Responsable (Opcional)
-              </label>
-              <select
-                id="colaborador_responsable_id"
-                name="colaborador_responsable_id"
-                value={data.colaborador_responsable_id}
-                onChange={(e) => setData('colaborador_responsable_id', e.target.value)}
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              >
-                <option value="">Ninguno</option>
-                {usuarios.map((usuario) => (
-                  <option key={usuario.id} value={usuario.id.toString()}>
-                    {usuario.nombre_completo}
-                  </option>
-                ))}
-              </select>
-              {errors.colaborador_responsable_id && <p className="text-red-500 text-sm mt-1">{errors.colaborador_responsable_id}</p>}
+              />
             </div>
 
-          {/* Sección para Títulos y Cédulas Profesionales */}
-          <div className="md:col-span-2 mb-6">
-            <label className="block text-sm font-medium text-gray-700 mb-4">Títulos y Cédulas Profesionales *</label>
+            <div>
+              <SelectInput
+                label="Colaborador Responsable (Opcional)"
+                options={[
+                  { value: '', label: 'Ninguno' },
+                  ...optionsUsuarios,
+                ]}
+                value={data.colaborador_responsable_id}
+                onChange={(value) => setData('colaborador_responsable_id', value)}
+                error={errors.colaborador_responsable_id}
+                placeholder="Ninguno"
+              />
+            </div>
+          </div>
+
+          {/* Sección: Títulos y Cédulas Profesionales (solo título y cédula, se envía a professional_qualifications) */}
+          <div className="space-y-4">
+            <label className="block text-sm font-medium text-gray-700">Títulos y Cédulas Profesionales *</label>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4 p-4 bg-gray-50 rounded-lg">
+            {/* Inputs para agregar/editar */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 bg-gray-50 rounded-lg">
               <InputText
-                id="new_titulo"
+                id="newTitulo"
+                name="newTitulo"
                 label="Título *"
-                name="new_titulo"
                 value={newTitulo}
                 onChange={(e) => setNewTitulo(e.target.value)}
                 placeholder="Ej: Licenciatura en Medicina"
                 maxLength={100}
-                error={null}
+                error={null} // Errores manejados manualmente
               />
               <InputText
-                id="new_cedula"
+                id="newCedula"
+                name="newCedula"
                 label="Cédula (Opcional)"
-                name="new_cedula"
                 value={newCedula}
                 onChange={(e) => setNewCedula(e.target.value.toUpperCase())}
                 placeholder="Ej: 1234567"
@@ -317,16 +320,16 @@ const CreateDoctor: React.FC<Props> = ({ cargos = [], usuarios = [] }) => {
               />
             </div>
 
-            <div className="flex flex-wrap gap-2 mb-4">
-              <button
+            {/* Botones para agregar/editar */}
+            <div className="flex flex-wrap gap-2">
+              <PrimaryButton
                 type="button"
                 onClick={handleAddOrUpdateQualification}
-                className="px-6 py-2 bg-green-500 text-white text-sm font-medium rounded-lg hover:bg-green-600 transition"
                 disabled={!newTitulo.trim()}
                 style={{ backgroundColor: '#1B1C38' }}
               >
                 {editingIndex !== null ? 'Actualizar Título' : '+ Agregar Título'}
-              </button>
+              </PrimaryButton>
               {editingIndex !== null && (
                 <button
                   type="button"
@@ -338,6 +341,7 @@ const CreateDoctor: React.FC<Props> = ({ cargos = [], usuarios = [] }) => {
               )}
             </div>
 
+            {/* Tabla de qualifications */}
             {qualifications.length > 0 ? (
               <div className="overflow-x-auto">
                 <table className="w-full border-collapse border border-gray-300 bg-white rounded-lg shadow">
@@ -383,59 +387,62 @@ const CreateDoctor: React.FC<Props> = ({ cargos = [], usuarios = [] }) => {
           </div>
 
           {/* Sección 3: Contacto y Seguridad */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <InputText
               id="email"
-              label="Email *"
-              type="email"
               name="email"
+              label="Email *"
               value={data.email}
               onChange={(e) => setData('email', e.target.value)}
               placeholder="Ej: doctor@clinic.com"
+              type="email"
               required
               error={errors.email}
             />
 
-            <InputText
-              id="password"
-              label="Contraseña *"
-              type="password"
-              name="password"
-              value={data.password}
-              onChange={(e) => setData('password', e.target.value)}
-              minLength={8}
-              required
-              error={errors.password}
-            />
-
-            <div className="md:col-span-2">
+            <div className="md:col-span-2 space-y-2">
+              <label className="block text-sm font-medium text-gray-700">Nueva Contraseña (Opcional - Dejar vacío para no cambiar)</label>
+              <InputText
+                id="password"
+                name="password"
+                label="Contraseña"
+                value={data.password}
+                onChange={(e) => setData('password', e.target.value)}
+                placeholder="Mínimo 8 caracteres"
+                type="password"
+                error={errors.password}
+              />
               <InputText
                 id="password_confirmation"
-                label="Confirmar Contraseña *"
-                type="password"
                 name="password_confirmation"
+                label="Confirmar Contraseña"
                 value={data.password_confirmation}
                 onChange={(e) => setData('password_confirmation', e.target.value)}
-                required
+                placeholder="Repite la contraseña"
+                type="password"
                 error={errors.password_confirmation}
               />
             </div>
           </div>
 
+          {/* Botón Submit */}
           <div className="flex justify-end space-x-4 pt-4">
-            <button
+            <PrimaryButton
               type="submit"
               disabled={processing}
-              className="px-6 py-3 bg-blue-500 text-white font-medium rounded-lg hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition"
               style={{ backgroundColor: '#1B1C38' }}
             >
-              {processing ? 'Creando...' : 'Crear Doctor'}
-            </button>
+              {processing ? 'Actualizando...' : 'Actualizar Doctor'}
+            </PrimaryButton>
           </div>
         </form>
       </div>
-    </MainLayout>
+    </>
   );
 };
 
-export default CreateDoctor;
+EditDoctor.layout = (page: React.ReactElement) => (
+  <MainLayout pageTitle="Editar Doctor" children={page} />
+);
+
+export default EditDoctor;

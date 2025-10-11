@@ -1,7 +1,7 @@
 // resources/js/components/BackButton.tsx
-
-import { ArrowLeft } from 'lucide-react'; 
-import Button from '@/components/button';     
+import { ArrowLeft } from 'lucide-react';
+import { router } from '@inertiajs/react'; // 👈 importa router de Inertia
+import Button from '@/components/button';
 
 interface BackButtonProps {
   onClick?: () => void;
@@ -9,23 +9,25 @@ interface BackButtonProps {
 }
 
 const BackButton = ({ onClick, className }: BackButtonProps) => {
-  
   const handleBack = () => {
     if (onClick) {
-      onClick(); 
+      onClick();
     } else {
-      window.history.back(); 
+      // 👇 Redirige directamente a la vista dashboard-healthcare
+      router.visit('/dashboard-healthcare');
+      // Si usas Ziggy con nombre de ruta:
+      // router.visit(route('dashboard.healthcare'));
     }
   };
 
   return (
     <Button
-      variant="secondary" 
+      variant="secondary"
       onClick={handleBack}
       className={`flex items-center gap-2 ${className || ''}`}
-      type="button" 
+      type="button"
     >
-      <ArrowLeft size={16} /> 
+      <ArrowLeft size={16} />
       Regresar
     </Button>
   );

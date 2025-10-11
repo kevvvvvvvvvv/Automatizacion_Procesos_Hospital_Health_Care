@@ -1,6 +1,5 @@
 import React from 'react';
-import { Link } from '@inertiajs/react'; // o el router que uses
-import BackButton from '@/components/ui/back-button';
+import { Link } from '@inertiajs/react'; // o el router que uses 
 
 type MainLayoutProps = {
   children: React.ReactNode;
@@ -43,7 +42,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, userName, pageTitle }
          <img src="/images/flor.png" alt="Logo" className="h-10 w-auto" />
           {userName && <h1 className="text-2xl font-bold">Hola {userName}</h1>}
           <div>
-          <BackButton/>
+          
         </div>
         </header>
         
