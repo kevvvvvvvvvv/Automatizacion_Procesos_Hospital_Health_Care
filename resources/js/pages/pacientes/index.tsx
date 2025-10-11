@@ -52,6 +52,34 @@ const Index = ({ pacientes }: IndexProps) => {
         accessorKey: 'telefono',
         header: 'Teléfono',
       },
+      {
+        id: 'actions',
+        header: 'Acciones',
+        cell: ({ row }) => (
+          <div className="flex space-x-2">
+            <button
+              onClick={(e) => {
+                e.stopPropagation(); // Evita que se active el clic de la fila
+                router.get(route('pacientes.edit', row.original.id));
+              }}
+              className="px-3 py-1 bg-blue-500 text-white rounded text-sm hover:bg-blue-600"
+            >
+              Editar
+            </button>
+            <button
+              onClick={(e) => {
+                e.stopPropagation(); // Evita que se active el clic de la fila
+                if (confirm('¿Estás seguro de eliminar este paciente?')) {
+                  router.delete(route('pacientes.destroy', row.original.id));
+                }
+              }}
+              className="px-3 py-1 bg-red-500 text-white rounded text-sm hover:bg-red-600"
+            >
+              Eliminar
+            </button>
+          </div>
+        ),
+      },
     ],
     []
   );
