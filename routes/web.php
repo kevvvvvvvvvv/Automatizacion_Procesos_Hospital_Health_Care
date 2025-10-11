@@ -27,7 +27,7 @@ Route::resource('habitaciones',HabitacionController::class)->middleware('auth');
 Route::resource('producto-servicios',ProductoServicioController::class)->middleware('auth');
 Route::resource('pacientes', PacienteController::class)->middleware('auth');
 Route::resource('pacientes.estancias', EstanciaController::class)->shallow()->middleware('auth');
-Route::resource('pacientes.estancias.hojasfrontales', FormularioHojaFrontalController::class)->shallow()->middleware('auth');
+Route::resource('pacientes.estancias.hojasfrontales', FormularioHojaFrontalController::class)->shallow()->parameters(['hojasfrontales' => 'hojaFrontal'])->middleware('auth');
 
 Route::resource('doctores', DoctorController::class)->middleware('auth');  
 

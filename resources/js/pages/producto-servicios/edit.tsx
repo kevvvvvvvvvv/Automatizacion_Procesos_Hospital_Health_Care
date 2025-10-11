@@ -44,7 +44,7 @@ const Edit = ({ productoServicio }: Props) => {
             <Head title={`Editar ${productoServicio.nombre_prestacion}`} />
 
             <FormLayout
-                title="Editar Producto o Servicio" 
+                title="Editar producto o servicio" 
                 onSubmit={handleSubmit}
                 actions={
                     <PrimaryButton type="submit" disabled={processing}>

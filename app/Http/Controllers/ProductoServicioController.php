@@ -40,9 +40,12 @@ class ProductoServicioController extends Controller
         ]);
     }
 
-    public function update()
+    public function update(ProductoServicioRequest $request, ProductoServicio $productoServicio)
     {
+        $productoServicio->update($request->validated());
 
+        return Redirect::route('producto-servicios.index')
+            ->with('success', 'Producto o servicio actualizado exitosamente.');
     }
 
     public function delete()

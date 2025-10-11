@@ -7,6 +7,7 @@ import MainLayout from '@/layouts/MainLayout';
 import { Estancia, Paciente, User, FormularioInstancia, Habitacion, FamiliarResponsable} from '@/types'; 
 import InfoCard from '@/components/ui/info-card';
 import InfoField from '@/components/ui/info-field';
+import { Pencil } from 'lucide-react';
 
 interface ShowEstanciaProps {
     estancia: Estancia & {
@@ -93,6 +94,20 @@ const Show = ({ estancia }: ShowEstanciaProps) => {
                                     </p>
                                 </div>
                                 <div className="flex items-center space-x-2">
+                                    <Link
+                                        // El primer argumento es el nombre de la ruta
+                                        href={route('hojasfrontales.edit', { 
+                                            // El segundo argumento es un objeto con los parámetros.
+                                            // La clave 'hojaFrontal' debe coincidir con el parámetro de la ruta.
+                                            hojaFrontal: formulario.id 
+                                        })}
+                                        className="p-2 text-blue-500 hover:bg-blue-100 hover:text-blue-700 rounded-full transition"
+                                        title="Editar Hoja Frontal"
+                                    >
+                                        <Pencil size={18} />
+                                    </Link>
+
+
                                     {/*<Link 
                                         href={route('hoja-frontales.show', formulario.id)}
                                         className="p-2 text-gray-500 hover:bg-gray-200 hover:text-gray-800 rounded-full transition"
