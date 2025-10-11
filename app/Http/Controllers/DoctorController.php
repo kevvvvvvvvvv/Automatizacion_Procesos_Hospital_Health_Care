@@ -6,6 +6,7 @@ use App\Models\User;  // Cambia si usas modelo Doctor
 use Illuminate\Http\Request;
 use App\Models\Cargo; 
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Hash;
 
 class DoctorController extends Controller
 {
@@ -144,7 +145,7 @@ class DoctorController extends Controller
             'password' => Hash::make($validated['password']),
         ]);
 
-        return redirect()->route('Medicos.index')
+        return redirect()->route('Medicos/index')
             ->with('success', 'Doctor registrado exitosamente.');
     }
 }

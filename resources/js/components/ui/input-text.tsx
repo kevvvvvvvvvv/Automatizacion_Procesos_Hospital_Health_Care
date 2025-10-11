@@ -8,7 +8,7 @@ interface InputTextProps {
   onChange: (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
   placeholder?: string;
   error?: string | null;
-  type?: 'text' | 'email' | 'password' | 'date';
+  type?: 'text' | 'email' | 'password' | 'date' | 'number';
   disabled?: boolean;
   required?: boolean;
   maxLength?: number;
