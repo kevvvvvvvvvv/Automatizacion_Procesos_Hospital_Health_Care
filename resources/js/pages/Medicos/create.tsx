@@ -1,18 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react'; // Agregué useEffect para el console.log
 import { Head, useForm, router } from '@inertiajs/react';
 import MainLayout from '@/layouts/MainLayout';
 import { route } from 'ziggy-js';
-
+import InputText from '@/components/ui/input-text';
+import InputSelect from '@/components/ui/input-select';
 import BackButton from '@/components/ui/back-button';
 
 type Props = {
-  cargos?: { id: number; nombre: string }[];  // Opcional con ?
-  usuarios?: { id: number; nombre_completo: string }[];  // Opcional
+  cargos?: { id: number; nombre: string }[];
+  usuarios?: { id: number; nombre_completo: string }[];
 };
 
-const CreateDoctor: React.FC<Props> = ({ cargos = [], usuarios = [] }) => {  // ✅ DEFAULT: Array vacío si undefined
-  // ✅ DEBUG: Ver props en consola (quita después de probar)
-  React.useEffect(() => {
+const CreateDoctor: React.FC<Props> = ({ cargos = [], usuarios = [] }) => {
+
+  useEffect(() => { // Movido a useEffect para evitar warnings
     console.log('Props recibidas en CreateDoctor:', { 
       cargos: cargos || 'UNDEFINED!', 
       numCargos: cargos?.length || 0, 
@@ -21,44 +22,32 @@ const CreateDoctor: React.FC<Props> = ({ cargos = [], usuarios = [] }) => {  // 
     });
   }, [cargos, usuarios]);
 
-  // Estado local para manejar la creación de nuevo cargo
+  // Estado local para manejar la creación de nuevo cargo (mantenido)
   const [showCargoModal, setShowCargoModal] = useState(false);
   const [nuevoCargoNombre, setNuevoCargoNombre] = useState('');
   const [creatingCargo, setCreatingCargo] = useState(false);
 
-  // Función para crear un nuevo cargo (asíncrona)
+  // Función para crear un nuevo cargo (asíncrona, mantenida)
   const handleCreateCargo = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!nuevoCargoNombre.trim()) return;
 
     setCreatingCargo(true);
     try {
-      // Enviar POST a la ruta de store de cargos (asumiendo que existe en backend)
-      const response = await router.post(route('cargos.store'), {
+      await router.post(route('cargos.store'), {
         nombre: nuevoCargoNombre.trim(),
-        // Agrega otros campos si es necesario, e.g., descripcion: ''
       }, {
         preserveState: true,
         preserveScroll: true,
         onSuccess: () => {
-          // Actualizar la lista local de cargos con el nuevo (asumiendo que el backend retorna el nuevo cargo)
-          // Nota: En Inertia, para actualizar props, idealmente recarga la página o usa un evento global.
-          // Por simplicidad, aquí simulamos agregando (en producción, usa Inertia's visit o eventos).
-          const nuevoCargo = { id: Date.now(), nombre: nuevoCargoNombre.trim() }; // ID temporal; backend proveerá real
-          setCargos(prev => [...prev, nuevoCargo]); // Actualiza estado local (ver hook useState abajo)
-          
-          // Selecciona el nuevo cargo automáticamente
+          const nuevoCargo = { id: Date.now(), nombre: nuevoCargoNombre.trim() };
+          setLocalCargos(prev => [...prev, nuevoCargo]);
           setData('cargo_id', nuevoCargo.id.toString());
-          
-          // Cerrar modal y reset
           setShowCargoModal(false);
           setNuevoCargoNombre('');
-          
-          // Opcional: Recarga la página para props actualizadas: router.reload({ only: ['cargos'] });
         },
         onError: (errors) => {
           console.error('Error al crear cargo:', errors);
-          // Maneja errores, e.g., muestra toast o alerta
           alert('Error al crear cargo: ' + (errors.nombre || 'Inténtalo de nuevo'));
         },
       });
@@ -70,8 +59,73 @@ const CreateDoctor: React.FC<Props> = ({ cargos = [], usuarios = [] }) => {  // 
     }
   };
 
-  // Hook para estado local de cargos (para actualizar dinámicamente)
-  const [localCargos, setCargos] = useState(cargos); // Renombrado para claridad
+  // Hook para estado local de cargos (mantenido)
+  const [localCargos, setLocalCargos] = useState(cargos);
+
+  // Estados para títulos y cédulas (múltiples) - Se envía como array a professional_qualifications
+  const [qualifications, setQualifications] = useState<{ titulo: string; cedula: string }[]>([]);
+  const [newTitulo, setNewTitulo] = useState('');
+  const [newCedula, setNewCedula] = useState('');
+  const [editingIndex, setEditingIndex] = useState<number | null>(null);
+
+  // Función para agregar o actualizar una calificación
+  const handleAddOrUpdateQualification = () => {
+    if (!newTitulo.trim()) {
+      alert('El título es requerido para agregar/editar una calificación.');
+      return;
+    }
+
+    const newQual = {
+      titulo: newTitulo.trim(),
+      cedula: newCedula.trim() || '', // String vacío si no hay cédula (nullable en BD)
+    };
+
+    let updatedQualifications: { titulo: string; cedula: string }[];
+
+    if (editingIndex !== null) {
+      updatedQualifications = [...qualifications];
+      updatedQualifications[editingIndex] = newQual;
+      setQualifications(updatedQualifications);
+      setEditingIndex(null);
+    } else {
+      updatedQualifications = [...qualifications, newQual];
+      setQualifications(updatedQualifications);
+    }
+
+    // Sincronizar con el form data de Inertia (backend lo procesa para credencial_empleados)
+    setData('professional_qualifications', updatedQualifications);
+
+    // Resetear inputs
+    setNewTitulo('');
+    setNewCedula('');
+  };
+
+  // Función para editar una calificación (poblar inputs)
+  const handleEditQualification = (index: number) => {
+    const qual = qualifications[index];
+    setNewTitulo(qual.titulo);
+    setNewCedula(qual.cedula);
+    setEditingIndex(index);
+  };
+
+  // Función para eliminar una calificación
+  const handleRemoveQualification = (index: number) => {
+    const updatedQualifications = qualifications.filter((_, i) => i !== index);
+    setQualifications(updatedQualifications);
+    setData('professional_qualifications', updatedQualifications);
+    if (editingIndex === index) {
+      setEditingIndex(null);
+      setNewTitulo('');
+      setNewCedula('');
+    }
+  };
+
+  // Función para cancelar edición
+  const handleCancelEdit = () => {
+    setEditingIndex(null);
+    setNewTitulo('');
+    setNewCedula('');
+  };
 
   const { data, setData, post, processing, errors } = useForm({
     nombre: '',
@@ -85,84 +139,92 @@ const CreateDoctor: React.FC<Props> = ({ cargos = [], usuarios = [] }) => {  // 
     email: '',
     password: '',
     password_confirmation: '',
+    professional_qualifications: [],  // Array de {titulo, cedula} - Backend lo guarda en credencial_empleados
   });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!data.cargo_id) {
+      alert('Debe seleccionar un cargo principal.');
+      return;
+    }
+    if (qualifications.length === 0) {
+      alert('Debe agregar al menos un título profesional.');
+      return;
+    }
+    // El array ya está en data.professional_qualifications
     post(route('doctores.store'));
   };
 
   return (
-    <>
+    <MainLayout>
       <Head title="Crear Doctor" />
       <div className="p-4 md:p-8">
         <div className="flex justify-between items-center mb-6">
           <div className="flex items-center space-x-4">
-            {/* Opcional: Agrega BackButton aquí si lo necesitas */}
-            {/* <BackButton /> */}
+            {/* Opcional: BackButton */}
           </div>
+          <BackButton/>
           <h1 className="flex-1 text-center text-3xl font-bold text-black">
             Crear Nuevo Doctor
+
           </h1>
+          
         </div>
 
         <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow p-6 max-w-4xl mx-auto">
           {/* Sección 1: Datos Personales */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Nombre *</label>
-              <input
-                type="text"
-                value={data.nombre}
-                onChange={(e) => setData('nombre', e.target.value)}
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                placeholder="Ej: Juan"
-                required
-              />
-              {errors.nombre && <p className="text-red-500 text-sm mt-1">{errors.nombre}</p>}
-            </div>
+            <InputText
+              id="nombre"
+              label="Nombre *"
+              name="nombre"
+              value={data.nombre}
+              onChange={(e) => setData('nombre', e.target.value)}
+              placeholder="Ej: Juan"
+              required
+              error={errors.nombre}
+            />
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Apellido Paterno *</label>
-              <input
-                type="text"
-                value={data.apellido_paterno}
-                onChange={(e) => setData('apellido_paterno', e.target.value)}
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                placeholder="Ej: Pérez"
-                required
-              />
-              {errors.apellido_paterno && <p className="text-red-500 text-sm mt-1">{errors.apellido_paterno}</p>}
-            </div>
+            <InputText
+              id="apellido_paterno"
+              label="Apellido Paterno *"
+              name="apellido_paterno"
+              value={data.apellido_paterno}
+              onChange={(e) => setData('apellido_paterno', e.target.value)}
+              placeholder="Ej: Pérez"
+              required
+              error={errors.apellido_paterno}
+            />
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Apellido Materno (Opcional)</label>
-              <input
-                type="text"
-                value={data.apellido_materno}
-                onChange={(e) => setData('apellido_materno', e.target.value)}
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                placeholder="Ej: García"
-              />
-              {errors.apellido_materno && <p className="text-red-500 text-sm mt-1">{errors.apellido_materno}</p>}
-            </div>
+            <InputText
+              id="apellido_materno"
+              label="Apellido Materno (Opcional)"
+              name="apellido_materno"
+              value={data.apellido_materno}
+              onChange={(e) => setData('apellido_materno', e.target.value)}
+              placeholder="Ej: García"
+              error={errors.apellido_materno}
+            />
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">CURP (Opcional)</label>
-              <input
-                type="text"
-                value={data.curp}
-                onChange={(e) => setData('curp', e.target.value.toUpperCase())}
-                maxLength={18}
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent uppercase"
-                placeholder="Ej: PEJG800101HDFR0001"
-              />
-              {errors.curp && <p className="text-red-500 text-sm mt-1">{errors.curp}</p>}
-            </div>
+            <InputText
+              id="curp"
+              label="CURP (Opcional)"
+              name="curp"
+              value={data.curp}
+              onChange={(e) => setData('curp', e.target.value.toUpperCase())}
+              placeholder="Ej: PEJG800101HDFR0001"
+              maxLength={18}
+              error={errors.curp}
+            />
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Sexo (Opcional)</label>
+            <div className="flex flex-col">
+              <label htmlFor="sexo" className="block text-sm font-medium text-gray-700 mb-2">
+                Sexo (Opcional)
+              </label>
               <select
+                id="sexo"
+                name="sexo"
                 value={data.sexo}
                 onChange={(e) => setData('sexo', e.target.value)}
                 className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -174,179 +236,211 @@ const CreateDoctor: React.FC<Props> = ({ cargos = [], usuarios = [] }) => {  // 
               {errors.sexo && <p className="text-red-500 text-sm mt-1">{errors.sexo}</p>}
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Fecha de Nacimiento *</label>
-              <input
-                type="date"
-                value={data.fecha_nacimiento}
-                onChange={(e) => setData('fecha_nacimiento', e.target.value)}
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                max={new Date().toISOString().split('T')[0]}  // No permite futuro
-                required
-              />
-              {errors.fecha_nacimiento && <p className="text-red-500 text-sm mt-1">{errors.fecha_nacimiento}</p>}
-            </div>
+            <InputText
+              id="fecha_nacimiento"
+              label="Fecha de Nacimiento *"
+              name="fecha_nacimiento"
+              type="date"
+              value={data.fecha_nacimiento}
+              onChange={(e) => setData('fecha_nacimiento', e.target.value)}
+              max={new Date().toISOString().split('T')[0]}
+              required
+              error={errors.fecha_nacimiento}
+            />
           </div>
-
-          {/* Sección 2: Cargo y Responsable – CON FUNCIONALIDAD PARA AGREGAR CARGO */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-            <div className="relative">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Cargo *</label>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Select Nativo para Cargo Principal */}
+            <div className="flex flex-col">
+              <label htmlFor="cargo_id" className="block text-sm font-medium text-gray-700 mb-2">
+                Cargo Principal *
+              </label>
               <select
+                id="cargo_id"
+                name="cargo_id"
                 value={data.cargo_id}
                 onChange={(e) => setData('cargo_id', e.target.value)}
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 required
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               >
                 <option value="">Seleccionar Cargo</option>
-                {localCargos?.length > 0 ? (  // ✅ Usa localCargos para lista actualizada
-                  localCargos.map((cargo) => (
-                    <option key={cargo.id} value={cargo.id}>
-                      {cargo.nombre}
-                    </option>
-                  ))
-                ) : (
-                  <option disabled>No hay cargos disponibles</option>  // ✅ FALLBACK si vacío o undefined
-                )}
+                
+                {localCargos.map((cargo) => (
+                  <option key={cargo.id} value={cargo.id.toString()}>
+                    {cargo.nombre}
+                  </option>
+                ))}
               </select>
               {errors.cargo_id && <p className="text-red-500 text-sm mt-1">{errors.cargo_id}</p>}
-
-              {/* Botón para agregar nuevo cargo */}
-              <button
-                type="button"
-                onClick={() => setShowCargoModal(true)}
-                className="mt-2 px-4 py-2 bg-green-500 text-white text-sm rounded-lg hover:bg-green-600 transition"
-                disabled={creatingCargo}
-              >
-                + Agregar Nuevo Cargo
-              </button>
             </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Colaborador Responsable (Opcional)</label>
+        </div>
+          {/* Sección 2: Cargo Principal y Colaborador Responsable */}
+           <div className="flex flex-col">
+              <label htmlFor="colaborador_responsable_id" className="block text-sm font-medium text-gray-700 mb-2">
+                Colaborador Responsable (Opcional)
+              </label>
               <select
+                id="colaborador_responsable_id"
+                name="colaborador_responsable_id"
                 value={data.colaborador_responsable_id}
                 onChange={(e) => setData('colaborador_responsable_id', e.target.value)}
                 className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               >
                 <option value="">Ninguno</option>
-                {usuarios?.length > 0 ? (  // ✅ FIX: Verifica antes de map
-                  usuarios.map((usuario) => (
-                    <option key={usuario.id} value={usuario.id}>
-                      {usuario.nombre_completo}
-                    </option>
-                  ))
-                ) : (
-                  <option disabled>No hay usuarios disponibles</option>  // ✅ FALLBACK
-                )}
+                {usuarios.map((usuario) => (
+                  <option key={usuario.id} value={usuario.id.toString()}>
+                    {usuario.nombre_completo}
+                  </option>
+                ))}
               </select>
               {errors.colaborador_responsable_id && <p className="text-red-500 text-sm mt-1">{errors.colaborador_responsable_id}</p>}
             </div>
+
+          {/* Sección para Títulos y Cédulas Profesionales */}
+          <div className="md:col-span-2 mb-6">
+            <label className="block text-sm font-medium text-gray-700 mb-4">Títulos y Cédulas Profesionales *</label>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4 p-4 bg-gray-50 rounded-lg">
+              <InputText
+                id="new_titulo"
+                label="Título *"
+                name="new_titulo"
+                value={newTitulo}
+                onChange={(e) => setNewTitulo(e.target.value)}
+                placeholder="Ej: Licenciatura en Medicina"
+                maxLength={100}
+                error={null}
+              />
+              <InputText
+                id="new_cedula"
+                label="Cédula (Opcional)"
+                name="new_cedula"
+                value={newCedula}
+                onChange={(e) => setNewCedula(e.target.value.toUpperCase())}
+                placeholder="Ej: 1234567"
+                maxLength={20}
+                error={null}
+              />
+            </div>
+
+            <div className="flex flex-wrap gap-2 mb-4">
+              <button
+                type="button"
+                onClick={handleAddOrUpdateQualification}
+                className="px-6 py-2 bg-green-500 text-white text-sm font-medium rounded-lg hover:bg-green-600 transition"
+                disabled={!newTitulo.trim()}
+                style={{ backgroundColor: '#1B1C38' }}
+              >
+                {editingIndex !== null ? 'Actualizar Título' : '+ Agregar Título'}
+              </button>
+              {editingIndex !== null && (
+                <button
+                  type="button"
+                  onClick={handleCancelEdit}
+                  className="px-6 py-2 bg-gray-500 text-white text-sm font-medium rounded-lg hover:bg-gray-600 transition"
+                >
+                  Cancelar
+                </button>
+              )}
+            </div>
+
+            {qualifications.length > 0 ? (
+              <div className="overflow-x-auto">
+                <table className="w-full border-collapse border border-gray-300 bg-white rounded-lg shadow">
+                  <thead className="bg-gray-100">
+                    <tr>
+                      <th className="border border-gray-300 px-4 py-2 text-left">Título</th>
+                      <th className="border border-gray-300 px-4 py-2 text-left">Cédula</th>
+                      <th className="border border-gray-300 px-4 py-2 text-left">Acciones</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {qualifications.map((qual, index) => (
+                      <tr key={index} className="hover:bg-gray-50">
+                        <td className="border border-gray-300 px-4 py-2">{qual.titulo}</td>
+                        <td className="border border-gray-300 px-4 py-2">{qual.cedula || 'N/A'}</td>
+                        <td className="border border-gray-300 px-4 py-2">
+                          <button
+                            type="button"
+                            onClick={() => handleEditQualification(index)}
+                            className="px-3 py-1 bg-blue-500 text-white text-xs rounded mr-1 hover:bg-blue-600 transition"
+                          >
+                            Editar
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveQualification(index)}
+                            className="px-3 py-1 bg-red-500 text-white text-xs rounded hover:bg-red-600 transition"
+                          >
+                            Eliminar
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            ) : (
+              <p className="text-gray-500 text-sm italic">No se han agregado títulos aún.</p>
+            )}
+            {errors.professional_qualifications && (
+              <p className="text-red-500 text-sm mt-1">{errors.professional_qualifications}</p>
+            )}
           </div>
 
           {/* Sección 3: Contacto y Seguridad */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Email *</label>
-              <input
-                type="email"
-                value={data.email}
-                onChange={(e) => setData('email', e.target.value)}
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                placeholder="Ej: doctor@clinic.com"
-                required
-              />
-              {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
-            </div>
+            <InputText
+              id="email"
+              label="Email *"
+              type="email"
+              name="email"
+              value={data.email}
+              onChange={(e) => setData('email', e.target.value)}
+              placeholder="Ej: doctor@clinic.com"
+              required
+              error={errors.email}
+            />
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Contraseña *</label>
-              <input
-                type="password"
-                value={data.password}
-                onChange={(e) => setData('password', e.target.value)}
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                minLength={8}
-                required
-              />
-              {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password}</p>}
-            </div>
+            <InputText
+              id="password"
+              label="Contraseña *"
+              type="password"
+              name="password"
+              value={data.password}
+              onChange={(e) => setData('password', e.target.value)}
+              minLength={8}
+              required
+              error={errors.password}
+            />
 
             <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Confirmar Contraseña *</label>
-              <input
+              <InputText
+                id="password_confirmation"
+                label="Confirmar Contraseña *"
                 type="password"
+                name="password_confirmation"
                 value={data.password_confirmation}
                 onChange={(e) => setData('password_confirmation', e.target.value)}
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 required
+                error={errors.password_confirmation}
               />
-              {errors.password_confirmation && <p className="text-red-500 text-sm mt-1">{errors.password_confirmation}</p>}
             </div>
           </div>
 
-          {/* Botón Submit */}
           <div className="flex justify-end space-x-4 pt-4">
             <button
               type="submit"
               disabled={processing}
               className="px-6 py-3 bg-blue-500 text-white font-medium rounded-lg hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition"
+              style={{ backgroundColor: '#1B1C38' }}
             >
               {processing ? 'Creando...' : 'Crear Doctor'}
             </button>
           </div>
         </form>
       </div>
-
-      {/* Modal para Crear Nuevo Cargo */}
-      {showCargoModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
-            <h2 className="text-xl font-bold mb-4">Agregar Nuevo Cargo</h2>
-            <form onSubmit={handleCreateCargo}>
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 mb-2">Nombre del Cargo *</label>
-                <input
-                  type="text"
-                  value={nuevoCargoNombre}
-                  onChange={(e) => setNuevoCargoNombre(e.target.value)}
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  placeholder="Ej: Especialista en Cardiología"
-                  required
-                  maxLength={100}
-                />
-                {/* Errores del backend se manejan en onError */}
-              </div>
-              <div className="flex justify-end space-x-3">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setShowCargoModal(false);
-                    setNuevoCargoNombre('');
-                  }}
-                  className="px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50"
-                  disabled={creatingCargo}
-                >
-                  Cancelar
-                </button>
-                <button
-                  type="submit"
-                  disabled={creatingCargo || !nuevoCargoNombre.trim()}
-                  className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 disabled:opacity-50 disabled:cursor-not-allowed transition"
-                >
-                  {creatingCargo ? 'Creando...' : 'Crear Cargo'}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
-    </>
+    </MainLayout>
   );
 };
 
-CreateDoctor.layout = (page: React.ReactElement) => (
-  <MainLayout pageTitle="Ficha del Doctor" children={page} />
-);
-
-export default CreateDoctor;  // ✅ Exporta como CreateDoctor
+export default CreateDoctor;

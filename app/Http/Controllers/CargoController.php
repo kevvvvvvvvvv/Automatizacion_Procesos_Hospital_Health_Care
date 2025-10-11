@@ -43,6 +43,8 @@ class CargoController extends Controller
         // Crear el cargo
         $cargo = Cargo::create($validated);
 
+        //return route()->withResponse
+
         // Respuesta JSON para el frontend (Inertia lo maneja bien)
         return response()->json([
             'success' => true,
