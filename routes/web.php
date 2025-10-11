@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 Route::get('/', function () {
-    return Inertia::render('auth/login');
+    return Inertia::render('dashboard-healthcare');
 })->name('home');
 
 Route::middleware(['auth', 'verified'])->group(function () {
@@ -30,7 +30,7 @@ Route::resource('pacientes.estancias', EstanciaController::class)->shallow()->mi
 Route::resource('pacientes.estancias.hojasfrontales', FormularioHojaFrontalController::class)->shallow()->middleware('auth');
 
 Route::resource('doctores', DoctorController::class)->middleware('auth');  
-
+Route::put('/doctores/{doctor}', [DoctorController::class, 'update'])->name('doctores.update');
 
 
 Route::get('/hojasfrontales/{hojafrontal}/pdf', [FormularioHojaFrontalController::class, 'generarPDF'])
