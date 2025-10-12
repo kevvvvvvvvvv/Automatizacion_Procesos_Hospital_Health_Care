@@ -14,7 +14,20 @@ class HistoryObserver
 
     public function updated(Model $model): void
     {
-        $this->logAction('updated', $model);
+        $dirty = $model->getDirty();
+
+        if (empty($dirty)) {
+            return;
+        }
+
+        History::create([
+            'user_id'    => Auth::id(),
+            'model_type' => get_class($model),
+            'model_id'   => $model->getKey(),
+            'action'     => 'updated',
+            'before'     => json_encode(array_intersect_key($model->getOriginal(), $dirty)),
+            'after'      => json_encode($dirty),
+        ]);
     }
 
     public function deleted(Model $model): void

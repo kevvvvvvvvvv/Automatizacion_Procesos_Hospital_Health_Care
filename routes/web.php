@@ -8,6 +8,8 @@ use App\Http\Controllers\FormularioInstanciaController;
 use App\Http\Controllers\DoctorController; 
 use App\Http\Controllers\ProductoServicioController;
 use App\Http\Controllers\CargoController;
+use App\Http\Controllers\HistoryController;
+use App\Models\History;
 use App\Models\Paciente;
 use App\Models\ProductoServicio;
 use Illuminate\Support\Facades\Route;
@@ -31,6 +33,8 @@ Route::resource('pacientes.estancias.hojasfrontales', FormularioHojaFrontalContr
 
 Route::resource('doctores', DoctorController::class)->middleware('auth');  
 Route::put('/doctores/{doctor}', [DoctorController::class, 'update'])->name('doctores.update');
+
+Route::get('historiales',[HistoryController::class,'index'])->name('historiales.index');
 
 
 Route::get('/hojasfrontales/{hojafrontal}/pdf', [FormularioHojaFrontalController::class, 'generarPDF'])
