@@ -18,5 +18,11 @@ class FormularioCatalogoSeeder extends Seeder
             'nombre_tabla_fisica' => 'hoja_frontales',
             'route_prefix' => 'hoja-frontales',
         ]);
+
+        FormularioCatalogo::create([
+            'nombre_formulario' => 'Historia clínica',
+            'nombre_tabla_fisica' => 'historia_clinicas',
+            'route_prefix' => 'historia-clinicas',
+        ]);
     }
 }
