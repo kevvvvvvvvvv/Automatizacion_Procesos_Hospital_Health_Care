@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\CatalogoPregunta;
 use App\Models\FamiliarResponsable;
 use App\Models\ProductoServicio;
 use App\Models\User;
@@ -25,6 +26,7 @@ class DatabaseSeeder extends Seeder
             EstanciaSeeder::class,
             FormularioCatalogoSeeder::class,
             ProductoServicioSeeder::class,
+            CatalogoPreguntaSeeder::class,
         ]);
 
     }

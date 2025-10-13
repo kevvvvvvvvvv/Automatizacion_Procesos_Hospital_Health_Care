@@ -10,7 +10,7 @@ type IndexProps = {
 }
 
 const Index = ({ histories }: IndexProps) => {
-    const data = histories?.data ?? [];
+    //const data = histories?.data ?? [];
 
     const columns = useMemo(
     () => [
