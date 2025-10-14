@@ -5,6 +5,7 @@ import PrimaryButton from '@/components/ui/primary-button';
 import InputText from '@/components/ui/input-text';
 import { useForm } from '@inertiajs/react';
 import { route } from 'ziggy-js';
+import { Estancia, Paciente } from '@/types';
 
 interface Pregunta {
     id: number;
@@ -35,13 +36,15 @@ interface FormData {
 
 interface CreateProps {
     preguntas: Pregunta[];
+    paciente: Paciente;
+    estancia: Estancia;
 }
 
 type CreateComponent = React.FC<CreateProps> & {
     layout: (page: React.ReactElement) => React.ReactNode;
 };
 
-const Create: CreateComponent = ({ preguntas }) => {
+const Create: CreateComponent = ({ preguntas, paciente, estancia }) => {
 
     const { data, setData, post, processing, errors } = useForm<FormData>({
         padecimiento_actual: '',
@@ -71,7 +74,7 @@ const Create: CreateComponent = ({ preguntas }) => {
     
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        post(route('historia.clinica.store'));
+        post(route('pacientes.estancias.historiasclinicas.store',{paciente: paciente.id, estancia: estancia.id}));
     };
 
     const handleRespuestaChange = (preguntaId: number, field: 'respuesta' | 'comentario', value: string) => {
@@ -111,7 +114,7 @@ const Create: CreateComponent = ({ preguntas }) => {
             <h2 className="text-xl font-semibold text-gray-800 mt-6 mb-4 col-span-full">Signos Vitales y Padecimiento</h2>
             
             <div className="col-span-full">
-                 <label htmlFor="padecimiento_actual" className={labelClasses}>Padecimiento Actual</label>
+                 <label htmlFor="padecimiento_actual" className={labelClasses}>Padecimiento Actual (Indagar acerca de tratamientos previos de tipo convencionales, alternativos o tradicionales)</label>
                  <textarea
                     id="padecimiento_actual"
                     name="padecimiento_actual"
