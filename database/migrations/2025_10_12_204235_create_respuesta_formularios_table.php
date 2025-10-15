@@ -14,8 +14,7 @@ return new class extends Migration
         Schema::create('respuesta_formularios', function (Blueprint $table) {
             $table->id();
 
-            $table->string('respuesta')->nullable();
-            $table->string('comentario')->nullable();
+            $table->json('detalles');
 
             $table->foreignId('catalogo_pregunta_id')
                 ->constrained('catalogo_preguntas')

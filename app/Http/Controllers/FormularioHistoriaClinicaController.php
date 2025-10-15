@@ -15,7 +15,7 @@ class FormularioHistoriaClinicaController extends Controller
     {
         $preguntas = CatalogoPregunta::where('formulario_catalogo_id', 2)
                                       ->orderBy('orden')
-                                      ->get(['id', 'pregunta', 'categoria']);
+                                      ->get();
 
         
         return Inertia::render('formularios/historias-clinicas/create',[
