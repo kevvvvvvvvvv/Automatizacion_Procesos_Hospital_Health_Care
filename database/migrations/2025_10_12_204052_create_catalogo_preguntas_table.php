@@ -16,6 +16,9 @@ return new class extends Migration
             $table->string('pregunta');
             $table->integer('orden');
             $table->string('categoria');
+            $table->boolean('permite_desconozco')->default(0);
+            $table->string('tipo_pregunta')->default('simple');
+            $table->json('campos_adicionales')->nullable();
             
             $table->foreignId('formulario_catalogo_id')
                 ->constrained('formulario_catalogos')
