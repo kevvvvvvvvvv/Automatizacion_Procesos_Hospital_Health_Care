@@ -7,7 +7,7 @@ import { useForm } from '@inertiajs/react';
 import { route } from 'ziggy-js';
 import { Estancia, Paciente } from '@/types';
 
-// --- INTERFACES (Sin cambios) ---
+// --- INTERFACES ---
 interface CampoAdicional {
     name: string;
     label: string;
@@ -22,7 +22,7 @@ interface Pregunta {
     pregunta: string;
     categoria: string;
     tipo_pregunta: 'simple' | 'multiple_campos' | 'repetible' | 'direct_select' | 'direct_multiple';
-    campos_adicionales: CampoAdicional[] | null;
+    campos_adicionales: any; // Se define como 'any' para aceptar el string que llega por error
     permite_desconozco: boolean;
 }
 
@@ -62,6 +62,7 @@ type CreateComponent = React.FC<CreateProps> & {
 const Create: CreateComponent = ({ preguntas, paciente, estancia }) => {
 
     const { data, setData, post, processing, errors } = useForm<FormData>({
+        // ... (otros campos)
         padecimiento_actual: '',
         tension_arterial: '',
         frecuencia_cardiaca: '',
@@ -78,8 +79,6 @@ const Create: CreateComponent = ({ preguntas, paciente, estancia }) => {
             return acc;
         }, {} as { [key: number]: RespuestaDetalles }),
     });
-    
-
 
     const preguntasPorCategoria = useMemo(() => {
         return preguntas.reduce((acc, pregunta) => {
@@ -88,10 +87,11 @@ const Create: CreateComponent = ({ preguntas, paciente, estancia }) => {
         }, {} as Record<string, Pregunta[]>);
     }, [preguntas]);
     
-
+    // --- Manejadores de estado (Sin cambios, ya son correctos) ---
     const handleRespuestaChange = (preguntaId: number, field: string, value: string | number | boolean, itemIndex: number | null = null) => {
         const pregunta = preguntas.find(p => p.id === preguntaId);
         if (!pregunta) return;
+        
         setData(prevData => {
             const newRespuestas = { ...prevData.respuestas };
             const newRespuestaActual = { ...newRespuestas[preguntaId] };
@@ -111,37 +111,17 @@ const Create: CreateComponent = ({ preguntas, paciente, estancia }) => {
                     newRespuestaActual.campos = { ...(newRespuestaActual.campos || {}), [field]: value };
                 }
             }
-            
             newRespuestas[preguntaId] = newRespuestaActual;
-
             return { ...prevData, respuestas: newRespuestas };
         });
     };
 
     const addItem = (preguntaId: number) => {
-        setData(prev => ({
-            ...prev,
-            respuestas: {
-                ...prev.respuestas,
-                [preguntaId]: {
-                    ...prev.respuestas[preguntaId],
-                    items: [...(prev.respuestas[preguntaId].items || []), {}],
-                }
-            }
-        }));
+        setData(prev => ({ ...prev, respuestas: { ...prev.respuestas, [preguntaId]: { ...prev.respuestas[preguntaId], items: [...(prev.respuestas[preguntaId].items || []), {}] } } }));
     };
 
     const removeItem = (preguntaId: number, itemIndex: number) => {
-        setData(prev => ({
-            ...prev,
-            respuestas: {
-                ...prev.respuestas,
-                [preguntaId]: {
-                    ...prev.respuestas[preguntaId],
-                    items: (prev.respuestas[preguntaId].items || []).filter((_, index) => index !== itemIndex),
-                }
-            }
-        }));
+        setData(prev => ({ ...prev, respuestas: { ...prev.respuestas, [preguntaId]: { ...prev.respuestas[preguntaId], items: (prev.respuestas[preguntaId].items || []).filter((_, index) => index !== itemIndex) } } }));
     };
 
     const handleSubmit = (e: React.FormEvent) => {
@@ -156,15 +136,34 @@ const Create: CreateComponent = ({ preguntas, paciente, estancia }) => {
     const textAreaClasses = `w-full px-3 py-2 rounded-md shadow-sm border text-gray-900 bg-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#2a2b56] focus:border-[#2a2b56] transition`;
     const labelClasses = `block text-sm font-medium text-gray-700 mb-1`;
     
+    // ✅ --- LA SOLUCIÓN DEFINITIVA ESTÁ AQUÍ ---
     const renderPregunta = (pregunta: Pregunta) => {
         const respuestaActual = data.respuestas[pregunta.id];
         if (!respuestaActual) return null;
 
+        // Esta función auxiliar asegura que siempre trabajemos con un array.
+        const getCamposAsArray = (campos: any): CampoAdicional[] => {
+            if (Array.isArray(campos)) {
+                return campos; // Si ya es un array, lo devuelve.
+            }
+            if (typeof campos === 'string' && campos.startsWith('[')) {
+                try {
+                    // Si es un string que parece un array JSON, intenta convertirlo.
+                    const parsed = JSON.parse(campos);
+                    return Array.isArray(parsed) ? parsed : [];
+                } catch (e) {
+                    return []; // Si la conversión falla, devuelve un array vacío.
+                }
+            }
+            return []; // Para cualquier otra cosa (null, undefined, etc.), devuelve un array vacío.
+        };
+
+        // Usamos la función auxiliar para obtener una versión segura de los datos.
+        const camposAdicionalesArray = getCamposAsArray(pregunta.campos_adicionales);
+
         const renderCampo = (campo: CampoAdicional, preguntaId: number, itemIndex: number | null = null) => {
             const isRepetible = itemIndex !== null;
-            const value = isRepetible
-                ? respuestaActual.items?.[itemIndex!]?.[campo.name] || ''
-                : respuestaActual.campos?.[campo.name] || '';
+            const value = isRepetible ? respuestaActual.items?.[itemIndex!]?.[campo.name] || '' : respuestaActual.campos?.[campo.name] || '';
 
             if (campo.dependsOn) {
                 const dependenciaValue = isRepetible ? respuestaActual.items?.[itemIndex!]?.[campo.dependsOn] : respuestaActual.campos?.[campo.dependsOn];
@@ -172,6 +171,7 @@ const Create: CreateComponent = ({ preguntas, paciente, estancia }) => {
             }
             
             switch (campo.type) {
+                // ... (el switch se queda igual)
                 case 'select':
                     return (
                         <div key={campo.name}>
@@ -204,7 +204,8 @@ const Create: CreateComponent = ({ preguntas, paciente, estancia }) => {
             return (
                 <div key={pregunta.id} className="col-span-full md:col-span-1 border p-4 rounded-md shadow-sm">
                     <h3 className="font-semibold text-gray-800 mb-2">{pregunta.pregunta}</h3>
-                    {pregunta.campos_adicionales?.map(campo => renderCampo(campo, pregunta.id))}
+                    {/* Usamos la variable segura */}
+                    {camposAdicionalesArray.map(campo => renderCampo(campo, pregunta.id))}
                 </div>
             )
         }
@@ -221,22 +222,17 @@ const Create: CreateComponent = ({ preguntas, paciente, estancia }) => {
                 {respuestaActual.respuesta === 'si' && (
                     <div className="pl-4 border-l-2 border-gray-200 space-y-3 mt-3">
                         {pregunta.tipo_pregunta === 'simple' && (
-                            <InputText
-                                id={`detalle_${pregunta.id}`}
-                                name="detalle"
-                                label="Especifique"
-                                placeholder="Añada detalles aquí..."
-                                value={String(respuestaActual.campos?.detalle || '')}
-                                onChange={e => handleRespuestaChange(pregunta.id, 'detalle', e.target.value)}
-                            />
+                            <InputText id={`detalle_${pregunta.id}`} name="detalle" label="Especifique" placeholder="Añada detalles aquí..." value={String(respuestaActual.campos?.detalle || '')} onChange={e => handleRespuestaChange(pregunta.id, 'detalle', e.target.value)} />
                         )}
-                        {pregunta.tipo_pregunta === 'multiple_campos' && pregunta.campos_adicionales?.map(campo => renderCampo(campo, pregunta.id))}
+                        {/* Usamos la variable segura */}
+                        {pregunta.tipo_pregunta === 'multiple_campos' && camposAdicionalesArray.map(campo => renderCampo(campo, pregunta.id))}
                         {pregunta.tipo_pregunta === 'repetible' && (
                             <div>
                                 {respuestaActual.items?.map((_, index) => (
                                     <div key={index} className="border p-2 rounded-md mb-2 relative">
                                         <button type="button" onClick={() => removeItem(pregunta.id, index)} className="absolute top-1 right-1 text-red-500 font-bold">X</button>
-                                        {pregunta.campos_adicionales?.map(campo => renderCampo(campo, pregunta.id, index))}
+                                        {/* Usamos la variable segura */}
+                                        {camposAdicionalesArray.map(campo => renderCampo(campo, pregunta.id, index))}
                                     </div>
                                 ))}
                                 <button type="button" onClick={() => addItem(pregunta.id)} className="text-sm text-blue-600 hover:underline mt-2">+ Añadir otro</button>
@@ -254,6 +250,7 @@ const Create: CreateComponent = ({ preguntas, paciente, estancia }) => {
             onSubmit={handleSubmit}
             actions={<PrimaryButton type="submit" disabled={processing}>{processing ? 'Guardando...' : 'Guardar'}</PrimaryButton>}
         >
+            {/* ... El resto de tu JSX ... */}
             <h2 className="text-xl font-semibold text-gray-800 mt-6 mb-4 col-span-full">Signos Vitales y Padecimiento</h2><div className="col-span-full"><label htmlFor="padecimiento_actual" className={labelClasses}>Padecimiento Actual (Indagar acerca de tratamientos previos)</label><textarea id="padecimiento_actual" name="padecimiento_actual" value={data.padecimiento_actual} onChange={(e) => setData('padecimiento_actual', e.target.value)} rows={4} className={`${textAreaClasses} ${errors.padecimiento_actual ? 'border-red-500' : 'border-gray-600'}`} />{errors.padecimiento_actual && <p className="mt-1 text-xs text-red-500">{errors.padecimiento_actual}</p>}</div><InputText id="tension_arterial" name="tension_arterial" label="Tensión Arterial" value={data.tension_arterial} onChange={(e) => setData('tension_arterial', e.target.value)} error={errors.tension_arterial} /><InputText id="frecuencia_cardiaca" name="frecuencia_cardiaca" label="Frecuencia Cardíaca (x min)" type="number" value={String(data.frecuencia_cardiaca)} onChange={(e) => setData('frecuencia_cardiaca', e.target.value)} error={errors.frecuencia_cardiaca} /><InputText id="frecuencia_respiratoria" name="frecuencia_respiratoria" label="Frecuencia Respiratoria (x min)" type="number" value={String(data.frecuencia_respiratoria)} onChange={(e) => setData('frecuencia_respiratoria', e.target.value)} error={errors.frecuencia_respiratoria} /><InputText id="temperatura" name="temperatura" label="Temperatura (°C)" type="number" value={String(data.temperatura)} onChange={(e) => setData('temperatura', e.target.value)} error={errors.temperatura} /><InputText id="peso" name="peso" label="Peso (kg)" type="number" value={String(data.peso)} onChange={(e) => setData('peso', e.target.value)} error={errors.peso} /><InputText id="talla" name="talla" label="Talla (cm)" type="number" value={String(data.talla)} onChange={(e) => setData('talla', e.target.value)} error={errors.talla} />
             {Object.entries(preguntasPorCategoria).map(([categoria, listaPreguntas]) => (
                 <div key={categoria} className="col-span-full mt-6">

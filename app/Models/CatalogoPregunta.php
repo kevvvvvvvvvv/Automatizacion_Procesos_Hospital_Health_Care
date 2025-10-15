@@ -27,6 +27,7 @@ class CatalogoPregunta extends Model
      */
     protected $casts = [
         'campos_adicionales' => 'array',
+        'permite_desconozco' => 'boolean',
     ];
 
     public function formularioCatalogo(): BelongsTo

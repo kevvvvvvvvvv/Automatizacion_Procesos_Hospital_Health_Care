@@ -20,7 +20,7 @@ class CatalogoPreguntaSeeder extends Seeder
             'categoria' => 'heredo_familiares',
             'formulario_catalogo_id' => 2,
             'tipo_pregunta' => 'simple',
-            'campos_adicionales' => null,
+            'campos_adicionales' => json_encode([]),
         ]);
 
         CatalogoPregunta::create([
@@ -29,7 +29,7 @@ class CatalogoPreguntaSeeder extends Seeder
             'categoria' => 'heredo_familiares',
             'formulario_catalogo_id' => 2,
             'tipo_pregunta' => 'simple',
-            'campos_adicionales' => null,
+            'campos_adicionales' => json_encode([]),
         ]);
 
         CatalogoPregunta::create([
@@ -38,7 +38,7 @@ class CatalogoPreguntaSeeder extends Seeder
             'categoria' => 'heredo_familiares',
             'formulario_catalogo_id' => 2,
             'tipo_pregunta' => 'simple',
-            'campos_adicionales' => null,
+            'campos_adicionales' => json_encode([]),
         ]);
 
         CatalogoPregunta::create([
@@ -56,7 +56,7 @@ class CatalogoPreguntaSeeder extends Seeder
             'categoria' => 'heredo_familiares',
             'formulario_catalogo_id' => 2,
             'tipo_pregunta' => 'simple',
-            'campos_adicionales' => null,
+            'campos_adicionales' => json_encode([]),
         ]);
 
         CatalogoPregunta::create([
@@ -65,7 +65,7 @@ class CatalogoPreguntaSeeder extends Seeder
             'categoria' => 'heredo_familiares',
             'formulario_catalogo_id' => 2,
             'tipo_pregunta' => 'simple',
-            'campos_adicionales' => null,
+            'campos_adicionales' => json_encode([]),
         ]);
 
         CatalogoPregunta::create([
@@ -74,7 +74,7 @@ class CatalogoPreguntaSeeder extends Seeder
             'categoria' => 'heredo_familiares',
             'formulario_catalogo_id' => 2,
             'tipo_pregunta' => 'simple',
-            'campos_adicionales' => null,
+            'campos_adicionales' => json_encode([]),
         ]);
 
         CatalogoPregunta::create([
@@ -82,10 +82,10 @@ class CatalogoPreguntaSeeder extends Seeder
             'orden' => 8,
             'categoria' => 'heredo_familiares',
             'formulario_catalogo_id' => 2,
-            'tipo_pregunta' => 'simple',
+            'tipo_pregunta' => 'multiple_campos',
             'campos_adicionales' => json_encode([
                 ['name' => 'tipo', 'label' => 'Tipo', 'type' => 'text'],
-                ['name' => 'tiempo', 'label' => 'Hace cuanto tiempo', 'type' => 'date'],
+                ['name' => 'tiempo', 'label' => '¿Desde hace cuánto tiempo?', 'type' => 'date'],
             ]),
         ]);
 
@@ -95,7 +95,7 @@ class CatalogoPreguntaSeeder extends Seeder
             'categoria' => 'heredo_familiares',
             'formulario_catalogo_id' => 2,
             'tipo_pregunta' => 'simple',
-            'campos_adicionales' => null,
+            'campos_adicionales' => json_encode([]),
         ]);
 
         //No patólogicos
@@ -153,7 +153,7 @@ class CatalogoPreguntaSeeder extends Seeder
             'categoria' => 'no_patologicos',
             'formulario_catalogo_id' => 2,
             'tipo_pregunta' => 'simple',
-            'campos_adicionales' => null,
+            'campos_adicionales' => json_encode([]),
         ]);
 
         CatalogoPregunta::create([
@@ -253,7 +253,7 @@ class CatalogoPreguntaSeeder extends Seeder
             'categoria' => 'a_patologicos',
             'formulario_catalogo_id' => 2,
             'tipo_pregunta' => 'simple',
-            'campos_adicionales' => null,            
+            'campos_adicionales' => json_encode([]),           
         ]);  
 
         //Gineco-obstetrico
@@ -367,7 +367,7 @@ class CatalogoPreguntaSeeder extends Seeder
             'categoria' => 'gineco_obstetrico',
             'formulario_catalogo_id' => 2,
             'tipo_pregunta' => 'simple',
-            'campos_adicionales' => null
+            'campos_adicionales' => json_encode([]),
         ]);
 
         //Exploracion fisica
@@ -377,7 +377,7 @@ class CatalogoPreguntaSeeder extends Seeder
             'categoria' => 'exploracion_fisica',
             'formulario_catalogo_id' => 2,
             'tipo_pregunta' => 'simple',
-            'campos_adicionales' => null,
+            'campos_adicionales' => json_encode([]),
         ]);
 
         CatalogoPregunta::create([
@@ -386,7 +386,7 @@ class CatalogoPreguntaSeeder extends Seeder
             'categoria' => 'exploracion_fisica',
             'formulario_catalogo_id' => 2,
             'tipo_pregunta' => 'simple',
-            'campos_adicionales' => null,
+            'campos_adicionales' => json_encode([]),
         ]);
 
         CatalogoPregunta::create([
@@ -395,7 +395,7 @@ class CatalogoPreguntaSeeder extends Seeder
             'categoria' => 'exploracion_fisica',
             'formulario_catalogo_id' => 2,
             'tipo_pregunta' => 'simple',
-            'campos_adicionales' => null,
+            'campos_adicionales' => json_encode([]),
         ]);
 
         CatalogoPregunta::create([
@@ -404,7 +404,7 @@ class CatalogoPreguntaSeeder extends Seeder
             'categoria' => 'exploracion_fisica',
             'formulario_catalogo_id' => 2,
             'tipo_pregunta' => 'simple',
-            'campos_adicionales' => null,
+            'campos_adicionales' => json_encode([]),
         ]);
 
         CatalogoPregunta::create([
@@ -413,7 +413,7 @@ class CatalogoPreguntaSeeder extends Seeder
             'categoria' => 'exploracion_fisica',
             'formulario_catalogo_id' => 2,
             'tipo_pregunta' => 'simple',
-            'campos_adicionales' => null,
+           'campos_adicionales' => json_encode([]),
         ]);
 
         CatalogoPregunta::create([
@@ -422,7 +422,7 @@ class CatalogoPreguntaSeeder extends Seeder
             'categoria' => 'exploracion_fisica',
             'formulario_catalogo_id' => 2,
             'tipo_pregunta' => 'simple',
-            'campos_adicionales' => null,
+            'campos_adicionales' => json_encode([]),
         ]);
 
         CatalogoPregunta::create([
@@ -431,7 +431,7 @@ class CatalogoPreguntaSeeder extends Seeder
             'categoria' => 'exploracion_fisica',
             'formulario_catalogo_id' => 2,
             'tipo_pregunta' => 'simple',
-            'campos_adicionales' => null,
+            'campos_adicionales' => json_encode([]),
         ]);
 
         CatalogoPregunta::create([
@@ -440,7 +440,7 @@ class CatalogoPreguntaSeeder extends Seeder
             'categoria' => 'exploracion_fisica',
             'formulario_catalogo_id' => 2,
             'tipo_pregunta' => 'simple',
-            'campos_adicionales' => null,
+            'campos_adicionales' => json_encode([]),
         ]);
 
         CatalogoPregunta::create([
@@ -449,7 +449,7 @@ class CatalogoPreguntaSeeder extends Seeder
             'categoria' => 'exploracion_fisica',
             'formulario_catalogo_id' => 2,
             'tipo_pregunta' => 'simple',
-            'campos_adicionales' => null,
+            'campos_adicionales' => json_encode([]),
         ]);
 
         CatalogoPregunta::create([
@@ -458,7 +458,7 @@ class CatalogoPreguntaSeeder extends Seeder
             'categoria' => 'exploracion_fisica',
             'formulario_catalogo_id' => 2,
             'tipo_pregunta' => 'simple',
-            'campos_adicionales' => null,
+            'campos_adicionales' => json_encode([]),
         ]);
 
         CatalogoPregunta::create([
@@ -467,7 +467,7 @@ class CatalogoPreguntaSeeder extends Seeder
             'categoria' => 'exploracion_fisica',
             'formulario_catalogo_id' => 2,
             'tipo_pregunta' => 'simple',
-            'campos_adicionales' => null,
+            'campos_adicionales' => json_encode([]),
         ]);
 
         CatalogoPregunta::create([
@@ -476,7 +476,7 @@ class CatalogoPreguntaSeeder extends Seeder
             'categoria' => 'exploracion_fisica',
             'formulario_catalogo_id' => 2,
             'tipo_pregunta' => 'simple',
-            'campos_adicionales' => null,
+            'campos_adicionales' => json_encode([]),
         ]);
 
         CatalogoPregunta::create([
@@ -485,7 +485,7 @@ class CatalogoPreguntaSeeder extends Seeder
             'categoria' => 'exploracion_fisica',
             'formulario_catalogo_id' => 2,
             'tipo_pregunta' => 'simple',
-            'campos_adicionales' => null,
+            'campos_adicionales' => json_encode([]),
         ]);
 
         CatalogoPregunta::create([
@@ -494,7 +494,7 @@ class CatalogoPreguntaSeeder extends Seeder
             'categoria' => 'exploracion_fisica',
             'formulario_catalogo_id' => 2,
             'tipo_pregunta' => 'simple',
-            'campos_adicionales' => null,
+            'campos_adicionales' => json_encode([]),
         ]);
 
         CatalogoPregunta::create([
@@ -503,7 +503,7 @@ class CatalogoPreguntaSeeder extends Seeder
             'categoria' => 'exploracion_fisica',
             'formulario_catalogo_id' => 2,
             'tipo_pregunta' => 'simple',
-            'campos_adicionales' => null,
+            'campos_adicionales' => json_encode([]),
         ]);
 
         CatalogoPregunta::create([
@@ -512,7 +512,7 @@ class CatalogoPreguntaSeeder extends Seeder
             'categoria' => 'exploracion_fisica',
             'formulario_catalogo_id' => 2,
             'tipo_pregunta' => 'simple',
-            'campos_adicionales' => null,
+            'campos_adicionales' => json_encode([]),
         ]);
 
         CatalogoPregunta::create([
@@ -521,7 +521,7 @@ class CatalogoPreguntaSeeder extends Seeder
             'categoria' => 'exploracion_fisica',
             'formulario_catalogo_id' => 2,
             'tipo_pregunta' => 'simple',
-            'campos_adicionales' => null,
+            'campos_adicionales' => json_encode([]),
         ]);
 
         CatalogoPregunta::create([
@@ -530,7 +530,7 @@ class CatalogoPreguntaSeeder extends Seeder
             'categoria' => 'exploracion_fisica',
             'formulario_catalogo_id' => 2,
             'tipo_pregunta' => 'simple',
-            'campos_adicionales' => null,
+            'campos_adicionales' => json_encode([]),
         ]);
 
         CatalogoPregunta::create([
@@ -539,7 +539,7 @@ class CatalogoPreguntaSeeder extends Seeder
             'categoria' => 'exploracion_fisica',
             'formulario_catalogo_id' => 2,
             'tipo_pregunta' => 'simple',
-            'campos_adicionales' => null,
+            'campos_adicionales' => json_encode([]),
         ]);
 
         CatalogoPregunta::create([
@@ -548,7 +548,7 @@ class CatalogoPreguntaSeeder extends Seeder
             'categoria' => 'exploracion_fisica',
             'formulario_catalogo_id' => 2,
             'tipo_pregunta' => 'simple',
-            'campos_adicionales' => null,
+            'campos_adicionales' => json_encode([]),
         ]);
 
         CatalogoPregunta::create([
@@ -557,7 +557,7 @@ class CatalogoPreguntaSeeder extends Seeder
             'categoria' => 'exploracion_fisica',
             'formulario_catalogo_id' => 2,
             'tipo_pregunta' => 'simple',
-            'campos_adicionales' => null,
+            'campos_adicionales' => json_encode([]),
         ]);
 
         CatalogoPregunta::create([
@@ -566,7 +566,7 @@ class CatalogoPreguntaSeeder extends Seeder
             'categoria' => 'exploracion_fisica',
             'formulario_catalogo_id' => 2,
             'tipo_pregunta' => 'simple',
-            'campos_adicionales' => null,
+            'campos_adicionales' => json_encode([]),
         ]);
 
         CatalogoPregunta::create([
@@ -575,7 +575,7 @@ class CatalogoPreguntaSeeder extends Seeder
             'categoria' => 'exploracion_fisica',
             'formulario_catalogo_id' => 2,
             'tipo_pregunta' => 'simple',
-            'campos_adicionales' => null,
+            'campos_adicionales' => json_encode([]),
         ]);
 
         CatalogoPregunta::create([
@@ -584,7 +584,7 @@ class CatalogoPreguntaSeeder extends Seeder
             'categoria' => 'exploracion_fisica',
             'formulario_catalogo_id' => 2,
             'tipo_pregunta' => 'simple',
-            'campos_adicionales' => null,
+            'campos_adicionales' => json_encode([]),
         ]);
 
         CatalogoPregunta::create([
@@ -593,7 +593,7 @@ class CatalogoPreguntaSeeder extends Seeder
             'categoria' => 'exploracion_fisica',
             'formulario_catalogo_id' => 2,
             'tipo_pregunta' => 'simple',
-            'campos_adicionales' => null,
+            'campos_adicionales' => json_encode([]),
         ]);
 
         CatalogoPregunta::create([
@@ -602,7 +602,7 @@ class CatalogoPreguntaSeeder extends Seeder
             'categoria' => 'exploracion_fisica',
             'formulario_catalogo_id' => 2,
             'tipo_pregunta' => 'simple',
-            'campos_adicionales' => null,
+            'campos_adicionales' => json_encode([]),
         ]);
 
         CatalogoPregunta::create([
@@ -611,7 +611,7 @@ class CatalogoPreguntaSeeder extends Seeder
             'categoria' => 'exploracion_fisica',
             'formulario_catalogo_id' => 2,
             'tipo_pregunta' => 'simple',
-            'campos_adicionales' => null,
+            'campos_adicionales' => json_encode([]),
         ]);
 
         CatalogoPregunta::create([
@@ -620,7 +620,7 @@ class CatalogoPreguntaSeeder extends Seeder
             'categoria' => 'exploracion_fisica',
             'formulario_catalogo_id' => 2,
             'tipo_pregunta' => 'simple',
-            'campos_adicionales' => null,
+            'campos_adicionales' => json_encode([]),
         ]);
 
         CatalogoPregunta::create([
@@ -629,7 +629,7 @@ class CatalogoPreguntaSeeder extends Seeder
             'categoria' => 'exploracion_fisica',
             'formulario_catalogo_id' => 2,
             'tipo_pregunta' => 'simple',
-            'campos_adicionales' => null,
+            'campos_adicionales' => json_encode([]),
         ]);
 
         CatalogoPregunta::create([
@@ -638,7 +638,7 @@ class CatalogoPreguntaSeeder extends Seeder
             'categoria' => 'exploracion_fisica',
             'formulario_catalogo_id' => 2,
             'tipo_pregunta' => 'simple',
-            'campos_adicionales' => null,
+            'campos_adicionales' => json_encode([]),
         ]);
 
         CatalogoPregunta::create([
@@ -647,7 +647,7 @@ class CatalogoPreguntaSeeder extends Seeder
             'categoria' => 'exploracion_fisica',
             'formulario_catalogo_id' => 2,
             'tipo_pregunta' => 'simple',
-            'campos_adicionales' => null,
+            'campos_adicionales' => json_encode([]),
         ]);
 
         CatalogoPregunta::create([
@@ -656,7 +656,7 @@ class CatalogoPreguntaSeeder extends Seeder
             'categoria' => 'exploracion_fisica',
             'formulario_catalogo_id' => 2,
             'tipo_pregunta' => 'simple',
-            'campos_adicionales' => null,
+            'campos_adicionales' => json_encode([]),
         ]);
     }
 }
