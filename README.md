@@ -63,6 +63,7 @@ php artisan install:broadcasting
 
 ```bash
 npm install react-icons
+npm install @headlessui/react
 ```
 
 <h2>Instalar paquete para el manejo de archivos CSV</h2>
@@ -70,3 +71,5 @@ npm install react-icons
 ```bash
 composer require league/csv
 ```
+
+

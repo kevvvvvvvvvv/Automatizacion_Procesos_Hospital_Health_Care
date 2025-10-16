@@ -289,7 +289,7 @@ class CatalogoPreguntaSeeder extends Seeder
 
 
         CatalogoPregunta::create([
-            'pregunta' => 'Cesarías',
+            'pregunta' => 'Cesareas',
             'orden' => 29,
             'categoria' => 'gineco_obstetrico',
             'formulario_catalogo_id' => 2,

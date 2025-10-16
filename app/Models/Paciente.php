@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Carbon;
 
 class Paciente extends Model
 {
@@ -37,6 +38,17 @@ class Paciente extends Model
         'nombre_padre',
         'nombre_madre',
     ];
+
+    protected $casts = [
+        'fecha_nacimiento' => 'date', 
+    ];
+
+    protected $appends = ['age']; 
+
+    public function getAgeAttribute(): int
+    {
+        return $this->fecha_nacimiento->age;
+    }
 
     public function estancias(): HasMany
     {

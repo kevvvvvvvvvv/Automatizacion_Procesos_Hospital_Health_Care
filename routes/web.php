@@ -43,6 +43,10 @@ Route::get('/hojasfrontales/{hojafrontal}/pdf', [FormularioHojaFrontalController
     ->name('hojasfrontales.pdf')
     ->middleware('auth');
 
+Route::get('/historiasclinicas/{historiaclinica}/pdf', [FormularioHistoriaClinicaController::class, 'generarPDF'])
+    ->name('hojasfrontales.pdf')
+    ->middleware('auth');
+
 require __DIR__.'/settings.php';
 require __DIR__.'/auth.php';
 

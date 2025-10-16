@@ -21,7 +21,6 @@ class HojaFrontal extends Model
      *
      * @var bool
      */
-    public $incrementing = false;
 
     /**
      *
