@@ -15,6 +15,7 @@ class CatalogoPregunta extends Model
         'tipo_pregunta',
         'campos_adicionales',
         'permite_desconozco',
+        'opciones_respuestas',
         'formulario_catalogo_id',
     ];
 
@@ -26,6 +27,7 @@ class CatalogoPregunta extends Model
      * @var array
      */
     protected $casts = [
+        'opciones_respuestas' => 'array',
         'campos_adicionales' => 'array',
         'permite_desconozco' => 'boolean',
     ];

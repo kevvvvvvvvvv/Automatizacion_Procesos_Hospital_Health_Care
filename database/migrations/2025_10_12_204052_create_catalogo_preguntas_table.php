@@ -17,6 +17,7 @@ return new class extends Migration
             $table->integer('orden');
             $table->string('categoria');
             $table->boolean('permite_desconozco')->default(0);
+            $table->json('opciones_respuesta')->nullable();
             $table->string('tipo_pregunta')->default('simple');
             $table->json('campos_adicionales')->nullable();
             

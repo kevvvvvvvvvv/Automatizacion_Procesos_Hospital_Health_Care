@@ -46,7 +46,7 @@ class CatalogoPreguntaSeeder extends Seeder
             'tipo_pregunta' => 'multiple_campos',
             'campos_adicionales' => json_encode([
                 ['name' => 'tipo', 'label' => 'Tipo de cáncer', 'type' => 'text'],
-                ['name' => 'fecha', 'label' => 'Fecha de diagnóstico', 'type' => 'date']
+                ['name' => 'fecha', 'label' => 'Fecha de diagnóstico', 'type' => 'month_unknown']
             ])
         ]);
 
@@ -85,7 +85,7 @@ class CatalogoPreguntaSeeder extends Seeder
             'tipo_pregunta' => 'multiple_campos',
             'campos_adicionales' => json_encode([
                 ['name' => 'tipo', 'label' => 'Tipo', 'type' => 'text'],
-                ['name' => 'tiempo', 'label' => '¿Desde hace cuánto tiempo?', 'type' => 'date'],
+                ['name' => 'tiempo', 'label' => '¿Desde hace cuánto tiempo?', 'type' => 'month_unknown'],
             ]),
         ]);
 
@@ -122,7 +122,7 @@ class CatalogoPreguntaSeeder extends Seeder
             'orden' => 12,
             'categoria' => 'no_patologicos',
             'formulario_catalogo_id' => 2,
-            'tipo_pregunta' => 'multiple_campos',
+            'tipo_pregunta' => 'repetible',
             'campos_adicionales' => json_encode([
                 ['name' => 'tipo', 'label' => 'Tipo de sustancia', 'type' => 'text'],
                 ['name' => 'frecuencia', 'label' => 'Frecuencia (unidades por semana)', 'type' => 'text']
@@ -132,7 +132,10 @@ class CatalogoPreguntaSeeder extends Seeder
         CatalogoPregunta::create([
             'pregunta' => 'Grupo Sanguíneo', 'orden' => 13, 'categoria' => 'no_patologicos', 'formulario_catalogo_id' => 2,
             'tipo_pregunta' => 'multiple_campos', 
-            'permite_desconozco' => true,
+            'opciones_respuesta' => json_encode([
+                ['value' => 'Conozco',   'label' => 'Conozco',   'triggersFields' => true],
+                ['value' => 'Desconozco','label' => 'Desconozco', 'triggersFields' => false]
+            ]),
             'campos_adicionales' => json_encode([
                 ['name' => 'grupo', 'label' => 'Grupo', 'type' => 'select', 'options' => ['A', 'B', 'AB', 'O']]
             ])
@@ -141,7 +144,10 @@ class CatalogoPreguntaSeeder extends Seeder
         CatalogoPregunta::create([
             'pregunta' => 'RH', 'orden' => 14, 'categoria' => 'no_patologicos', 'formulario_catalogo_id' => 2,
             'tipo_pregunta' => 'multiple_campos',
-            'permite_desconozco' => true,
+            'opciones_respuesta' => json_encode([
+                ['value' => 'Conozco',   'label' => 'Conozco',   'triggersFields' => true],
+                ['value' => 'Desconozco','label' => 'Desconozco', 'triggersFields' => false]
+            ]),        
             'campos_adicionales' => json_encode([
                 ['name' => 'rh', 'label' => 'Factor RH', 'type' => 'select', 'options' => ['+', '-']]
             ])
@@ -168,13 +174,22 @@ class CatalogoPreguntaSeeder extends Seeder
             ])
         ]);
 
+        CatalogoPregunta::create([
+            'pregunta' => 'Consumo de medicamentos',
+            'orden' => 15,
+            'categoria' => 'no_patologicos',
+            'formulario_catalogo_id' => 2,
+           'tipo_pregunta' => 'simple',
+            'campos_adicionales' => json_encode([])
+        ]);
+
         //A patologicos
         CatalogoPregunta::create([
             'pregunta' => 'Quirúrgicos', 'orden' => 18, 'categoria' => 'a_patologicos', 'formulario_catalogo_id' => 2,
             'tipo_pregunta' => 'repetible',
             'campos_adicionales' => json_encode([
                 ['name' => 'cirugia', 'label' => 'Tipo de cirugía', 'type' => 'text'],
-                ['name' => 'tiempo', 'label' => 'Hace cuánto tiempo (años y meses)', 'type' => 'text']
+                ['name' => 'tiempo', 'label' => 'Hace cuánto tiempo', 'type' => 'month_unknown']
             ])
         ]);
 
@@ -186,7 +201,7 @@ class CatalogoPreguntaSeeder extends Seeder
             'tipo_pregunta' => 'multiple_campos',
             'campos_adicionales' => json_encode([
                 ['name' => 'control', 'label' => '¿Con qué se controla?', 'type' => 'text'],
-                ['name' => 'tiempo', 'label' => 'Desde hace cuánto tiempo', 'type' => 'text']
+                ['name' => 'tiempo', 'label' => 'Desde hace cuánto tiempo', 'type' => 'month_unknown']
             ])
         ]);
 
@@ -195,7 +210,7 @@ class CatalogoPreguntaSeeder extends Seeder
             'tipo_pregunta' => 'multiple_campos',
             'campos_adicionales' => json_encode([
                 ['name' => 'control', 'label' => '¿Con qué se controla?', 'type' => 'text'],
-                ['name' => 'tiempo', 'label' => 'Desde hace cuánto tiempo', 'type' => 'text']
+                ['name' => 'tiempo', 'label' => 'Desde hace cuánto tiempo', 'type' => 'month_unknown']
             ])
         ]);
 
@@ -204,7 +219,7 @@ class CatalogoPreguntaSeeder extends Seeder
             'tipo_pregunta' => 'multiple_campos',
             'campos_adicionales' => json_encode([
                 ['name' => 'control', 'label' => '¿Con qué se controla?', 'type' => 'text'],
-                ['name' => 'tiempo', 'label' => 'Desde hace cuánto tiempo', 'type' => 'text']
+                ['name' => 'tiempo', 'label' => 'Desde hace cuánto tiempo', 'type' => 'month_unknown']
             ])
         ]);
 
@@ -222,7 +237,9 @@ class CatalogoPreguntaSeeder extends Seeder
             'tipo_pregunta' => 'multiple_campos',
             'campos_adicionales' => json_encode([
                 ['name' => 'adquisicion', 'label' => 'Tipo de adquisición', 'type' => 'select', 'options' => ['Adquirido', 'Congénito (heredado)']],
-                ['name' => 'tiempo', 'label' => 'Desde hace cuánto tiempo (si fue adquirido)', 'type' => 'text', 'dependsOn' => 'adquisicion', 'dependsValue' => 'Adquirido']
+                ['name' => 'tiempo', 'label' => 'Desde hace cuánto tiempo (si fue adquirido)', 'type' => 'text', 'dependsOn' => 'adquisicion', 'dependsValue' => 'Adquirido'],
+                ['name' => 'control', 'label' => '¿Se controla?', 'type' => 'select', 'options' => ['Si', 'No']],
+                ['name' => 'mediacamento', 'label' => 'Medicamento(s)', 'type' => 'text', 'dependsOn' => 'control', 'dependsValue' => 'Si'],
             ])
         ]);
 
@@ -231,7 +248,7 @@ class CatalogoPreguntaSeeder extends Seeder
             'tipo_pregunta' => 'multiple_campos',
             'campos_adicionales' => json_encode([
                 ['name' => 'tipo', 'label' => 'Tipo de cáncer', 'type' => 'text'],
-                ['name' => 'fecha', 'label' => 'Fecha de diagnóstico', 'type' => 'date']
+                ['name' => 'fecha', 'label' => 'Fecha de diagnóstico', 'type' => 'month_unknown']
             ])
         ]);
     
@@ -243,7 +260,7 @@ class CatalogoPreguntaSeeder extends Seeder
             'tipo_pregunta' => 'multiple_campos',
             'campos_adicionales' => json_encode([
                 ['name' => 'tipo', 'label' => 'Especificar', 'type' => 'text'],
-                ['name' => 'fecha', 'label' => 'Desde hace cuánto tiempo', 'type' => 'text']
+                ['name' => 'fecha', 'label' => 'Desde hace cuánto tiempo', 'type' => 'month_unknown']
             ])            
         ]);  
 
@@ -262,9 +279,9 @@ class CatalogoPreguntaSeeder extends Seeder
             'orden' => 26,
             'categoria' => 'gineco_obstetrico',
             'formulario_catalogo_id' => 2,
-            'tipo_pregunta' => 'direct_multiple',
+            'tipo_pregunta' => 'multiple_campos',
             'campos_adicionales' => json_encode([
-                ['name' => 'cantidad', 'label' => 'Número de partos', 'type' => 'number']
+                ['name' => 'cantidad', 'label' => 'Número', 'type' => 'number']
             ])
         ]);  
 
@@ -273,17 +290,17 @@ class CatalogoPreguntaSeeder extends Seeder
             'orden' => 27,
             'categoria' => 'gineco_obstetrico',
             'formulario_catalogo_id' => 2,
-            'tipo_pregunta' => 'direct_multiple',
+            'tipo_pregunta' => 'multiple_campos',
             'campos_adicionales' => json_encode([
-                ['name' => 'cantidad', 'label' => 'Número de partos', 'type' => 'number']
+                ['name' => 'cantidad', 'label' => 'Número', 'type' => 'number']
             ])
         ]); 
 
         CatalogoPregunta::create([
             'pregunta' => 'Abortos', 'orden' => 28, 'categoria' => 'gineco_obstetrico', 'formulario_catalogo_id' => 2,
-            'tipo_pregunta' => 'multiple_campos',
+            'tipo_pregunta' => 'repetible',
             'campos_adicionales' => json_encode([
-                ['name' => 'causa', 'label' => 'Causa del aborto', 'type' => 'select', 'options' => ['Espontáneo', 'Inducido', 'Séptico', 'Inminente', 'Amenaza de aborto', 'Incompleto', 'Diferido']]
+                ['name' => 'causa', 'label' => 'Causa del aborto', 'type' => 'select', 'options' => ['Espontáneo', 'Inducido', 'Séptico', 'Inminente', 'Amenaza de aborto', 'Incompleto', 'Diferido','Desconozco']],
             ])
         ]);
 
@@ -293,9 +310,10 @@ class CatalogoPreguntaSeeder extends Seeder
             'orden' => 29,
             'categoria' => 'gineco_obstetrico',
             'formulario_catalogo_id' => 2,
-            'tipo_pregunta' => 'direct_multiple',
+            'tipo_pregunta' => 'multiple_campos',
             'campos_adicionales' => json_encode([
-                ['name' => 'cantidad', 'label' => 'Número de partos', 'type' => 'number']
+                ['name' => 'cantidad', 'label' => 'Número', 'type' => 'number'],
+                ['name' => 'razon', 'label' => 'Razón de cesáreas', 'type' => 'text'],
             ])
         ]);
         
@@ -304,15 +322,15 @@ class CatalogoPreguntaSeeder extends Seeder
             'orden' => 30,
             'categoria' => 'gineco_obstetrico',
             'formulario_catalogo_id' => 2,
-            'tipo_pregunta' => 'direct_multiple',
+            'tipo_pregunta' => 'multiple_campos',
             'campos_adicionales' => json_encode([
-                ['name' => 'cantidad', 'label' => 'Número de partos', 'type' => 'number']
+                ['name' => 'cantidad', 'label' => 'Número', 'type' => 'number']
             ])
         ]); 
 
         CatalogoPregunta::create([
             'pregunta' => 'Ritmo', 'orden' => 31, 'categoria' => 'gineco_obstetrico', 'formulario_catalogo_id' => 2,
-            'tipo_pregunta' => 'direct_select', 
+            'tipo_pregunta' => 'multiple_campos', 
             'campos_adicionales' => json_encode([
                 ['name' => 'ritmo', 'label' => 'Ritmo', 'type' => 'select', 'options' => ['Regular', 'Irregular', 'Amenorrea']]
             ])
@@ -323,9 +341,9 @@ class CatalogoPreguntaSeeder extends Seeder
             'orden' => 32,
             'categoria' => 'gineco_obstetrico',
             'formulario_catalogo_id' => 2,
-            'tipo_pregunta' => 'direct_multiple', 
+            'tipo_pregunta' => 'multiple_campos', 
             'campos_adicionales' => json_encode([
-                ['name' => 'fecha', 'label' => 'Fecha (o marcar si se desconoce)', 'type' => 'date_unknown'],
+                ['name' => 'fecha', 'label' => 'Edad de inicio', 'type' => 'number'],
             ])
         ]); 
 
@@ -334,17 +352,17 @@ class CatalogoPreguntaSeeder extends Seeder
             'orden' => 33,
             'categoria' => 'gineco_obstetrico',
             'formulario_catalogo_id' => 2,
-            'tipo_pregunta' => 'direct_multiple', 
+            'tipo_pregunta' => 'multiple_campos', 
             'campos_adicionales' => json_encode([
-                ['name' => 'fecha', 'label' => 'Fecha (o marcar si se desconoce)', 'type' => 'date_unknown'],
+                ['name' => 'fecha', 'label' => 'Fecha (o marcar si se desconoce)', 'type' => 'month_unknown'],
             ])
         ]); 
 
         CatalogoPregunta::create([
             'pregunta' => 'Fecha de Último Papanicolaou', 'orden' => 34, 'categoria' => 'gineco_obstetrico', 'formulario_catalogo_id' => 2,
-            'tipo_pregunta' => 'direct_multiple', 
+            'tipo_pregunta' => 'multiple_campos', 
             'campos_adicionales' => json_encode([
-                ['name' => 'fecha', 'label' => 'Fecha (o marcar si se desconoce)', 'type' => 'date_unknown'],
+                ['name' => 'fecha', 'label' => 'Fecha (o marcar si se desconoce)', 'type' => 'month_unknown'],
                 ['name' => 'alteraciones', 'label' => 'Alteraciones', 'type' => 'text']
             ])
         ]);
