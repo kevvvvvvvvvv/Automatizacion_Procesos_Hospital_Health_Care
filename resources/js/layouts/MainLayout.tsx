@@ -45,12 +45,10 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, userName, pageTitle }
           
         </div>
         </header>
-        
-        
 
         {/* Main */}
         <main className="p-6 flex-1 overflow-auto">
-          {pageTitle && <h2 className="text-lg text-gray-600 mb-4 text-center">{pageTitle}</h2>}
+          {pageTitle && <h2 className="text-3xl mb-4 text-center font-extrabold">{pageTitle}</h2>}
           {children}
         </main>
       </div>

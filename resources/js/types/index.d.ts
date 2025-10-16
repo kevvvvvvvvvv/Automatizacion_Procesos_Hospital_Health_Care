@@ -65,6 +65,7 @@ export interface Paciente {
     nombre_padre: string;
     nombre_madre: string;
     estancias: Estancia[];
+    age: number;
 }
 
 export interface User {

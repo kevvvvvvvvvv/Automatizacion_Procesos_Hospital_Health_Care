@@ -8,6 +8,7 @@ use App\Models\CatalogoPregunta;
 use Illuminate\Support\Facades\DB;
 use App\Models\Paciente;
 use App\Models\Estancia;
+use App\Models\HistoriaClinica;
 
 class FormularioHistoriaClinicaController extends Controller
 {
@@ -40,4 +41,10 @@ class FormularioHistoriaClinicaController extends Controller
     public function update(){
         
     }
+
+    public function generarPDF(HistoriaClinica $historiaclinica)
+    {
+        $historiaclinica->load('formularioInstancia.estancia.paciente');
+    }
+
 }
