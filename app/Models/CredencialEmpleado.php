@@ -12,11 +12,13 @@ class CredencialEmpleado extends Model
 
     protected $table = 'credencial_empleados'; // Especifica explícitamente (Laravel asume plural)
 
-     protected $fillable = [
-         'user_id',  // Cambia de 'id_user' a 'user_id'
-         'titulo',
-         'cedula',
-     ];
+          protected $fillable = [
+            'user_id',
+            'titulo',
+            'cedula_profesional',
+            'cedula',  // Si lo usas
+        ];
+     
 
     // Relación inversa (opcional)
     public function user(): BelongsTo
