@@ -26,7 +26,14 @@ const initialState = {
   lugar_origen: "",
   nombre_padre: "",
   nombre_madre: "",
+  
 };
+const initialResponsableState = {
+  nombre_completo: "",  // Cambia a nombre_completo
+  parentesco: "",
+};
+
+
 
 const sexos = ["Masculino", "Femenino"];
 const estadosCivil = [
@@ -39,18 +46,29 @@ const estadosCivil = [
 
 const PacienteCreate: React.FC = () => {
   const [form, setForm] = useState(initialState);
-
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+  const [responsable, setResponsable] = useState(initialResponsableState);
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    if (name in form) {
+      setForm({ ...form, [name]: value });
+    } else if (name in responsable) {
+      setResponsable({ ...responsable, [name]: value });
+    }
   };
-// hola para prbar el git
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    router.post('/pacientes', form);
-  };
+  e.preventDefault();
+  console.log('Datos enviados:', { paciente: form, responsable: responsable });
+  router.post('/pacientes', { paciente: form, responsable: responsable })
+  .then(response => {
+      console.log('Respuesta del servidor:', response);
+      // Si funciona, puedes redirigir o mostrar un mensaje
+  })
+  .catch(error => {
+      console.error('Error del servidor:', error);
+      // Muestra un mensaje de error al usuario
+  });
 
+};
   return (
     <MainLayout>
         <form className="max-w-4xl mx-auto p-6 bg-text-white rounded-lg shadow-lg text-black space-y-8" onSubmit={handleSubmit}>
@@ -274,9 +292,31 @@ const PacienteCreate: React.FC = () => {
                 onChange={handleChange}
                 maxLength={100}
             />
+            
             </div>
         </fieldset>
-
+        {/* Familiar Responsable */}
+            <fieldset className="border border-gray-600 rounded-md p-4">
+                <legend className="text-lg font-semibold mb-4">Familiar Responsable</legend>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <InputField
+                    id="nombre_completo"
+                    label="Nombre Completo del Familiar Responsable"
+                    name="nombre_completo"  // Cambia a nombre_completo
+                    value={responsable.nombre_completo}
+                    onChange={handleChange}
+                    maxLength={100}
+                />
+                <InputField
+                    id="parentesco"
+                    label="Parentesco"
+                    name="parentesco"
+                    value={responsable.parentesco}
+                    onChange={handleChange}
+                    maxLength={100}
+                />
+                </div>
+            </fieldset>
         <div className="text-center">
             <button
             type="submit"
@@ -288,6 +328,7 @@ const PacienteCreate: React.FC = () => {
         </form>
     </MainLayout>
   );
+
 };
 
 export default PacienteCreate;

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\CredencialEmpleado;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Models\Cargo;
@@ -117,12 +118,12 @@ class DoctorController extends Controller
         // AHORA procesar el array y crear filas en credencial_empleados
         // Cada ítem del array = una fila con id_user = $user->id (nuevo ID)
         foreach ($qualificationsData['professional_qualifications'] as $qual) {
-            CredencialEmpleado::create([
-                'id_user' => $user->id, // Foreign key al nuevo usuario
-                'titulo' => $qual['titulo'],
-                'cedula' => $qual['cedula'] ?? null, // Null si vacío (nullable en BD)
-            ]);
-        }
+         CredencialEmpleado::create([
+             'user_id' => $user->id,  // Cambia de 'id_user' a 'user_id'
+             'titulo' => $qual['titulo'],
+             'cedula' => $qual['cedula'] ?? null,
+         ]);
+     }
         // Redirigir con éxito (Inertia maneja flash messages)
         return redirect()->route('doctores.index')->with('success', 'Doctor creado correctamente.');
     }
