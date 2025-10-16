@@ -7,6 +7,7 @@ import MainLayout from '@/layouts/MainLayout';
 import { Estancia, Paciente, User, FormularioInstancia, Habitacion, FamiliarResponsable} from '@/types'; 
 import InfoCard from '@/components/ui/info-card';
 import InfoField from '@/components/ui/info-field';
+import AddButton from '@/components/ui/add-button';
 
 interface ShowEstanciaProps {
     estancia: Estancia & {
@@ -75,6 +76,16 @@ const Show = ({ estancia }: ShowEstanciaProps) => {
                         <Plus size={16} className="mr-2"/>
                         Añadir Hoja Frontal
                     </Link>
+                    {/* BOTÓN CORREGIDO: Usa la ruta anidada con parámetros paciente y estancia */}
+                 <AddButton 
+                    href={route('pacientes.estancias.interconsultas.create', {
+                        paciente: paciente.id,  // Asegúrate de que estos parámetros coincidan con lo que espera la ruta
+                        estancia: estancia.id
+                    })} 
+                    className="ml-4"
+                >
+                    Agregar Interconsulta
+                </AddButton>
                 </div>
                 
                 <div className="space-y-4">
