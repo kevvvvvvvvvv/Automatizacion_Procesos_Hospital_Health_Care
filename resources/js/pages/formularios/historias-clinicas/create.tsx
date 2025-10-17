@@ -3,7 +3,7 @@ import MainLayout from '@/layouts/MainLayout';
 import React, { useMemo } from 'react'; 
 import PrimaryButton from '@/components/ui/primary-button';
 import InputText from '@/components/ui/input-text';
-import { useForm } from '@inertiajs/react';
+import { useForm, usePage } from '@inertiajs/react';
 import { route } from 'ziggy-js';
 import { Estancia, Paciente } from '@/types';
 import InfoCard from '@/components/ui/info-card';
@@ -70,7 +70,10 @@ type CreateComponent = React.FC<CreateProps> & {
 
 const Create: CreateComponent = ({ preguntas, paciente, estancia }) => {
 
-    const { data, setData, post, processing, errors } = useForm<FormData>({
+    const { errors } = usePage().props;
+    const hasErrors = Object.keys(errors).length > 0;
+
+    const { data, setData, post, processing } = useForm<FormData>({
         padecimiento_actual: '',
         tension_arterial: '',
         frecuencia_cardiaca: '',
@@ -273,6 +276,17 @@ const Create: CreateComponent = ({ preguntas, paciente, estancia }) => {
 
     return(
         <>
+        {hasErrors && (
+                <div 
+                    className="col-span-full p-4 mb-6 bg-red-100 border-l-4 border-red-500 text-red-800"
+                    role="alert"
+                >
+                    <h3 className="font-bold text-lg mb-2">Error del Backend Detectado:</h3>
+                    <pre className="text-sm bg-red-50 p-2 rounded whitespace-pre-wrap break-all">
+                        {JSON.stringify(errors, null, 2)}
+                    </pre>
+                </div>
+            )}
             <InfoCard title={`Paciente: ${paciente.nombre} ${paciente.apellido_paterno} ${paciente.apellido_materno}`}>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <InfoField label="Folio" value={estancia.folio} />
