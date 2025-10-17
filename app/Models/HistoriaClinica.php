@@ -24,6 +24,8 @@ class HistoriaClinica extends Model
         'indicacion_terapeutica',
     ];
 
+    public $timestamps = false;
+
     public function formularioInstancia(): BelongsTo
     {
         return $this->belongsTo(FormularioInstancia::class, 'id','id');

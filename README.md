@@ -72,4 +72,8 @@ npm install @headlessui/react
 composer require league/csv
 ```
 
+<h2>Instalar paquete para las notificaciones</h2>
 
+```bash
+npm install react-hot-toast
+```
