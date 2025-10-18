@@ -155,7 +155,7 @@ class CatalogoPreguntaSeeder extends Seeder
 
         CatalogoPregunta::create([
             'pregunta' => 'Alergías',
-            'orden' => 14,
+            'orden' => 15,
             'categoria' => 'no_patologicos',
             'formulario_catalogo_id' => 2,
             'tipo_pregunta' => 'simple',
@@ -164,7 +164,7 @@ class CatalogoPreguntaSeeder extends Seeder
 
         CatalogoPregunta::create([
             'pregunta' => 'Deporte practicado',
-            'orden' => 15,
+            'orden' => 16,
             'categoria' => 'no_patologicos',
             'formulario_catalogo_id' => 2,
            'tipo_pregunta' => 'multiple_campos',
@@ -176,7 +176,7 @@ class CatalogoPreguntaSeeder extends Seeder
 
         CatalogoPregunta::create([
             'pregunta' => 'Consumo de medicamentos',
-            'orden' => 15,
+            'orden' => 17,
             'categoria' => 'no_patologicos',
             'formulario_catalogo_id' => 2,
            'tipo_pregunta' => 'simple',
@@ -206,7 +206,7 @@ class CatalogoPreguntaSeeder extends Seeder
         ]);
 
         CatalogoPregunta::create([
-            'pregunta' => 'Diabetes', 'orden' => 19, 'categoria' => 'a_patologicos', 'formulario_catalogo_id' => 2,
+            'pregunta' => 'Diabetes', 'orden' => 20, 'categoria' => 'a_patologicos', 'formulario_catalogo_id' => 2,
             'tipo_pregunta' => 'multiple_campos',
             'campos_adicionales' => json_encode([
                 ['name' => 'control', 'label' => '¿Con qué se controla?', 'type' => 'text'],
@@ -215,7 +215,7 @@ class CatalogoPreguntaSeeder extends Seeder
         ]);
 
         CatalogoPregunta::create([
-            'pregunta' => 'Hipertensión', 'orden' => 19, 'categoria' => 'a_patologicos', 'formulario_catalogo_id' => 2,
+            'pregunta' => 'Hipertensión', 'orden' => 21, 'categoria' => 'a_patologicos', 'formulario_catalogo_id' => 2,
             'tipo_pregunta' => 'multiple_campos',
             'campos_adicionales' => json_encode([
                 ['name' => 'control', 'label' => '¿Con qué se controla?', 'type' => 'text'],
@@ -224,7 +224,7 @@ class CatalogoPreguntaSeeder extends Seeder
         ]);
 
         CatalogoPregunta::create([
-            'pregunta' => 'Transfusionales', 'orden' => 20, 'categoria' => 'a_patologicos', 'formulario_catalogo_id' => 2,
+            'pregunta' => 'Transfusionales', 'orden' => 22, 'categoria' => 'a_patologicos', 'formulario_catalogo_id' => 2,
             'tipo_pregunta' => 'multiple_campos',
             'campos_adicionales' => json_encode([
                 ['name' => 'tiempo', 'label' => 'Hace cuánto tiempo', 'type' => 'text'],
@@ -233,7 +233,7 @@ class CatalogoPreguntaSeeder extends Seeder
         ]);    
 
         CatalogoPregunta::create([
-            'pregunta' => 'VIH', 'orden' => 21, 'categoria' => 'a_patologicos', 'formulario_catalogo_id' => 2,
+            'pregunta' => 'VIH', 'orden' => 23, 'categoria' => 'a_patologicos', 'formulario_catalogo_id' => 2,
             'tipo_pregunta' => 'multiple_campos',
             'campos_adicionales' => json_encode([
                 ['name' => 'adquisicion', 'label' => 'Tipo de adquisición', 'type' => 'select', 'options' => ['Adquirido', 'Congénito (heredado)']],
@@ -244,7 +244,7 @@ class CatalogoPreguntaSeeder extends Seeder
         ]);
 
         CatalogoPregunta::create([
-            'pregunta' => 'Neoplásicos (cáncer)', 'orden' => 22, 'categoria' => 'a_patologicos', 'formulario_catalogo_id' => 2,
+            'pregunta' => 'Neoplásicos (cáncer)', 'orden' => 24, 'categoria' => 'a_patologicos', 'formulario_catalogo_id' => 2,
             'tipo_pregunta' => 'multiple_campos',
             'campos_adicionales' => json_encode([
                 ['name' => 'tipo', 'label' => 'Tipo de cáncer', 'type' => 'text'],
@@ -254,7 +254,7 @@ class CatalogoPreguntaSeeder extends Seeder
     
         CatalogoPregunta::create([
             'pregunta' => 'Reumáticos',
-            'orden' => 24,
+            'orden' => 25,
             'categoria' => 'a_patologicos',
             'formulario_catalogo_id' => 2,
             'tipo_pregunta' => 'multiple_campos',
@@ -266,7 +266,7 @@ class CatalogoPreguntaSeeder extends Seeder
 
         CatalogoPregunta::create([
             'pregunta' => 'Otro',
-            'orden' => 25,
+            'orden' => 26,
             'categoria' => 'a_patologicos',
             'formulario_catalogo_id' => 2,
             'tipo_pregunta' => 'simple',
@@ -276,7 +276,7 @@ class CatalogoPreguntaSeeder extends Seeder
         //Gineco-obstetrico
         CatalogoPregunta::create([
             'pregunta' => 'Gesta',
-            'orden' => 26,
+            'orden' => 27,
             'categoria' => 'gineco_obstetrico',
             'formulario_catalogo_id' => 2,
             'tipo_pregunta' => 'multiple_campos',
@@ -287,7 +287,7 @@ class CatalogoPreguntaSeeder extends Seeder
 
         CatalogoPregunta::create([
             'pregunta' => 'Partos',
-            'orden' => 27,
+            'orden' => 28,
             'categoria' => 'gineco_obstetrico',
             'formulario_catalogo_id' => 2,
             'tipo_pregunta' => 'multiple_campos',
@@ -297,7 +297,7 @@ class CatalogoPreguntaSeeder extends Seeder
         ]); 
 
         CatalogoPregunta::create([
-            'pregunta' => 'Abortos', 'orden' => 28, 'categoria' => 'gineco_obstetrico', 'formulario_catalogo_id' => 2,
+            'pregunta' => 'Abortos', 'orden' => 29, 'categoria' => 'gineco_obstetrico', 'formulario_catalogo_id' => 2,
             'tipo_pregunta' => 'repetible',
             'campos_adicionales' => json_encode([
                 ['name' => 'causa', 'label' => 'Causa del aborto', 'type' => 'select', 'options' => ['Espontáneo', 'Inducido', 'Séptico', 'Inminente', 'Amenaza de aborto', 'Incompleto', 'Diferido','Desconozco']],
@@ -307,7 +307,7 @@ class CatalogoPreguntaSeeder extends Seeder
 
         CatalogoPregunta::create([
             'pregunta' => 'Cesareas',
-            'orden' => 29,
+            'orden' => 30,
             'categoria' => 'gineco_obstetrico',
             'formulario_catalogo_id' => 2,
             'tipo_pregunta' => 'multiple_campos',
@@ -319,7 +319,7 @@ class CatalogoPreguntaSeeder extends Seeder
         
         CatalogoPregunta::create([
             'pregunta' => 'Menarca',
-            'orden' => 30,
+            'orden' => 31,
             'categoria' => 'gineco_obstetrico',
             'formulario_catalogo_id' => 2,
             'tipo_pregunta' => 'multiple_campos',
@@ -329,7 +329,7 @@ class CatalogoPreguntaSeeder extends Seeder
         ]); 
 
         CatalogoPregunta::create([
-            'pregunta' => 'Ritmo', 'orden' => 31, 'categoria' => 'gineco_obstetrico', 'formulario_catalogo_id' => 2,
+            'pregunta' => 'Ritmo', 'orden' => 32, 'categoria' => 'gineco_obstetrico', 'formulario_catalogo_id' => 2,
             'tipo_pregunta' => 'multiple_campos', 
             'campos_adicionales' => json_encode([
                 ['name' => 'ritmo', 'label' => 'Ritmo', 'type' => 'select', 'options' => ['Regular', 'Irregular', 'Amenorrea']]
@@ -338,7 +338,7 @@ class CatalogoPreguntaSeeder extends Seeder
 
         CatalogoPregunta::create([
             'pregunta' => 'Inicio de Vida Sexual Activa',
-            'orden' => 32,
+            'orden' => 33,
             'categoria' => 'gineco_obstetrico',
             'formulario_catalogo_id' => 2,
             'tipo_pregunta' => 'multiple_campos', 
@@ -349,7 +349,7 @@ class CatalogoPreguntaSeeder extends Seeder
 
         CatalogoPregunta::create([
             'pregunta' => 'Fecha de Última Menstruación',
-            'orden' => 33,
+            'orden' => 34,
             'categoria' => 'gineco_obstetrico',
             'formulario_catalogo_id' => 2,
             'tipo_pregunta' => 'multiple_campos', 
@@ -359,7 +359,7 @@ class CatalogoPreguntaSeeder extends Seeder
         ]); 
 
         CatalogoPregunta::create([
-            'pregunta' => 'Fecha de Último Papanicolaou', 'orden' => 34, 'categoria' => 'gineco_obstetrico', 'formulario_catalogo_id' => 2,
+            'pregunta' => 'Fecha de Último Papanicolaou', 'orden' => 35, 'categoria' => 'gineco_obstetrico', 'formulario_catalogo_id' => 2,
             'tipo_pregunta' => 'multiple_campos', 
             'campos_adicionales' => json_encode([
                 ['name' => 'fecha', 'label' => 'Fecha (o marcar si se desconoce)', 'type' => 'month_unknown'],
@@ -369,7 +369,7 @@ class CatalogoPreguntaSeeder extends Seeder
 
         CatalogoPregunta::create([
             'pregunta' => 'Control de Natalidad',
-            'orden' => 35,
+            'orden' => 36,
             'categoria' => 'gineco_obstetrico',
             'formulario_catalogo_id' => 2,
             'tipo_pregunta' => 'multiple_campos',
@@ -381,7 +381,7 @@ class CatalogoPreguntaSeeder extends Seeder
 
         CatalogoPregunta::create([
             'pregunta' => 'Otros',
-            'orden' => 36,
+            'orden' => 37,
             'categoria' => 'gineco_obstetrico',
             'formulario_catalogo_id' => 2,
             'tipo_pregunta' => 'simple',
@@ -391,15 +391,6 @@ class CatalogoPreguntaSeeder extends Seeder
         //Exploracion fisica
         CatalogoPregunta::create([
             'pregunta' => 'Cráneo',
-            'orden' => 37,
-            'categoria' => 'exploracion_fisica',
-            'formulario_catalogo_id' => 2,
-            'tipo_pregunta' => 'simple',
-            'campos_adicionales' => json_encode([]),
-        ]);
-
-        CatalogoPregunta::create([
-            'pregunta' => 'Cara',
             'orden' => 38,
             'categoria' => 'exploracion_fisica',
             'formulario_catalogo_id' => 2,
@@ -408,7 +399,7 @@ class CatalogoPreguntaSeeder extends Seeder
         ]);
 
         CatalogoPregunta::create([
-            'pregunta' => 'Reflejos pupilares',
+            'pregunta' => 'Cara',
             'orden' => 39,
             'categoria' => 'exploracion_fisica',
             'formulario_catalogo_id' => 2,
@@ -417,7 +408,7 @@ class CatalogoPreguntaSeeder extends Seeder
         ]);
 
         CatalogoPregunta::create([
-            'pregunta' => 'Fondo de ojo',
+            'pregunta' => 'Reflejos pupilares',
             'orden' => 40,
             'categoria' => 'exploracion_fisica',
             'formulario_catalogo_id' => 2,
@@ -426,8 +417,17 @@ class CatalogoPreguntaSeeder extends Seeder
         ]);
 
         CatalogoPregunta::create([
-            'pregunta' => 'Nariz',
+            'pregunta' => 'Fondo de ojo',
             'orden' => 41,
+            'categoria' => 'exploracion_fisica',
+            'formulario_catalogo_id' => 2,
+            'tipo_pregunta' => 'simple',
+            'campos_adicionales' => json_encode([]),
+        ]);
+
+        CatalogoPregunta::create([
+            'pregunta' => 'Nariz',
+            'orden' => 42,
             'categoria' => 'exploracion_fisica',
             'formulario_catalogo_id' => 2,
             'tipo_pregunta' => 'simple',
@@ -436,15 +436,6 @@ class CatalogoPreguntaSeeder extends Seeder
 
         CatalogoPregunta::create([
             'pregunta' => 'Boca',
-            'orden' => 42,
-            'categoria' => 'exploracion_fisica',
-            'formulario_catalogo_id' => 2,
-            'tipo_pregunta' => 'simple',
-            'campos_adicionales' => json_encode([]),
-        ]);
-
-        CatalogoPregunta::create([
-            'pregunta' => 'Amígdalas',
             'orden' => 43,
             'categoria' => 'exploracion_fisica',
             'formulario_catalogo_id' => 2,
@@ -453,7 +444,7 @@ class CatalogoPreguntaSeeder extends Seeder
         ]);
 
         CatalogoPregunta::create([
-            'pregunta' => 'Oídos',
+            'pregunta' => 'Amígdalas',
             'orden' => 44,
             'categoria' => 'exploracion_fisica',
             'formulario_catalogo_id' => 2,
@@ -462,7 +453,7 @@ class CatalogoPreguntaSeeder extends Seeder
         ]);
 
         CatalogoPregunta::create([
-            'pregunta' => 'Cuello',
+            'pregunta' => 'Oídos',
             'orden' => 45,
             'categoria' => 'exploracion_fisica',
             'formulario_catalogo_id' => 2,
@@ -471,7 +462,7 @@ class CatalogoPreguntaSeeder extends Seeder
         ]);
 
         CatalogoPregunta::create([
-            'pregunta' => 'Adenomegalias',
+            'pregunta' => 'Cuello',
             'orden' => 46,
             'categoria' => 'exploracion_fisica',
             'formulario_catalogo_id' => 2,
@@ -480,7 +471,7 @@ class CatalogoPreguntaSeeder extends Seeder
         ]);
 
         CatalogoPregunta::create([
-            'pregunta' => 'Pulsos carotídeos',
+            'pregunta' => 'Adenomegalias',
             'orden' => 47,
             'categoria' => 'exploracion_fisica',
             'formulario_catalogo_id' => 2,
@@ -489,7 +480,7 @@ class CatalogoPreguntaSeeder extends Seeder
         ]);
 
         CatalogoPregunta::create([
-            'pregunta' => 'Tiroides',
+            'pregunta' => 'Pulsos carotídeos',
             'orden' => 48,
             'categoria' => 'exploracion_fisica',
             'formulario_catalogo_id' => 2,
@@ -498,7 +489,7 @@ class CatalogoPreguntaSeeder extends Seeder
         ]);
 
         CatalogoPregunta::create([
-            'pregunta' => 'Tórax',
+            'pregunta' => 'Tiroides',
             'orden' => 49,
             'categoria' => 'exploracion_fisica',
             'formulario_catalogo_id' => 2,
@@ -507,7 +498,7 @@ class CatalogoPreguntaSeeder extends Seeder
         ]);
 
         CatalogoPregunta::create([
-            'pregunta' => 'Glándulas mamarias',
+            'pregunta' => 'Tórax',
             'orden' => 50,
             'categoria' => 'exploracion_fisica',
             'formulario_catalogo_id' => 2,
@@ -516,7 +507,7 @@ class CatalogoPreguntaSeeder extends Seeder
         ]);
 
         CatalogoPregunta::create([
-            'pregunta' => 'Abdomen',
+            'pregunta' => 'Glándulas mamarias',
             'orden' => 51,
             'categoria' => 'exploracion_fisica',
             'formulario_catalogo_id' => 2,
@@ -525,7 +516,7 @@ class CatalogoPreguntaSeeder extends Seeder
         ]);
 
         CatalogoPregunta::create([
-            'pregunta' => 'Hernias',
+            'pregunta' => 'Abdomen',
             'orden' => 52,
             'categoria' => 'exploracion_fisica',
             'formulario_catalogo_id' => 2,
@@ -534,7 +525,7 @@ class CatalogoPreguntaSeeder extends Seeder
         ]);
 
         CatalogoPregunta::create([
-            'pregunta' => 'Visceromegalías',
+            'pregunta' => 'Hernias',
             'orden' => 53,
             'categoria' => 'exploracion_fisica',
             'formulario_catalogo_id' => 2,
@@ -543,7 +534,7 @@ class CatalogoPreguntaSeeder extends Seeder
         ]);
 
         CatalogoPregunta::create([
-            'pregunta' => 'Genitales',
+            'pregunta' => 'Visceromegalías',
             'orden' => 54,
             'categoria' => 'exploracion_fisica',
             'formulario_catalogo_id' => 2,
@@ -552,7 +543,7 @@ class CatalogoPreguntaSeeder extends Seeder
         ]);
 
         CatalogoPregunta::create([
-            'pregunta' => 'Columna',
+            'pregunta' => 'Genitales',
             'orden' => 55,
             'categoria' => 'exploracion_fisica',
             'formulario_catalogo_id' => 2,
@@ -561,7 +552,7 @@ class CatalogoPreguntaSeeder extends Seeder
         ]);
 
         CatalogoPregunta::create([
-            'pregunta' => 'Pelvis',
+            'pregunta' => 'Columna',
             'orden' => 56,
             'categoria' => 'exploracion_fisica',
             'formulario_catalogo_id' => 2,
@@ -570,7 +561,7 @@ class CatalogoPreguntaSeeder extends Seeder
         ]);
 
         CatalogoPregunta::create([
-            'pregunta' => 'Extremidades superiores',
+            'pregunta' => 'Pelvis',
             'orden' => 57,
             'categoria' => 'exploracion_fisica',
             'formulario_catalogo_id' => 2,
@@ -579,7 +570,7 @@ class CatalogoPreguntaSeeder extends Seeder
         ]);
 
         CatalogoPregunta::create([
-            'pregunta' => 'Hombro',
+            'pregunta' => 'Extremidades superiores',
             'orden' => 58,
             'categoria' => 'exploracion_fisica',
             'formulario_catalogo_id' => 2,
@@ -588,7 +579,7 @@ class CatalogoPreguntaSeeder extends Seeder
         ]);
 
         CatalogoPregunta::create([
-            'pregunta' => 'Codo',
+            'pregunta' => 'Hombro',
             'orden' => 59,
             'categoria' => 'exploracion_fisica',
             'formulario_catalogo_id' => 2,
@@ -597,7 +588,7 @@ class CatalogoPreguntaSeeder extends Seeder
         ]);
 
         CatalogoPregunta::create([
-            'pregunta' => 'Muñeca y mano',
+            'pregunta' => 'Codo',
             'orden' => 60,
             'categoria' => 'exploracion_fisica',
             'formulario_catalogo_id' => 2,
@@ -615,7 +606,7 @@ class CatalogoPreguntaSeeder extends Seeder
         ]);
 
         CatalogoPregunta::create([
-            'pregunta' => 'Extremidades inferiores',
+            'pregunta' => 'Muñeca y mano',
             'orden' => 62,
             'categoria' => 'exploracion_fisica',
             'formulario_catalogo_id' => 2,
@@ -624,7 +615,7 @@ class CatalogoPreguntaSeeder extends Seeder
         ]);
 
         CatalogoPregunta::create([
-            'pregunta' => 'Cadera',
+            'pregunta' => 'Extremidades inferiores',
             'orden' => 63,
             'categoria' => 'exploracion_fisica',
             'formulario_catalogo_id' => 2,
@@ -633,7 +624,7 @@ class CatalogoPreguntaSeeder extends Seeder
         ]);
 
         CatalogoPregunta::create([
-            'pregunta' => 'Rodilla',
+            'pregunta' => 'Cadera',
             'orden' => 64,
             'categoria' => 'exploracion_fisica',
             'formulario_catalogo_id' => 2,
@@ -642,7 +633,7 @@ class CatalogoPreguntaSeeder extends Seeder
         ]);
 
         CatalogoPregunta::create([
-            'pregunta' => 'Tobillo y pie',
+            'pregunta' => 'Rodilla',
             'orden' => 65,
             'categoria' => 'exploracion_fisica',
             'formulario_catalogo_id' => 2,
@@ -651,7 +642,7 @@ class CatalogoPreguntaSeeder extends Seeder
         ]);
 
         CatalogoPregunta::create([
-            'pregunta' => 'Reflejos osteotendinosos',
+            'pregunta' => 'Tobillo y pie',
             'orden' => 66,
             'categoria' => 'exploracion_fisica',
             'formulario_catalogo_id' => 2,
@@ -660,7 +651,7 @@ class CatalogoPreguntaSeeder extends Seeder
         ]);
 
         CatalogoPregunta::create([
-            'pregunta' => 'Piel y faneros',
+            'pregunta' => 'Reflejos osteotendinosos',
             'orden' => 67,
             'categoria' => 'exploracion_fisica',
             'formulario_catalogo_id' => 2,
@@ -669,8 +660,17 @@ class CatalogoPreguntaSeeder extends Seeder
         ]);
 
         CatalogoPregunta::create([
-            'pregunta' => 'Otros',
+            'pregunta' => 'Piel y faneros',
             'orden' => 68,
+            'categoria' => 'exploracion_fisica',
+            'formulario_catalogo_id' => 2,
+            'tipo_pregunta' => 'simple',
+            'campos_adicionales' => json_encode([]),
+        ]);
+
+        CatalogoPregunta::create([
+            'pregunta' => 'Otros',
+            'orden' => 69,
             'categoria' => 'exploracion_fisica',
             'formulario_catalogo_id' => 2,
             'tipo_pregunta' => 'simple',
