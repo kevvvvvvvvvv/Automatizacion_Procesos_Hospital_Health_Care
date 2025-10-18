@@ -2,6 +2,7 @@ import React from 'react';
 import { FaUser } from "react-icons/fa";
 import { LuBedSingle } from "react-icons/lu";
 import { RiArchiveDrawerFill } from "react-icons/ri";
+import { MdHistory } from "react-icons/md";
 import { FaUserDoctor } from "react-icons/fa6";
 import { route } from 'ziggy-js';
 import { Head, usePage, PageProps as InertiaPageProps, router } from '@inertiajs/react';
@@ -49,12 +50,21 @@ export default function Dashboard() {
                         onClick={() => router.visit(route('producto-servicios.index'))}
                     />
                 </div>
+                
                 <div>
                     <CardButton
                         icon={FaUserDoctor}
                         text="Colaboradores"
                         bgColor="#1B1C38"
                         onClick={() => router.visit(route('doctores.index'))}
+                    />
+                </div>  
+                <div>
+                    <CardButton
+                        icon={MdHistory}
+                        text="Historial"
+                        bgColor="#1B1C38"
+                        onClick={() => router.visit(route('historiales.index'))}
                     />
                 </div>               
             </MainLayout>

@@ -14,6 +14,7 @@ import {
     flexRender,
     SortingState,
 } from '@tanstack/react-table';
+
 import AddButton from '@/components/ui/add-button';
 import BackButton from '@/components/ui/back-button';
 
@@ -105,20 +106,15 @@ const Index = ({ pacientes }: IndexProps) => {
     <>
       <Head title="Pacientes" />
       <div className="p-4 md:p-8">
-        <div className="flex items-center justify-between mb-6">
-          <h1 className="text-3xl font-bold text-black">Listado de Pacientes</h1>
+        <div className="flex justify-between items-center mb-6">
+          <div className="flex items-center space-x-4">
+            <BackButton />
+          </div>
+          
+          <AddButton href={route('pacientes.create')}>
+            Agregar Paciente
+          </AddButton>
         </div>
-             <div className="flex justify-between items-center mb-6">
-                {/* Lado izquierdo: BackButton */}
-                <div className="flex items-center space-x-4">
-                  <BackButton />
-                </div>
-                
-                {/* Lado derecho: Botón Agregar Paciente pegado a la derecha */}
-                <AddButton href={route('pacientes.create')}>
-                  Agregar Paciente
-                </AddButton>
-            </div>
 
         <div className="mb-4">
           <input
