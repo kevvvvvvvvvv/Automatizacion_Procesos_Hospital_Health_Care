@@ -1,5 +1,6 @@
 import React from 'react';
-import { Link } from '@inertiajs/react'; // o el router que uses 
+import { Link } from '@inertiajs/react'; 
+import { Toaster } from 'react-hot-toast';
 
 type MainLayoutProps = {
   children: React.ReactNode;
@@ -21,8 +22,10 @@ const HomeIcon = () => (
 );
 
 const MainLayout: React.FC<MainLayoutProps> = ({ children, userName, pageTitle }) => {
+
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col md:flex-row">
+      <Toaster position="top-right" reverseOrder={false} />
       {/* Sidebar (primero en DOM) */}
       <aside className="w-full md:w-20 bg-[#1B1C38] flex flex-row md:flex-col items-center justify-center md:justify-start py-4 md:py-6 shadow order-2 md:order-1 gap-2 md:gap-4">
         <Link
@@ -45,12 +48,10 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, userName, pageTitle }
           
         </div>
         </header>
-        
-        
 
         {/* Main */}
         <main className="p-6 flex-1 overflow-auto">
-          {pageTitle && <h2 className="text-lg text-gray-600 mb-4 text-center">{pageTitle}</h2>}
+          {pageTitle && <h2 className="text-3xl mb-4 text-center font-extrabold">{pageTitle}</h2>}
           {children}
         </main>
       </div>

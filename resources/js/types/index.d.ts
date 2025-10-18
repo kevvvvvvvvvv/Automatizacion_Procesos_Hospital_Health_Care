@@ -65,6 +65,7 @@ export interface Paciente {
     nombre_padre: string;
     nombre_madre: string;
     estancias: Estancia[];
+    age: number;
 }
 
 export interface User {
@@ -148,4 +149,37 @@ export interface ProductoServicio {
     nombre_prestacion: string;
     importe: number;
     cantidad: number | null;
+}
+
+export interface HistoryEntry {
+    id: number;
+    action: string;
+    user_name: string;
+    model_name: string;
+    model_id: number;
+    before: Record<string, unknown> | null;
+    after: Record<string, unkonwn> | null;
+    created_at: string;
+}
+
+export interface PaginatedResponse<T> {
+    data: T[];
+    links: {
+        first: string;
+        last: string;
+        prev: string | null;
+        next: string | null;
+    };
+
+    current_page: number;
+    first_page_url: string;
+    from: number;
+    last_page: number;
+    last_page_url: string;
+    next_page_url: string | null;
+    path: string;
+    per_page: number;
+    prev_page_url: string | null;
+    to: number;
+    total: number;
 }
