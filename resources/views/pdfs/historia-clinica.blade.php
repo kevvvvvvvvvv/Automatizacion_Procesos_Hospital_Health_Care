@@ -150,110 +150,140 @@
 
     <main>
         <h1>HISTORIA CLÍNICA</h1>
+        <span class="id-label">Estado civil:</span>
+        <span>{{$paciente['estado_civil']}}</span>
+        <span class="id-label">Ocupación:</span>
+        <span>{{$paciente['ocupacion']}}</span>
+        <span class="id-label">Lugar de origen:</span>
+        <span>{{$paciente['lugar_origen']}}</span>
 @foreach ($preguntasPorCategoria as $categoria => $preguntasDeCategoria)
         
-        {{-- Variable para acumular las preguntas respondidas con "No" o sin respuesta --}}
-        @php $preguntasSinNovedad = []; @endphp
-        
-        {{-- Título de la Sección --}}
-        <h3 style="margin-top: 15px; margin-bottom: 5px; border-bottom: 1px solid #ccc; padding-bottom: 3px;">
-            {{-- Convierte el nombre de la categoría a un formato legible --}}
+        <h3 style="margin-top: 15px; margin-bottom: 8px; border-bottom: 1px solid #ccc; padding-bottom: 3px; font-size: 11pt;">
             {{ ucwords(str_replace('_', ' ', $categoria)) }} 
         </h3>
+        @if ($categoria === 'exploracion_fisica')
+            <div style="margin-bottom: 8px;">
+                <strong style="text-decoration: underline;">Padecimiento actual:</strong>
+                <span>{{ $historiaclinica['padecimiento_actual'] }}</span>
+            </div>
+            <p style="line-height: 1.4; margin: 0; margin-bottom: 10px;">
+                <strong>Tensión arterial:</strong> {{$historiaclinica['tension_arterial']}} mm Hg | 
+                <strong>Frecuencia cardiaca:</strong> {{$historiaclinica['frecuencia_cardiaca']}} x min | 
+                <strong>Frecuencia respiratoria:</strong> {{$historiaclinica['frecuencia_respiratoria']}} x min | 
+                <strong>Temperatura:</strong> {{$historiaclinica['temperatura']}} °C | 
+                <strong>Peso:</strong> {{$historiaclinica['peso']}} kg | 
+                <strong>Talla:</strong> {{$historiaclinica['talla']}} cm
+            </p>
+        @endif
 
-        {{-- Itera sobre cada pregunta DENTRO de la categoría actual --}}
+        @php
+            
+            $preguntasConDetalles = []; 
+            $preguntasSinNovedad = [];  
+        @endphp
+
+
         @foreach ($preguntasDeCategoria as $pregunta)
             @php
-                // Busca la respuesta correspondiente a esta pregunta en el mapa
                 $respuesta = $respuestasMap->get($pregunta->id);
-                // Extrae el valor de la respuesta principal ('si', 'no', 'Conozco', etc.)
                 $valorRespuesta = $respuesta ? ($respuesta->detalles['respuesta'] ?? null) : null;
-                // Asume que las opciones personalizadas vienen como array (asegúrate que el cast esté en el modelo CatalogoPregunta)
-                $opcionesRespuesta = $pregunta->opciones_respuesta ?? null; 
                 
-                // Determina si la respuesta es "afirmativa" (requiere mostrar detalles)
                 $esAfirmativa = false;
                 if ($valorRespuesta) {
-                    if ($opcionesRespuesta) {
-                        // Si hay opciones personalizadas, busca la seleccionada y mira su flag 'triggersFields'
+                    $opcionesRespuesta = $pregunta->opciones_respuesta ?? null;
+                    if ($opcionesRespuesta && is_array($opcionesRespuesta)) {
                         $opcionSeleccionada = collect($opcionesRespuesta)->firstWhere('value', $valorRespuesta);
                         if ($opcionSeleccionada && ($opcionSeleccionada['triggersFields'] ?? false)) {
                             $esAfirmativa = true;
                         }
                     } elseif ($valorRespuesta === 'si') {
-                        // Si no hay opciones personalizadas, usa la lógica de 'si'
                         $esAfirmativa = true;
                     }
                 }
             @endphp
 
-            {{-- Si la respuesta fue afirmativa, muestra la pregunta subrayada y los detalles --}}
             @if ($esAfirmativa)
-                <div style="margin-bottom: 5px;">
-                    <strong style="text-decoration: underline;">{{ $pregunta->pregunta }}:</strong> 
+                @php
+                    $detalleString = '';
+                    $campos = $respuesta->detalles['campos'] ?? [];
+                    $items = $respuesta->detalles['items'] ?? [];
 
-                    {{-- Lógica para mostrar los detalles según el tipo de pregunta --}}
-                    @if ($pregunta->tipo_pregunta === 'simple' && isset($respuesta->detalles['campos']['detalle']))
-                        {{ $respuesta->detalles['campos']['detalle'] }}
-
-                    @elseif (($pregunta->tipo_pregunta === 'multiple_campos' || $pregunta->tipo_pregunta === 'direct_select' || $pregunta->tipo_pregunta === 'direct_multiple') && isset($respuesta->detalles['campos']))
-                        @php $detallesCampos = []; @endphp
-                        @foreach ($pregunta->campos_adicionales as $campo)
-                            @if (isset($respuesta->detalles['campos'][$campo['name']]))
-                                @php 
-                                    $valorCampo = $respuesta->detalles['campos'][$campo['name']];
-                                    // Formatea fechas si es necesario (ej. para tipo 'month' o 'date')
-                                    if(in_array($campo['type'], ['date', 'month', 'date_unknown', 'month_unknown']) && $valorCampo !== 'desconocido') {
-                                        try {
-                                             $formato = ($campo['type'] === 'month' || $campo['type'] === 'month_unknown') ? 'm/Y' : 'd/m/Y';
-                                             $valorCampo = \Carbon\Carbon::parse($valorCampo)->format($formato);
-                                        } catch (\Exception $e) { /* Mantener valor original si falla el parseo */ }
-                                    }
-                                    $detallesCampos[] = $campo['label'] . ': ' . $valorCampo; 
-                                @endphp
-                            @endif
-                        @endforeach
-                        {{ implode('; ', $detallesCampos) }}
-
-                    @elseif ($pregunta->tipo_pregunta === 'repetible' && !empty($respuesta->detalles['items']))
-                        <ul style="margin: 0; padding-left: 20px; list-style-type: circle;">
-                            @foreach ($respuesta->detalles['items'] as $item)
-                                <li>
-                                    @php $detallesItem = []; @endphp
-                                    @foreach ($pregunta->campos_adicionales as $campo)
-                                        @if (isset($item[$campo['name']]))
-                                             @php 
-                                                $valorItem = $item[$campo['name']];
-                                                if(in_array($campo['type'], ['date', 'month', 'date_unknown', 'month_unknown']) && $valorItem !== 'desconocido') {
-                                                    try {
-                                                         $formato = ($campo['type'] === 'month' || $campo['type'] === 'month_unknown') ? 'm/Y' : 'd/m/Y';
-                                                         $valorItem = \Carbon\Carbon::parse($valorItem)->format($formato);
-                                                    } catch (\Exception $e) { /* Mantener valor original */ }
-                                                }
-                                                $detallesItem[] = $campo['label'] . ': ' . $valorItem; 
-                                            @endphp
-                                        @endif
-                                    @endforeach
-                                    {{ implode('; ', $detallesItem) }}
-                                </li>
-                            @endforeach
-                        </ul>
-                    @endif
-                </div>
+                    if ($pregunta->tipo_pregunta === 'simple' && isset($campos['detalle'])) {
+                        $detalleString = $campos['detalle'];
+                    } elseif (!empty($campos) && is_array($pregunta->campos_adicionales)) {
+                        $partes = [];
+                        foreach ($pregunta->campos_adicionales as $campoDefinicion) {
+                            if (isset($campos[$campoDefinicion['name']])) {
+                                $valor = $campos[$campoDefinicion['name']];
+                                
+                                if (in_array($campoDefinicion['type'], ['date', 'month', 'date_unknown', 'month_unknown']) && $valor !== 'desconocido') {
+                                    try {
+                                        $formato = (strpos($campoDefinicion['type'], 'month') !== false) ? 'm/Y' : 'd/m/Y';
+                                        $valor = \Carbon\Carbon::parse($valor)->format($formato);
+                                    } catch (\Exception $e) { }
+                                }
+                                $partes[] = $campoDefinicion['label'] . ': ' . $valor;
+                            }
+                        }
+                        $detalleString = implode('; ', $partes);
+                    } elseif (!empty($items) && is_array($pregunta->campos_adicionales)) {
+                         $partesItems = [];
+                         foreach($items as $item) {
+                             $subPartes = [];
+                             foreach($pregunta->campos_adicionales as $campoDefinicion) {
+                                 if(isset($item[$campoDefinicion['name']])) {
+                                      $subPartes[] = $campoDefinicion['label'] . ': ' . $item[$campoDefinicion['name']];
+                                 }
+                             }
+                             $partesItems[] = implode('; ', $subPartes);
+                         }
+                         $detalleString = implode(' | ', $partesItems);
+                    }
+                    
+                    
+                    $preguntasConDetalles[] = '<strong style="text-decoration: underline;">' . $pregunta->pregunta . ':</strong> ' . $detalleString;
+                @endphp
             @else
-                {{-- Si no fue afirmativa o no hubo respuesta, acumula el nombre de la pregunta --}}
+                
                 @php $preguntasSinNovedad[] = $pregunta->pregunta; @endphp
             @endif
         @endforeach
 
-        {{-- Al final de la categoría, si hubo preguntas sin novedad, imprímelas --}}
+        
+        @if (!empty($preguntasConDetalles))
+            <p style="margin: 0 0 5px 0; line-height: 1.4;">
+                {!! implode(', ', $preguntasConDetalles) !!}
+            </p>
+        @endif
+
+        
         @if (!empty($preguntasSinNovedad))
-            <p style="margin-bottom: 5px;">
+            <p style="margin: 0 0 5px 0; line-height: 1.4; color: #555;">
                 {{ implode(', ', $preguntasSinNovedad) }} sin nada que reportar.
             </p>
         @endif
-        
     @endforeach
+        <section>
+            <div>
+                <span class="id-label">Resultados previos y actuales de laboratorio y gabinete:</span>
+                <span>{{$historiaclinica['resultados_previos']}}</span>
+            </div>
+
+            <div>
+                <span class="id-label">Diagnósticos o problemas clínicos:</span>
+                <span>{{$historiaclinica['diagnostico']}}</span>
+            </div>
+
+            <div>
+                <span class="id-label">Pronóstico:</span>
+                <span>{{$historiaclinica['pronostico']}}</span>
+            </div>
+
+            <div>
+               <span class="id-label">Indicación terapéutica:</span>
+                <span>{{$historiaclinica['indicacion_terapeutica']}}</span>             
+            </div>
+        </section>
     </main>
     
 </body>
