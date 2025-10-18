@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class RespuestaFromulario extends Model
+class RespuestaFormulario extends Model
 {
     protected $table = 'respuesta_formularios';
 
