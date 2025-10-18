@@ -35,9 +35,11 @@ Route::resource('pacientes.estancias.hojasfrontales', FormularioHojaFrontalContr
 Route::resource('doctores', DoctorController::class)->middleware('auth');  
 
 Route::resource('pacientes.estancias.interconsulta', InterconsultaController::class)->parameters(['interconsulta' => 'interconsulta']);
-Route::resource('pacientes.estancias.interconsultas', InterconsultaController::class)
-    ->parameters(['interconsultas' => 'interconsulta'])
-    ->names('pacientes.estancias.interconsultas');
+  Route::resource('pacientes.estancias.interconsultas', InterconsultaController::class)
+       ->parameters(['interconsultas' => 'interconsulta'])
+       ->names('pacientes.estancias.interconsultas');
+
+
 require __DIR__.'/settings.php';
 require __DIR__.'/auth.php';
 

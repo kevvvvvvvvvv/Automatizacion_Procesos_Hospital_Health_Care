@@ -139,7 +139,7 @@ class EstanciaController extends Controller
             ->with('success', 'Estancia actualizada y estado de habitación corregido.');
     }
 
-    public function show(Estancia $estancia)
+       public function show(Estancia $estancia)
     {
         $estancia->load([
             'paciente', 
@@ -148,7 +148,10 @@ class EstanciaController extends Controller
             'familiarResponsable',
             'habitacion',
             'formularioInstancias.catalogo',
-            'formularioInstancias.user'     
+            'formularioInstancias.user',
+            // NUEVO: Carga interconsultas con relaciones
+            'interconsultas.creator',  // Carga el creador de cada interconsulta
+            'interconsultas.updater'   // Carga el actualizador de cada interconsulta
         ]);
         
         return Inertia::render('estancias/show', [

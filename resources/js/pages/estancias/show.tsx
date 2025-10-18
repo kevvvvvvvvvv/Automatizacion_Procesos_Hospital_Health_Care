@@ -125,9 +125,55 @@ const Show = ({ estancia }: ShowEstanciaProps) => {
                     ) : (
                         <p className="text-gray-500 italic text-center py-4">No hay formularios registrados para esta estancia.</p>
                     )}
+                      {/* NUEVA SECCIÓN: Lista de Interconsultas */}
+        {estancia.interconsultas && estancia.interconsultas.length > 0 ? (
+            <>
+                <h3 className="text-lg font-semibold mt-8 mb-4">Interconsultas Registradas</h3>
+                {estancia.interconsultas.map((interconsulta) => (
+                    <div key={interconsulta.id} className="p-4 border rounded-md bg-blue-50 flex justify-between items-center">
+                        <div>
+                            <p className="font-semibold text-blue-600">
+                                Interconsulta para {paciente.nombre} {paciente.apellido_paterno}
+                            </p>
+                            <p className="text-sm text-gray-600">
+                                Creada por: {interconsulta.creator ? interconsulta.creator.nombre : 'N/A'}
+                            </p>
+                            <p className="text-xs text-gray-500">
+                                {new Date(interconsulta.created_at).toLocaleString('es-MX', dateOptions)}
+                            </p>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                            {/* BOTÓN PARA IR A LA PÁGINA DE DETALLES */}
+                            <Link 
+                                href={route('pacientes.estancias.interconsultas.show', {
+                                    paciente: paciente.id,
+                                    estancia: estancia.id,
+                                    interconsulta: interconsulta.id
+                                })}
+                                className="inline-flex items-center px-3 py-1 bg-blue-600 text-white text-xs rounded-md hover:bg-blue-700 transition"
+                                title="Ver detalles de la interconsulta"
+                            >
+                                Ver Detalles
+                            </Link>
+                            <a 
+                                href={route('interconsultas.pdf', interconsulta.id)}  // Asumiendo ruta para PDF
+                                target="_blank"
+                                className="p-2 text-red-500 hover:bg-red-100 hover:text-red-700 rounded-full transition"
+                                title="Imprimir / Descargar PDF"
+                            >
+                                <Printer size={18} />
+                            </a>
+                        </div>
+                    </div>
+                ))}
+            </>
+        ) : (
+            <p className="text-gray-500 italic text-center py-4 mt-8">No hay interconsultas registradas para esta estancia.</p>
+        )}
                 </div>
             </div>
         </>
+        
     );
 };
 
