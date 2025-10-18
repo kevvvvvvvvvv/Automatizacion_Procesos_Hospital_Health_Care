@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('interconsulta', function (Blueprint $table) {
+        Schema::create('interconsultas', function (Blueprint $table) {  // Cambia 'interconsulta' a 'interconsultas' (plural)
             $table->id(); 
 
             $table->foreignId('paciente_id')->constrained('pacientes');
@@ -41,6 +41,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('interconsulta'); // Elimina la tabla en rollback
+        Schema::dropIfExists('interconsultas');  // Cambia aquí también a plural
     }
 };

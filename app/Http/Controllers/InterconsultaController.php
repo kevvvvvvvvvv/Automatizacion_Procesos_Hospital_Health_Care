@@ -5,7 +5,7 @@ use App\Models\Interconsulta;
 use App\Models\Paciente;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
-
+use App\Models\Estancia;
 use Illuminate\Http\Request;
 
 class InterconsultaController extends Controller
@@ -21,16 +21,16 @@ class InterconsultaController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
-     {
-         $pacientes = Paciente::select('id', DB::raw('CONCAT(nombre, " ", apellido_paterno, " ", apellido_materno) as nombre_completo'))->get();
-         return Inertia::render('formularios/interconsulta/create', compact('pacientes'));
-     }
+    public function create(Paciente $paciente, Estancia $estancia)
+    {
+        return Inertia::render('formularios/interconsulta/create', ['paciente' => $paciente, 'estancia' => $estancia]);
+    }
 
+ 
     /**
      * Store a newly created resource in storage.
      */
-         public function store(Request $request)
+    public function store(Request $request)
      {
          $validated = $request->validate([
              'paciente_id' => 'required|exists:pacientes,id',

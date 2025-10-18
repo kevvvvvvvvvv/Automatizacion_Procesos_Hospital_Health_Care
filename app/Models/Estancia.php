@@ -74,5 +74,8 @@ class Estancia extends Model
     {
         return $this->hasMany(Venta::class);
     }
-
+    public function interconsultas()
+{
+    return $this->hasMany(Interconsulta::class);
+}
 }
