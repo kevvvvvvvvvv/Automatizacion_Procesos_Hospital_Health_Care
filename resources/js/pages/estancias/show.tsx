@@ -8,6 +8,7 @@ import MainLayout from '@/layouts/MainLayout';
 import { Estancia, Paciente, User, FormularioInstancia, Habitacion, FamiliarResponsable} from '@/types'; 
 import InfoCard from '@/components/ui/info-card';
 import InfoField from '@/components/ui/info-field';
+import AddButton from '@/components/ui/add-button';
 
 interface ShowEstanciaProps {
     estancia: Estancia & {

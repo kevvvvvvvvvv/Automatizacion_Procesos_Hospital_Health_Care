@@ -86,7 +86,7 @@ const Show = ({ paciente }: ShowProps) => {
         <AddButton href={route('pacientes.estancias.create', { paciente: paciente.id })}>
             Añadir Estancia
         </AddButton>
-
+        
       </div>
           <h2 className="text-xl font-semibold border-b pb-2 mt-8 mb-4">Historial de Estancias</h2>
 <div className="space-y-4">

@@ -12,15 +12,17 @@ class CredencialEmpleado extends Model
 
     protected $table = 'credencial_empleados'; // Especifica explícitamente (Laravel asume plural)
 
-    protected $fillable = [
-        'id_user', // Coincide con la relación en User
-        'titulo',
-        'cedula',
-    ];
+          protected $fillable = [
+            'user_id',
+            'titulo',
+            'cedula_profesional',
+            'cedula',  // Si lo usas
+        ];
+     
 
     // Relación inversa (opcional)
     public function user(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'id_user'); // Coincide con el foreign key
+        return $this->belongsTo(User::class, 'user_id'); // Coincide con el foreign key
     }
 }
