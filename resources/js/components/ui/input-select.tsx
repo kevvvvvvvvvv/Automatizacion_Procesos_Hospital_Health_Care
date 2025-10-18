@@ -43,7 +43,7 @@ const SelectInput: React.FC<SelectInputProps> = ({
     indicatorSeparator: () => ({ display: 'none' }),
   };
 
-  const selectedOption = options.find((opt) => opt.value === value) || null;
+  const selectedOption = options.find((opt) => opt.value == value) || null;
   
   const handleChange = (selected: OnChangeValue<SelectOption, false>) => {
     onChange(selected ? selected.value : '');

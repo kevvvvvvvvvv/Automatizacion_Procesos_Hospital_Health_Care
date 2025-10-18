@@ -24,11 +24,6 @@ class FormularioInstancia extends Model
         return $this->belongsTo(Estancia::class,'estancia_id', 'id');
     }
 
-    public function formularioCatalogo():BelongsTo
-    {
-        return $this->belongsTo(FormularioCatalogo::class, 'formulario_catalogo_id','id');
-    }
-
     public function user():BelongsTo
     {
         return $this->belongsTo(User::class,'user_id','id');

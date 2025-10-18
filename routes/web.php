@@ -4,12 +4,15 @@ use App\Http\Controllers\PacienteController;
 use App\Http\Controllers\EstanciaController;
 use App\Http\Controllers\HabitacionController;
 use App\Http\Controllers\FormularioHojaFrontalController;
+use App\Http\Controllers\FormularioHistoriaClinicaController;
 use App\Http\Controllers\FormularioInstanciaController;
 use App\Http\Controllers\DoctorController; 
 use App\Http\Controllers\ProductoServicioController;
 use App\Http\Controllers\InterconsultaController;
 use App\Http\Controllers\CargoController;
 use App\Http\Controllers\FamiliarResponsableController;
+use App\Http\Controllers\HistoryController;
+use App\Models\History;
 use App\Models\Paciente;
 use App\Models\ProductoServicio;
 use Illuminate\Support\Facades\Route;
@@ -30,7 +33,8 @@ Route::resource('producto-servicios',ProductoServicioController::class)->middlew
 Route::resource('pacientes', PacienteController::class)->middleware('auth');
 Route::resource('pacientes.responsable', FamiliarResponsableController::class);
 Route::resource('pacientes.estancias', EstanciaController::class)->shallow()->middleware('auth');
-Route::resource('pacientes.estancias.hojasfrontales', FormularioHojaFrontalController::class)->shallow()->middleware('auth');
+Route::resource('pacientes.estancias.hojasfrontales', FormularioHojaFrontalController::class)->shallow()->parameters(['hojasfrontales' => 'hojaFrontal'])->middleware('auth');
+Route::resource('pacientes.estancias.historiasclinicas', FormularioHistoriaClinicaController::class)->shallow()->middleware('auth');
 
 Route::resource('doctores', DoctorController::class)->middleware('auth');  
 
@@ -38,6 +42,19 @@ Route::resource('pacientes.estancias.interconsulta', InterconsultaController::cl
 Route::resource('pacientes.estancias.interconsultas', InterconsultaController::class)
     ->parameters(['interconsultas' => 'interconsulta'])
     ->names('pacientes.estancias.interconsultas');
+Route::put('/doctores/{doctor}', [DoctorController::class, 'update'])->name('doctores.update');
+
+Route::get('historiales',[HistoryController::class,'index'])->name('historiales.index');
+
+
+Route::get('/hojasfrontales/{hojafrontal}/pdf', [FormularioHojaFrontalController::class, 'generarPDF'])
+    ->name('hojasfrontales.pdf')
+    ->middleware('auth');
+
+Route::get('/historiasclinicas/{historiaclinica}/pdf', [FormularioHistoriaClinicaController::class, 'generarPDF'])
+    ->name('hojasfrontales.pdf')
+    ->middleware('auth');
+
 require __DIR__.'/settings.php';
 require __DIR__.'/auth.php';
 
