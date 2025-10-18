@@ -9,42 +9,8 @@ import AddButton from '@/components/ui/add-button';
 
 import InfoCard from '@/components/ui/info-card';
 import InfoField from '@/components/ui/info-field';
+import { Paciente } from '@/types';
 
-
-type Estancia = {
-    id: number;
-    folio: string;
-    fecha_ingreso: string;
-    fecha_egreso: string | null; 
-    num_habitacion: string | null;
-    tipo_estancia: string;
-};
-
-
-type Paciente = {
-    id: number;
-    curp: string;
-    nombre: string;
-    apellido_paterno: string;
-    apellido_materno: string;
-    sexo: string;
-    fecha_nacimiento: string;
-    calle: string;
-    numero_exterior: string;
-    numero_interior: string | null;
-    colonia: string;
-    municipio: string;
-    estado: string;
-    pais: string;
-    cp: string;
-    telefono: string;
-    estado_civil: string;
-    ocupacion: string;
-    lugar_origen: string;
-    nombre_padre: string;
-    nombre_madre: string;
-    estancias: Estancia[];
-};
 
 type ShowProps = {
     paciente: Paciente;
@@ -78,8 +44,8 @@ const Show = ({ paciente }: ShowProps) => {
                 value={paciente.curp}
             />
             <InfoField
-                label="Fecha de Nacimiento"
-                value={paciente.fecha_nacimiento}
+                label="Edad"
+                value={`${paciente.age} años`}
             />
             <InfoField
                 label="Sexo"

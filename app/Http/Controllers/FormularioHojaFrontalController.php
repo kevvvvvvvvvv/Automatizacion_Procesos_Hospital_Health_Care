@@ -13,6 +13,7 @@ use App\Models\HojaFrontal;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Spatie\LaravelPdf\Facades\Pdf;
+use Illuminate\Support\Facades\DB; 
 
 class FormularioHojaFrontalController extends Controller
 {
@@ -31,7 +32,7 @@ class FormularioHojaFrontalController extends Controller
             'fecha_hora' => now(),
             'estancia_id' => $estancia->id,
             'formulario_catalogo_id' => 1,
-            'user_id' =>  auth::id(),
+            'user_id' =>  Auth::id(),
         ]);
 
         HojaFrontal::create([
@@ -47,6 +48,39 @@ class FormularioHojaFrontalController extends Controller
         return Inertia::render('estancias/show', [
             'estancia' => $estancia,
         ]);
+    }
+
+    public function edit(Paciente $paciente, Estancia $estancia, HojaFrontal $hojaFrontal)
+    {
+        $medicos = User::all();
+
+        return Inertia::render('formularios/hojas-frontales/edit', [
+            'paciente' => $paciente,
+            'estancia' => $estancia,
+            'medicos' => $medicos,
+            'hojaFrontal' => $hojaFrontal, 
+        ]);
+    }
+
+    public function update(Request $request, Paciente $paciente, Estancia $estancia, HojaFrontal $hojaFrontal)
+    {
+        $validatedData = $request->validate([
+            'medico_id' => 'required|exists:users,id',
+            'notas' => 'nullable|string',
+        ]);
+
+        $hojaFrontal->update($validatedData);
+
+        if ($hojaFrontal->formularioInstancia) {
+            $hojaFrontal->formularioInstancia()->update([
+                'user_id' => Auth::id(),
+            ]);
+        }
+
+        $estancia = $hojaFrontal->formularioInstancia->estancia;
+
+        return Redirect::route('estancias.show', ['estancia' => $estancia])
+            ->with('success', 'Hoja frontal actualizada exitosamente.');
     }
 
     public function generarPDF(HojaFrontal $hojafrontal)
