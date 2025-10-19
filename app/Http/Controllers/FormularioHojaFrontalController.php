@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\DB;
 class FormularioHojaFrontalController extends Controller
 {
     public function create(Paciente $paciente, Estancia $estancia){
-        $medicos = User::all();
+         $medicos = User::where('cargo_id','2')->get();
 
         return Inertia::render('formularios/hojas-frontales/create',[
                                 'paciente' => $paciente,
@@ -52,7 +52,7 @@ class FormularioHojaFrontalController extends Controller
 
     public function edit(Paciente $paciente, Estancia $estancia, HojaFrontal $hojaFrontal)
     {
-        $medicos = User::all();
+        $medicos = User::where('cargo_id','2')->get();
 
         return Inertia::render('formularios/hojas-frontales/edit', [
             'paciente' => $paciente,
@@ -85,15 +85,17 @@ class FormularioHojaFrontalController extends Controller
 
     public function generarPDF(HojaFrontal $hojafrontal)
     {
-        $hojafrontal->load('formularioInstancia.estancia.paciente','formularioInstancia.estancia.familiarResponsable');
+        $hojafrontal->load('formularioInstancia.estancia.paciente','formularioInstancia.estancia.familiarResponsable','medico.credencialesEmpleado');
         $estancia = $hojafrontal->formularioInstancia->estancia;
         $paciente = $estancia->paciente;
         $familiar_responsable = $hojafrontal->formularioInstancia->estancia->familiarResponsable;
+        $medico = $hojafrontal->medico;
 
         return Pdf::view('pdfs.hoja_frontal', [
             'hojafrontal' => $hojafrontal,
             'estancia'    => $estancia,
             'paciente'    => $paciente,
+            'medico'      => $medico,
             'familiar_responsable' => $familiar_responsable,
         ])->inline('hoja-frontal-' . $paciente->id . '.pdf');
     }

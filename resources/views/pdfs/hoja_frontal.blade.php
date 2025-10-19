@@ -214,14 +214,18 @@
             <div class="field-row">
                  <div class="field full-width">
                     <label for="medico">Médico tratante:</label>
-                    <div class="data" id="medico">{{ $hojafrontal->medico->name ?? '' }}</div>
+                    <div class="data" id="medico">{{ $medico['nombre'] . " " . $medico['apellido_paterno'] . " " . $medico['apellido_materno']}}</div>
                 </div>
             </div>
             
             <div class="field-row">
                 <div class="field half-width">
                     <label for="especialidad">Especialidad:</label>
-                    <div class="data" id="especialidad">{{ $hojafrontal->medico->especialidad ?? '' }}</div>
+                    <div class="data" id="especialidad">
+                    @foreach ($medico->credencialesEmpleado as $credencial)
+                        {{ $credencial->titulo }}<br>{{"Cédula profesional:" .  $credencial->cedula_profesional }} <br>
+                    @endforeach
+                    </div>
                 </div>
                 <div class="field half-width">
                     <label for="firma">Firma:</label>

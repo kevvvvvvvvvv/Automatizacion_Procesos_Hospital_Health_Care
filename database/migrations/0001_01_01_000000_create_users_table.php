@@ -12,24 +12,20 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('users', function (Blueprint $table) {
-            // 1. Clave primaria numérica estándar.
             $table->id();
 
-            // 2. CURP como campo único, no como clave primaria.
             $table->string('curp', 18)->unique();
 
-            // 3. Nombres de columnas en snake_case.
             $table->string('nombre', 100);
             $table->string('apellido_paterno', 100);
             $table->string('apellido_materno', 100);
             $table->enum('sexo', ['Masculino', 'Femenino']);
             $table->date('fecha_nacimiento');
 
-            // 4. Clave foránea a sí misma, usando el id numérico.
             $table->foreignId('colaborador_responsable_id')
                   ->nullable()
-                  ->constrained('users') // Apunta a la columna 'id' de esta misma tabla
-                  ->onDelete('set null'); // Más seguro que 'cascade'
+                  ->constrained('users') 
+                  ->onDelete('set null'); 
 
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
@@ -46,7 +42,6 @@ return new class extends Migration
 
         Schema::create('sessions', function (Blueprint $table) {
             $table->string('id')->primary();
-            // 5. Esta relación ahora funcionará correctamente.
             $table->foreignId('user_id')->nullable()->constrained()->onDelete('cascade');
             $table->string('ip_address', 45)->nullable();
             $table->text('user_agent')->nullable();

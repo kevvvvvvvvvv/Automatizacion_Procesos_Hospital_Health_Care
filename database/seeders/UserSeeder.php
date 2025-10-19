@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\CredencialEmpleado;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\User;
@@ -25,6 +26,7 @@ class UserSeeder extends Seeder
             'fecha_nacimiento' => '1985-01-01',
             'email' => 'juan.perez@hospital.com',
             'password' => Hash::make('password123'),
+            'cargo_id' => 6,
         ]);
 
         $userJuan->colaborador_responsable_id = $userJuan->id;
@@ -40,6 +42,12 @@ class UserSeeder extends Seeder
             'email' => 'maria.lopez@hospital.com',
             'colaborador_responsable_id' => $userJuan->id, 
             'password' => Hash::make('password123'),
+            'cargo_id' => 5,
+        ]);
+        CredencialEmpleado::create([
+            'user_id' => $userMaria->id,
+            'titulo' => 'Licenciatura en Enfermería',
+            'cedula_profesional' => '7654321'
         ]);
 
         $userCarlos = User::create([
@@ -52,6 +60,7 @@ class UserSeeder extends Seeder
             'colaborador_responsable_id' => $userJuan->id, 
             'email' => 'carlos.ramirez@hospital.com',
             'password' => Hash::make('password123'),
+            'cargo_id' => 4,
         ]);
 
        
@@ -65,6 +74,7 @@ class UserSeeder extends Seeder
             'colaborador_responsable_id' => $userCarlos->id, 
             'email' => 'laura.hernandez@hospital.com',
             'password' => Hash::make('password123'),
+            'cargo_id' => 3,
         ]);
 
         $userAndres = User::create([
@@ -77,9 +87,10 @@ class UserSeeder extends Seeder
             'colaborador_responsable_id' => $userMaria->id, 
             'email' => 'andres.gonzalez@hospital.com',
             'password' => Hash::make('password123'),
+            'cargo_id' => 1,
         ]);
 
-        User::create([
+        $user = User::create([
             'curp' => 'SOMA950105MDFMRT06',
             'nombre' => 'Sofía',
             'apellido_paterno' => 'Martínez',
@@ -89,9 +100,22 @@ class UserSeeder extends Seeder
             'colaborador_responsable_id' => $userAndres->id, 
             'email' => 'sofia.martinez@hospital.com',
             'password' => Hash::make('password123'),
+            'cargo_id' => 2,
         ]);
 
-        User::create([
+        CredencialEmpleado::create([
+            'user_id' => $user->id,
+            'titulo' => 'Médico Especialista en Cirugía General',
+            'cedula_profesional' => '9123456' 
+        ]);
+
+        CredencialEmpleado::create([
+            'user_id' => $user->id,
+            'titulo' => 'Médico Especialista en Pediatría',
+            'cedula_profesional' => '8765432'
+        ]);
+
+        $user = User::create([
             'curp' => 'TIMK040210HMSRDVA6',
             'nombre' => 'Kevin Yahir',
             'apellido_paterno' => 'Trinidad',
@@ -100,6 +124,13 @@ class UserSeeder extends Seeder
             'fecha_nacimiento' => '2004-02-10',
             'email' => 'kevinyahirt@gmail.com',
             'password' => Hash::make('12345678'),
+            'cargo_id' => 2,
+        ]);
+
+        CredencialEmpleado::create([
+            'user_id' => $user->id,
+            'titulo' => 'Médico Especialista en Pediatría',
+            'cedula_profesional' => '8765432'
         ]);
     }
 }

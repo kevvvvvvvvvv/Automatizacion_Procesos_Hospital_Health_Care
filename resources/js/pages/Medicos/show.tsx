@@ -37,10 +37,6 @@ type ShowDoctorProps = {
 };
 
 const Show = ({ doctor }: ShowDoctorProps) => {
-  // DEBUG: Ver en consola (quita después)
-  React.useEffect(() => {
-    console.log('Doctor recibido en Show:', doctor);
-  }, [doctor]);
 
   // Safeguard: Si no hay doctor, muestra error
   if (!doctor) {
