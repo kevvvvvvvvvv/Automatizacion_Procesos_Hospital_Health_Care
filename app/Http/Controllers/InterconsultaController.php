@@ -23,7 +23,7 @@ class InterconsultaController extends Controller
      */
     public function create()
      {
-         $pacientes = Paciente::select('id', DB::raw('CONCAT(nombre, " ", apellido_paterno, " ", apellido_materno) as nombre_completo'))->get();
+         $pacientes = Paciente::select('id', DB::raw('CONCAT(nombre, " ", apellido_paterno, " ", apellido_materno) as nombre_completo'))->get()->makeHidden('age');
          return Inertia::render('formularios/interconsulta/create', compact('pacientes'));
      }
 

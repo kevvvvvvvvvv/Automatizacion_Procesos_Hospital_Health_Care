@@ -394,3 +394,5 @@ const CreateInterconsulta: React.FC<Props> = ({ pacientes = [] }) => {
     </MainLayout>
     );
 };
+
+export default CreateInterconsulta;

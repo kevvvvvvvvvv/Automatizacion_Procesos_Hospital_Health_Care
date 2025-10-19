@@ -40,7 +40,7 @@ class Paciente extends Model
     ];
 
     protected $casts = [
-        'fecha_nacimiento' => 'date', 
+        'fecha_nacimiento' => 'date:Y-m-d', 
     ];
 
     protected $appends = ['age']; 
