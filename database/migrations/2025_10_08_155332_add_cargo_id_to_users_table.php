@@ -10,7 +10,6 @@ return new class extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->foreignId('cargo_id')->nullable()->constrained('cargos')->onDelete('set null');
-            // 'nullable' permite usuarios sin cargo; 'onDelete('set null')' evita errores si se elimina un cargo
         });
     }
 

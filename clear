@@ -1,0 +1,27 @@
+
+   INFO  Caching framework bootstrap, configuration, and metadata.  
+
+  config .............................................................................................................................. 12.76ms DONE
+  events ............................................................................................................................... 0.75ms DONE
+  routes .............................................................................................................................. 16.57ms FAIL
+
+   LogicException 
+
+  Unable to prepare route [doctores/{doctor}] for serialization. Another route has already been assigned name [doctores.update].
+
+  at vendor/laravel/framework/src/Illuminate/Routing/AbstractRouteCollection.php:248
+    244▕             $route->name($this->generateRouteName());
+    245▕ 
+    246▕             $this->add($route);
+    247▕         } elseif (! is_null($symfonyRoutes->get($name))) {
+  ➜ 248▕             throw new LogicException("Unable to prepare route [{$route->uri}] for serialization. Another route has already been assigned name [{$name}].");
+    249▕         }
+    250▕ 
+    251▕         $symfonyRoutes->add($route->getName(), $route->toSymfonyRoute());
+    252▕
+
+      [2m+34 vendor frames [22m
+
+  35  artisan:16
+      Illuminate\Foundation\Application::handleCommand(Object(Symfony\Component\Console\Input\ArgvInput))
+

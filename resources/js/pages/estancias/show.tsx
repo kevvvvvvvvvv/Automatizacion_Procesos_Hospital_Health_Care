@@ -8,7 +8,6 @@ import MainLayout from '@/layouts/MainLayout';
 import { Estancia, Paciente, User, FormularioInstancia, Habitacion, FamiliarResponsable} from '@/types'; 
 import InfoCard from '@/components/ui/info-card';
 import InfoField from '@/components/ui/info-field';
-import AddButton from '@/components/ui/add-button';
 
 interface ShowEstanciaProps {
     estancia: Estancia & {
@@ -47,12 +46,14 @@ const Show = ({ estancia }: ShowEstanciaProps) => {
                         label="Fecha de Ingreso" 
                         value={new Date(estancia.fecha_ingreso).toLocaleString('es-MX', dateOptions)} 
                     />
+                    { estancia.tipo_estancia === 'Hospitalizacion' && (
                     <InfoField 
                         label="Fecha de egreso" 
                         value={estancia.fecha_egreso 
                             ? new Date(estancia.fecha_egreso).toLocaleString('es-MX', dateOptions) 
                             : 'Aún hospitalizado(a)'} 
                     />
+                    )}
                     <InfoField label="Número de habitación" value={estancia.habitacion?.identificador ?? 'N/A'} />
                     <InfoField label="Creado por" value={creator ? creator.nombre : 'N/A'} />
                     <InfoField 
