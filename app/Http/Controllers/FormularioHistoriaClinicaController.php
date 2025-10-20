@@ -126,10 +126,12 @@ public function store(HistoriaClinicaRequest $request, Paciente $paciente, Estan
     {
         $historiaclinica->load([
             'formularioInstancia.estancia',
-            'respuestaFormularios'
+            'respuestaFormularios',
+            'formularioInstancia.user.credenciales'
         ]);
 
         $paciente = $historiaclinica->formularioInstancia->estancia->paciente;
+        $medico = $historiaclinica->formularioInstancia->user;
 
         $preguntasPorCategoria = CatalogoPregunta::where('formulario_catalogo_id', 2) 
                                          ->orderBy('orden')
@@ -138,14 +140,29 @@ public function store(HistoriaClinicaRequest $request, Paciente $paciente, Estan
 
         $respuestasMap = $historiaclinica->respuestaFormularios->keyBy('catalogo_pregunta_id');
 
-        //dd($respuestasMap);
+        $logoDataUri = '';
+        $imagePath = public_path('images/Logo_HC_2.png');
+        if (file_exists($imagePath)) {
+            $imageData = base64_encode(file_get_contents($imagePath));
+            $imageMime = mime_content_type($imagePath);
+            $logoDataUri = 'data:' . $imageMime . ';base64,' . $imageData;
+        }
+
+        $headerData = [
+            'historiaclinica' => $historiaclinica,
+            'paciente' => $paciente,
+            'logoDataUri' => $logoDataUri
+        ];
 
         return Pdf::view('pdfs.historia-clinica', [
             'historiaclinica' => $historiaclinica,
             'paciente' => $paciente,
             'preguntasPorCategoria' => $preguntasPorCategoria, 
             'respuestasMap' => $respuestasMap,
-        ])->inline('hoja-frontal.pdf');
+            'medico' => $medico
+        ])
+        ->headerView('header', $headerData)
+        ->inline('hoja-frontal.pdf');
     }
 
 }

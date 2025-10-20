@@ -89,7 +89,7 @@ const Show = ({ estancia }: ShowEstanciaProps) => {
                                                     active ? 'bg-blue-500 text-white' : 'text-gray-900'
                                                 } group flex rounded-md items-center w-full px-2 py-2 text-sm`}
                                             >
-                                                Añadir Hoja Frontal
+                                                Añadir hoja frontal
                                             </Link>
                                         )}
                                     </Menu.Item>
@@ -101,7 +101,19 @@ const Show = ({ estancia }: ShowEstanciaProps) => {
                                                     active ? 'bg-blue-500 text-white' : 'text-gray-900'
                                                 } group flex rounded-md items-center w-full px-2 py-2 text-sm`}
                                             >
-                                                Añadir Historia Clínica
+                                                Añadir historia clínica
+                                            </Link>
+                                        )}
+                                    </Menu.Item>
+                                   <Menu.Item>
+                                        {({ active }) => (
+                                            <Link
+                                                href={route('pacientes.estancias.interconsultas.create', { paciente: paciente.id, estancia: estancia.id })}
+                                                className={`${
+                                                    active ? 'bg-blue-500 text-white' : 'text-gray-900'
+                                                } group flex rounded-md items-center w-full px-2 py-2 text-sm`}
+                                            >
+                                                Añadir interconsulta
                                             </Link>
                                         )}
                                     </Menu.Item>

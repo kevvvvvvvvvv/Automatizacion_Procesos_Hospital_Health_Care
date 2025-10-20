@@ -98,6 +98,20 @@ const Create: CreateComponent = ({ preguntas, paciente, estancia }) => {
         }, {} as Record<string, Pregunta[]>);
     }, [preguntas]);
     
+    // ✅ --- INICIO DE LA LÓGICA CONDICIONAL --- ✅
+    // Se filtran las categorías antes de renderizarlas
+    const categoriasVisibles = useMemo(() => {
+        return Object.entries(preguntasPorCategoria).filter(([categoria]) => {
+            // Si la categoría no es ginecológica, siempre se muestra.
+            if (categoria !== 'gineco_obstetrico') {
+                return true;
+            }
+            // Si es ginecológica, solo se muestra si el sexo es 'Femenino'.
+            return paciente.sexo === 'Femenino';
+        });
+    }, [preguntasPorCategoria, paciente.sexo]);
+    // --- FIN DE LA LÓGICA CONDICIONAL ---
+
     const handleRespuestaChange = (preguntaId: number, field: string, value: string | number | boolean, itemIndex: number | null = null) => {
         const pregunta = preguntas.find(p => p.id === preguntaId);
         if (!pregunta) return;
@@ -108,7 +122,7 @@ const Create: CreateComponent = ({ preguntas, paciente, estancia }) => {
 
             if (field === 'respuesta') {
                 newRespuestaActual.respuesta = value as RespuestaDetalles['respuesta'];
-                if (value !== 'si') {
+                if (value !== 'si' && !opcionesRespuestaArray.find(opt => opt.value === value)?.triggersFields) {
                     newRespuestaActual.campos = {};
                     newRespuestaActual.items = [];
                 }
@@ -150,9 +164,6 @@ const Create: CreateComponent = ({ preguntas, paciente, estancia }) => {
         const respuestaActual = data.respuestas[pregunta.id];
         if (!respuestaActual) return null;
 
-        // --- PASO 1: Define todas las variables y funciones auxiliares aquí, al inicio ---
-
-        // Función de seguridad para 'campos_adicionales' (ya la tienes)
         const getCamposAsArray = (campos: any): CampoAdicional[] => {
             if (Array.isArray(campos)) return campos;
             if (typeof campos === 'string' && campos.startsWith('[')) {
@@ -164,8 +175,7 @@ const Create: CreateComponent = ({ preguntas, paciente, estancia }) => {
             return [];
         };
 
-        // ✅ ARREGLO: Se aplica la misma lógica de seguridad a 'opciones_respuesta'
-        const getOpcionesAsArray = (opciones: any): { value: string, label: string, triggersFields?: boolean }[] => {
+        const getOpcionesAsArray = (opciones: any): OpcionRespuesta[] => {
             if (Array.isArray(opciones)) return opciones;
             if (typeof opciones === 'string' && opciones.startsWith('[')) {
                 try {
@@ -179,7 +189,6 @@ const Create: CreateComponent = ({ preguntas, paciente, estancia }) => {
         const camposAdicionalesArray = getCamposAsArray(pregunta.campos_adicionales);
         const opcionesRespuestaArray = getOpcionesAsArray(pregunta.opciones_respuesta);
 
-        // Función lógica para decidir si mostrar los campos (ya la tienes)
         const debeMostrarCampos = () => {
             if (opcionesRespuestaArray.length > 0) {
                 const opcionSeleccionada = opcionesRespuestaArray.find(
@@ -189,8 +198,6 @@ const Create: CreateComponent = ({ preguntas, paciente, estancia }) => {
             }
             return respuestaActual.respuesta === 'si';
         };
-
-        // --- PASO 2: La función para renderizar un campo individual (sin cambios) ---
         
         const renderCampo = (campo: CampoAdicional, preguntaId: number, itemIndex: number | null = null) => {
             const isRepetible = itemIndex !== null;
@@ -235,8 +242,6 @@ const Create: CreateComponent = ({ preguntas, paciente, estancia }) => {
             }
         };
 
-        // --- PASO 3: El JSX principal (sin cambios) ---
-
         if (pregunta.tipo_pregunta === 'direct_select' || pregunta.tipo_pregunta === 'direct_multiple') {
             return ( <div key={pregunta.id} className="col-span-full md:col-span-1 border p-4 rounded-md shadow-sm"> <h3 className="font-semibold text-gray-800 mb-2">{pregunta.pregunta}</h3> {camposAdicionalesArray.map(campo => renderCampo(campo, pregunta.id))} </div> )
         }
@@ -251,7 +256,7 @@ const Create: CreateComponent = ({ preguntas, paciente, estancia }) => {
                 >
                     <option value="" disabled>Seleccione...</option>
                     {opcionesRespuestaArray.length > 0 ? (
-                        opcionesRespuestaArray.map((opcion: { value: string, label: string }) => (
+                        opcionesRespuestaArray.map((opcion: OpcionRespuesta) => (
                             <option key={opcion.value} value={opcion.value}>{opcion.label}</option>
                         ))
                     ) : (
@@ -288,7 +293,7 @@ const Create: CreateComponent = ({ preguntas, paciente, estancia }) => {
                 </div>
             )}
             <InfoCard title={`Paciente: ${paciente.nombre} ${paciente.apellido_paterno} ${paciente.apellido_materno}`}>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     <InfoField label="Folio" value={estancia.folio} />
                     <InfoField label="Sexo" value={paciente.sexo} />
                     <InfoField label="Edad" value={`${paciente.age} años`}/>
@@ -305,7 +310,8 @@ const Create: CreateComponent = ({ preguntas, paciente, estancia }) => {
                     <label htmlFor="padecimiento_actual" className={labelClasses}>Padecimiento Actual (Indagar acerca de tratamientos previos)
                         </label>
                         <textarea id="padecimiento_actual" name="padecimiento_actual" value={data.padecimiento_actual} onChange={(e) => setData('padecimiento_actual', e.target.value)} rows={4} className={`${textAreaClasses} ${errors.padecimiento_actual ? 'border-red-500' : 'border-gray-600'}`} />{errors.padecimiento_actual && <p className="mt-1 text-xs text-red-500">{errors.padecimiento_actual}</p>}</div><InputText id="tension_arterial" name="tension_arterial" label="Tensión Arterial" value={data.tension_arterial} onChange={(e) => setData('tension_arterial', e.target.value)} error={errors.tension_arterial} /><InputText id="frecuencia_cardiaca" name="frecuencia_cardiaca" label="Frecuencia Cardíaca (x min)" type="number" value={String(data.frecuencia_cardiaca)} onChange={(e) => setData('frecuencia_cardiaca', e.target.value)} error={errors.frecuencia_cardiaca} /><InputText id="frecuencia_respiratoria" name="frecuencia_respiratoria" label="Frecuencia Respiratoria (x min)" type="number" value={String(data.frecuencia_respiratoria)} onChange={(e) => setData('frecuencia_respiratoria', e.target.value)} error={errors.frecuencia_respiratoria} /><InputText id="temperatura" name="temperatura" label="Temperatura (°C)" type="number" value={String(data.temperatura)} onChange={(e) => setData('temperatura', e.target.value)} error={errors.temperatura} /><InputText id="peso" name="peso" label="Peso (kg)" type="number" value={String(data.peso)} onChange={(e) => setData('peso', e.target.value)} error={errors.peso} /><InputText id="talla" name="talla" label="Talla (cm)" type="number" value={String(data.talla)} onChange={(e) => setData('talla', e.target.value)} error={errors.talla} />
-                {Object.entries(preguntasPorCategoria).map(([categoria, listaPreguntas]) => (
+                
+                {categoriasVisibles.map(([categoria, listaPreguntas]) => (
                     <div key={categoria} className="col-span-full mt-6">
                         <h2 className="text-xl font-semibold text-gray-800 mb-4 border-b pb-2">{formatarTituloCategoria(categoria)}</h2>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -313,6 +319,7 @@ const Create: CreateComponent = ({ preguntas, paciente, estancia }) => {
                         </div>
                     </div>
                 ))}
+
                 <h2 className="text-xl font-semibold text-gray-800 mt-6 mb-4 col-span-full">Análisis, Diagnóstico y Plan</h2><div className="col-span-full"><label htmlFor="resultados_previos" className={labelClasses}>Resultados Previos y Actuales de Laboratorio y Gabinete</label><textarea id="resultados_previos" name="resultados_previos" value={data.resultados_previos} onChange={e => setData('resultados_previos', e.target.value)} rows={4} className={`${textAreaClasses} ${errors.resultados_previos ? 'border-red-500' : 'border-gray-600'}`} />{errors.resultados_previos && <p className="mt-1 text-xs text-red-500">{errors.resultados_previos}</p>}</div><div className="col-span-full"><label htmlFor="diagnostico" className={labelClasses}>Diagnóstico(s)</label><textarea id="diagnostico" name="diagnostico" value={data.diagnostico} onChange={e => setData('diagnostico', e.target.value)} rows={4} className={`${textAreaClasses} ${errors.diagnostico ? 'border-red-500' : 'border-gray-600'}`} />{errors.diagnostico && <p className="mt-1 text-xs text-red-500">{errors.diagnostico}</p>}</div><div className="col-span-full"><label htmlFor="pronostico" className={labelClasses}>Pronóstico</label><textarea id="pronostico" name="pronostico" value={data.pronostico} onChange={e => setData('pronostico', e.target.value)} rows={2} className={`${textAreaClasses} ${errors.pronostico ? 'border-red-500' : 'border-gray-600'}`} />{errors.pronostico && <p className="mt-1 text-xs text-red-500">{errors.pronostico}</p>}</div><div className="col-span-full"><label htmlFor="indicacion_terapeutica" className={labelClasses}>Indicación Terapéutica</label><textarea id="indicacion_terapeutica" name="indicacion_terapeutica" value={data.indicacion_terapeutica} onChange={e => setData('indicacion_terapeutica', e.target.value)} rows={4} className={`${textAreaClasses} ${errors.indicacion_terapeutica ? 'border-red-500' : 'border-gray-600'}`} />{errors.indicacion_terapeutica && <p className="mt-1 text-xs text-red-500">{errors.indicacion_terapeutica}</p>}</div>
             </FormLayout>
         </>
