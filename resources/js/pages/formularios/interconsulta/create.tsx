@@ -4,21 +4,17 @@ import MainLayout from '@/layouts/MainLayout';
 import { route } from 'ziggy-js';
 import InputText from '@/components/ui/input-text';
 import BackButton from '@/components/ui/back-button';
+import { Paciente, Estancia } from '@/types';
 
 type Props = {
-  pacientes?: { id: number; nombre_completo: string }[];
+  paciente: Paciente,
+  estancia: Estancia,
 };
 
-const CreateInterconsulta: React.FC<Props> = ({ pacientes = [] }) => {
-  useEffect(() => {
-    console.log('Props recibidas en CreateInterconsulta:', {
-      pacientes: pacientes || 'UNDEFINED!',
-      numPacientes: pacientes?.length || 0,
-    });
-  }, [pacientes]);
+const CreateInterconsulta: React.FC<Props> = ({ paciente, estancia }) => {
+
 
   const { data, setData, post, processing, errors } = useForm({
-    paciente_id: '',
     ta: '',
     fc: '',
     fr: '',
@@ -39,11 +35,7 @@ const CreateInterconsulta: React.FC<Props> = ({ pacientes = [] }) => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!data.paciente_id) {
-      alert('Debe seleccionar un paciente.');
-      return;
-    }
-    post(route('interconsultas.store'));
+    post(route('pacientes.estancias.interconsultas.store', { paciente: paciente.id, estancia: estancia.id }));
   };
 
   return (
@@ -61,37 +53,10 @@ const CreateInterconsulta: React.FC<Props> = ({ pacientes = [] }) => {
         </div>
 
         <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow p-6 max-w-6xl mx-auto">
-          {/* Sección 1: Selección de Paciente */}
-          <div className="mb-6">
-            <h2 className="text-lg font-semibold mb-4">1. Paciente</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="flex flex-col">
-                <label htmlFor="paciente_id" className="block text-sm font-medium text-gray-700 mb-2">
-                  Paciente *
-                </label>
-                <select
-                  id="paciente_id"
-                  name="paciente_id"
-                  value={data.paciente_id}
-                  onChange={(e) => setData('paciente_id', e.target.value)}
-                  required
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                >
-                  <option value="">Seleccionar Paciente</option>
-                  {pacientes.map((paciente) => (
-                    <option key={paciente.id} value={paciente.id.toString()}>
-                      {paciente.nombre_completo}
-                    </option>
-                  ))}
-                </select>
-                {errors.paciente_id && <p className="text-red-500 text-sm mt-1">{errors.paciente_id}</p>}
-              </div>
-            </div>
-          </div>
 
           {/* Sección 2: Signos Vitales */}
           <div className="mb-6">
-            <h2 className="text-lg font-semibold mb-4">2. Signos Vitales (Opcionales)</h2>
+            <h2 className="text-lg font-semibold mb-4">1. Signos Vitales</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <InputText
                 id="ta"
@@ -170,7 +135,7 @@ const CreateInterconsulta: React.FC<Props> = ({ pacientes = [] }) => {
 
           {/* Sección 3: Motivo y Exploración */}
           <div className="mb-6">
-            <h2 className="text-lg font-semibold mb-4">3. Motivo y Exploración (Opcionales)</h2>
+            <h2 className="text-lg font-semibold mb-4">2. Motivo y Exploración (Opcionales)</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Motivo de la Atención o Interconsulta */}
               <div className="flex flex-col">
@@ -256,7 +221,7 @@ const CreateInterconsulta: React.FC<Props> = ({ pacientes = [] }) => {
 
           {/* Sección 4: Diagnóstico y Plan */}
           <div className="mb-6">
-            <h2 className="text-lg font-semibold mb-4">4. Diagnóstico y Plan (Opcionales)</h2>
+            <h2 className="text-lg font-semibold mb-4">3. Diagnóstico y Plan (Opcionales)</h2>
             <div className="grid grid-cols-1 gap-6">
               {/* Criterio Diagnóstico */}
               <div className="flex flex-col">
