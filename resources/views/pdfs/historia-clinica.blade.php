@@ -7,7 +7,21 @@
     <style>
         @page {
             size: A4;
-            margin: 1.5cm; 
+            margin-top: 5cm; 
+            margin-bottom: 1.5cm;
+            margin-left: 1cm;
+            margin-right: 1cm;
+
+            @bottom-right {
+                content: "Página " counter(page) " de " counter(pages);
+                font-family: Calibri, Arial, sans-serif;
+                font-size: 9pt;
+                color: #888;
+            }
+        }
+
+        * {
+            box-sizing: border-box;
         }
 
         body {
@@ -21,32 +35,34 @@
             display: flex; 
             justify-content: space-between;
             align-items: center; 
-            border-bottom: 1px solid #555; 
             padding-bottom: 8px;
             margin-bottom: 15px; 
         }
 
+        .header .info-container {
+            flex-basis: 45%; 
+        }
+
         .header .logo {
             width: 150px; 
-            margin-right: 15px; 
+            display: block; 
+            margin-bottom: 5px;
         }
 
         .header .hospital-info { 
              text-align: left; 
              font-size: 8pt; 
              line-height: 1.2;
-             max-width: 180px; 
         }
         .header .hospital-info p {
              margin: 0;
         }
 
         .identification-card {
-            border: 1px solid #666; 
+            
             padding: 8px 12px; 
             font-size: 9pt; 
-            width: 50%;
-            flex-grow: 1; 
+            width: 55%;
         }
         
         .identification-card h2 {
@@ -97,56 +113,42 @@
             align-items:center;
             font-size: 20px;
         }
+
+        .footer {
+            position: fixed;
+            bottom: -0.7cm;  
+            left: 0;
+            right: 0;
+            height: 1cm;
+            text-align: right;
+            font-size: 9pt;
+            color: #888;
+        }
+
+        .signature-section {
+            text-align: center;
+            margin-top: 60px; 
+            page-break-inside: avoid; 
+        }
+        .signature-line {
+            border-top: 1px solid #333;
+            width: 280px; 
+            margin: 0 auto 5px auto; 
+        }
+        .signature-section p {
+            margin: 0;
+            line-height: 1.4;
+        }
+        .credentials-list {
+            font-size: 8pt; 
+            color: #555;
+            margin-top: 8px;
+        }
+
     </style>
 </head>
 <body>
-    <header class="header">
-        <div>
-            <img src="{{ public_path('images/Logo_HC_1.png') }}" alt="Logo Hospital" class="logo">
-             <div class="hospital-info">
-                <p><strong>PLAN DE AYUTLA 413 COL. REFORMA</strong></p>
-                <p><strong> CUERNAVACA, MORELOS, C.P. 62260 TEL: 777 323 0371</strong></p>
-                <p>Licencia sanitaria No. 23-AM-17-007-0002</p>
-                <p>Responsable Sanitario Dr. Juan Manuel Ahumada Trujillo.</p>
-            </div>
-        </div>
-
-        <div class="identification-card">
-            <h2>FICHA DE IDENTIFICACIÓN</h2>
-            <div class="id-row">
-                <div class="id-field">
-                    <span class="id-label">Fecha:</span>
-                    <span class="id-value">{{ $historiaclinica->formularioInstancia['fecha_hora'] }}</span> 
-                </div>
-                </div>
-            <div class="id-row">
-                 <div class="id-field" style="flex-grow: 1;"> 
-                    <span class="id-label">Nombre:</span>
-                    <span class="id-value long">{{ $paciente['nombre'] . " " .  $paciente['apellido_paterno'] . " " . $paciente['apellido_materno']}}</span>
-                 </div>
-            </div>
-             <div class="id-row">
-                 <div class="id-field">
-                    <span class="id-label">Fecha de nacimiento:</span>
-                    <span class="id-value">{{ \Carbon\Carbon::parse($paciente['fecha_nacimiento'])->format('Y-m-d') }}</span>
-                 </div>
-                 <div class="id-field">
-                    <span class="id-label">Edad:</span>
-                    <span class="id-value short">{{$paciente['age'] . " años"}}</span>
-                 </div>
-                  <div class="id-field">
-                    <span class="id-label">Sexo:</span>
-                    <span class="id-value short">{{$paciente['sexo']}}</span>
-                 </div>
-            </div>
-            <div class="id-row">
-                <div class="id-field" style="flex-grow: 1;">
-                    <span class="id-label">Domicilio:</span>
-                    <span class="id-value long"><span class="id-value long">{{ $paciente['calle'] }} {{ $paciente['numero_exterior'] }}{{ $paciente['numero_interior'] ? ' Int. ' . $paciente['numero_interior'] : '' }}, {{ $paciente['colonia'] }}, {{ $paciente['municipio'] }}, {{ $paciente['estado'] }}, {{ $paciente['pais'] }}, C.P. {{ $paciente['cp'] }}</span></span>
-                </div>
-            </div>
-        </div>
-    </header>
+    
 
     <main>
         <h1>HISTORIA CLÍNICA</h1>
@@ -156,10 +158,20 @@
         <span>{{$paciente['ocupacion']}}</span>
         <span class="id-label">Lugar de origen:</span>
         <span>{{$paciente['lugar_origen']}}</span>
-@foreach ($preguntasPorCategoria as $categoria => $preguntasDeCategoria)
-        
+    @foreach ($preguntasPorCategoria as $categoria => $preguntasDeCategoria)
+        @if ($categoria !== 'gineco_obstetrico' || ($categoria === 'gineco_obstetrico' && isset($paciente) && $paciente['sexo'] === 'Femenino'))
         <h3 style="margin-top: 15px; margin-bottom: 8px; border-bottom: 1px solid #ccc; padding-bottom: 3px; font-size: 11pt;">
-            {{ ucwords(str_replace('_', ' ', $categoria)) }} 
+            @if ($categoria == "heredo_familiares")
+                Heredo familiares
+            @elseif ($categoria == "a_patologicos")
+                Antecedentes personales patologicos
+            @elseif ($categoria == "no_patologicos")
+                Antecedentes personales no patológicos
+            @elseif ($categoria == "gineco_obstetrico")
+                Ginéco-obstétricos
+            @elseif ($categoria == "exploracion_fisica")
+                Exploración física
+            @endif
         </h3>
         @if ($categoria === 'exploracion_fisica')
             <div style="margin-bottom: 8px;">
@@ -262,6 +274,7 @@
                 {{ implode(', ', $preguntasSinNovedad) }} sin nada que reportar.
             </p>
         @endif
+        @endif
     @endforeach
         <section>
             <div>
@@ -284,6 +297,22 @@
                 <span>{{$historiaclinica['indicacion_terapeutica']}}</span>             
             </div>
         </section>
+        <div class="signature-section">
+            <div class="signature-line"></div>
+            <p>{{ $medico->nombre . " " . $medico->apellido_materno . " " . $medico->apellido_materno}}</p>
+            <p style="font-size: 9pt; color: #555;">Nombre y Firma del Médico</p>
+
+            @if(isset($medico) && $medico->credenciales->isNotEmpty())
+                <div class="credentials-list">
+                    @foreach($medico->credenciales as $credencial)
+                        <p>
+                            <strong>Título:</strong> {{ $credencial->titulo }} | <strong>Cédula Profesional:</strong> {{ $credencial->cedula_profesional }}
+                        </p>
+                    @endforeach
+                </div>
+            @endif
+        </div>
+       
     </main>
     
 </body>
