@@ -11,10 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('interconsulta', function (Blueprint $table) {
-            $table->id(); 
-
-            $table->foreignId('paciente_id')->constrained('pacientes');
+        Schema::create('interconsultas', function (Blueprint $table) {
+            $table->unsignedBigInteger('id');
+            $table->primary('id');
+            $table->foreign('id')
+                ->references('id')
+                ->on('formulario_instancias')
+                ->onDelete('cascade'); 
             $table->text('criterio_diagnostico')->nullable(); 
             $table->text('plan_de_estudio')->nullable();
             $table->text('sugerencia_diagnostica')->nullable();
@@ -41,6 +44,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('interconsulta'); // Elimina la tabla en rollback
+        Schema::dropIfExists('interconsultas'); // Elimina la tabla en rollback
     }
 };

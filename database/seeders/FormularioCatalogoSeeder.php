@@ -24,5 +24,11 @@ class FormularioCatalogoSeeder extends Seeder
             'nombre_tabla_fisica' => 'historia_clinicas',
             'route_prefix' => 'historia-clinicas',
         ]);
+
+        FormularioCatalogo::create([
+            'nombre_formulario' => 'Interconsulta',
+            'nombre_tabla_fisica' => 'interconsultas',
+            'route_prefix' => 'interconsultas',
+        ]);
     }
 }

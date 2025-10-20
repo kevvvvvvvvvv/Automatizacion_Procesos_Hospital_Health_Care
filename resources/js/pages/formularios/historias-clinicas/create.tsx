@@ -98,19 +98,14 @@ const Create: CreateComponent = ({ preguntas, paciente, estancia }) => {
         }, {} as Record<string, Pregunta[]>);
     }, [preguntas]);
     
-    // ✅ --- INICIO DE LA LÓGICA CONDICIONAL --- ✅
-    // Se filtran las categorías antes de renderizarlas
     const categoriasVisibles = useMemo(() => {
         return Object.entries(preguntasPorCategoria).filter(([categoria]) => {
-            // Si la categoría no es ginecológica, siempre se muestra.
             if (categoria !== 'gineco_obstetrico') {
                 return true;
             }
-            // Si es ginecológica, solo se muestra si el sexo es 'Femenino'.
             return paciente.sexo === 'Femenino';
         });
     }, [preguntasPorCategoria, paciente.sexo]);
-    // --- FIN DE LA LÓGICA CONDICIONAL ---
 
     const handleRespuestaChange = (preguntaId: number, field: string, value: string | number | boolean, itemIndex: number | null = null) => {
         const pregunta = preguntas.find(p => p.id === preguntaId);
