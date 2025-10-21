@@ -40,6 +40,7 @@ Route::resource('pacientes.estancias.historiasclinicas', FormularioHistoriaClini
 Route::resource('doctores', DoctorController::class)->middleware('auth');  
 
 Route::resource('pacientes.estancias.interconsultas', InterconsultaController::class)
+    ->shallow()
     ->parameters(['interconsultas' => 'interconsulta']);
 
 

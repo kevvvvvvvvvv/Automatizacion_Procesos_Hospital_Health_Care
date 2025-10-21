@@ -78,7 +78,7 @@
 </head>
 <body>
     <main>
-        <h1>Nota de Interconsulta / Evolución</h1>
+        <h1>Nota de Interconsulta</h1>
 
         {{-- SECCIÓN 1: RESUMEN CLÍNICO --}}
         <h3>Resumen Clínico</h3>
