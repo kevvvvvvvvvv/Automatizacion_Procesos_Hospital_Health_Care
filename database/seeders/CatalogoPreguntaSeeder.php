@@ -85,15 +85,14 @@ class CatalogoPreguntaSeeder extends Seeder
             'tipo_pregunta' => 'simple', 'campos_adicionales' => [], 'permite_desconozco' => false, 'opciones_respuesta' => null,
         ]);
         CatalogoPregunta::create([
-            'pregunta' => 'Deporte practicado', 'orden' => 16, 'categoria' => 'no_patologicos', 'formulario_catalogo_id' => 2,
+            'pregunta' => 'Actividad física', 'orden' => 16, 'categoria' => 'no_patologicos', 'formulario_catalogo_id' => 2,
             'tipo_pregunta' => 'multiple_campos', 'permite_desconozco' => false, 'opciones_respuesta' => null,
-            'campos_adicionales' => [['name' => 'tipo', 'label' => 'Deporte', 'type' => 'text'], ['name' => 'frecuencia', 'label' => 'Frecuencia (horas por semana)', 'type' => 'text']]
+            'campos_adicionales' => [['name' => 'tipo', 'label' => 'tipo', 'type' => 'text'], ['name' => 'frecuencia', 'label' => 'Frecuencia (horas por semana)', 'type' => 'text']]
         ]);
         CatalogoPregunta::create([
             'pregunta' => 'Consumo de medicamentos', 'orden' => 17, 'categoria' => 'no_patologicos', 'formulario_catalogo_id' => 2,
             'tipo_pregunta' => 'simple', 'campos_adicionales' => [], 'permite_desconozco' => false, 'opciones_respuesta' => null,
         ]);
-
         //A patológicos
         CatalogoPregunta::create([
             'pregunta' => 'Quirúrgicos', 'orden' => 18, 'categoria' => 'a_patologicos', 'formulario_catalogo_id' => 2,
@@ -169,7 +168,7 @@ class CatalogoPreguntaSeeder extends Seeder
         CatalogoPregunta::create([
             'pregunta' => 'Menarca', 'orden' => 31, 'categoria' => 'gineco_obstetrico', 'formulario_catalogo_id' => 2,
             'tipo_pregunta' => 'multiple_campos', 'permite_desconozco' => false, 'opciones_respuesta' => null,
-            'campos_adicionales' => [['name' => 'cantidad', 'label' => 'Edad', 'type' => 'number']]
+            'campos_adicionales' => [['name' => 'cantidad', 'label' => 'Edad del primer ciclo menstrual', 'type' => 'number']]
         ]);
         CatalogoPregunta::create([
             'pregunta' => 'Ritmo', 'orden' => 32, 'categoria' => 'gineco_obstetrico', 'formulario_catalogo_id' => 2,
@@ -184,7 +183,7 @@ class CatalogoPreguntaSeeder extends Seeder
         CatalogoPregunta::create([
             'pregunta' => 'Fecha de Última Menstruación', 'orden' => 34, 'categoria' => 'gineco_obstetrico', 'formulario_catalogo_id' => 2,
             'tipo_pregunta' => 'multiple_campos', 'permite_desconozco' => false, 'opciones_respuesta' => null,
-            'campos_adicionales' => [['name' => 'fecha', 'label' => 'Fecha', 'type' => 'date']]
+            'campos_adicionales' => [['name' => 'fecha', 'label' => 'Fecha de inicio', 'type' => 'date']]
         ]);
         CatalogoPregunta::create([
             'pregunta' => 'Fecha de Último Papanicolaou', 'orden' => 35, 'categoria' => 'gineco_obstetrico', 'formulario_catalogo_id' => 2,
