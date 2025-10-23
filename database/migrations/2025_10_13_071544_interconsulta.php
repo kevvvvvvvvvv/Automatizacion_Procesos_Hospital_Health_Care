@@ -12,7 +12,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('interconsultas', function (Blueprint $table) {  // Cambia 'interconsulta' a 'interconsultas' (plural)
-            $table->id(); 
+            $table->unsignedBigInteger('id');
+            $table->primary('id');
+            $table->foreign('id')
+                ->references('id')->on('formulario_instancias')
+                ->onDelete('cascade');
 
             $table->foreignId('paciente_id')->constrained('pacientes');
             $table->text('criterio_diagnostico')->nullable(); 
