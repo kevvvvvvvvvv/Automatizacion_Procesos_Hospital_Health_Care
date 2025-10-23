@@ -8,6 +8,7 @@ import { Estancia, Paciente, Habitacion, FamiliarResponsable } from '@/types';
 import { route } from 'ziggy-js';
 import PrimaryButton from '@/components/ui/primary-button';
 
+
 interface CreateEstanciaProps {
     paciente: Paciente & { 
         estancias: Estancia[],

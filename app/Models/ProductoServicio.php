@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class ProductoServicio extends Model
 {
+    public const IVA = 1.16;
+
     protected $table = 'producto_servicios';
     public $incrementing = true;
 

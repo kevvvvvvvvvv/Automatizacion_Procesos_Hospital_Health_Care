@@ -26,7 +26,6 @@ interface ShowEstanciaProps {
 
 const Show = ({ estancia }: ShowEstanciaProps) => {
 
-    console.log("Datos completos de la estancia que llegan a React:", estancia);
     const { paciente, creator, updater, formulario_instancias } = estancia;
 
     const dateOptions: Intl.DateTimeFormatOptions = {
@@ -37,6 +36,11 @@ const Show = ({ estancia }: ShowEstanciaProps) => {
     return (
         <>
             <Head title={`Detalles de estancia: ${estancia.folio}`} />
+            <Link
+                href={route('pacientes.estancias.ventas.index', { paciente, estancia })}
+            >
+                Ir a Ventas
+            </Link>
 
             <InfoCard title={`Estancia para: ${paciente.nombre} ${paciente.apellido_paterno} ${paciente.apellido_materno}`}>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -114,6 +118,18 @@ const Show = ({ estancia }: ShowEstanciaProps) => {
                                                 } group flex rounded-md items-center w-full px-2 py-2 text-sm`}
                                             >
                                                 Añadir interconsulta
+                                            </Link>
+                                        )}
+                                    </Menu.Item>
+                                    <Menu.Item>
+                                        {({ active }) => (
+                                            <Link
+                                                href={route('pacientes.estancias.hojasenfermerias.create', { paciente: paciente.id, estancia: estancia.id })}
+                                                className={`${
+                                                    active ? 'bg-blue-500 text-white' : 'text-gray-900'
+                                                } group flex rounded-md items-center w-full px-2 py-2 text-sm`}
+                                            >
+                                                Añadir hoja de enfermería
                                             </Link>
                                         )}
                                     </Menu.Item>

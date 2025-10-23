@@ -7,6 +7,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class DetalleVenta extends Model
 {
+    public const ESTADO_PENDIENTE = 'En espera de pago';
+    public const ESTADO_PARCIAL = 'Pago parcial';
+    public const ESTADO_PAGADO = 'Pagado';
+    
     protected $table = 'detalle_ventas';
     public $incrementing = true;
     protected $fillable = [

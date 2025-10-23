@@ -8,6 +8,10 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Venta extends Model
 {
+    public const ESTADO_PENDIENTE = 'En espera de pago';
+    public const ESTADO_PARCIAL = 'Pago parcial';
+    public const ESTADO_PAGADO = 'Pagado';
+
     protected $table = "ventas";
     public $incrementing = true;
     
@@ -21,11 +25,14 @@ class Venta extends Model
         'user_id',
     ];
 
-    public $timestamps = false;
-
     public function estancia(): BelongsTo
     {
         return $this->belongsTo(Estancia::class);
+    }
+
+    public function user():BelongsTo
+    {
+        return $this->belongsTo(User::class);
     }
 
     public function detalles(): HasMany

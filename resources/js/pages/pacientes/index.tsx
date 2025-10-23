@@ -60,7 +60,7 @@ const Index = ({ pacientes }: IndexProps) => {
           <div className="flex space-x-2">
             <button
               onClick={(e) => {
-                e.stopPropagation(); // Evita que se active el clic de la fila
+                e.stopPropagation(); 
                 router.get(route('pacientes.edit', row.original.id));
               }}
               className="px-3 py-1 bg-blue-500 text-white rounded text-sm hover:bg-blue-600"
@@ -69,7 +69,7 @@ const Index = ({ pacientes }: IndexProps) => {
             </button>
             <button
               onClick={(e) => {
-                e.stopPropagation(); // Evita que se active el clic de la fila
+                e.stopPropagation(); 
                 if (confirm('¿Estás seguro de eliminar este paciente?')) {
                   router.delete(route('pacientes.destroy', row.original.id));
                 }
