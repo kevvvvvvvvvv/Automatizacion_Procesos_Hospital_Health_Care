@@ -10,10 +10,14 @@ use App\Models\Paciente;
 use App\Models\Estancia;
 use App\Models\FormularioInstancia;
 use App\Models\HojaFrontal;
+use App\Models\Venta;
+use App\Models\DetalleVenta;
+use App\Models\ProductoServicio;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Spatie\LaravelPdf\Facades\Pdf;
 use Illuminate\Support\Facades\DB; 
+use Illuminate\Support\Facades\Log;
 
 class FormularioHojaFrontalController extends Controller
 {
@@ -28,27 +32,66 @@ class FormularioHojaFrontalController extends Controller
 
     public function store(Paciente $paciente, Estancia $estancia, Request $request){
 
-        $formularioInstancia = FormularioInstancia::create([
-            'fecha_hora' => now(),
-            'estancia_id' => $estancia->id,
-            'formulario_catalogo_id' => 1,
-            'user_id' =>  Auth::id(),
-        ]);
+        DB::beginTransaction();
+            try{
 
-        HojaFrontal::create([
-            'id' => $formularioInstancia->id,
-            'medico' =>  $request->medico,
-            'medico_id' => $request->medico_id,
-            'responsable' => $request->responsable,
-            'notas' => $request->notas
-        ]);
+                $producto = ProductoServicio::findOrFail(661);
+                $cantidad = 1;
+                $subtotal = $producto->importe * $cantidad;
+                $descuento = 0;
+                $total = ($subtotal)*ProductoServicio::IVA - $descuento;
 
-        $estancia->load(['paciente', 'creator', 'updater','formularioInstancias.catalogo','formularioInstancias.user']);
+                $venta = Venta::create([
+                    'fecha' => now(),
+                    'subtotal' =>$subtotal,
+                    'total' => $total,
+                    'descuento' => $descuento,
+                    'estado' => Venta::ESTADO_PENDIENTE,
+                    'estancia_id' => $estancia->id,
+                    'user_id' => Auth::id(),
+                ]);
 
-        return Inertia::render('estancias/show', [
-            'estancia' => $estancia,
-        ]);
-    }
+                DetalleVenta::create([
+                    'precio_unitario' => $producto->importe,
+                    'cantidad' => $cantidad,
+                    'subtotal' => $subtotal,
+                    'descuento' => $descuento,
+                    'estado' => DetalleVenta::ESTADO_PENDIENTE,
+                    'venta_id' => $venta->id,
+                    'producto_servicio_id' => $producto->id,
+                ]);
+
+                $estancia->load(['paciente', 'creator', 'updater','formularioInstancias.catalogo','formularioInstancias.user']);
+
+                $formularioInstancia = FormularioInstancia::create([
+                    'fecha_hora' => now(),
+                    'estancia_id' => $estancia->id,
+                    'formulario_catalogo_id' => 1,
+                    'user_id' =>  Auth::id(),
+                ]);
+
+                HojaFrontal::create([
+                    'id' => $formularioInstancia->id,
+                    'medico' =>  $request->medico,
+                    'medico_id' => $request->medico_id,
+                    'responsable' => $request->responsable,
+                    'notas' => $request->notas
+                ]);
+
+                DB::commit();
+
+                return Inertia::render('estancias/show', [
+                    'estancia' => $estancia,
+                ]);
+
+            }catch(\Exception $e){
+                DB::rollBack();
+
+                Log::error('Error al crear hoja frontal: ' . $e->getMessage());
+                return redirect()->route('pacientes.estancias.hojasfrontales.index')->with('error', 'No se pudo crear la hoja frontal: ' . $e->getMessage());
+            }
+        }
+
 
     public function edit(Paciente $paciente, Estancia $estancia, HojaFrontal $hojaFrontal)
     {

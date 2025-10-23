@@ -12,6 +12,10 @@ use App\Http\Controllers\InterconsultaController;
 use App\Http\Controllers\CargoController;
 use App\Http\Controllers\FamiliarResponsableController;
 use App\Http\Controllers\HistoryController;
+use App\Http\Controllers\VentaController;
+use App\Http\Controllers\DetalleVentaController;
+use App\Http\Controllers\FormularioHojaEnfermeriaController;
+
 use App\Models\History;
 use App\Models\Interconsulta;
 use App\Models\Paciente;
@@ -32,12 +36,15 @@ Route::post('/cargos', [CargoController::class, 'store'])->name('cargos.store');
 Route::resource('habitaciones',HabitacionController::class)->middleware('auth');
 Route::resource('producto-servicios',ProductoServicioController::class)->middleware('auth');
 Route::resource('pacientes', PacienteController::class)->middleware('auth');
+Route::resource('doctores', DoctorController::class)->middleware('auth');  
+
 Route::resource('pacientes.responsable', FamiliarResponsableController::class);
 Route::resource('pacientes.estancias', EstanciaController::class)->shallow()->middleware('auth');
 Route::resource('pacientes.estancias.hojasfrontales', FormularioHojaFrontalController::class)->shallow()->parameters(['hojasfrontales' => 'hojaFrontal'])->middleware('auth');
 Route::resource('pacientes.estancias.historiasclinicas', FormularioHistoriaClinicaController::class)->shallow()->middleware('auth');
-
-Route::resource('doctores', DoctorController::class)->middleware('auth');  
+Route::resource('pacientes.estancias.hojasenfermerias',FormularioHojaEnfermeriaController::class)->shallow()-> middleware('auth');
+Route::resource('pacientes.estancias.ventas', VentaController::class)->shallow();
+Route::resource('pacientes.estancias.ventas.detallesventas',DetalleVentaController::class)->shallow();
 
 Route::resource('pacientes.estancias.interconsultas', InterconsultaController::class)
     ->parameters(['interconsultas' => 'interconsulta']);
@@ -45,9 +52,7 @@ Route::resource('pacientes.estancias.interconsultas', InterconsultaController::c
 
 Route::put('/doctores/{doctor}', [DoctorController::class, 'update'])->name('doctores.update');
 
-Route::get('historiales',[HistoryController::class,'index'])->name('historiales.index');
-
-
+//PDFs
 Route::get('/hojasfrontales/{hojafrontal}/pdf', [FormularioHojaFrontalController::class, 'generarPDF'])
     ->name('hojasfrontales.pdf')
     ->middleware('auth');
@@ -59,6 +64,9 @@ Route::get('/historiasclinicas/{historiaclinica}/pdf', [FormularioHistoriaClinic
 Route::get('/interconsultas/{interconsulta}/pdf', [InterconsultaController::class, 'generarPDF'])
     ->name('interconsultas.pdf')
     ->middleware('auth');
+
+//Módulos especiales
+Route::get('historiales',[HistoryController::class,'index'])->name('historiales.index');
 
 require __DIR__.'/settings.php';
 require __DIR__.'/auth.php';

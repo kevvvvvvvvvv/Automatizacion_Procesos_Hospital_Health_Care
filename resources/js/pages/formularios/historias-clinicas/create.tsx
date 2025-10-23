@@ -3,11 +3,10 @@ import MainLayout from '@/layouts/MainLayout';
 import React, { useMemo } from 'react'; 
 import PrimaryButton from '@/components/ui/primary-button';
 import InputText from '@/components/ui/input-text';
-import { useForm, usePage } from '@inertiajs/react';
+import { useForm, usePage, Head } from '@inertiajs/react';
 import { route } from 'ziggy-js';
 import { Estancia, Paciente } from '@/types';
-import InfoCard from '@/components/ui/info-card';
-import InfoField from '@/components/ui/info-field';
+import PacienteCard from '@/components/paciente-card';
 
 // --- INTERFACES ---
 interface CampoAdicional {
@@ -70,8 +69,7 @@ type CreateComponent = React.FC<CreateProps> & {
 
 const Create: CreateComponent = ({ preguntas, paciente, estancia }) => {
 
-    const { errors } = usePage().props;
-    const hasErrors = Object.keys(errors).length > 0;
+    const { errors } = usePage().props;;
 
     const { data, setData, post, processing } = useForm<FormData>({
         padecimiento_actual: '',
@@ -276,24 +274,11 @@ const Create: CreateComponent = ({ preguntas, paciente, estancia }) => {
 
     return(
         <>
-        {hasErrors && (
-                <div 
-                    className="col-span-full p-4 mb-6 bg-red-100 border-l-4 border-red-500 text-red-800"
-                    role="alert"
-                >
-                    <h3 className="font-bold text-lg mb-2">Error del Backend Detectado:</h3>
-                    <pre className="text-sm bg-red-50 p-2 rounded whitespace-pre-wrap break-all">
-                        {JSON.stringify(errors, null, 2)}
-                    </pre>
-                </div>
-            )}
-            <InfoCard title={`Paciente: ${paciente.nombre} ${paciente.apellido_paterno} ${paciente.apellido_materno}`}>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    <InfoField label="Folio" value={estancia.folio} />
-                    <InfoField label="Sexo" value={paciente.sexo} />
-                    <InfoField label="Edad" value={`${paciente.age} años`}/>
-                </div>
-            </InfoCard>
+            <PacienteCard
+                paciente={paciente}
+                estancia={estancia}
+            />
+            <Head title="Historia clínica"/>
         
             <FormLayout
                 title="Registrar Nueva Historia Clínica"
@@ -303,8 +288,15 @@ const Create: CreateComponent = ({ preguntas, paciente, estancia }) => {
                 <h2 className="text-xl font-semibold text-gray-800 mt-6 mb-4 col-span-full">Signos Vitales y Padecimiento</h2>
                 <div className="col-span-full">
                     <label htmlFor="padecimiento_actual" className={labelClasses}>Padecimiento Actual (Indagar acerca de tratamientos previos)
-                        </label>
-                        <textarea id="padecimiento_actual" name="padecimiento_actual" value={data.padecimiento_actual} onChange={(e) => setData('padecimiento_actual', e.target.value)} rows={4} className={`${textAreaClasses} ${errors.padecimiento_actual ? 'border-red-500' : 'border-gray-600'}`} />{errors.padecimiento_actual && <p className="mt-1 text-xs text-red-500">{errors.padecimiento_actual}</p>}</div><InputText id="tension_arterial" name="tension_arterial" label="Tensión Arterial" value={data.tension_arterial} onChange={(e) => setData('tension_arterial', e.target.value)} error={errors.tension_arterial} /><InputText id="frecuencia_cardiaca" name="frecuencia_cardiaca" label="Frecuencia Cardíaca (x min)" type="number" value={String(data.frecuencia_cardiaca)} onChange={(e) => setData('frecuencia_cardiaca', e.target.value)} error={errors.frecuencia_cardiaca} /><InputText id="frecuencia_respiratoria" name="frecuencia_respiratoria" label="Frecuencia Respiratoria (x min)" type="number" value={String(data.frecuencia_respiratoria)} onChange={(e) => setData('frecuencia_respiratoria', e.target.value)} error={errors.frecuencia_respiratoria} /><InputText id="temperatura" name="temperatura" label="Temperatura (°C)" type="number" value={String(data.temperatura)} onChange={(e) => setData('temperatura', e.target.value)} error={errors.temperatura} /><InputText id="peso" name="peso" label="Peso (kg)" type="number" value={String(data.peso)} onChange={(e) => setData('peso', e.target.value)} error={errors.peso} /><InputText id="talla" name="talla" label="Talla (cm)" type="number" value={String(data.talla)} onChange={(e) => setData('talla', e.target.value)} error={errors.talla} />
+                    </label>
+                    <textarea id="padecimiento_actual" name="padecimiento_actual" value={data.padecimiento_actual} onChange={(e) => setData('padecimiento_actual', e.target.value)} rows={4} className={`${textAreaClasses} ${errors.padecimiento_actual ? 'border-red-500' : 'border-gray-600'}`} />{errors.padecimiento_actual && <p className="mt-1 text-xs text-red-500">{errors.padecimiento_actual}</p>}
+                </div>
+                <InputText id="tension_arterial" name="tension_arterial" label="Tensión Arterial" value={data.tension_arterial} onChange={(e) => setData('tension_arterial', e.target.value)} error={errors.tension_arterial} />
+                <InputText id="frecuencia_cardiaca" name="frecuencia_cardiaca" label="Frecuencia Cardíaca (x min)" type="number" value={String(data.frecuencia_cardiaca)} onChange={(e) => setData('frecuencia_cardiaca', e.target.value)} error={errors.frecuencia_cardiaca} />
+                <InputText id="frecuencia_respiratoria" name="frecuencia_respiratoria" label="Frecuencia Respiratoria (x min)" type="number" value={String(data.frecuencia_respiratoria)} onChange={(e) => setData('frecuencia_respiratoria', e.target.value)} error={errors.frecuencia_respiratoria} />
+                <InputText id="temperatura" name="temperatura" label="Temperatura (°C)" type="number" value={String(data.temperatura)} onChange={(e) => setData('temperatura', e.target.value)} error={errors.temperatura} />
+                <InputText id="peso" name="peso" label="Peso (kg)" type="number" value={String(data.peso)} onChange={(e) => setData('peso', e.target.value)} error={errors.peso} />
+                <InputText id="talla" name="talla" label="Talla (cm)" type="number" value={String(data.talla)} onChange={(e) => setData('talla', e.target.value)} error={errors.talla} />
                 
                 {categoriasVisibles.map(([categoria, listaPreguntas]) => (
                     <div key={categoria} className="col-span-full mt-6">

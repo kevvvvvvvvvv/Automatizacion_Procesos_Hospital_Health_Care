@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\ProductoServicio;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
@@ -59,5 +60,18 @@ class ProductoServicioSeeder extends Seeder
                 fclose($stream);
             }
         });
+
+        ProductoServicio::create([
+            'tipo' => 'SERVICIOS',
+            'subtipo' => 'ADMISION',
+            'codigo_prestacion' => '',
+            'nombre_prestacion' => 'LLENADO DE HOJA FRONTAL',
+            'importe' => 0.1,
+            'cantidad' => null,
+        ]);
+
+
+
+
     }
 }

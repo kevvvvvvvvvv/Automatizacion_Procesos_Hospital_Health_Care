@@ -183,3 +183,30 @@ export interface PaginatedResponse<T> {
     to: number;
     total: number;
 }
+
+export interface Venta{
+    id: number;
+    fecha: string;
+    subtotal: number;
+    total: number;
+    descuento: number;
+    estado: string;
+    estancia_id: number;
+    user_id: number;
+    created_at: string;
+    updated_at: string;
+    user: User | null;
+}
+
+export interface DetalleVenta{
+    id: number;
+    precio_unitario: number;
+    cantidad: number;
+    subtotal: number;
+    descuento: number;
+    estado: string;
+    venta_id: number;
+    producto_servicio_id: number;
+    created_at: string;
+    updated_at: string;
+}
