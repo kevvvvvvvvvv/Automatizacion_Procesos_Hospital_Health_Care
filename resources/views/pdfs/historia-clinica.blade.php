@@ -168,7 +168,7 @@
             @elseif ($categoria == "no_patologicos")
                 Antecedentes personales no patológicos
             @elseif ($categoria == "gineco_obstetrico")
-                Ginéco-obstétricos
+                Antecedentes ginéco-obstétricos
             @elseif ($categoria == "exploracion_fisica")
                 Exploración física
             @endif
