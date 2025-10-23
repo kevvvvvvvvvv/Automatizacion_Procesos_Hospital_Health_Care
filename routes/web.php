@@ -47,6 +47,7 @@ Route::resource('pacientes.estancias.ventas', VentaController::class)->shallow()
 Route::resource('pacientes.estancias.ventas.detallesventas',DetalleVentaController::class)->shallow();
 
 Route::resource('pacientes.estancias.interconsultas', InterconsultaController::class)
+    ->shallow()
     ->parameters(['interconsultas' => 'interconsulta']);
 
 
