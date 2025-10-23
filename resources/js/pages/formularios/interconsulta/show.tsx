@@ -110,7 +110,7 @@ const Show = ({ interconsulta }: ShowInterconsultaProps) => {
         </>
     );
 };
-
+//
 Show.layout = (page: React.ReactElement) => {                   
     const { interconsulta } = page.props as ShowInterconsultaProps;
     return (

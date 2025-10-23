@@ -4,21 +4,20 @@
   import { route } from 'ziggy-js';
   import InputText from '@/components/ui/input-text';
   import BackButton from '@/components/ui/back-button';
-  import { Estancia } from '@/types';
+  import { Paciente, Estancia } from '@/types';
 
  type Props = {
-  pacientes?: { id: number; nombre_completo: string }[];
-  estancia?: Estancia;  // Agrega estancia a las props
+  paciente: Paciente,
+  estancia: Estancia,
 };
   console.log('CreateInterconsulta component loaded successfully');
-const CreateInterconsulta: React.FC<Props> = ({ pacientes = [], estancia }) => {
+const CreateInterconsulta: React.FC<Props> = ({ paciente, estancia }) => {
       useEffect(() => {
     console.log('Props recibidas en CreateInterconsulta:', {
-      pacientes: pacientes || 'UNDEFINED!',
-      numPacientes: pacientes?.length || 0,
-      estancia: estancia || 'UNDEFINED!',  // Ahora debería tener la estancia
+      paciente: paciente || 'UNDEFINED!',
+      estancia: estancia || 'UNDEFINED!',  
     });
-  }, [pacientes, estancia]);
+  }, [paciente, estancia]);
 
     const { data, setData, post, processing, errors } = useForm({
       paciente_id: '',
@@ -42,19 +41,9 @@ const CreateInterconsulta: React.FC<Props> = ({ pacientes = [], estancia }) => {
 
      const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!data.paciente_id) {
-      alert('Debe seleccionar un paciente.');
-      return;
-    }
-    if (!estancia?.id) {
-      alert('No se encontró la estancia. Verifica la URL.');
-      return;
-    }
-    // Usa la ruta anidada con parámetros
-    post(route('pacientes.estancias.interconsultas.store', {
-      paciente: data.paciente_id,
-      estancia: estancia.id
-    }));
+    //router.visit(route('pacientes.estancias.interconsultas.honorarios.create', { paciente: paciente.id, estancia: estancia.id }))
+    post(route('pacientes.estancias.interconsultas.store', { paciente: paciente.id, estancia: estancia.id }));
+      
   };
 
     return (
@@ -72,34 +61,68 @@ const CreateInterconsulta: React.FC<Props> = ({ pacientes = [], estancia }) => {
           </div>
 
           <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow p-6 max-w-6xl mx-auto">
-            {/* Sección 1: Selección de Paciente */}
-            <div className="mb-6">
-              <h2 className="text-lg font-semibold mb-4">1. Paciente</h2>
+        <div className="mb-6">
+              <h2 className="text-lg font-semibold mb-4">1. Criterios y sugerencias </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Criterio Diagnóstico */}
                 <div className="flex flex-col">
-                  <label htmlFor="paciente_id" className="block text-sm font-medium text-gray-700 mb-2">
-                    Paciente *
+                  <label htmlFor="criterio_diagnostico" className="block text-sm font-medium text-gray-700 mb-2">
+                    Criterio Diagnóstico
                   </label>
-                  <select
-                    id="paciente_id"
-                    name="paciente_id"
-                    value={data.paciente_id}
-                    onChange={(e) => setData('paciente_id', e.target.value)}
-                    required
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  >
-                    <option value="">Seleccionar Paciente</option>
-                    {pacientes.map((paciente) => (
-                      <option key={paciente.id} value={paciente.id.toString()}>
-                        {paciente.nombre_completo}
-                      </option>
-                    ))}
-                  </select>
-                  {errors.paciente_id && <p className="text-red-500 text-sm mt-1">{errors.paciente_id}</p>}
+                  <textarea
+                    id="criterio_diagnostico"
+                    name="criterio_diagnostico"
+                    value={data.criterio_diagnostico}
+                    onChange={(e) => setData('criterio_diagnostico', e.target.value)}
+                    placeholder="Criterios usados para el diagnóstico..."
+                    rows={3}
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-vertical"
+                    autoComplete="off"
+                  />
+                  {errors.criterio_diagnostico && (
+                    <p className="text-red-500 text-sm mt-1">{errors.criterio_diagnostico}</p>
+                  )}
+                </div>
+                {/* Plan de Estudio */}
+                <div className="flex flex-col">
+                  <label htmlFor="plan_de_estudio" className="block text-sm font-medium text-gray-700 mb-2">
+                    Plan de Estudio
+                  </label>
+                  <textarea
+                    id="plan_de_estudio"
+                    name="plan_de_estudio"
+                    value={data.plan_de_estudio}
+                    onChange={(e) => setData('plan_de_estudio', e.target.value)}
+                    placeholder="Plan de estudios adicionales..."
+                    rows={3}
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-vertical"
+                    autoComplete="off"
+                  />
+                  {errors.plan_de_estudio && (
+                    <p className="text-red-500 text-sm mt-1">{errors.plan_de_estudio}</p>
+                  )}
+                </div>
+                 {/* Sugerencia Diagnóstica */}
+                <div className="flex flex-col">
+                  <label htmlFor="sugerencia_diagnostica" className="block text-sm font-medium text-gray-700 mb-2">
+                    Sugerencia Diagnóstica
+                  </label>
+                  <textarea
+                    id="sugerencia_diagnostica"
+                    name="sugerencia_diagnostica"
+                    value={data.sugerencia_diagnostica}
+                    onChange={(e) => setData('sugerencia_diagnostica', e.target.value)}
+                    placeholder="Sugerencias adicionales..."
+                    rows={3}
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-vertical"
+                    autoComplete="off"
+                  />
+                  {errors.sugerencia_diagnostica && (
+                    <p className="text-red-500 text-sm mt-1">{errors.sugerencia_diagnostica}</p>
+                  )}
                 </div>
               </div>
             </div>
-
             {/* Sección 2: Signos Vitales */}
             <div className="mb-6">
               <h2 className="text-lg font-semibold mb-4">2. Signos Vitales (Opcionales)</h2>
@@ -115,16 +138,16 @@ const CreateInterconsulta: React.FC<Props> = ({ pacientes = [], estancia }) => {
                 />
 
                 <InputText
-                  id="fc"
-                  label="FC (Frecuencia Cardíaca)"
-                  name="fc"
-                  type="number"
-                  value={data.fc}
-                  onChange={(e) => setData('fc', e.target.value)}
-                  placeholder="Ej: 80"
-                  min={0}
-                  error={errors.fc}
-                />
+                id="fr"
+                label="FR (Frecuencia Respiratoria)"
+                name="fr"
+                type="number"
+                value={data.fr}
+                onChange={(e) => setData('fr', e.target.value)}
+                placeholder="Ej: 16"
+                min={0}
+                error={errors.fr}
+              />
 
                 <InputText
                   id="fr"
@@ -181,7 +204,7 @@ const CreateInterconsulta: React.FC<Props> = ({ pacientes = [], estancia }) => {
 
             {/* Sección 3: Motivo y Exploración */}
             <div className="mb-6">
-              <h2 className="text-lg font-semibold mb-4">3. Motivo y Exploración (Opcionales)</h2>
+              <h2 className="text-lg font-semibold mb-4">3. Motivo y Exploración </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Motivo de la Atención o Interconsulta */}
                 <div className="flex flex-col">
@@ -269,45 +292,9 @@ const CreateInterconsulta: React.FC<Props> = ({ pacientes = [], estancia }) => {
             <div className="mb-6">
               <h2 className="text-lg font-semibold mb-4">4. Diagnóstico y Plan (Opcionales)</h2>
               <div className="grid grid-cols-1 gap-6">
-                {/* Criterio Diagnóstico */}
-                <div className="flex flex-col">
-                  <label htmlFor="criterio_diagnostico" className="block text-sm font-medium text-gray-700 mb-2">
-                    Criterio Diagnóstico
-                  </label>
-                  <textarea
-                    id="criterio_diagnostico"
-                    name="criterio_diagnostico"
-                    value={data.criterio_diagnostico}
-                    onChange={(e) => setData('criterio_diagnostico', e.target.value)}
-                    placeholder="Criterios usados para el diagnóstico..."
-                    rows={3}
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-vertical"
-                    autoComplete="off"
-                  />
-                  {errors.criterio_diagnostico && (
-                    <p className="text-red-500 text-sm mt-1">{errors.criterio_diagnostico}</p>
-                  )}
-                </div>
+                
 
-                {/* Sugerencia Diagnóstica */}
-                <div className="flex flex-col">
-                  <label htmlFor="sugerencia_diagnostica" className="block text-sm font-medium text-gray-700 mb-2">
-                    Sugerencia Diagnóstica
-                  </label>
-                  <textarea
-                    id="sugerencia_diagnostica"
-                    name="sugerencia_diagnostica"
-                    value={data.sugerencia_diagnostica}
-                    onChange={(e) => setData('sugerencia_diagnostica', e.target.value)}
-                    placeholder="Sugerencias adicionales..."
-                    rows={3}
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-vertical"
-                    autoComplete="off"
-                  />
-                  {errors.sugerencia_diagnostica && (
-                    <p className="text-red-500 text-sm mt-1">{errors.sugerencia_diagnostica}</p>
-                  )}
-                </div>
+             
 
                 {/* Resultados Relevantes del Estudio Diagnóstico */}
                 <div className="flex flex-col">
@@ -349,25 +336,7 @@ const CreateInterconsulta: React.FC<Props> = ({ pacientes = [], estancia }) => {
                   )}
                 </div>
 
-                {/* Plan de Estudio */}
-                <div className="flex flex-col">
-                  <label htmlFor="plan_de_estudio" className="block text-sm font-medium text-gray-700 mb-2">
-                    Plan de Estudio
-                  </label>
-                  <textarea
-                    id="plan_de_estudio"
-                    name="plan_de_estudio"
-                    value={data.plan_de_estudio}
-                    onChange={(e) => setData('plan_de_estudio', e.target.value)}
-                    placeholder="Plan de estudios adicionales..."
-                    rows={3}
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-vertical"
-                    autoComplete="off"
-                  />
-                  {errors.plan_de_estudio && (
-                    <p className="text-red-500 text-sm mt-1">{errors.plan_de_estudio}</p>
-                  )}
-                </div>
+                
                   {/* Tratamiento y Pronóstico */}
                 <div className="flex flex-col">
                   <label htmlFor="tratamiento_y_pronostico" className="block text-sm font-medium text-gray-700 mb-2">

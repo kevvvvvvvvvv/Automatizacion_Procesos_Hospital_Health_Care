@@ -150,8 +150,8 @@ class EstanciaController extends Controller
             'formularioInstancias.catalogo',
             'formularioInstancias.user',
             // NUEVO: Carga interconsultas con relaciones
-            'interconsultas.creator',  // Carga el creador de cada interconsulta
-            'interconsultas.updater'   // Carga el actualizador de cada interconsulta
+            //'interconsultas.creator',  // Carga el creador de cada interconsulta
+            //'interconsultas.updater'   // Carga el actualizador de cada interconsulta
         ]);
         
         return Inertia::render('estancias/show', [
