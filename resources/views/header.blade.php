@@ -72,6 +72,10 @@
                     <span class="id-label">Fecha:</span>
                     <span class="id-value">{{ $historiaclinica->formularioInstancia['fecha_hora'] }}</span> 
                 </div>
+                  <div class="id-field">
+                    <span class="id-label">Folio:</span>
+                    <span class="id-value short">{{$estancia['folio']}}</span>
+                  </div>
             </div>
             <div class="id-row">
                  <div class="id-field" style="flex-grow: 1;"> 
