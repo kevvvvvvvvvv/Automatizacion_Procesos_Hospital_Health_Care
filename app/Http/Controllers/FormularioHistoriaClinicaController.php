@@ -53,17 +53,15 @@ public function store(HistoriaClinicaRequest $request, Paciente $paciente, Estan
             'user_id' => Auth::id(),
         ]);
 
-        // Log para verificar el ID del formulario creado
         Log::info('FormularioInstancia creado con ID: ' . ($formulario ? $formulario->id : 'FALLÓ'));
         if (!$formulario || !$formulario->id) {
             DB::rollBack();
             return redirect()->back()->with('error', 'Error crítico al crear la instancia del formulario.');
         }
 
-        // Usa firstOrCreate para manejar el caso de que ya exista (aunque la lógica indica que no debería)
         $historiaClinica = HistoriaClinica::firstOrCreate(
-            ['id' => $formulario->id], // Busca por este ID
-            [ // Datos para crear si no existe
+            ['id' => $formulario->id], 
+            [ 
                 'padecimiento_actual'       => $validatedData['padecimiento_actual'],
                 'tension_arterial'          => $validatedData['tension_arterial'],
                 'frecuencia_cardiaca'       => $validatedData['frecuencia_cardiaca'],
@@ -77,8 +75,6 @@ public function store(HistoriaClinicaRequest $request, Paciente $paciente, Estan
                 'indicacion_terapeutica'    => $validatedData['indicacion_terapeutica'],
             ]
         );
-
-        // Log para verificar el ID de la historia clínica
         Log::info('HistoriaClinica obtenida/creada con ID: ' . ($historiaClinica ? $historiaClinica->id : 'FALLÓ'));
         if (!$historiaClinica || !$historiaClinica->id) {
             DB::rollBack();
@@ -86,7 +82,6 @@ public function store(HistoriaClinicaRequest $request, Paciente $paciente, Estan
             return redirect()->back()->with('error', 'Error crítico al crear/obtener la historia clínica.');
         }
 
-        // Asegúrate de que $historiaClinica->id sea el correcto antes del bucle
         $hcId = $historiaClinica->id;
         Log::info('ID a usar para RespuestaFormulario: ' . $hcId);
 
@@ -95,7 +90,7 @@ public function store(HistoriaClinicaRequest $request, Paciente $paciente, Estan
             if (!empty($detalles['respuesta']) || !empty($detalles['campos']) || !empty($detalles['items'])) {
                 Log::info("Intentando crear Respuesta para HC ID: {$hcId}, Pregunta ID: {$preguntaId}");
                 RespuestaFormulario::create([
-                    'historia_clinica_id'   => $hcId, // Usa la variable verificada
+                    'historia_clinica_id'   => $hcId, 
                     'catalogo_pregunta_id'  => $preguntaId,
                     'detalles'              => $detalles,
                 ]);
@@ -132,6 +127,7 @@ public function store(HistoriaClinicaRequest $request, Paciente $paciente, Estan
 
         $paciente = $historiaclinica->formularioInstancia->estancia->paciente;
         $medico = $historiaclinica->formularioInstancia->user;
+        $estancia = $historiaclinica->formularioInstancia->estancia;
 
         $preguntasPorCategoria = CatalogoPregunta::where('formulario_catalogo_id', 2) 
                                          ->orderBy('orden')
@@ -151,7 +147,8 @@ public function store(HistoriaClinicaRequest $request, Paciente $paciente, Estan
         $headerData = [
             'historiaclinica' => $historiaclinica,
             'paciente' => $paciente,
-            'logoDataUri' => $logoDataUri
+            'logoDataUri' => $logoDataUri,
+            'estancia' => $estancia
         ];
 
         return Pdf::view('pdfs.historia-clinica', [

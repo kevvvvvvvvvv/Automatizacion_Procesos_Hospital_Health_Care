@@ -121,6 +121,7 @@ class InterconsultaController extends Controller
         ]);
         $paciente = $interconsulta->formularioInstancia->estancia->paciente;
         $medico = $interconsulta->formularioInstancia->user;
+        $estancia = $interconsulta->formularioInstancia->estancia;
 
         $logoDataUri = '';
         $imagePath = public_path('images/Logo_HC_2.png');
@@ -133,7 +134,8 @@ class InterconsultaController extends Controller
         $headerData = [
             'historiaclinica' => $interconsulta,
             'paciente' => $paciente,
-            'logoDataUri' => $logoDataUri
+            'logoDataUri' => $logoDataUri,
+            'estancia' => $estancia
         ];
 
         return Pdf::view('pdfs.interconsultas', [
