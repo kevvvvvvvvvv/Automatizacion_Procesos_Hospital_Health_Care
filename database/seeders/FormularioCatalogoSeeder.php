@@ -16,13 +16,13 @@ class FormularioCatalogoSeeder extends Seeder
         FormularioCatalogo::create([
             'nombre_formulario' => 'Hoja frontal',
             'nombre_tabla_fisica' => 'hoja_frontales',
-            'route_prefix' => 'hoja-frontales',
+            'route_prefix' => 'hojasfrontales',
         ]);
 
         FormularioCatalogo::create([
             'nombre_formulario' => 'Historia clínica',
             'nombre_tabla_fisica' => 'historia_clinicas',
-            'route_prefix' => 'historia-clinicas',
+            'route_prefix' => 'historiasclinicas',
         ]);
 
         FormularioCatalogo::create([
