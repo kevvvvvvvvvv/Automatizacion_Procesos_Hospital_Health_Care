@@ -18,7 +18,10 @@ interface ShowEstanciaProps {
         habitacion: Habitacion | null;
 
         formulario_instancias: (FormularioInstancia & {
-            catalogo: { nombre_formulario: string };
+            catalogo: { 
+                nombre_formulario: string,
+                route_prefix: string,
+             };
             user: User;
         })[];
     };
@@ -174,7 +177,7 @@ const Show = ({ estancia }: ShowEstanciaProps) => {
                                     </Link>*/}
                                 </div>
                                     <a 
-                                        href={route('hojasfrontales.pdf', formulario.id)}
+                                        href={route(`${formulario.catalogo.route_prefix}.pdf`, formulario.id)}
                                         target="_blank"
                                         className="p-2 text-red-500 hover:bg-red-100 hover:text-red-700 rounded-full transition"
                                         title="Imprimir / Descargar PDF"
