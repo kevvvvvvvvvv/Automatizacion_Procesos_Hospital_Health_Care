@@ -58,9 +58,9 @@
                 @endif
             </div>
              <div class="hospital-info">
-                <p><strong>PLAN DE AYUTLA 413 COL. REFORMA</strong></p>
-                <p><strong> CUERNAVACA, MORELOS, C.P. 62260 TEL: 777 323 0371</strong></p>
-                <p>Licencia sanitaria No. 23-AM-17-007-0002</p>
+                <p><strong>CALLE PLAN DE AYUTLA NÚMERO 13 COLONIA REFORMA</strong></p>
+                <p><strong>CUERNAVACA, MORELOS, CÓDIGO POSTAL 62260 TÉLEFONO 777 323 0371</strong></p>
+                <p>Licencia sanitaria número 23-AM-17-007-0002</p>
                 <p>Responsable Sanitario Dr. Juan Manuel Ahumada Trujillo.</p>
             </div>
         </div>
