@@ -39,10 +39,10 @@ class UserSeeder extends Seeder
             'apellido_materno' => 'Santos',
             'sexo' => 'Femenino',
             'fecha_nacimiento' => '1990-02-14',
-            'email' => 'maria.lopez@hospital.com',
+            'email' => 'enfermeralicenciada@hospital.com',
             'colaborador_responsable_id' => $userJuan->id, 
             'password' => Hash::make('password123'),
-            'cargo_id' => 5,
+            'cargo_id' => 3,
         ]);
         CredencialEmpleado::create([
             'user_id' => $userMaria->id,
@@ -58,9 +58,9 @@ class UserSeeder extends Seeder
             'sexo' => 'Masculino',
             'fecha_nacimiento' => '1982-07-10',
             'colaborador_responsable_id' => $userJuan->id, 
-            'email' => 'carlos.ramirez@hospital.com',
+            'email' => 'enfermeraauxiliar@hospital.com',
             'password' => Hash::make('password123'),
-            'cargo_id' => 4,
+            'cargo_id' => 5,
         ]);
 
        
@@ -131,6 +131,18 @@ class UserSeeder extends Seeder
             'user_id' => $user->id,
             'titulo' => 'Médico Especialista en Pediatría',
             'cedula_profesional' => '8765432'
+        ]);
+
+        $user = User::create([
+            'curp' => 'HELC881105HMCLBZA9',
+            'nombre' => 'Carlos Alberto',
+            'apellido_paterno' => 'Hernández',
+            'apellido_materno' => 'López',
+            'sexo' => 'Masculino', 
+            'fecha_nacimiento' => '1988-11-05',
+            'email' => 'farmacia@gmail.com',
+            'password' => Hash::make('12345678'),
+            'cargo_id' => 9,
         ]);
     }
 }
