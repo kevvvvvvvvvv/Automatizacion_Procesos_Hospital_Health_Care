@@ -50,7 +50,10 @@ Route::resource('pacientes.estancias.interconsultas', InterconsultaController::c
     ->shallow()
     ->parameters(['interconsultas' => 'interconsulta']);
 
-
+Route::prefix('pacientes/{paciente}/estancias/{estancia}/interconsultas/{interconsulta}/honorarios')->group(function () {
+    Route::get('/create', [HonorarioController::class, 'create'])->name('pacientes.estancias.interconsultas.honorarios.create');
+    Route::post('/', [HonorarioController::class, 'store'])->name('pacientes.estancias.interconsultas.honorarios.store');
+});
 Route::put('/doctores/{doctor}', [DoctorController::class, 'update'])->name('doctores.update');
 
 //PDFs
@@ -61,13 +64,6 @@ Route::get('/hojasfrontales/{hojafrontal}/pdf', [FormularioHojaFrontalController
 Route::get('/historiasclinicas/{historiaclinica}/pdf', [FormularioHistoriaClinicaController::class, 'generarPDF'])
     ->name('hojasfrontales.pdf')
     ->middleware('auth');
-
-Route::get('/interconsultas/{interconsulta}/pdf', [InterconsultaController::class, 'generarPDF'])
-    ->name('interconsultas.pdf')
-    ->middleware('auth');
-
-//Módulos especiales
-Route::get('historiales',[HistoryController::class,'index'])->name('historiales.index');
 
 require __DIR__.'/settings.php';
 require __DIR__.'/auth.php';
