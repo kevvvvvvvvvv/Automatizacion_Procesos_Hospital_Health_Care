@@ -15,6 +15,7 @@ use App\Http\Controllers\HistoryController;
 use App\Http\Controllers\VentaController;
 use App\Http\Controllers\DetalleVentaController;
 use App\Http\Controllers\FormularioHojaEnfermeriaController;
+use App\Http\Controllers\HonorarioController;
 
 use App\Models\History;
 use App\Models\Interconsulta;
@@ -24,7 +25,7 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 Route::get('/', function () {
-    return Inertia::render('dashboard-healthcare');
+    return Inertia::render('auth/login');
 })->name('home');
 
 Route::middleware(['auth', 'verified'])->group(function () {
