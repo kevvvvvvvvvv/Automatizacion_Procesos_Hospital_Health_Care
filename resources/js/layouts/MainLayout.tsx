@@ -54,7 +54,6 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, userName, pageTitle }
     const buttonRef = useRef<HTMLButtonElement>(null);
 
     useEffect(() => {
-        // MOCKUP: Simular carga de datos
         setTimeout(() => {
         setNotifications([
             { id: '1', message: 'Nueva denuncia registrada (#DEN-001)', time: 'hace 2 min', read: false },
@@ -92,12 +91,12 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, userName, pageTitle }
         <aside className="w-full md:w-20 bg-[#1B1C38] flex flex-row md:flex-col items-center justify-center md:justify-start py-4 md:py-6 shadow order-2 md:order-1 gap-2 md:gap-4">
             
             <Link
-            href="/"
+            href="/dashboard"
             className="flex flex-col items-center justify-center p-3 rounded-md text-white hover:bg-[#16172d] transition"
             title="Inicio"
             >
-            <HomeIcon />
-            <span className="text-xs mt-1 select-none hidden md:block">Inicio</span>
+                <HomeIcon />
+                <span className="text-xs mt-1 select-none hidden md:block">Inicio</span>
             </Link>
 
             <div className="relative">
