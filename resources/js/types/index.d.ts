@@ -210,3 +210,54 @@ export interface DetalleVenta{
     created_at: string;
     updated_at: string;
 }
+
+export interface HojaEnfermeria {
+    id: number;
+    turno: string;
+    observaciones: string | null;
+    estado: string;
+    created_at: string;
+    updated_at: string;
+    hojas_terapia_i_v: HojaTerapiaIV[] | null; 
+    hoja_medicamentos: HojaMedicamento[] | null;
+    hoja_signos: HojaSignos[] | null;
+}
+
+export interface HojaTerapia {
+    id: number;
+    hoja_enfermeria_id: number;
+    solucion: ProductoServicio;
+    flujo_ml_hora: number;
+    fecha_hora_inicio: string;
+    created_at: string;
+    updated_at: string;
+}
+
+export interface HojaSignos {
+    id: number;
+    hoja_enfermeria_id: number;
+    fecha_hora_registro: string;
+    tension_arterial_sistolica: number | null;
+    tension_arterial_diastolica: number | null;
+    frecuencia_cardiaca: number | null;
+    frecuencia_respiratoria: number | null;
+    temperatura: number | null;
+    saturacion_oxigeno: number | null;
+    glucemia_capilar: number | null;
+    talla: number | null;
+    peso: number | null;
+    uresis: number | null;
+    uresis_descripcion: string | null;
+    evacuaciones: number | null;
+    evacuaciones_descripcion: string | null;
+    emesis: number | null;
+    emesis_descripcion: string | null;
+    drenes: number | null;
+    drenes_descripcion: string | null;
+    estado_conciencia: string | null;
+    escala_braden: string | null;
+    escala_glasgow: string | null;
+    escala_eva: string | null;
+    created_at: string;
+    updated_at: string;
+}

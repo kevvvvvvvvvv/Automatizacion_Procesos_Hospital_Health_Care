@@ -13,6 +13,7 @@ class FormularioInstancia extends Model
     protected $keyType = 'int';
 
     protected $fillable = [
+        'id',
         'fecha_hora',
         'estancia_id',
         'formulario_catalogo_id',

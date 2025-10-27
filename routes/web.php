@@ -16,8 +16,11 @@ use App\Http\Controllers\VentaController;
 use App\Http\Controllers\DetalleVentaController;
 use App\Http\Controllers\FormularioHojaEnfermeriaController;
 use App\Http\Controllers\HonorarioController;
+use App\Http\Controllers\FormularioHojaTerapiaIVController;
+use App\Http\Controllers\FormularioHojaSignosController;
 
 use App\Models\History;
+use App\Models\HojaTerapiaIV;
 use App\Models\Interconsulta;
 use App\Models\Paciente;
 use App\Models\ProductoServicio;
@@ -46,6 +49,9 @@ Route::resource('pacientes.estancias.historiasclinicas', FormularioHistoriaClini
 Route::resource('pacientes.estancias.hojasenfermerias',FormularioHojaEnfermeriaController::class)->shallow()-> middleware('auth');
 Route::resource('pacientes.estancias.ventas', VentaController::class)->shallow();
 Route::resource('pacientes.estancias.ventas.detallesventas',DetalleVentaController::class)->shallow();
+
+Route::post('hojasterapiasiv/{hojasenfermeria}',[FormularioHojaTerapiaIVController::class,'store'])->name('hojasterapiasiv.store');
+Route::post('hojassignos/{hojasenfermeria}',[FormularioHojaSignosController::class, 'store'])->name('hojassignos.store');
 
 Route::resource('pacientes.estancias.interconsultas', InterconsultaController::class)
     ->shallow()
