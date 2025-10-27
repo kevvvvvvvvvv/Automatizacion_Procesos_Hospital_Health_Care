@@ -19,6 +19,7 @@ return new class extends Migration
             $table->foreignId('producto_servecio_id')
                 ->constrained('producto_servicios')
                 ->onDelete('cascade');
+
             $table->string('dosis');
             $table->string('via_administracion');
             $table->integer('duracion_tratamiento');
@@ -26,6 +27,7 @@ return new class extends Migration
             $table->string('estado')->default('solicitado');
             $table->datetime('fecha_hora_solicitud');
             $table->datetime('fecha_hora_surtido_farmacia')->nullable();
+            
             $table->foreignId('farmaceutico_id')->nullable()
                 ->constrained('users') 
                 ->onDelete('set null');

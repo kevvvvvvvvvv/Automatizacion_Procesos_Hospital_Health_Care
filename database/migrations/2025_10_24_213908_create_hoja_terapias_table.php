@@ -16,7 +16,9 @@ return new class extends Migration
             $table->foreignId('hoja_enfermeria_id')
                 ->constrained('hoja_enfermerias')
                 ->onDelete('cascade');
-            $table->string('solucion');
+            $table->foreignId('solucion')
+                ->constrained('producto_servicios')
+                ->onDelete('cascade');
             $table->decimal('flujo_ml_hora');
             $table->datetime('fecha_hora_inicio');
             $table->timestamps();

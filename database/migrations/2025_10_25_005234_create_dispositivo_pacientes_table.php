@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('tipo_dispositivo');
             $table->string('calibre')->nullable();
             $table->datetime('fecha_instalacion');
+            $table->datetime('fecha_colocacion');
             $table->text('observaciones')->nullable();
             //$table->string('sitio_insercion')->nullable();
             //$table->datetime('fecha_retiro')->nullable();

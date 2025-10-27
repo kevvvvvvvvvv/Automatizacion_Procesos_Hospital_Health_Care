@@ -19,6 +19,7 @@ return new class extends Migration
                 ->onDelete('cascade'); 
             $table->string('turno');
             $table->string('observaciones')->nullable();
+            $table->string('estado');
             $table->timestamps();
         });
     }

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Link } from '@inertiajs/react';
-import { Toaster } from 'react-hot-toast';
+import { Link, usePage } from '@inertiajs/react';
+
 
 type Notification = {
     id: string;
@@ -9,12 +9,32 @@ type Notification = {
     read: boolean;
 };
 
+interface AlertProps {
+    message: string | null;
+    type: 'success' | 'error';
+    onClose: () => void;
+}
+
 type MainLayoutProps = {
     children: React.ReactNode;
     userName?: string;
     pageTitle?: string;
     // authUserId?: number; 
 };
+
+interface PageProps {
+    [key: string]: unknown; 
+    flash?: {
+        success?: string;
+        error?: string;
+    };
+    auth?: { 
+        user: {
+            id: number;
+            name: string;
+        };
+    };
+}
 
 const HomeIcon = () => (
     <svg
@@ -44,10 +64,85 @@ const BellIcon = () => (
         d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 00-5-5.917V5a1 1 0 00-2 0v.083A6 6 0 006 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" 
         />
     </svg>
+);
+
+const FlashAlert: React.FC<AlertProps> = ({ message, type, onClose }) => {
+    
+    useEffect(() => {
+        if (message) {
+            const timer = setTimeout(() => {
+                onClose();
+            }, 5000); 
+            return () => clearTimeout(timer);
+        }
+    }, [message, onClose]);
+
+    if (!message) {
+        return null;
+    }
+
+    const baseStyles = "fixed top-5 right-5 z-50 p-4 rounded-lg shadow-lg flex items-center max-w-sm";
+    
+
+    const typeStyles = {
+        success: "bg-green-100 border border-green-400 text-green-700",
+        error: "bg-red-100 border border-red-400 text-red-700"
+    };
+
+
+    const icons = {
+        success: (
+            <svg className="w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+            </svg>
+        ),
+        error: (
+            <svg className="w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+            </svg>
+        )
+    };
+
+    return (
+        <div className={`${baseStyles} ${typeStyles[type]}`} role="alert">
+            {icons[type]}
+            <span className="flex-1">{message}</span>
+            <button
+                type="button"
+                className={`ml-3 -mr-1 -my-1 p-1 rounded-md ${typeStyles[type]} opacity-70 hover:opacity-100`}
+                onClick={onClose} // Llama a onClose directamente
+                aria-label="Cerrar"
+            >
+                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                </svg>
+            </button>
+        </div>
     );
+};
+
 
 const MainLayout: React.FC<MainLayoutProps> = ({ children, userName, pageTitle }) => {
   
+    const { flash } = usePage<PageProps>().props;
+
+    const [alert, setAlert] = useState<{ message: string | null, type: 'success' | 'error' }>({
+        message: null,
+        type: 'success',
+    });
+
+    useEffect(() => {
+        if (flash?.success) {
+            setAlert({ message: flash.success, type: 'success' });
+        } else if (flash?.error) {
+            setAlert({ message: flash.error, type: 'error' });
+        }
+    }, [flash]);
+
+    const handleCloseAlert = () => {
+        setAlert({ message: null, type: 'success' });
+    };
+
     const [isPanelOpen, setIsPanelOpen] = useState(false);
     const [notifications, setNotifications] = useState<Notification[]>([]);
     const panelRef = useRef<HTMLDivElement>(null);
@@ -86,7 +181,6 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, userName, pageTitle }
 
     return (
         <div className="min-h-screen bg-gray-100 flex flex-col md:flex-row">
-        <Toaster position="top-right" reverseOrder={false} />
         
         <aside className="w-full md:w-20 bg-[#1B1C38] flex flex-row md:flex-col items-center justify-center md:justify-start py-4 md:py-6 shadow order-2 md:order-1 gap-2 md:gap-4">
             
@@ -165,6 +259,12 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, userName, pageTitle }
             )}
             </div>
         </aside>
+
+        <FlashAlert 
+            message={alert.message}
+            type={alert.type}
+            onClose={handleCloseAlert}
+        />
 
         <div className="flex-1 flex flex-col order-1 md:order-2">
             {/* Header */}

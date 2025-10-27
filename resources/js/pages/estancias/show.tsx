@@ -54,14 +54,12 @@ const Show = ({ estancia }: ShowEstanciaProps) => {
                         value={new Date(estancia.fecha_ingreso).toLocaleString('es-MX', dateOptions)} 
                     />
                     { estancia.tipo_estancia === 'Hospitalizacion' && (
-                    { estancia.tipo_estancia === 'Hospitalizacion' && (
                     <InfoField 
                         label="Fecha de egreso" 
                         value={estancia.fecha_egreso 
                             ? new Date(estancia.fecha_egreso).toLocaleString('es-MX', dateOptions) 
                             : 'Aún hospitalizado(a)'} 
                     />
-                    )}
                     )}
                     <InfoField label="Número de habitación" value={estancia.habitacion?.identificador ?? 'N/A'} />
                     <InfoField label="Creado por" value={creator ? creator.nombre : 'N/A'} />
@@ -98,7 +96,6 @@ const Show = ({ estancia }: ShowEstanciaProps) => {
                                                     active ? 'bg-blue-500 text-white' : 'text-gray-900'
                                                 } group flex rounded-md items-center w-full px-2 py-2 text-sm`}
                                             >
-                                                Añadir hoja frontal
                                                 Añadir hoja frontal
                                             </Link>
                                         )}

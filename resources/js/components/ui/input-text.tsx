@@ -32,17 +32,9 @@ const InputText = ({
       <label
         htmlFor={id}
         className={`
-            w-full px-3 py-2 rounded-md shadow-sm 
-            border 
-            text-gray-900 
-            bg-white 
-            placeholder-gray-500 
-            focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500
-            transition
             ${error ? 'border-red-500 focus:ring-red-500 focus:border-red-500' : 'border-gray-300'}
             ${disabled ? 'bg-gray-200 cursor-not-allowed opacity-60' : ''}
           `}
-
       >
         {label}
       </label>
