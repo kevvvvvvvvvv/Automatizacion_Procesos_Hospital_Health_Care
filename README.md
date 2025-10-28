@@ -77,3 +77,9 @@ composer require league/csv
 ```bash
 npm install react-hot-toast
 ```
+
+<h2>Instalar paquete para las gráficas</h2>
+
+```bash
+npm install react-chartjs-2 chart.js
+```
