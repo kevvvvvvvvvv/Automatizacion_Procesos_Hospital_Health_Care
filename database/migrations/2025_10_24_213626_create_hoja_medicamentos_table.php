@@ -16,14 +16,14 @@ return new class extends Migration
             $table->foreignId('hoja_enfermeria_id')
                 ->constrained('hoja_enfermerias')
                 ->onDelete('cascade');
-            $table->foreignId('producto_servecio_id')
+            $table->foreignId('producto_servicio_id')
                 ->constrained('producto_servicios')
                 ->onDelete('cascade');
 
-            $table->string('dosis');
+            $table->integer('dosis');
             $table->string('via_administracion');
             $table->integer('duracion_tratamiento');
-            $table->datetime('fecha_hora_inicio');
+            $table->datetime('fecha_hora_inicio')->nullable();
             $table->string('estado')->default('solicitado');
             $table->datetime('fecha_hora_solicitud');
             $table->datetime('fecha_hora_surtido_farmacia')->nullable();

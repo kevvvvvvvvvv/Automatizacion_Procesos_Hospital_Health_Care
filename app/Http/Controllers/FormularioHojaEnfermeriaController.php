@@ -58,7 +58,6 @@ class FormularioHojaEnfermeriaController extends Controller
             
             return Redirect::route('hojasenfermerias.edit', $hoja->id)
                    ->with('success', 'Turno iniciado. Ya puede registrar eventos.');
-
         }catch(\Exception $e){
             DB::rollback();
             return Redirect::back()->with('error', 'Error al iniciar turno: ' . $e->getMessage());
@@ -70,7 +69,8 @@ class FormularioHojaEnfermeriaController extends Controller
 
         $hojasenfermeria->load(
             'formularioInstancia.estancia.paciente', 
-            'hojasTerapiaIV.solucion' 
+            'hojasTerapiaIV.solucion',
+            'hojaMedicamentos.productoServicio'
         );
         $estancia = $hojasenfermeria->formularioInstancia->estancia;
         $paciente = $hojasenfermeria->formularioInstancia->estancia->paciente;

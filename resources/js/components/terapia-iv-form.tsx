@@ -22,6 +22,30 @@ interface Props {
 
 const TerapiaIVForm: React.FC<Props> = ({ hoja, soluciones }) => {
 
+    const handleUpdateTerapia = (terapiaId: string, newDate: string) => {
+
+        if (!newDate) {
+            console.error('[handleUpdateTerapia] La fecha está vacía.');
+            return; 
+        }
+
+        const routeParams = { 
+            hojasenfermeria: hoja.id, 
+            hojasterapiasiv: terapiaId 
+        };
+
+        router.patch(route('hojasterapiasiv.update', routeParams), {
+            fecha_hora_inicio: newDate
+        }, {
+            preserveScroll: true,
+            onSuccess: () => {
+            },
+            onError: (errors) => {
+                alert('Error al actualizar la fecha: \n' + JSON.stringify(errors));
+            }
+        });
+    }
+
     const solucionesOptions = soluciones.map(s =>({
         label: s.nombre_prestacion,
         value: s.id.toString()
@@ -87,7 +111,6 @@ const TerapiaIVForm: React.FC<Props> = ({ hoja, soluciones }) => {
         }
     }
 
-
     return (
         <div>
 
@@ -114,14 +137,6 @@ const TerapiaIVForm: React.FC<Props> = ({ hoja, soluciones }) => {
                     value={localData.flujo} 
                     onChange={e => setLocalData(d => ({...d, flujo: e.target.value}))} 
                     error={errors['terapias_agregadas.0.flujo']}
-                />
-                <InputDateTime
-                    id="fecha_local"
-                    name="fecha"
-                    label="Fecha y hora de inicio" 
-                    value={localData.fecha_hora_inicio} 
-                    onChange={e => setLocalData(d => ({...d, fecha_hora_inicio: e as string}))} 
-                    error={errors['terapias_agregadas.0.fecha_hora_inicio']}
                 />
             </div>
             <div className="flex justify-end mt-4">
@@ -176,30 +191,33 @@ const TerapiaIVForm: React.FC<Props> = ({ hoja, soluciones }) => {
                 <div className="overflow-x-auto border rounded-lg">
                     <table className="min-w-full divide-y divide-gray-200">
                         <tbody className="bg-white divide-y divide-gray-200">
-                            {(hoja.hojas_terapia_i_v ?? []).length === 0 ? (
-                                <tr>
-                                    <td colSpan={4} className="px-4 py-4 text-sm text-gray-500 text-center">
-                                        No hay terapias IV registradas en el servidor.
+                            {hoja.hojas_terapia_i_v?.map((terapia) => (
+                                <tr key={terapia.id}>
+                                    <td className="px-4 py-4 text-sm text-gray-900">{terapia.solucion?.nombre_prestacion || '...'}</td>
+                                    <td className="px-4 py-4 text-sm text-gray-500">{terapia.flujo_ml_hora}</td>
+                                    <td className="px-2 py-1 text-sm text-gray-500" style={{ minWidth: '200px' }}>
+                                        <InputDateTime
+                                            id={`fecha_saved_${terapia.id}`}
+                                            name={`fecha_saved_${terapia.id}`}
+                                            label=""
+                                            value={terapia.fecha_hora_inicio}
+                                            onChange={(newDate) => {
+                                                handleUpdateTerapia(terapia.id, newDate as string);
+                                            }}
+                                        />
+                                    </td>
+
+                                    <td className="px-4 py-4 text-sm">
+                                        <button
+                                            type="button"
+                                            onClick={() => handleRemoveSavedTerapia(terapia.id)}
+                                            className="text-red-600 hover:text-red-900"
+                                        >
+                                            Eliminar
+                                        </button>
                                     </td>
                                 </tr>
-                            ) : (
-                               hoja.hojas_terapia_i_v?.map((terapia) => (
-                                    <tr key={terapia.id}>
-                                        <td className="px-4 py-4 text-sm text-gray-900">{terapia.solucion?.nombre_prestacion || '...'}</td>
-                                        <td className="px-4 py-4 text-sm text-gray-500">{terapia.flujo_ml_hora}</td>
-                                        <td className="px-4 py-4 text-sm text-gray-500">{terapia.fecha_hora_inicio}</td>
-                                        <td className="px-4 py-4 text-sm">
-                                            <button
-                                                type="button"
-                                                onClick={() => handleRemoveSavedTerapia(terapia.id)}
-                                                className="text-red-600 hover:text-red-900"
-                                            >
-                                                Eliminar
-                                            </button>
-                                        </td>
-                                    </tr>
-                                ))
-                            )}
+                            ))}
                         </tbody>
                     </table>
                 </div>

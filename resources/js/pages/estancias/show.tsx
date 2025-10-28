@@ -158,9 +158,7 @@ const Show = ({ estancia }: ShowEstanciaProps) => {
                                 </div>
                                 <div className="flex items-center space-x-2">
                                     <Link
-                                        href={route('hojasfrontales.edit', { 
-                                            hojaFrontal: formulario.id 
-                                        })}
+                                        href={route(`${formulario.catalogo.route_prefix}.edit`, formulario.id )}
                                         className="p-2 text-blue-500 hover:bg-blue-100 hover:text-blue-700 rounded-full transition"
                                         title="Editar Hoja Frontal"
                                     >

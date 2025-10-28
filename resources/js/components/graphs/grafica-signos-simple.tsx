@@ -26,7 +26,6 @@ type SignoData = {
     [key: string]: any; 
 };
 
-
 interface Props {
     data: SignoData[];
     dataKey: string;      

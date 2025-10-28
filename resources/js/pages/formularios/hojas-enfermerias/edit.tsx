@@ -5,11 +5,11 @@ import MainLayout from '@/layouts/MainLayout';
 import PacienteCard from '@/components/paciente-card';
 import InputText from '@/components/ui/input-text';
 import SelectInput from '@/components/ui/input-select'; 
-import InputDateTime from '@/components/ui/input-date-time';
 import InputTextArea from '@/components/ui/input-text-area';
 import TerapiaIVForm from '@/components/terapia-iv-form';
 import SignosVitalesForm from '@/components/signos-vitales-form';
 import GraficaContent from '@/components/graphs/grafica-content'
+import MedicamentosForm from '@/components/forms/medicamentos-form';
 
 interface CreateProps {
     paciente: Paciente;
@@ -30,25 +30,6 @@ interface MedicamentoAgregado {
     inicio: string;
     temp_id: string; 
 }
-
-const opcionesViaMedicamento = [
-    // --- Vías Comunes ---
-    { value: 'Vía Oral', label: 'Oral' },
-    { value: 'Intravenosa', label: 'Intravenosa' },
-    { value: 'Intramuscular', label: 'Intramuscular' },
-    { value: 'Subcutánea', label: 'Subcutánea' },
-    { value: 'Sublingual', label: 'Sublingual' },
-    { value: 'Rectal', label: 'Rectal' },
-
-    // --- Vías Tópicas/Otras ---
-    { value: 'Tópico', label: 'Tópico' },
-    { value: 'Oftálmico', label: 'Oftálmico' },
-    { value: 'Otológico', label: 'Otológico' },
-    { value: 'Nasal', label: 'Nasal' },
-
-    // --- Vías Respiratorias ---
-    { value: 'Nebulizado', label: 'Nebulizado' },
-];
 
 type SeccionHoja = 'signos' | 'medicamentos' | 'terapia_iv' | 'estudios' | 'sondas' | 'liquidos' | 'dieta' | 'observaciones' | 'graficas';
 
@@ -79,11 +60,6 @@ type CreateComponent = React.FC<CreateProps> & {
 const Create: CreateComponent = ({ paciente, estancia, hojaenfermeria ,medicamentos, soluciones, dataParaGraficas}) => {
 
     const [activeSection, setActiveSection] = useState<SeccionHoja>('signos');
-
-    const medicamentosOptions = medicamentos.map(m => ({
-        value: m.id,
-        label: m.nombre_prestacion
-    }))
 
     const { data, setData, errors } = useForm({
         medicamento_id: '',
@@ -145,175 +121,7 @@ const Create: CreateComponent = ({ paciente, estancia, hojaenfermeria ,medicamen
         </nav>
     );
 
-    const MedicamentosContent = () => {
-
-        const handleMedicamentoChange = (value: string) => {
-           const selected = medicamentosOptions.find(opt => opt.value === Number(value));
-
-            setData(data => ({
-                ...data,
-                medicamento_id: value,
-                medicamento_nombre: selected ? selected.label : ''
-            }));
-        }
-
-        const handleViaChange = (value: string) => {
-            const selected = opcionesViaMedicamento.find(opt => opt.value == value);
-            
-            setData(data => ({
-                ...data,
-                medicamento_via: value,
-                medicamento_via_label: selected ? selected.label : ''
-            }));
-        }
-
-        const handleAddMedicamento = (e: React.MouseEvent<HTMLButtonElement>) => {
-            e.preventDefault(); 
-            if (!data.medicamento_id || !data.medicamento_dosis) {
-                alert("Debes seleccionar un medicamento y una dosis.");
-                return;
-            }
-
-            const newMed: MedicamentoAgregado = {
-                id: data.medicamento_id,
-                nombre: data.medicamento_nombre,
-                dosis: data.medicamento_dosis,
-                via_id: data.medicamento_via,
-                via_label: data.medicamento_via_label,
-                duracion: data.medicamento_duracion_tratamiento,
-                inicio: data.medicamento_fecha_hora_inicio,
-                temp_id: crypto.randomUUID(),
-            };
-
-            setData(currentData => ({
-                ...currentData,
-                medicamentos_agregados: [...currentData.medicamentos_agregados, newMed],
-
-                medicamento_id: '',
-                medicamento_nombre: '',
-                medicamento_dosis: '',
-                medicamento_via: '',
-                medicamento_via_label: '',
-                medicamento_duracion_tratamiento: '',
-                medicamento_fecha_hora_inicio: '',
-            }));
-        }
-
-        const handleRemoveMedicamento = (temp_id: string) => {
-            const updatedList = data.medicamentos_agregados.filter(
-                (med) => med.temp_id !== temp_id
-            );
-            setData(currentData => ({
-                ...currentData,
-                medicamentos_agregados: updatedList
-            }));
-        }
-
-        return (
-            <div>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <SelectInput
-                        label="Medicamento"
-                        options={medicamentosOptions} 
-                        value={data.medicamento_id}
-                        onChange={(value) => handleMedicamentoChange(value as string)}
-                        error={errors.medicamento_id || errors.medicamentos_agregados}
-                    />
-
-                    <InputText 
-                        id="medicamento_dosis"
-                        name="medicamento_dosis"
-                        label="Dosis" 
-                        type="number"
-                        value={data.medicamento_dosis} 
-                        onChange={e => setData('medicamento_dosis', e.target.value)} 
-                        error={errors.medicamento_dosis}
-                    />
-                    
-                    <SelectInput
-                        label="Vía de administración"
-                        options={opcionesViaMedicamento}
-                        value={data.medicamento_via}
-                        onChange={(value) => handleViaChange(value as string)}
-                        error={errors.medicamento_via}
-                    />
-
-                    <InputText 
-                        id="medicamento_duracion_tratamiento"
-                        name="medicamento_duracion_tratamiento"
-                        label="Duración del tratamiento (horas)" 
-                        type="number"
-                        value={data.medicamento_duracion_tratamiento}
-                        onChange={e => setData('medicamento_duracion_tratamiento', e.target.value)} 
-                        error={errors.medicamento_duracion_tratamiento}
-                    />
-
-                    <InputDateTime
-                        id="medicamento_fecha_hora_inicio"
-                        name="medicamento_fecha_hora_inicio"
-                        label="Fecha y hora de inicio" 
-                        value={data.medicamento_fecha_hora_inicio}
-                        onChange={value => setData('medicamento_fecha_hora_inicio', value as string)} 
-                        error={errors.medicamento_fecha_hora_inicio}
-                    />
-                </div>
-                <div className="flex justify-end mt-4">
-                    <button
-                        type="button"
-                        onClick={handleAddMedicamento}
-                        className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
-                    >
-                        Agregar Medicamento
-                    </button>
-                </div>
-
-                <div className="mt-8">
-                    <h3 className="text-lg font-semibold mb-2">Medicamentos Agregados</h3>
-                    <div className="overflow-x-auto border rounded-lg">
-                        <table className="min-w-full divide-y divide-gray-200">
-                            <thead className="bg-gray-50">
-                                <tr>
-                                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Medicamento</th>
-                                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Dosis</th>
-                                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Vía</th>
-                                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Inicio</th>
-                                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Acción</th>
-                                </tr>
-                            </thead>
-                            <tbody className="bg-white divide-y divide-gray-200">
-                                {data.medicamentos_agregados.length === 0 ? (
-                                    <tr>
-                                        <td colSpan={5} className="px-4 py-4 text-sm text-gray-500 text-center">
-                                            Aún no se han agregado medicamentos.
-                                        </td>
-                                    </tr>
-                                ) : (
-                                    data.medicamentos_agregados.map((med) => (
-                                        <tr key={med.temp_id}>
-                                            <td className="px-4 py-4 text-sm text-gray-900">{med.nombre}</td>
-                                            <td className="px-4 py-4 text-sm text-gray-500">{med.dosis}</td>
-                                            <td className="px-4 py-4 text-sm text-gray-500">{med.via_label}</td>
-                                            <td className="px-4 py-4 text-sm text-gray-500">{med.inicio}</td>
-                                            <td className="px-4 py-4 text-sm">
-                                                <button
-                                                    type="button"
-                                                    onClick={() => handleRemoveMedicamento(med.temp_id)}
-                                                    className="text-red-600 hover:text-red-900"
-                                                >
-                                                    Eliminar
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    ))
-                                )}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        );
-    };
-
+    
     
     const SondasCateteres = () => {
 
@@ -390,7 +198,9 @@ const Create: CreateComponent = ({ paciente, estancia, hojaenfermeria ,medicamen
                 return <SignosVitalesForm 
                     hoja={hojaenfermeria}/>;
             case 'medicamentos':
-                return <MedicamentosContent />;
+                return <MedicamentosForm 
+                        hoja={hojaenfermeria}
+                        medicamentos={medicamentos}/>;
             case 'terapia_iv':
                 return <TerapiaIVForm
                         hoja={hojaenfermeria}

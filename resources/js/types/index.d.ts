@@ -273,3 +273,19 @@ export interface HojaSignosGraficas {
     glucemia_capilar: number | null;
     estado_conciencia: string | null;
 }
+
+export interface HojaMedicamento {
+    id: number;
+    hoja_enfermeria_id: number;
+    producto_servicio_id: number;
+    dosis: number;
+    via_administracion: string;
+    duracion_tratamiento: number;
+    fecha_hora_inicio: string;
+    estado: string;
+    fecha_hora_solicitud: string;
+    fecha_hora_surtido_farmacia: string;
+    farmaceutico_id: number;
+    fecha_hora_recibido_enfermeria: srting;
+    producto_servicio?: ProductoServicio;
+}

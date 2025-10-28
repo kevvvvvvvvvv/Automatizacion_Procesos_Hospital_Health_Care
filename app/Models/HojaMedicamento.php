@@ -13,6 +13,7 @@ class HojaMedicamento extends Model
 
     protected $fillable = [
         'id',
+        'hoja_enfermeria_id',
         'producto_servicio_id',
         'dosis',
         'via_administracion',
@@ -30,5 +31,8 @@ class HojaMedicamento extends Model
         return $this->belongsTo(ProductoServicio::class,'producto_servicio_id');
     }
 
-    
+    public function hojaEnfermeria():BelongsTo
+    {
+        return $this->belongsTo(HojaEnfermeria::class,'hoja_enfermeria_id','id');
+    }
 }
