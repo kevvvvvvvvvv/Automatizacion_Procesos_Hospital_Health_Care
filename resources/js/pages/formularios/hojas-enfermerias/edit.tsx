@@ -1,5 +1,5 @@
 import React, { useState } from 'react'; 
-import { Paciente, Estancia, ProductoServicio, HojaEnfermeria } from '@/types';
+import { Paciente, Estancia, ProductoServicio, HojaEnfermeria, HojaSignosGraficas } from '@/types';
 import { Head, useForm } from '@inertiajs/react';
 import MainLayout from '@/layouts/MainLayout';
 import PacienteCard from '@/components/paciente-card';
@@ -9,6 +9,7 @@ import InputDateTime from '@/components/ui/input-date-time';
 import InputTextArea from '@/components/ui/input-text-area';
 import TerapiaIVForm from '@/components/terapia-iv-form';
 import SignosVitalesForm from '@/components/signos-vitales-form';
+import GraficaContent from '@/components/graphs/grafica-content'
 
 interface CreateProps {
     paciente: Paciente;
@@ -16,6 +17,7 @@ interface CreateProps {
     hojaenfermeria: HojaEnfermeria;
     medicamentos: ProductoServicio[];
     soluciones: ProductoServicio[];
+    dataParaGraficas: HojaSignosGraficas[];
 }
 
 interface MedicamentoAgregado {
@@ -48,7 +50,7 @@ const opcionesViaMedicamento = [
     { value: 'Nebulizado', label: 'Nebulizado' },
 ];
 
-type SeccionHoja = 'signos' | 'medicamentos' | 'terapia_iv' | 'estudios' | 'sondas' | 'liquidos' | 'dieta' | 'observaciones';
+type SeccionHoja = 'signos' | 'medicamentos' | 'terapia_iv' | 'estudios' | 'sondas' | 'liquidos' | 'dieta' | 'observaciones' | 'graficas';
 
 const secciones: { id: SeccionHoja, label: string }[] = [
     { id: 'signos', label: 'Tomar Signos' },
@@ -59,6 +61,7 @@ const secciones: { id: SeccionHoja, label: string }[] = [
     { id: 'liquidos', label: 'Control de Líquidos' },
     { id: 'dieta', label: 'Dieta' },
     { id: 'observaciones', label: 'Observaciones' },
+    { id: 'graficas', label: 'Gráficas' },
 ];
 
 const opcionesDispositivo = [
@@ -73,7 +76,7 @@ type CreateComponent = React.FC<CreateProps> & {
     layout: (page: React.ReactElement) => React.ReactNode;
 };
 
-const Create: CreateComponent = ({ paciente, estancia, hojaenfermeria ,medicamentos, soluciones }) => {
+const Create: CreateComponent = ({ paciente, estancia, hojaenfermeria ,medicamentos, soluciones, dataParaGraficas}) => {
 
     const [activeSection, setActiveSection] = useState<SeccionHoja>('signos');
 
@@ -83,28 +86,6 @@ const Create: CreateComponent = ({ paciente, estancia, hojaenfermeria ,medicamen
     }))
 
     const { data, setData, errors } = useForm({
-        tension_arterial_sistolica: '',
-        tension_arterial_diastolica: '',
-        frecuencia_cardiaca: '',
-        frecuencia_respiratoria: '',
-        temperatura: '',
-        saturacion_oxigeno: '',
-        glucemia_capilar: '',
-        peso: '',
-        talla: '',
-        uresis: '',
-        uresis_descripcion: '',
-        evacuaciones: '',
-        evacuaciones_descripcion: '',
-        emesis: '',
-        emesis_descripcion: '',
-        drenes: '',
-        drenes_descripcion: '',
-        estado_conciencia: '',
-        escala_braden: '',
-        escala_glasgow: '',
-        escala_eva: '',
-
         medicamento_id: '',
         medicamento_nombre: '',
         medicamento_dosis: '',
@@ -421,6 +402,9 @@ const Create: CreateComponent = ({ paciente, estancia, hojaenfermeria ,medicamen
                 return <div><p>Campos para Control de Líquidos...</p></div>;
             case 'dieta':
                 return <div><p>Campos para Dieta...</p></div>;
+            case 'graficas':
+                return <GraficaContent
+                        historialSignos={dataParaGraficas ?? []}/>
             default:
                 return null;
         }

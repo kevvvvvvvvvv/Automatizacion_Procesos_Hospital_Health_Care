@@ -10,6 +10,7 @@ use App\Models\FormularioInstancia;
 use App\Models\HojaEnfermeria;
 use App\Models\ProductoServicio;
 use App\Models\HojaMedicamento;
+use App\Models\HojaSignos;
 use Illuminate\Support\Facades\Auth;
 
 use Inertia\Inertia;
@@ -77,12 +78,31 @@ class FormularioHojaEnfermeriaController extends Controller
         $medicamentos = ProductoServicio::where('subtipo','MEDICAMENTOS')->get();
         $soluciones = ProductoServicio::where('subtipo','INSUMOS')->get();  
 
+        $columnasGraficas = [
+            'fecha_hora_registro',
+            'tension_arterial_sistolica',
+            'tension_arterial_diastolica',
+            'frecuencia_cardiaca',
+            'frecuencia_respiratoria',
+            'temperatura',
+            'saturacion_oxigeno', 
+            'glucemia_capilar',
+            'talla',
+            'peso',
+        ];
+
+        $dataParaGraficas = HojaSignos::select($columnasGraficas)
+            ->where('hoja_enfermeria_id', $hojasenfermeria->id)
+            ->orderBy('fecha_hora_registro', 'asc')
+            ->get();
+
         return Inertia::render('formularios/hojas-enfermerias/edit',[
             'paciente' => $paciente,
             'estancia' => $estancia,
             'hojaenfermeria' => $hojasenfermeria, 
             'medicamentos' => $medicamentos,
-            'soluciones' => $soluciones
+            'soluciones' => $soluciones,
+            'dataParaGraficas' => $dataParaGraficas,
         ]);
     }
 

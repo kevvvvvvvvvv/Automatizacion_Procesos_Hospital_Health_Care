@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class HojaEnfermeria extends Model
 {
-    public const CATALOGO_ID = 4;
+    public const CATALOGO_ID = 5;
     protected $table = 'hoja_enfermerias';
     
     protected $fillable = [
@@ -33,5 +33,10 @@ class HojaEnfermeria extends Model
     public function hojasTerapiaIV(): HasMany
     {
         return $this->hasMany(HojaTerapiaIV::class);
+    }
+
+    public function hojaSignos():HasMany
+    {
+        return $this->hasMany(HojaSignos::class);
     }
 }

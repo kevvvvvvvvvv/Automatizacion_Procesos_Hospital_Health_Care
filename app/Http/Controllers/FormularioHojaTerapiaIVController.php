@@ -15,7 +15,6 @@ class FormularioHojaTerapiaIVController extends Controller
             'terapias_agregadas' => 'required|array|min:1',
             'terapias_agregadas.*.solucion_id' => 'required|exists:producto_servicios,id',
             'terapias_agregadas.*.flujo' => 'required|numeric',
-            'terapias_agregadas.*.fecha_hora_inicio' => 'required|date',
         ]);
         foreach ($validatedData['terapias_agregadas'] as $terapia) {
 
@@ -23,7 +22,7 @@ class FormularioHojaTerapiaIVController extends Controller
             $hojasenfermeria->hojasTerapiaIV()->create([
                 'solucion' => $terapia['solucion_id'],
                 'flujo_ml_hora' => $terapia['flujo'],
-                'fecha_hora_inicio' => $terapia['fecha_hora_inicio'],
+                'fecha_hora_inicio' => $terapia['fecha_hora_inicio'] ?? null,
             ]);
         }
 

@@ -261,3 +261,15 @@ export interface HojaSignos {
     created_at: string;
     updated_at: string;
 }
+
+export interface HojaSignosGraficas {
+    fecha_hora_registro: string;
+    tension_arterial_sistolica: number | null;
+    tension_arterial_diastolica: number | null;
+    frecuencia_cardiaca: number | null;
+    frecuencia_respiratoria: number | null;
+    temperatura: number | null;
+    saturacion_oxigeno: number | null;
+    glucemia_capilar: number | null;
+    estado_conciencia: string | null;
+}

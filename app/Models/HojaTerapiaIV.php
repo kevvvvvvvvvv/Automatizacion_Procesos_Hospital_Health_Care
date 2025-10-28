@@ -23,9 +23,9 @@ class HojaTerapiaIV extends Model
         return $this->belongsTo(ProductoServicio::class, 'solucion','id');
     }
 
-    public function hojaEnfermeria(): HasOne
+    public function hojaEnfermeria(): BelongsTo
     {
-        return $this->hasOne(HojaEnfermeria::class);
+        return $this->belongsTo(HojaEnfermeria::class);
     }
 
 }

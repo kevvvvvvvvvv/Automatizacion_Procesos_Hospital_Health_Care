@@ -48,7 +48,7 @@ const SignosVitalesForm: React.FC<Props> = ({ hoja }) => {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        post(route('hojasenfermerias.signos.store', { hojaenfermeria: hoja.id }), {
+        post(route('hojassignos.store', { hojasenfermeria: hoja.id }), {
             preserveScroll: true,
         });
     }
@@ -58,27 +58,32 @@ const SignosVitalesForm: React.FC<Props> = ({ hoja }) => {
         <form onSubmit={handleSubmit}>
             {wasSuccessful && <div className="mb-4 text-sm font-medium text-green-600">Signos vitales guardados con éxito.</div>}
 
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
-            
+            <h2 className='mb-5 font-bold text-xl'>Tensión arterial</h2>
+            <div className="grid grid-cols-3 md:grid-cols-6 items-center gap-1">
                 <InputText 
                     id="tension_arterial_sistolica" 
                     name="tension_arterial_sistolica" 
-                    label="Tensión arterial (sistólica)" 
+                    label="Sistólica" 
                     type="number"
                     value={data.tension_arterial_sistolica} 
                     onChange={(e) => setData('tension_arterial_sistolica', e.target.value)} 
                     error={errors.tension_arterial_sistolica} 
                 />
 
+                <span className="text-center">/</span>
+
                 <InputText 
                     id="tension_arterial_diastolica" 
                     name="tension_arterial_diastolica" 
-                    label="Tensión arterial (diastólica)" 
+                    label="Diastólica" 
                     type="number"
                     value={data.tension_arterial_diastolica} 
                     onChange={(e) => setData('tension_arterial_diastolica', e.target.value)} 
                     error={errors.tension_arterial_diastolica} 
                 />
+            </div>
+
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
 
                 <InputText 
                     id="frecuencia_cardiaca" 
@@ -145,6 +150,17 @@ const SignosVitalesForm: React.FC<Props> = ({ hoja }) => {
                     error={errors.talla} 
                 />
                 
+                <SelectInput
+                    label="Estado de Conciencia"
+                    options={opcionesEstadoConciencia}
+                    value={data.estado_conciencia}
+                    onChange={(value) => setData('estado_conciencia', value as string)}
+                    error={errors.estado_conciencia}
+                />
+            </div>
+
+            <h2 className='mb-5 font-bold text-xl mt-5'>Control de liquidos</h2>
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
                 <InputText 
                     id="uresis" 
                     name="uresis" 
@@ -216,15 +232,10 @@ const SignosVitalesForm: React.FC<Props> = ({ hoja }) => {
                     onChange={(e) => setData('drenes_descripcion', e.target.value)} 
                     error={errors.drenes_descripcion} 
                 />
-                
-                <SelectInput
-                    label="Estado de Conciencia"
-                    options={opcionesEstadoConciencia}
-                    value={data.estado_conciencia}
-                    onChange={(value) => setData('estado_conciencia', value as string)}
-                    error={errors.estado_conciencia}
-                />
+            </div>
 
+            <h2 className='mb-5 font-bold text-xl mt-5'>Escalas de valoración</h2>
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
                 <InputText 
                     id="escala_glasgow" 
                     name="escala_glasgow" 
