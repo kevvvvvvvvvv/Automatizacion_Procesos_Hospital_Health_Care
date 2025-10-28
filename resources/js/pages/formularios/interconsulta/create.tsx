@@ -1,19 +1,19 @@
-import React, { useState, useEffect } from 'react';
-import { Head, useForm, router } from '@inertiajs/react';
+import FormLayout from '@/components/form-layout';
 import MainLayout from '@/layouts/MainLayout';
-import { route } from 'ziggy-js';
+import React from 'react';
+import PrimaryButton from '@/components/ui/primary-button';
 import InputText from '@/components/ui/input-text';
-import BackButton from '@/components/ui/back-button';
-import { Paciente, Estancia } from '@/types';
+import { useForm, Head } from '@inertiajs/react';
+import { route } from 'ziggy-js';
+import { Estancia, Paciente } from '@/types';
+import PacienteCard from '@/components/paciente-card';
 
 type Props = {
-  paciente: Paciente,
-  estancia: Estancia,
+  paciente: Paciente;
+  estancia: Estancia;
 };
 
 const CreateInterconsulta: React.FC<Props> = ({ paciente, estancia }) => {
-
-
   const { data, setData, post, processing, errors } = useForm({
     ta: '',
     fc: '',
@@ -33,313 +33,292 @@ const CreateInterconsulta: React.FC<Props> = ({ paciente, estancia }) => {
     tratamiento_y_pronostico: '',
   });
 
-     const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     post(route('pacientes.estancias.interconsultas.store', { paciente: paciente.id, estancia: estancia.id }));
   };
+  
+  const textAreaClasses = `w-full px-3 py-2 rounded-md shadow-sm border text-gray-900 bg-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#2a2b56] focus:border-[#2a2b56] transition`;
+  const labelClasses = `block text-sm font-medium text-gray-700 mb-1`;
 
-    return (
-      <MainLayout>
-        <Head title="Crear Interconsulta" />
-        <div className="p-4 md:p-8">
-          <div className="flex justify-between items-center mb-6">
-            <div className="flex items-center space-x-4">
-              {/* Opcional: Más botones si necesitas */}
-            </div>
-            <BackButton />
-            <h1 className="flex-1 text-center text-3xl font-bold text-black">
-              Crear Nueva Interconsulta
-            </h1>
-          </div>
+  return (
+    <>
+      <PacienteCard
+        paciente={paciente}
+        estancia={estancia}
+      />
+      <Head title="Crear Interconsulta" />
 
-        <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow p-6 max-w-6xl mx-auto">
-
-          {/* Sección 2: Signos Vitales */}
-          <div className="mb-6">
-            <h2 className="text-lg font-semibold mb-4">1. Signos Vitales</h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <InputText
-                id="ta"
-                label="T.A. (Tensión Arterial)"
-                name="ta"
-                value={data.ta}
-                onChange={(e) => setData('ta', e.target.value)}
-                placeholder="Ej: 120/80"
-                error={errors.ta}
-              />
-
-                <InputText
-                id="fr"
-                label="FR (Frecuencia Respiratoria)"
-                name="fr"
-                type="number"
-                value={data.fr}
-                onChange={(e) => setData('fr', e.target.value)}
-                placeholder="Ej: 16"
-                min={0}
-                error={errors.fr}
-              />
-
-                <InputText
-                  id="fr"
-                  label="FR (Frecuencia Respiratoria)"
-                  name="fr"
-                  type="number"
-                  value={data.fr}
-                  onChange={(e) => setData('fr', e.target.value)}
-                  placeholder="Ej: 16"
-                  min={0}
-                  error={errors.fr}
-                />
-
-                <InputText
-                  id="temp"
-                  label="TEMP (Temperatura)"
-                  name="temp"
-                  type="number"
-                  step="0.01"
-                  value={data.temp}
-                  onChange={(e) => setData('temp', e.target.value)}
-                  placeholder="Ej: 36.50"
-                  min={0}
-                  error={errors.temp}
-                />
-
-                <InputText
-                  id="peso"
-                  label="Peso (kg)"
-                  name="peso"
-                  type="number"
-                  step="0.01"
-                  value={data.peso}
-                  onChange={(e) => setData('peso', e.target.value)}
-                  placeholder="Ej: 70.50"
-                  min={0}
-                  error={errors.peso}
-                />
-
-                <InputText
-                  id="talla"
-                  label="Talla (m)"
-                  name="talla"
-                  type="number"
-                  step="0.01"
-                  value={data.talla}
-                  onChange={(e) => setData('talla', e.target.value)}
-                  placeholder="Ej: 1.75"
-                  min={0}
-                  error={errors.talla}
-                />
-              </div>
-            </div>
-
-          {/* Sección 3: Motivo y Exploración */}
-          <div className="mb-6">
-            <h2 className="text-lg font-semibold mb-4">2. Motivo y Exploración (Opcionales)</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Motivo de la Atención o Interconsulta */}
-              <div className="flex flex-col">
-                <label htmlFor="motivo_de_la_atencion_o_interconsulta" className="block text-sm font-medium text-gray-700 mb-2">
-                  Motivo de la Atención o Interconsulta
-                </label>
-                <textarea
-                  id="motivo_de_la_atencion_o_interconsulta"
-                  name="motivo_de_la_atencion_o_interconsulta"
-                  value={data.motivo_de_la_atencion_o_interconsulta}
-                  onChange={(e) => setData('motivo_de_la_atencion_o_interconsulta', e.target.value)}
-                  placeholder="Describa el motivo principal..."
-                  rows={3}
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-vertical"
-                  autoComplete="off"
-                />
-                {errors.motivo_de_la_atencion_o_interconsulta && (
-                  <p className="text-red-500 text-sm mt-1">{errors.motivo_de_la_atencion_o_interconsulta}</p>
-                )}
-              </div>
-
-                {/* Resumen del Interrogatorio */}
-                <div className="flex flex-col">
-                  <label htmlFor="resumen_del_interrogatorio" className="block text-sm font-medium text-gray-700 mb-2">
-                    Resumen del Interrogatorio
-                  </label>
-                  <textarea
-                    id="resumen_del_interrogatorio"
-                    name="resumen_del_interrogatorio"
-                    value={data.resumen_del_interrogatorio}
-                    onChange={(e) => setData('resumen_del_interrogatorio', e.target.value)}
-                    placeholder="Resumen de la historia clínica..."
-                    rows={3}
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-vertical"
-                    autoComplete="off"
-                  />
-                  {errors.resumen_del_interrogatorio && (
-                    <p className="text-red-500 text-sm mt-1">{errors.resumen_del_interrogatorio}</p>
-                  )}
-                </div>
-
-                {/* Exploración Física - Ocupa toda la fila */}
-                <div className="md:col-span-2 flex flex-col">
-                  <label htmlFor="exploracion_fisica" className="block text-sm font-medium text-gray-700 mb-2">
-                    Exploración Física
-                  </label>
-                  <textarea
-                    id="exploracion_fisica"
-                    name="exploracion_fisica"
-                    value={data.exploracion_fisica}
-                    onChange={(e) => setData('exploracion_fisica', e.target.value)}
-                    placeholder="Hallazgos de la exploración..."
-                    rows={4}
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-vertical"
-                    autoComplete="off"
-                  />
-                  {errors.exploracion_fisica && (
-                    <p className="text-red-500 text-sm mt-1">{errors.exploracion_fisica}</p>
-                  )}
-                </div>
-
-                {/* Estado Mental - Ocupa toda la fila */}
-                <div className="md:col-span-2 flex flex-col">
-                  <label htmlFor="estado_mental" className="block text-sm font-medium text-gray-700 mb-2">
-                    Estado Mental
-                  </label>
-                  <textarea
-                    id="estado_mental"
-                    name="estado_mental"
-                    value={data.estado_mental}
-                    onChange={(e) => setData('estado_mental', e.target.value)}
-                    placeholder="Evaluación del estado mental..."
-                    rows={3}
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-vertical"
-                    autoComplete="off"
-                  />
-                  {errors.estado_mental && (
-                    <p className="text-red-500 text-sm mt-1">{errors.estado_mental}</p>
-                  )}
-                </div>
-              </div>
-            </div>
-
-          {/* Sección 4: Diagnóstico y Plan */}
-          <div className="mb-6">
-            <h2 className="text-lg font-semibold mb-4">3. Diagnóstico y Plan (Opcionales)</h2>
-            <div className="grid grid-cols-1 gap-6">
-              {/* Criterio Diagnóstico */}
-              <div className="flex flex-col">
-                <label htmlFor="criterio_diagnostico" className="block text-sm font-medium text-gray-700 mb-2">
-                  Criterio Diagnóstico
-                </label>
-                <textarea
-                  id="criterio_diagnostico"
-                  name="criterio_diagnostico"
-                  value={data.criterio_diagnostico}
-                  onChange={(e) => setData('criterio_diagnostico', e.target.value)}
-                  placeholder="Criterios usados para el diagnóstico..."
-                  rows={3}
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-vertical"
-                  autoComplete="off"
-                />
-                {errors.criterio_diagnostico && (
-                  <p className="text-red-500 text-sm mt-1">{errors.criterio_diagnostico}</p>
-                )}
-              </div>
-
-              {/* Sugerencia Diagnóstica */}
-              <div className="flex flex-col">
-                <label htmlFor="sugerencia_diagnostica" className="block text-sm font-medium text-gray-700 mb-2">
-                  Sugerencia Diagnóstica
-                </label>
-                <textarea
-                  id="sugerencia_diagnostica"
-                  name="sugerencia_diagnostica"
-                  value={data.sugerencia_diagnostica}
-                  onChange={(e) => setData('sugerencia_diagnostica', e.target.value)}
-                  placeholder="Sugerencias adicionales..."
-                  rows={3}
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-vertical"
-                  autoComplete="off"
-                />
-                {errors.sugerencia_diagnostica && (
-                  <p className="text-red-500 text-sm mt-1">{errors.sugerencia_diagnostica}</p>
-                )}
-              </div>
-
-                {/* Resultados Relevantes del Estudio Diagnóstico */}
-                <div className="flex flex-col">
-                  <label htmlFor="resultados_relevantes_del_estudio_diagnostico" className="block text-sm font-medium text-gray-700 mb-2">
-                    Resultados Relevantes del Estudio Diagnóstico
-                  </label>
-                  <textarea
-                    id="resultados_relevantes_del_estudio_diagnostico"
-                    name="resultados_relevantes_del_estudio_diagnostico"
-                    value={data.resultados_relevantes_del_estudio_diagnostico}
-                    onChange={(e) => setData('resultados_relevantes_del_estudio_diagnostico', e.target.value)}
-                    placeholder="Resultados de exámenes relevantes..."
-                    rows={4}
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-vertical"
-                    autoComplete="off"
-                  />
-                  {errors.resultados_relevantes_del_estudio_diagnostico && (
-                    <p className="text-red-500 text-sm mt-1">{errors.resultados_relevantes_del_estudio_diagnostico}</p>
-                  )}
-                </div>
-
-                {/* Diagnóstico o Problemas Clínicos */}
-                <div className="flex flex-col">
-                  <label htmlFor="diagnostico_o_problemas_clinicos" className="block text-sm font-medium text-gray-700 mb-2">
-                    Diagnóstico o Problemas Clínicos
-                  </label>
-                  <textarea
-                    id="diagnostico_o_problemas_clinicos"
-                    name="diagnostico_o_problemas_clinicos"
-                    value={data.diagnostico_o_problemas_clinicos}
-                    onChange={(e) => setData('diagnostico_o_problemas_clinicos', e.target.value)}
-                    placeholder="Diagnósticos principales..."
-                    rows={3}
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-vertical"
-                    autoComplete="off"
-                  />
-                  {errors.diagnostico_o_problemas_clinicos && (
-                    <p className="text-red-500 text-sm mt-1">{errors.diagnostico_o_problemas_clinicos}</p>
-                  )}
-                </div>
-
-                
-                  {/* Tratamiento y Pronóstico */}
-                <div className="flex flex-col">
-                  <label htmlFor="tratamiento_y_pronostico" className="block text-sm font-medium text-gray-700 mb-2">
-                    Tratamiento y Pronóstico
-                  </label>
-                <textarea
-                  id="tratamiento_y_pronostico"
-                  name="tratamiento_y_pronostico"
-                  value={data.tratamiento_y_pronostico}
-                  onChange={(e) => setData('tratamiento_y_pronostico', e.target.value)}
-                  placeholder="Tratamiento recomendado y pronóstico..."
-                  rows={4}
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-vertical"
-                  autoComplete="off"
-                />
-                {errors.tratamiento_y_pronostico && (
-                  <p className="text-red-500 text-sm mt-1">{errors.tratamiento_y_pronostico}</p>
-                )}
-              </div>
-            </div>
-
-          <div className="flex justify-end space-x-4 pt-4">
-            <button
-              type="submit"
-              disabled={processing}
-              className="px-6 py-3 bg-blue-500 text-white font-medium rounded-lg hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition"
-              style={{ backgroundColor: '#1B1C38' }}
-            >
-              {processing ? 'Creando...' : 'Crear Interconsulta'}
-            </button>
-          </div>
+      <FormLayout
+        title="Registrar Nueva Interconsulta"
+        onSubmit={handleSubmit}
+        actions={<PrimaryButton type="submit" disabled={processing}>{processing ? 'Creando...' : 'Crear Interconsulta'}</PrimaryButton>}
+      >
+        {/* Sección 2: Motivo y Exploración */}
+        <h2 className="text-xl font-semibold text-gray-800 mt-6 mb-4 col-span-full">Motivo y Exploración</h2>
+        <div className="col-span-full md:col-span-1">
+          <label htmlFor="motivo_de_la_atencion_o_interconsulta" className={labelClasses}>
+            Motivo de la Atención o Interconsulta
+          </label>
+          <textarea
+            id="motivo_de_la_atencion_o_interconsulta"
+            name="motivo_de_la_atencion_o_interconsulta"
+            value={data.motivo_de_la_atencion_o_interconsulta}
+            onChange={(e) => setData('motivo_de_la_atencion_o_interconsulta', e.target.value)}
+            placeholder="Describa el motivo principal..."
+            rows={3}
+            className={`${textAreaClasses} ${errors.motivo_de_la_atencion_o_interconsulta ? 'border-red-500' : 'border-gray-600'}`}
+            autoComplete="off"
+          />
+          {errors.motivo_de_la_atencion_o_interconsulta && (
+            <p className="mt-1 text-xs text-red-500">{errors.motivo_de_la_atencion_o_interconsulta}</p>
+          )}
         </div>
-      </form>
-    </div>
-    </MainLayout>
-    );
+        <div className="col-span-full md:col-span-1">
+          <label htmlFor="resumen_del_interrogatorio" className={labelClasses}>
+            Resumen del Interrogatorio
+          </label>
+          <textarea
+            id="resumen_del_interrogatorio"
+            name="resumen_del_interrogatorio"
+            value={data.resumen_del_interrogatorio}
+            onChange={(e) => setData('resumen_del_interrogatorio', e.target.value)}
+            placeholder="Resumen de la historia clínica..."
+            rows={3}
+            className={`${textAreaClasses} ${errors.resumen_del_interrogatorio ? 'border-red-500' : 'border-gray-600'}`}
+            autoComplete="off"
+          />
+          {errors.resumen_del_interrogatorio && (
+            <p className="mt-1 text-xs text-red-500">{errors.resumen_del_interrogatorio}</p>
+          )}
+        </div>
+        <div className="col-span-full">
+          <label htmlFor="exploracion_fisica" className={labelClasses}>
+            Exploración Física
+          </label>
+          <textarea
+            id="exploracion_fisica"
+            name="exploracion_fisica"
+            value={data.exploracion_fisica}
+            onChange={(e) => setData('exploracion_fisica', e.target.value)}
+            placeholder="Hallazgos de la exploración..."
+            rows={4}
+            className={`${textAreaClasses} ${errors.exploracion_fisica ? 'border-red-500' : 'border-gray-600'}`}
+            autoComplete="off"
+          />
+          {errors.exploracion_fisica && (
+            <p className="mt-1 text-xs text-red-500">{errors.exploracion_fisica}</p>
+          )}
+        </div>
+        <div className="col-span-full">
+          <label htmlFor="estado_mental" className={labelClasses}>
+            Estado Mental
+          </label>
+          <textarea
+            id="estado_mental"
+            name="estado_mental"
+            value={data.estado_mental}
+            onChange={(e) => setData('estado_mental', e.target.value)}
+            placeholder="Evaluación del estado mental..."
+            rows={3}
+            className={`${textAreaClasses} ${errors.estado_mental ? 'border-red-500' : 'border-gray-600'}`}
+            autoComplete="off"
+          />
+          {errors.estado_mental && (
+            <p className="mt-1 text-xs text-red-500">{errors.estado_mental}</p>
+          )}
+        </div>
+
+        {/* Sección 1: Signos Vitales */}
+        <h2 className="text-xl font-semibold text-gray-800 mt-6 mb-4 col-span-full">Signos Vitales</h2>
+        <InputText
+          id="ta"
+          label="T.A. (Tensión Arterial)"
+          name="ta"
+          value={data.ta}
+          onChange={(e) => setData('ta', e.target.value)}
+          placeholder="Ej: 120/80"
+          error={errors.ta}
+        />
+        <InputText
+          id="fc"
+          label="FC (Frecuencia Cardíaca)"
+          name="fc"
+          type="number"
+          value={data.fc}
+          onChange={(e) => setData('fc', e.target.value)}
+          placeholder="Ej: 70"
+          min={0}
+          error={errors.fc}
+        />
+        <InputText
+          id="fr"
+          label="FR (Frecuencia Respiratoria)"
+          name="fr"
+          type="number"
+          value={data.fr}
+          onChange={(e) => setData('fr', e.target.value)}
+          placeholder="Ej: 16"
+          min={0}
+          error={errors.fr}
+        />
+        <InputText
+          id="temp"
+          label="TEMP (Temperatura)"
+          name="temp"
+          type="number"
+          step="0.01"
+          value={data.temp}
+          onChange={(e) => setData('temp', e.target.value)}
+          placeholder="Ej: 36.50"
+          min={20}
+          error={errors.temp}
+        />
+        <InputText
+          id="peso"
+          label="Peso (kg)"
+          name="peso"
+          type="number"
+          step="0.01"
+          value={data.peso}
+          onChange={(e) => setData('peso', e.target.value)}
+          placeholder="Ej: 70.50"
+          min={0}
+          error={errors.peso}
+        />
+        <InputText
+          id="talla"
+          label="Talla (m)"
+          name="talla"
+          type="number"
+          step="0.01"
+          value={data.talla}
+          onChange={(e) => setData('talla', e.target.value)}
+          placeholder="Ej: 1.75"
+          min={0}
+          error={errors.talla}
+        />
+
+        
+        {/* Sección 3: Diagnóstico y Plan */}
+        <h2 className="text-xl font-semibold text-gray-800 mt-6 mb-4 col-span-full">Diagnóstico y Plan</h2>
+        <div className="col-span-full">
+          <label htmlFor="criterio_diagnostico" className={labelClasses}>
+            Criterio Diagnóstico
+          </label>
+          <textarea
+            id="criterio_diagnostico"
+            name="criterio_diagnostico"
+            value={data.criterio_diagnostico}
+            onChange={(e) => setData('criterio_diagnostico', e.target.value)}
+            placeholder="Criterios usados para el diagnóstico..."
+            rows={3}
+            className={`${textAreaClasses} ${errors.criterio_diagnostico ? 'border-red-500' : 'border-gray-600'}`}
+            autoComplete="off"
+          />
+          {errors.criterio_diagnostico && (
+            <p className="mt-1 text-xs text-red-500">{errors.criterio_diagnostico}</p>
+          )}
+        </div>
+        <div className="col-span-full">
+          <label htmlFor="plan_de_estudio" className={labelClasses}>
+            Plan de Estudio
+          </label>
+          <textarea
+            id="plan_de_estudio"
+            name="plan_de_estudio"
+            value={data.plan_de_estudio}
+            onChange={(e) => setData('plan_de_estudio', e.target.value)}
+            placeholder="Plan de estudios adicionales..."
+            rows={3}
+            className={`${textAreaClasses} ${errors.plan_de_estudio ? 'border-red-500' : 'border-gray-600'}`}
+            autoComplete="off"
+          />
+          {errors.plan_de_estudio && (
+            <p className="mt-1 text-xs text-red-500">{errors.plan_de_estudio}</p>
+          )}
+        </div>
+        <div className="col-span-full">
+          <label htmlFor="sugerencia_diagnostica" className={labelClasses}>
+            Sugerencia Diagnóstica
+          </label>
+          <textarea
+            id="sugerencia_diagnostica"
+            name="sugerencia_diagnostica"
+            value={data.sugerencia_diagnostica}
+            onChange={(e) => setData('sugerencia_diagnostica', e.target.value)}
+            placeholder="Sugerencias adicionales..."
+            rows={3}
+            className={`${textAreaClasses} ${errors.sugerencia_diagnostica ? 'border-red-500' : 'border-gray-600'}`}
+            autoComplete="off"
+          />
+          {errors.sugerencia_diagnostica && (
+            <p className="mt-1 text-xs text-red-500">{errors.sugerencia_diagnostica}</p>
+          )}
+        </div>
+        <div className="col-span-full">
+          <label htmlFor="resultados_relevantes_del_estudio_diagnostico" className={labelClasses}>
+            Resultados Relevantes del Estudio Diagnóstico
+          </label>
+          <textarea
+            id="resultados_relevantes_del_estudio_diagnostico"
+            name="resultados_relevantes_del_estudio_diagnostico"
+            value={data.resultados_relevantes_del_estudio_diagnostico}
+            onChange={(e) => setData('resultados_relevantes_del_estudio_diagnostico', e.target.value)}
+            placeholder="Resultados de exámenes relevantes..."
+            rows={4}
+            className={`${textAreaClasses} ${errors.resultados_relevantes_del_estudio_diagnostico ? 'border-red-500' : 'border-gray-600'}`}
+            autoComplete="off"
+          />
+          {errors.resultados_relevantes_del_estudio_diagnostico && (
+            <p className="mt-1 text-xs text-red-500">{errors.resultados_relevantes_del_estudio_diagnostico}</p>
+          )}
+        </div>
+        <div className="col-span-full">
+          <label htmlFor="diagnostico_o_problemas_clinicos" className={labelClasses}>
+            Diagnóstico o Problemas Clínicos
+          </label>
+          <textarea
+            id="diagnostico_o_problemas_clinicos"
+            name="diagnostico_o_problemas_clinicos"
+            value={data.diagnostico_o_problemas_clinicos}
+            onChange={(e) => setData('diagnostico_o_problemas_clinicos', e.target.value)}
+            placeholder="Diagnósticos principales..."
+            rows={3}
+            className={`${textAreaClasses} ${errors.diagnostico_o_problemas_clinicos ? 'border-red-500' : 'border-gray-600'}`}
+            autoComplete="off"
+          />
+          {errors.diagnostico_o_problemas_clinicos && (
+            <p className="mt-1 text-xs text-red-500">{errors.diagnostico_o_problemas_clinicos}</p>
+          )}
+        </div>
+        <div className="col-span-full">
+          <label htmlFor="tratamiento_y_pronostico" className={labelClasses}>
+            Tratamiento y Pronóstico
+          </label>
+          <textarea
+            id="tratamiento_y_pronostico"
+            name="tratamiento_y_pronostico"
+            value={data.tratamiento_y_pronostico}
+            onChange={(e) => setData('tratamiento_y_pronostico', e.target.value)}
+            placeholder="Tratamiento recomendado y pronóstico..."
+            rows={4}
+            className={`${textAreaClasses} ${errors.tratamiento_y_pronostico ? 'border-red-500' : 'border-gray-600'}`}
+            autoComplete="off"
+          />
+          {errors.tratamiento_y_pronostico && (
+            <p className="mt-1 text-xs text-red-500">{errors.tratamiento_y_pronostico}</p>
+          )}
+        </div>
+      </FormLayout>
+    </>
+  );
+};
+
+CreateInterconsulta.layout = (page: React.ReactElement) => {
+  return (
+    <MainLayout pageTitle="Creación de Interconsulta" children={page} />
+  );
 };
 
 export default CreateInterconsulta;
