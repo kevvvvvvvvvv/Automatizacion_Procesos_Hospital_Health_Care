@@ -125,6 +125,39 @@ const FlashAlert: React.FC<AlertProps> = ({ message, type, onClose }) => {
 const MainLayout: React.FC<MainLayoutProps> = ({ children, userName, pageTitle }) => {
   
     const { flash } = usePage<PageProps>().props;
+    const { auth } = usePage().props;
+
+    useEffect(() => {
+        // Solo intentamos conectar si el usuario es de tipo 'farmacia'
+        if (auth.user && auth.user.tipo === 'farmacia') {
+            
+            // 1. Conectarse al canal privado
+            window.Echo.private('farmacia')
+                
+                // 2. Escuchar por el evento 'nueva-solicitud-medicamentos'
+                .listen('.nueva-solicitud-medicamentos', (event) => {
+                    
+                    console.log('¡NUEVA SOLICITUD!', event);
+
+                    // 3. ¡Mostrar la notificación!
+                    const pacienteNombre = event.paciente.nombre_completo; // Asumiendo que tienes ese campo
+                    const totalMeds = event.medicamentos.length;
+
+                    toast.info(
+                        `Nueva solicitud de ${totalMeds} medicamentos para ${pacienteNombre}.`, 
+                        { autoClose: 10000 }
+                    );
+                    
+                    // Aquí también podrías disparar un 'router.reload()' 
+                    // si tienes una lista de pedidos en la página actual.
+                });
+
+            // Limpieza: Salir del canal cuando el componente se desmonte
+            return () => {
+                window.Echo.leave('farmacia');
+            };
+        }
+    }, [auth.user]);
 
     const [alert, setAlert] = useState<{ message: string | null, type: 'success' | 'error' }>({
         message: null,

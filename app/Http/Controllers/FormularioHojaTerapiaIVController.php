@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\HojaEnfermeria;
 use App\Models\ProductoServicio;
+use App\Models\HojaTerapiaIV;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 
@@ -27,5 +28,22 @@ class FormularioHojaTerapiaIVController extends Controller
         }
 
         return Redirect::back()->with('success', 'Terapias guardadas exitosamente.');
+    }
+
+    public function update(Request $request, HojaEnfermeria $hojasenfermeria, HojaTerapiaIV $hojasterapiasiv)
+    {
+        $validated = $request->validate([
+            'fecha_hora_inicio' => ['required', 'date'],
+        ]);
+
+        if ($hojasterapiasiv->hoja_enfermeria_id !== $hojasenfermeria->id) {
+            abort(403, 'Acción no autorizada.');
+        }
+
+        $hojasterapiasiv->update([
+            'fecha_hora_inicio' => $validated['fecha_hora_inicio'],
+        ]);
+
+        return Redirect::back()->with('success', 'Fecha de terapia actualizada.');
     }
 }

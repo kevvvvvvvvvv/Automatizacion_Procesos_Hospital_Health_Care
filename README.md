@@ -57,6 +57,7 @@ composer require spatie/laravel-permission
 
 ```bash
 php artisan install:broadcasting
+npm install --save-dev laravel-echo pusher-js
 ```
 
 <h2>Instalar paquete de iconos</h2>

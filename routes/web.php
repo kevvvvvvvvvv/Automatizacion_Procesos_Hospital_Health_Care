@@ -15,6 +15,7 @@ use App\Http\Controllers\HistoryController;
 use App\Http\Controllers\VentaController;
 use App\Http\Controllers\DetalleVentaController;
 use App\Http\Controllers\FormularioHojaEnfermeriaController;
+use App\Http\Controllers\FormularioHojaMedicamentoController;
 use App\Http\Controllers\HonorarioController;
 use App\Http\Controllers\FormularioHojaTerapiaIVController;
 use App\Http\Controllers\FormularioHojaSignosController;
@@ -51,6 +52,11 @@ Route::resource('pacientes.estancias.ventas', VentaController::class)->shallow()
 Route::resource('pacientes.estancias.ventas.detallesventas',DetalleVentaController::class)->shallow();
 
 Route::post('hojasterapiasiv/{hojasenfermeria}',[FormularioHojaTerapiaIVController::class,'store'])->name('hojasterapiasiv.store');
+Route::patch('hojasterapiasiv/{hojasenfermeria}/{hojasterapiasiv}',[FormularioHojaTerapiaIVController::class,'update'])->name('hojasterapiasiv.update');
+
+Route::post('hojasmedicamentos/{hojasenfermeria}',[FormularioHojaMedicamentoController::class, 'store'])->name('hojasmedicamentos.store');
+Route::patch('hojasmedicamentos/{hojasenfermeria}/{hojasmedicamento}',[FormularioHojaMedicamentoController::class, 'update'])->name('hojasmedicamentos.update');
+
 Route::post('hojassignos/{hojasenfermeria}',[FormularioHojaSignosController::class, 'store'])->name('hojassignos.store');
 
 Route::resource('pacientes.estancias.interconsultas', InterconsultaController::class)
@@ -74,6 +80,10 @@ Route::get('/historiasclinicas/{historiaclinica}/pdf', [FormularioHistoriaClinic
 
 Route::get('/interconsultas/{interconsulta}/pdf', [InterconsultaController::class, 'generarPDF'])
     ->name('interconsultas.pdf')
+    ->middleware('auth');
+
+Route::get('/hojasenfermerias/{hojasenfermerias}/pdf', [FormularioHojaEnfermeriaController::class, 'generarPDF'])
+    ->name('hojasenfermerias.pdf')
     ->middleware('auth');
 
 require __DIR__.'/settings.php';
