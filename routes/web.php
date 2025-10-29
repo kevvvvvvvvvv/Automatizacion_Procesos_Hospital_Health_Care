@@ -19,6 +19,8 @@ use App\Http\Controllers\FormularioHojaMedicamentoController;
 use App\Http\Controllers\HonorarioController;
 use App\Http\Controllers\FormularioHojaTerapiaIVController;
 use App\Http\Controllers\FormularioHojaSignosController;
+use App\Http\Controllers\FarmaciaController;
+use App\Http\Controllers\HojaMedicamentoController;
 
 use App\Models\History;
 use App\Models\HojaTerapiaIV;
@@ -27,6 +29,7 @@ use App\Models\Paciente;
 use App\Models\ProductoServicio;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Auth;
 
 Route::get('/', function () {
     return Inertia::render('auth/login');
@@ -85,6 +88,22 @@ Route::get('/interconsultas/{interconsulta}/pdf', [InterconsultaController::clas
 Route::get('/hojasenfermerias/{hojasenfermerias}/pdf', [FormularioHojaEnfermeriaController::class, 'generarPDF'])
     ->name('hojasenfermerias.pdf')
     ->middleware('auth');
+
+
+//Farmacia
+Route::get('/farmacia/solicitudes/{hojaenfermeria}', [FarmaciaController::class, 'show'])
+    ->name('farmacia.solicitud.show');
+
+Route::patch('/medicamentos/{medicamento}/actualizar-estado', [HojaMedicamentoController::class, 'actualizarEstado'])
+     ->name('medicamentos.actualizar-estado')
+     ->middleware('auth');
+
+//Notification
+
+Route::post('/notifications/mark-all-as-read', function () {
+    Auth::user()->unreadNotifications->markAsRead();
+    return redirect()->back();
+})->name('notifications.mark-all-as-read')->middleware('auth');
 
 require __DIR__.'/settings.php';
 require __DIR__.'/auth.php';

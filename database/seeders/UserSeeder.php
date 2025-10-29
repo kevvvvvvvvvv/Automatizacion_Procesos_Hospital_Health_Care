@@ -144,5 +144,7 @@ class UserSeeder extends Seeder
             'password' => Hash::make('12345678'),
             'cargo_id' => 9,
         ]);
+
+        $user->assignRole('farmacia');
     }
 }

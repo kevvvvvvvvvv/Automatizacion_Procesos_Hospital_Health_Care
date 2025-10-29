@@ -1,4 +1,4 @@
-import { InertiaLinkProps } from '@inertiajs/react';
+import { InertiaLinkProps, PageProps } from '@inertiajs/react';
 import { LucideIcon } from 'lucide-react';
 
 export interface Auth {
@@ -196,6 +196,7 @@ export interface Venta{
     created_at: string;
     updated_at: string;
     user: User | null;
+    detalles?: DetalleVenta[];
 }
 
 export interface DetalleVenta{
@@ -209,6 +210,7 @@ export interface DetalleVenta{
     producto_servicio_id: number;
     created_at: string;
     updated_at: string;
+    producto_servicio?: ProductoServicio;
 }
 
 export interface HojaEnfermeria {
@@ -288,4 +290,35 @@ export interface HojaMedicamento {
     farmaceutico_id: number;
     fecha_hora_recibido_enfermeria: srting;
     producto_servicio?: ProductoServicio;
+}
+
+export interface NotificationData {
+    message: string;
+    paciente_id?: number;
+    paciente_nombre?: string;
+    meds_count?: number;
+    hoja_id?: number;
+    [key: string]: any; 
+}
+
+export interface LaravelNotification {
+    id: string;
+    type: string;
+    data: NotificationData; 
+    read_at: string | null;
+    created_at: string;
+}
+
+export interface SharedProps extends PageProps {
+    [key: string]: unknown;
+    auth: {
+        user: User & {
+            notifications: LaravelNotification[];
+        };
+    };
+    ziggy: any;
+    flash: {
+        success?: string;
+        error?: string;
+    };
 }

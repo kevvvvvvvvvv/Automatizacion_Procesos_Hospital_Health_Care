@@ -1,12 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Link, usePage } from '@inertiajs/react';
+import { Link, usePage, router } from '@inertiajs/react';
+import { route } from 'ziggy-js';
+import { SharedProps, LaravelNotification } from '@/types';
 
-
-type Notification = {
-    id: string;
-    message: string;
-    time: string;
-    read: boolean;
+const formatTime = (time: string): string => {
+    return new Date(time).toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' });
 };
 
 interface AlertProps {
@@ -19,22 +17,7 @@ type MainLayoutProps = {
     children: React.ReactNode;
     userName?: string;
     pageTitle?: string;
-    // authUserId?: number; 
 };
-
-interface PageProps {
-    [key: string]: unknown; 
-    flash?: {
-        success?: string;
-        error?: string;
-    };
-    auth?: { 
-        user: {
-            id: number;
-            name: string;
-        };
-    };
-}
 
 const HomeIcon = () => (
     <svg
@@ -83,12 +66,10 @@ const FlashAlert: React.FC<AlertProps> = ({ message, type, onClose }) => {
 
     const baseStyles = "fixed top-5 right-5 z-50 p-4 rounded-lg shadow-lg flex items-center max-w-sm";
     
-
     const typeStyles = {
         success: "bg-green-100 border border-green-400 text-green-700",
         error: "bg-red-100 border border-red-400 text-red-700"
     };
-
 
     const icons = {
         success: (
@@ -110,7 +91,7 @@ const FlashAlert: React.FC<AlertProps> = ({ message, type, onClose }) => {
             <button
                 type="button"
                 className={`ml-3 -mr-1 -my-1 p-1 rounded-md ${typeStyles[type]} opacity-70 hover:opacity-100`}
-                onClick={onClose} // Llama a onClose directamente
+                onClick={onClose}
                 aria-label="Cerrar"
             >
                 <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
@@ -124,45 +105,21 @@ const FlashAlert: React.FC<AlertProps> = ({ message, type, onClose }) => {
 
 const MainLayout: React.FC<MainLayoutProps> = ({ children, userName, pageTitle }) => {
   
-    const { flash } = usePage<PageProps>().props;
-    const { auth } = usePage().props;
-
-    useEffect(() => {
-        // Solo intentamos conectar si el usuario es de tipo 'farmacia'
-        if (auth.user && auth.user.tipo === 'farmacia') {
-            
-            // 1. Conectarse al canal privado
-            window.Echo.private('farmacia')
-                
-                // 2. Escuchar por el evento 'nueva-solicitud-medicamentos'
-                .listen('.nueva-solicitud-medicamentos', (event) => {
-                    
-                    console.log('¡NUEVA SOLICITUD!', event);
-
-                    // 3. ¡Mostrar la notificación!
-                    const pacienteNombre = event.paciente.nombre_completo; // Asumiendo que tienes ese campo
-                    const totalMeds = event.medicamentos.length;
-
-                    toast.info(
-                        `Nueva solicitud de ${totalMeds} medicamentos para ${pacienteNombre}.`, 
-                        { autoClose: 10000 }
-                    );
-                    
-                    // Aquí también podrías disparar un 'router.reload()' 
-                    // si tienes una lista de pedidos en la página actual.
-                });
-
-            // Limpieza: Salir del canal cuando el componente se desmonte
-            return () => {
-                window.Echo.leave('farmacia');
-            };
-        }
-    }, [auth.user]);
+    const { props } = usePage<SharedProps>();
+    const { flash, auth } = props;
+    const authUser = auth.user;
 
     const [alert, setAlert] = useState<{ message: string | null, type: 'success' | 'error' }>({
         message: null,
         type: 'success',
     });
+    
+    const [isPanelOpen, setIsPanelOpen] = useState(false);
+    const initialNotifications = authUser?.notifications || []; 
+    const [notifications, setNotifications] = useState<LaravelNotification[]>(initialNotifications);
+    const panelRef = useRef<HTMLDivElement>(null);
+    const buttonRef = useRef<HTMLButtonElement>(null);
+    const userId = authUser?.id;
 
     useEffect(() => {
         if (flash?.success) {
@@ -171,25 +128,38 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, userName, pageTitle }
             setAlert({ message: flash.error, type: 'error' });
         }
     }, [flash]);
-
-    const handleCloseAlert = () => {
-        setAlert({ message: null, type: 'success' });
-    };
-
-    const [isPanelOpen, setIsPanelOpen] = useState(false);
-    const [notifications, setNotifications] = useState<Notification[]>([]);
-    const panelRef = useRef<HTMLDivElement>(null);
-    const buttonRef = useRef<HTMLButtonElement>(null);
-
+    
     useEffect(() => {
-        setTimeout(() => {
-        setNotifications([
-            { id: '1', message: 'Nueva denuncia registrada (#DEN-001)', time: 'hace 2 min', read: false },
-            { id: '2', message: 'Oficio #123 ha sido actualizado.', time: 'hace 10 min', read: false },
-            { id: '3', message: 'Recordatorio: Junta de equipo a las 4pm.', time: 'hace 1 hora', read: true },
-        ]);
-        }, 1000);
-    }, []); 
+        if (!userId) return;
+
+        window.Echo.private(`App.Models.User.${userId}`)
+            .notification((notification: any) => { 
+                
+                console.log('¡Notificación recibida!', notification);
+                const newNotif: LaravelNotification = {
+                    id: notification.id,
+                    type: notification.type,
+                    read_at: null,
+                    created_at: new Date().toISOString(),
+                    data: {
+                        message: notification.message,
+                        paciente_id: notification.paciente_id,
+                        paciente_nombre: notification.paciente_nombre,
+                        meds_count: notification.meds_count,
+                        hoja_id: notification.hoja_id,
+                    }
+                };
+
+                setNotifications((prevNotifs: LaravelNotification[]) => [
+                    newNotif, 
+                    ...prevNotifs
+                ]);
+            });
+
+        return () => {
+            window.Echo.leave(`App.Models.User.${userId}`);
+        };
+    }, [userId]); 
 
     useEffect(() => {
         function handleClickOutside(event: MouseEvent) {
@@ -209,8 +179,20 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, userName, pageTitle }
         };
     }, [isPanelOpen, panelRef, buttonRef]); 
 
-    const unreadCount = notifications.filter(n => !n.read).length;
+    const handleCloseAlert = () => {
+        setAlert({ message: null, type: 'success' });
+    };
+    
+    const unreadCount = notifications.filter((n: LaravelNotification) => !n.read_at).length;
 
+    const markAllAsRead = () => {
+        router.post(route('notifications.mark-all-as-read'), {}, {
+            preserveScroll: true,
+            onSuccess: () => {
+                setNotifications(prev => prev.map((n: LaravelNotification) => ({ ...n, read_at: new Date().toISOString() })))
+            }
+        });
+    }
 
     return (
         <div className="min-h-screen bg-gray-100 flex flex-col md:flex-row">
@@ -247,14 +229,14 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, userName, pageTitle }
                 <div
                 ref={panelRef} 
                 className="absolute z-50 w-80 bg-white rounded-lg shadow-xl text-gray-900
-                            bottom-full mb-2 left-1/2 -translate-x-1/2 /* <-- Posición Móvil (Centrado) */
-                            md:left-full md:top-0 md:ml-2 md:bottom-auto md:-translate-x-0 md:right-auto /* <-- Posición Desktop (A la derecha) */"
+                            bottom-full mb-2 left-1/2 -translate-x-1/2
+                            md:left-full md:top-0 md:ml-2 md:bottom-auto md:-translate-x-0 md:right-auto"
                 >
                 <div className="flex justify-between items-center p-4 border-b">
                     <h3 className="font-semibold text-lg">Notificaciones</h3>
                     {unreadCount > 0 && (
                     <button 
-                        onClick={() => setNotifications(prev => prev.map(n => ({ ...n, read: true })))}
+                        onClick={markAllAsRead}
                         className="text-xs text-blue-600 hover:underline"
                     >
                         Marcar todas como leídas
@@ -265,16 +247,24 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, userName, pageTitle }
 
                 <ul className="divide-y max-h-80 overflow-y-auto">
                     {notifications.length > 0 ? (
-                    notifications.map(notif => (
-                        <li 
-                        key={notif.id} 
-                        className={`p-4 hover:bg-gray-50 ${!notif.read ? 'bg-blue-50' : ''}`}
+                    notifications.map((notif: LaravelNotification) => (
+                        <Link 
+                            key={notif.id}
+                            href={route('farmacia.solicitud.show', { hojaenfermeria: notif.data.hoja_id })}
+                            onClick={() => setIsPanelOpen(false)}
                         >
-                        <p className={`text-sm ${!notif.read ? 'font-semibold' : 'font-normal'}`}>
-                            {notif.message}
-                        </p>
-                        <span className="text-xs text-gray-500">{notif.time}</span>
-                        </li>
+                            <li 
+                                key={notif.id} 
+                                className={`p-4 hover:bg-gray-50 ${!notif.read_at ? 'bg-blue-50' : ''}`}
+                                >
+                                <p className={`text-sm ${!notif.read_at ? 'font-semibold' : 'font-normal'}`}>
+                                    {notif.data.message}
+                                </p>
+                                <span className="text-xs text-gray-500">
+                                    {formatTime(notif.created_at)}
+                                </span>
+                            </li>
+                        </Link>
                     ))
                     ) : (
                     <li className="p-6 text-center text-gray-500">
@@ -300,7 +290,6 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, userName, pageTitle }
         />
 
         <div className="flex-1 flex flex-col order-1 md:order-2">
-            {/* Header */}
             <header className="flex items-center gap-4 p-4 bg-white shadow">
             <img src="/images/flor.png" alt="Logo" className="h-10 w-auto" />
             {userName && <h1 className="text-2xl font-bold">Hola {userName}</h1>}
@@ -309,7 +298,6 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, userName, pageTitle }
             </div>
             </header>
 
-            {/* Main */}
             <main className="p-6 flex-1 overflow-auto">
             {pageTitle && <h2 className="text-3xl mb-4 text-center font-extrabold">{pageTitle}</h2>}
             {children}
