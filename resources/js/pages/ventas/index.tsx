@@ -159,7 +159,7 @@ const Index: IndexComponent = ({ paciente, estancia, ventas }) => {
                                     key={row.id}
                                     className="border-b hover:bg-gray-100 cursor-pointer"
                                     onClick={() => {
-                                        router.get(route('pacientes.estancias.ventas.detallesventas', { 
+                                        router.get(route('pacientes.estancias.ventas.detallesventas.index', { 
                                             paciente: paciente.id, 
                                             estancia: estancia.id, 
                                             venta: row.original.id 

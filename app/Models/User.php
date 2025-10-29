@@ -16,7 +16,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class User extends Authenticatable 
 {
-    use HasFactory, Notifiable, TwoFactorAuthenticatable;
+    use HasFactory, Notifiable, TwoFactorAuthenticatable, HasRoles;
 
     // Traits opcionales: Descomenta si los usas
     // use TwoFactorAuthenticatable, HasApiTokens;

@@ -20,14 +20,15 @@ class DatabaseSeeder extends Seeder
         // User::factory(10)->create();
         $this->call([
             CargoSeeder::class,
-            UserSeeder::class,
             PacienteSeeder::class,
             HabitacionSeeder::class,
             FamiliarResponsableSeeder::class,
-            EstanciaSeeder::class,
+            RoleAndPermissionSeeder::class,
             FormularioCatalogoSeeder::class,
             ProductoServicioSeeder::class,
             CatalogoPreguntaSeeder::class,
+            UserSeeder::class,
+            EstanciaSeeder::class,
         ]);
 
     }
