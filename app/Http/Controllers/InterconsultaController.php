@@ -6,6 +6,7 @@ use App\Models\Paciente;
 use App\Models\Estancia;
 use App\Models\FormularioInstancia;
 use Illuminate\Support\Facades\DB;
+use App\Http\Requests\InterconsultasRequest;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Spatie\LaravelPdf\Facades\Pdf;
@@ -39,16 +40,71 @@ class InterconsultaController extends Controller
      * @param \App\Models\Estancia
      * 
      */
-    public function store(Request $request, Paciente $paciente, Estancia $estancia)
-     {
+   public function store(InterconsultasRequest $request, Paciente $paciente, Estancia $estancia)
+    {
+        $validatedData = $request->validated();
+        DB::beginTransaction();
+        $formularioInstancia = FormularioInstancia::create([
+            'fecha_hora' => now(),
+            'estancia_id' => $estancia->id,
+            'formulario_catalogo_id' => 3,
+            'user_id' => Auth::id(),
+        ]);
+        // Asigna el resultado a $interconsulta
+        $interconsulta = Interconsulta::create([
+            'id' => $formularioInstancia->id,
+            ...$validatedData
+        ]);
+        DB::commit();
+        // Redirige a crear honorario con el ID de la interconsulta recién creada
+        return redirect()->route('honorarios.create', ['interconsulta_id' => $interconsulta->id])
+                         ->with('success', 'Interconsulta registrada exitosamente. Ahora puedes agregar honorarios.');
+    }
+     
 
+    /**
+     * Display the specified resource.
+     */
+     public function show(Interconsulta $interconsulta)
+    {
+        $interconsulta->load([
+            'formularioInstancia.estancia.paciente',
+            'formularioInstancia.user'
+        ]);
+        return Inertia::render('formularios/interconsulta/show', [
+            'interconsulta' => $interconsulta,
+            'paciente' => $interconsulta->formularioInstancia->estancia->paciente,
+            'estancia' => $interconsulta->formularioInstancia->estancia,
+        ]);
+    }
+    /**
+     * Show the form for editing the specified interconsulta.
+     */
+    public function edit(Interconsulta $interconsulta)
+    {
+        $interconsulta->load([
+            'formularioInstancia.estancia.paciente',
+            'formularioInstancia.user'
+        ]);
+        return Inertia::render('formularios/interconsulta/edit', [
+            'interconsulta' => $interconsulta,
+            'paciente' => $interconsulta->formularioInstancia->estancia->paciente,
+            'estancia' => $interconsulta->formularioInstancia->estancia,
+        ]);
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, Interconsulta $interconsulta)
+    {
         $validatedData = $request->validate([
-            'ta' => 'string', 
-            'fc' => 'integer|min:0', 
+            'ta' => 'string',
+            'fc' => 'integer|min:0',
             'fr' => 'integer|min:0',
-            'temp' => 'numeric|min:20', 
-            'peso' => 'numeric|min:0', 
-            'talla' => 'numeric|min:0', 
+            'temp' => 'numeric|min:20',
+            'peso' => 'numeric|min:0',
+            'talla' => 'numeric|min:0',
             'criterio_diagnostico' => 'string',
             'plan_de_estudio' => 'string',
             'sugerencia_diagnostica' => 'string',
@@ -60,49 +116,11 @@ class InterconsultaController extends Controller
             'motivo_de_la_atencion_o_interconsulta' => 'required|string',
             'diagnostico_o_problemas_clinicos' => 'required|string',
         ]);
-        DB::beginTransaction();
 
-        $formularioInstancia = FormularioInstancia::create([
-            'fecha_hora' => now(),
-            'estancia_id' => $estancia->id,
-            'formulario_catalogo_id' => 3,
-            'user_id' =>  Auth::id(),
-        ]);
+        $interconsulta->update($validatedData);
 
-        Interconsulta::create([
-            'id' => $formularioInstancia->id,
-            ...$validatedData
-        ]);
-
-        DB::commit();
-
-        return redirect()->route('estancias.show', ['estancia' => $estancia->id])
-                     ->with('success', 'Historia Clínica registrada exitosamente.');
-     }
-     
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
+        return redirect()->route('interconsultas.show', ['interconsulta' => $interconsulta->id])
+            ->with('success', 'Interconsulta actualizada exitosamente.');
     }
 
     /**
