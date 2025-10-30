@@ -281,6 +281,7 @@ export interface HojaMedicamento {
     hoja_enfermeria_id: number;
     producto_servicio_id: number;
     dosis: number;
+    gramaje:string;
     via_administracion: string;
     duracion_tratamiento: number;
     fecha_hora_inicio: string;
