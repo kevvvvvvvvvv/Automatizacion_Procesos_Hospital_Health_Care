@@ -52,7 +52,9 @@ const optionsGramaje = [
     {value: 'microgramos', label: 'Microgramos (mcg)'},
     {value: 'unidades internacionales', label: 'Unidades internacionales (ui)'},
     {value: 'gotas', label: 'Gotas'},
-]
+];
+
+
 
 const formatDateTime = (isoString: string | null) => {
     if (!isoString) return 'Pendiente';
@@ -282,7 +284,7 @@ const MedicamentosForm: React.FC<Props> = ({ hoja, medicamentos }) => {
                         <tbody className="bg-white divide-y divide-gray-200">
                             {(hoja.hoja_medicamentos ?? []).length === 0 ? (
                                 <tr>
-                                    
+                                    <td className="px-4 py-4 text-sm text-gray-500">No hay medicamentos</td>
                                 </tr>
                             ) : (
                                 (hoja.hoja_medicamentos ?? []).map((med: HojaMedicamento) => (
