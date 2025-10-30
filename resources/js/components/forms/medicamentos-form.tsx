@@ -6,7 +6,6 @@ import { route } from 'ziggy-js';
 // Componentes UI
 import InputText from '@/components/ui/input-text';
 import SelectInput from '@/components/ui/input-select'; 
-import InputDateTime from '@/components/ui/input-date-time';
 import PrimaryButton from '@/components/ui/primary-button';
 
 const opcionesViaMedicamento = [
@@ -23,6 +22,7 @@ const opcionesViaMedicamento = [
     { value: 'Oftálmico', label: 'Oftálmico' },
     { value: 'Otológico', label: 'Otológico' },
     { value: 'Nasal', label: 'Nasal' },
+    { value: 'Vaginal', label: 'Vaginal' },
 
     // --- Vías Respiratorias ---
     { value: 'Nebulizado', label: 'Nebulizado' },
@@ -32,6 +32,7 @@ interface MedicamentoAgregado {
     id: string;
     nombre: string;
     dosis: string;
+    gramaje: string;
     via_id: string;
     via_label: string;
     duracion: string;
@@ -44,6 +45,23 @@ interface Props {
     medicamentos: ProductoServicio[]; 
 }
 
+const optionsGramaje = [
+    {value: 'mililitros', label: 'Mililitros(ml)'},
+    {value: 'gramos', label: 'Gramos (g)'},
+    {value: 'miligramos', label: 'Miligramos (mg)'},
+    {value: 'microgramos', label: 'Microgramos (mcg)'},
+    {value: 'unidades internacionales', label: 'Unidades internacionales (ui)'},
+    {value: 'gotas', label: 'Gotas'},
+]
+
+const formatDateTime = (isoString: string | null) => {
+    if (!isoString) return 'Pendiente';
+    return new Date(isoString).toLocaleString('es-MX', {
+        dateStyle: 'short',
+        timeStyle: 'short',
+    });
+};
+
 const MedicamentosForm: React.FC<Props> = ({ hoja, medicamentos }) => {
 
     const medicamentosOptions = medicamentos.map(m => ({
@@ -55,6 +73,7 @@ const MedicamentosForm: React.FC<Props> = ({ hoja, medicamentos }) => {
         medicamento_id: '',
         medicamento_nombre: '',
         dosis: '',
+        gramaje: '',
         via: '',
         via_label: '',
         duracion_tratamiento: '',
@@ -95,6 +114,7 @@ const MedicamentosForm: React.FC<Props> = ({ hoja, medicamentos }) => {
             id: localData.medicamento_id,
             nombre: localData.medicamento_nombre,
             dosis: localData.dosis,
+            gramaje: localData.gramaje,
             via_id: localData.via,
             via_label: localData.via_label,
             duracion: localData.duracion_tratamiento,
@@ -108,6 +128,7 @@ const MedicamentosForm: React.FC<Props> = ({ hoja, medicamentos }) => {
             medicamento_id: '',
             medicamento_nombre: '',
             dosis: '',
+            gramaje: '',
             via: '',
             via_label: '',
             duracion_tratamiento: '',
@@ -161,11 +182,24 @@ const MedicamentosForm: React.FC<Props> = ({ hoja, medicamentos }) => {
                     id="medicamento_dosis"
                     name="dosis"
                     label="Dosis" 
-                    type="text"
+                    type="number"
                     value={localData.dosis} 
                     onChange={e => setLocalData(d => ({...d, dosis: e.target.value}))} 
                     error={errors['medicamentos_agregados.0.dosis']}
                 />
+
+                <SelectInput
+                    label="Gramaje"
+                    options={optionsGramaje}
+                    value={localData.gramaje}
+                    onChange={(value) => {
+                        setLocalData(d => ({
+                            ...d, gramaje: value as string
+                        }))
+                    }}
+                    error={errors['medicamentos_agregados.0.gramaje']}
+                />
+
                 <SelectInput
                     label="Vía de administración"
                     options={opcionesViaMedicamento}
@@ -180,23 +214,17 @@ const MedicamentosForm: React.FC<Props> = ({ hoja, medicamentos }) => {
                     }}
                     error={errors['medicamentos_agregados.0.via_id']}
                 />
+
                 <InputText 
                     id="medicamento_duracion_tratamiento"
                     name="duracion"
-                    label="Duración (horas)" 
+                    label="Duración (frecuencia en horas)" 
                     type="number"
                     value={localData.duracion_tratamiento}
                     onChange={e => setLocalData(d => ({...d, duracion_tratamiento: e.target.value}))} 
                     error={errors['medicamentos_agregados.0.duracion']}
                 />
-                <InputDateTime
-                    name ="fecha_hora_inicio"
-                    id="medicamento_fecha_hora_inicio"
-                    label="Fecha y hora de inicio" 
-                    value={localData.fecha_hora_inicio}
-                    onChange={value => setLocalData(d => ({...d, fecha_hora_inicio: value as string}))}
-                    error={errors['medicamentos_agregados.0.inicio']}
-                />
+
             </div>
             <div className="flex justify-end mt-4">
                 <PrimaryButton type="button" onClick={handleAddToList}>
@@ -222,6 +250,7 @@ const MedicamentosForm: React.FC<Props> = ({ hoja, medicamentos }) => {
                                     <tr key={med.temp_id}>
                                         <td className="px-4 py-4 text-sm text-gray-900">{med.nombre}</td>
                                         <td className="px-4 py-4 text-sm text-gray-500">{med.dosis}</td>
+                                        <td className="px-4 py-4 text-sm text-gray-500">{med.gramaje}</td>
                                         <td className="px-4 py-4 text-sm text-gray-500">{med.via_label}</td>
                                         <td className="px-4 py-4 text-sm text-gray-500">{med.inicio}</td>
                                         <td className="px-4 py-4 text-sm">
@@ -250,41 +279,39 @@ const MedicamentosForm: React.FC<Props> = ({ hoja, medicamentos }) => {
                 <h3 className="text-lg font-semibold mb-2">Historial de Medicamentos Guardados</h3>
                 <div className="overflow-x-auto border rounded-lg">
                     <table className="min-w-full divide-y divide-gray-200">
-                        {/* ... (thead - sin cambios) ... */}
                         <tbody className="bg-white divide-y divide-gray-200">
                             {(hoja.hoja_medicamentos ?? []).length === 0 ? (
                                 <tr>
-                                    {/* ... (celda de "vacío") ... */}
+                                    
                                 </tr>
                             ) : (
                                 (hoja.hoja_medicamentos ?? []).map((med: HojaMedicamento) => (
-                                    // --- Ya no hay variable 'isEditing' ---
                                     <tr key={med.id}>
                                         <td className="px-4 py-4 text-sm text-gray-900">
                                             {med.producto_servicio?.nombre_prestacion || '...'}
                                         </td>
                                         <td className="px-4 py-4 text-sm text-gray-500">{med.dosis}</td>
                                         <td className="px-4 py-4 text-sm text-gray-500">{med.via_administracion}</td>
-                                        
-                                        {/* --- CELDA DE FECHA (AUTOSAVE) --- */}
+
                                         <td className="px-2 py-1 text-sm text-gray-500" style={{ minWidth: '200px' }}>
-                                            {/* Siempre mostramos el InputDateTime */}
-                                            <InputDateTime
-                                                id={`update_inicio_${med.id}`}
-                                                name={`update_inicio_${med.id}`}
-                                                label="" // Label vacía para que no ocupe espacio
-                                                value={med.fecha_hora_inicio}
-                                                onChange={(newDate) => {
-                                                    // Llama a la función de autoguardado
-                                                    handleDateUpdate(med.id, newDate as string);
-                                                }}
-                                                // Ya no pasamos 'error' porque no hay 'errorsUpdate'
-                                            />
+
+                                            {med.fecha_hora_inicio ? (
+                                                <span>{formatDateTime(med.fecha_hora_inicio)}</span>
+                                            ) : (
+                                                <PrimaryButton
+                                                    type="button"
+                                                    onClick={() => {
+                                                        const now_iso = new Date().toISOString();
+                                                        handleDateUpdate(med.id, now_iso);
+                                                    }}
+                                                >
+                                                    Registrar Inicio
+                                                </PrimaryButton>
+                                            )}
                                         </td>
 
-                                        {/* --- CELDA DE ACCIONES (SIMPLIFICADA) --- */}
+
                                         <td className="px-4 py-4 text-sm space-x-2 whitespace-nowrap">
-                                            {/* Ya no hay botones de Editar/Guardar/Cancelar */}
                                             <button
                                                 type="button"
                                                 onClick={() => handleRemoveSavedMedicamento(med.id)}

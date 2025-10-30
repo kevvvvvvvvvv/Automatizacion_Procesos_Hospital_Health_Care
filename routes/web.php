@@ -70,9 +70,11 @@ Route::prefix('pacientes/{paciente}/estancias/{estancia}/interconsultas/{interco
     Route::get('/create', [HonorarioController::class, 'create'])->name('pacientes.estancias.interconsultas.honorarios.create');
     Route::post('/', [HonorarioController::class, 'store'])->name('pacientes.estancias.interconsultas.honorarios.store');
 });
-    Route::resource('pacientes.estancias.interconsultas.honorarios', HonorarioController::class)
-        ->shallow()
-        ->parameters(['honorarios' => 'honorario']);
+
+Route::resource('pacientes.estancias.interconsultas.honorarios', HonorarioController::class)
+    ->shallow()
+    ->parameters(['honorarios' => 'honorario']);
+
 Route::put('/doctores/{doctor}', [DoctorController::class, 'update'])->name('doctores.update');
 
 //PDFs
@@ -100,6 +102,8 @@ Route::get('/farmacia/solicitudes/{hojaenfermeria}', [FarmaciaController::class,
 Route::patch('/medicamentos/{medicamento}/actualizar-estado', [HojaMedicamentoController::class, 'actualizarEstado'])
      ->name('medicamentos.actualizar-estado')
      ->middleware('auth');
+
+//
 
 //Notification
 
