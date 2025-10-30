@@ -19,6 +19,8 @@ return new class extends Migration
             $table->foreignId('solucion')
                 ->constrained('producto_servicios')
                 ->onDelete('cascade');
+            $table->integer('cantidad');
+            $table->decimal('duracion');
             $table->decimal('flujo_ml_hora');
             $table->datetime('fecha_hora_inicio')->nullable();
             $table->timestamps();

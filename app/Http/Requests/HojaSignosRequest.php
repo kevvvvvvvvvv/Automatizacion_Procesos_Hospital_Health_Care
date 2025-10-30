@@ -42,9 +42,11 @@ class HojaSignosRequest extends FormRequest
             'emesis_descripcion' => ['nullable', 'string', 'max:255'],
             'drenes_descripcion' => ['nullable', 'string', 'max:255'],
             'estado_conciencia' => ['nullable', 'string', 'max:255'],
-            'escala_braden' => ['nullable', 'string', 'max:255'],
-            'escala_glasgow' => ['nullable', 'string', 'max:255'],
-            'escala_eva' => ['nullable', 'string', 'max:255'],
+
+            'escala_braden' => ['nullable', 'numeric', 'between:1,25'],
+            'escala_glasgow' => ['nullable', 'numeric', 'between:0,25'],
+            'escala_ramsey' => ['nullable', 'numeric', 'between:1,6'],
+            'escala_eva' => ['nullable', 'numeric', 'between:0,10'],
         ];
     }
 
@@ -114,14 +116,10 @@ class HojaSignosRequest extends FormRequest
             'estado_conciencia.string' => 'El estado de conciencia debe ser un texto.',
             'estado_conciencia.max' => 'El estado de conciencia no debe exceder 255 caracteres.',
 
-            'escala_braden.string' => 'La escala de Braden debe ser un texto.',
-            'escala_braden.max' => 'La escala de Braden no debe exceder 255 caracteres.',
-
-            'escala_glasgow.string' => 'La escala de Glasgow debe ser un texto.',
-            'escala_glasgow.max' => 'La escala de Glasgow no debe exceder 255 caracteres.',
-
-            'escala_eva.string' => 'La escala de EVA debe ser un texto.',
-            'escala_eva.max' => 'La escala de EVA no debe exceder 255 caracteres.',
+            'escala_braden.between' => 'La escala Braden debe estar entre 1 y 25.',
+            'escala_glasgow.between' => 'La escala Glasgow debe estar entre 0 y 15.',
+            'escala_ramsey.between' => 'La escala Ramsey debe estar entre 1 y 6.',
+            'escala_eva.between' => 'La escala EVA debe estar entre 0 y 10.',
         ];
     }
 }

@@ -43,6 +43,7 @@ const SignosVitalesForm: React.FC<Props> = ({ hoja }) => {
         estado_conciencia: '',
         escala_braden: '',
         escala_glasgow: '',
+        escala_ramsey: '',
         escala_eva: '',
     });
 
@@ -239,7 +240,8 @@ const SignosVitalesForm: React.FC<Props> = ({ hoja }) => {
                 <InputText 
                     id="escala_glasgow" 
                     name="escala_glasgow" 
-                    label="Escala Glasgow" 
+                    label="Escala Glasgow (0-15)" 
+                    type= "number"
                     value={data.escala_glasgow} 
                     onChange={(e) => setData('escala_glasgow', e.target.value)} 
                     error={errors.escala_glasgow} 
@@ -248,16 +250,28 @@ const SignosVitalesForm: React.FC<Props> = ({ hoja }) => {
                 <InputText 
                     id="escala_braden" 
                     name="escala_braden" 
-                    label="Escala Braden" 
+                    label="Escala Braden (1-25)" 
+                    type = "number"
                     value={data.escala_braden} 
                     onChange={(e) => setData('escala_braden', e.target.value)} 
                     error={errors.escala_braden} 
                 />
 
                 <InputText 
+                    id="escala_ramsey" 
+                    name="escala_ramsey" 
+                    label="Escala Ramsey(1-6)" 
+                    type = "number"
+                    value={data.escala_ramsey} 
+                    onChange={(e) => setData('escala_ramsey', e.target.value)} 
+                    error={errors.escala_ramsey} 
+                />
+
+                <InputText 
                     id="escala_eva" 
                     name="escala_eva" 
-                    label="Escala EVA (Dolor)" 
+                    type="number"
+                    label="Escala EVA (0-10)" 
                     value={data.escala_eva} 
                     onChange={(e) => setData('escala_eva', e.target.value)} 
                     error={errors.escala_eva} 

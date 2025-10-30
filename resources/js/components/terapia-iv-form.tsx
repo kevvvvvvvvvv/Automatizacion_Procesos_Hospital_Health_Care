@@ -3,14 +3,15 @@ import { useForm, router } from '@inertiajs/react';
 import { HojaEnfermeria, ProductoServicio } from '@/types';
 import SelectInput from '@/components/ui/input-select';
 import InputText from '@/components/ui/input-text';
-import InputDateTime from '@/components/ui/input-date-time';
 import PrimaryButton from '@/components/ui/primary-button';
 import { route } from 'ziggy-js';
 
 interface TerapiaAgregada {
     solucion_id: string;
     solucion_nombre: string;
-    flujo: string;
+    duracion: number;
+    cantidad: number;
+    flujo: number
     fecha_hora_inicio: string;
     temp_id: string; 
 }
@@ -20,31 +21,34 @@ interface Props {
     soluciones: ProductoServicio[];
 }
 
+const formatDateTime = (isoString: string | null) => {
+    if (!isoString) return 'Pendiente';
+    return new Date(isoString).toLocaleString('es-MX', {
+        dateStyle: 'short',
+        timeStyle: 'short',
+    });
+};
+
 const TerapiaIVForm: React.FC<Props> = ({ hoja, soluciones }) => {
 
-    const handleUpdateTerapia = (terapiaId: string, newDate: string) => {
-
+    const handleDateUpdate = (terapiaId: number, newDate: string) => {
         if (!newDate) {
-            console.error('[handleUpdateTerapia] La fecha está vacía.');
-            return; 
+            console.warn("La fecha está vacía, no se guardará.");
+            return;
         }
 
-        const routeParams = { 
+        router.patch(route('hojasterapiasiv.update', { 
             hojasenfermeria: hoja.id, 
             hojasterapiasiv: terapiaId 
-        };
-
-        router.patch(route('hojasterapiasiv.update', routeParams), {
-            fecha_hora_inicio: newDate
+        }), {
+            fecha_hora_inicio: newDate 
         }, {
             preserveScroll: true,
-            onSuccess: () => {
-            },
             onError: (errors) => {
-                alert('Error al actualizar la fecha: \n' + JSON.stringify(errors));
+                alert('Error al actualizar: \n' + JSON.stringify(errors));
             }
         });
-    }
+    };
 
     const solucionesOptions = soluciones.map(s =>({
         label: s.nombre_prestacion,
@@ -54,7 +58,8 @@ const TerapiaIVForm: React.FC<Props> = ({ hoja, soluciones }) => {
     const [localData, setLocalData] = useState({
         solucion_id: '',
         solucion_nombre: '',
-        flujo: '',
+        cantidad: '',
+        duracion: '',
         fecha_hora_inicio: '',
     });
 
@@ -64,13 +69,24 @@ const TerapiaIVForm: React.FC<Props> = ({ hoja, soluciones }) => {
 
     const handleAddToList = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
-        if (!localData.solucion_id || !localData.flujo) {
+        if (!localData.solucion_id) {
             alert("Debe seleccionar una solución y un flujo.");
             return;
+        }
+        const cantidadNum = Number(localData.cantidad);
+        const duracionNum = Number(localData.duracion);
+        let flujoCalculado = 0;
+
+
+        if (duracionNum > 0) {
+            flujoCalculado = cantidadNum / duracionNum;
         }
 
         const nuevaTerapia: TerapiaAgregada = {
             ...localData,
+            duracion: Number(localData.duracion), 
+            cantidad: Number(localData.cantidad), 
+            flujo: flujoCalculado,
             temp_id: crypto.randomUUID(),
         };
 
@@ -79,7 +95,8 @@ const TerapiaIVForm: React.FC<Props> = ({ hoja, soluciones }) => {
         setLocalData({
             solucion_id: '',
             solucion_nombre: '',
-            flujo: '',
+            cantidad: '',
+            duracion: '',
             fecha_hora_inicio: '',
         });
     }
@@ -129,15 +146,27 @@ const TerapiaIVForm: React.FC<Props> = ({ hoja, soluciones }) => {
                     }}
                     error={errors['terapias_agregadas.0.solucion_id']} 
                 />
-                <InputText 
-                    id="flujo_local"
-                    name="flujo"
-                    label="Flujo (ml/hr)" 
+
+                <InputText
+                    id="cantidad"
+                    name="cantidad"
+                    label="Cantidad (mililitros)"
                     type="number"
-                    value={localData.flujo} 
-                    onChange={e => setLocalData(d => ({...d, flujo: e.target.value}))} 
-                    error={errors['terapias_agregadas.0.flujo']}
+                    value={localData.cantidad}
+                    onChange={e => setLocalData(d => ({...d, cantidad: e.target.value}))}
+                    error={errors['terapias_agregadas.0.cantidad']}
                 />
+
+                <InputText
+                    id="duracion"
+                    name="duracion"
+                    label="Duración"
+                    type="number"
+                    value={localData.duracion}
+                    onChange={e => setLocalData(d => ({...d, duracion: e.target.value}))}
+                    error={errors['terapias_agregadas.0.duracion']}
+                />
+
             </div>
             <div className="flex justify-end mt-4">
                 <PrimaryButton type="button" onClick={handleAddToList}>
@@ -151,6 +180,15 @@ const TerapiaIVForm: React.FC<Props> = ({ hoja, soluciones }) => {
                 
                 <div className="overflow-x-auto border rounded-lg">
                     <table className="min-w-full divide-y divide-gray-200">
+                        <thead>
+                            <tr className="text-left">
+                                <th className="px-4 py-4 text-sm text-gray-900">Solución</th>
+                                <th className="px-4 py-4 text-sm text-gray-900">Cantidad</th>
+                                <th className="px-4 py-4 text-sm text-gray-900">Duración</th>
+                                <th className="px-4 py-4 text-sm text-gray-900">Flujo</th>
+                                <th className="px-4 py-4 text-sm text-gray-900">Acciones</th>
+                            </tr>
+                        </thead>
                         <tbody className="bg-white divide-y divide-gray-200">
                             {data.terapias_agregadas.length === 0 ? (
                                 <tr>
@@ -162,8 +200,15 @@ const TerapiaIVForm: React.FC<Props> = ({ hoja, soluciones }) => {
                                 data.terapias_agregadas.map((terapia) => (
                                     <tr key={terapia.temp_id}>
                                         <td className="px-4 py-4 text-sm text-gray-900">{terapia.solucion_nombre}</td>
-                                        <td className="px-4 py-4 text-sm text-gray-500">{terapia.flujo}</td>
-                                        <td className="px-4 py-4 text-sm text-gray-500">{terapia.fecha_hora_inicio}</td>
+                                        <td className="px-4 py-4 text-sm text-gray-900">{terapia.cantidad}</td>
+                                        <td className="px-4 py-4 text-sm text-gray-900">{terapia.duracion}</td>
+                                        <td className="px-4 py-4 text-sm text-gray-900">
+                                            {
+                                                terapia.duracion > 0 
+                                                    ? (terapia.cantidad / terapia.duracion).toFixed(2) + ' ml/hr' 
+                                                    : 'N/A'
+                                            }
+                                        </td>
                                         <td className="px-4 py-4 text-sm">
                                             <button
                                                 type="button"
@@ -181,7 +226,7 @@ const TerapiaIVForm: React.FC<Props> = ({ hoja, soluciones }) => {
                 </div>
                 <div className="flex justify-end mt-4">
                     <PrimaryButton type="submit" disabled={processing || data.terapias_agregadas.length === 0}>
-                        {processing ? 'Guardando...' : 'Guardar Lista de Terapias'}
+                        {processing ? 'Guardando...' : 'Guardar lista de terapias'}
                     </PrimaryButton>
                 </div>
             </form>
@@ -190,21 +235,43 @@ const TerapiaIVForm: React.FC<Props> = ({ hoja, soluciones }) => {
                 <h3 className="text-lg font-semibold mb-2">Terapias intravenosas ya guardadas</h3>
                 <div className="overflow-x-auto border rounded-lg">
                     <table className="min-w-full divide-y divide-gray-200">
+                        <thead>
+                            <tr className="text-left">
+                                <th className="px-4 py-4 text-sm text-gray-900">Solución</th>
+                                <th className="px-4 py-4 text-sm text-gray-900">Cantidad</th>
+                                <th className="px-4 py-4 text-sm text-gray-900">Duración</th>
+                                <th className="px-4 py-4 text-sm text-gray-900">Flujo</th>
+                                <th className="px-4 py-4 text-sm text-gray-900">Acciones</th>
+                            </tr>
+                        </thead>
                         <tbody className="bg-white divide-y divide-gray-200">
-                            {hoja.hojas_terapia_i_v?.map((terapia) => (
+                            {hoja.hojas_terapia_i_v?.length === 0 ? (
+                                <tr>
+                                    <td colSpan={4} className="px-4 py-4 text-sm text-gray-500 text-center">
+                                        No hay terapias registradas.
+                                    </td>
+                                </tr>
+                            ) : (
+                            hoja.hojas_terapia_i_v?.map((terapia) => (
                                 <tr key={terapia.id}>
                                     <td className="px-4 py-4 text-sm text-gray-900">{terapia.solucion?.nombre_prestacion || '...'}</td>
+                                    <td className="px-4 py-4 text-sm text-gray-500">{terapia.cantidad}</td>
+                                    <td className="px-4 py-4 text-sm text-gray-500">{terapia.duracion}</td>
                                     <td className="px-4 py-4 text-sm text-gray-500">{terapia.flujo_ml_hora}</td>
                                     <td className="px-2 py-1 text-sm text-gray-500" style={{ minWidth: '200px' }}>
-                                        <InputDateTime
-                                            id={`fecha_saved_${terapia.id}`}
-                                            name={`fecha_saved_${terapia.id}`}
-                                            label=""
-                                            value={terapia.fecha_hora_inicio}
-                                            onChange={(newDate) => {
-                                                handleUpdateTerapia(terapia.id, newDate as string);
-                                            }}
-                                        />
+                                        {terapia.fecha_hora_inicio ? (
+                                            <span>{formatDateTime(terapia.fecha_hora_inicio)}</span>
+                                        ): (
+                                            <PrimaryButton
+                                                type="button"
+                                                onClick={() => {
+                                                    const now_iso = new Date().toISOString();
+                                                    handleDateUpdate(terapia.id, now_iso);
+                                                }}
+                                            >
+                                                Registrar inicio
+                                            </PrimaryButton>
+                                        )}
                                     </td>
 
                                     <td className="px-4 py-4 text-sm">
@@ -217,7 +284,7 @@ const TerapiaIVForm: React.FC<Props> = ({ hoja, soluciones }) => {
                                         </button>
                                     </td>
                                 </tr>
-                            ))}
+                            )))}
                         </tbody>
                     </table>
                 </div>
