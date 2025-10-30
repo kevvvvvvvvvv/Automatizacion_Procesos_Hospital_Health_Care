@@ -1,16 +1,17 @@
 import React from 'react';
 import { Head, Link } from '@inertiajs/react';
-import { Pencil, Printer } from 'lucide-react';
+import { Pencil, Printer, Plus } from 'lucide-react';
 import { route } from 'ziggy-js';
 import MainLayout from '@/layouts/MainLayout';
 import { Interconsulta, Paciente, Estancia, User } from '@/types';
 import InfoCard from '@/components/ui/info-card';
 import InfoField from '@/components/ui/info-field';
+import honorarios from '@/routes/honorarios';
 
 interface ShowInterconsultaProps {
     interconsulta: Interconsulta & {
-        formularioInstancia: {
-            user: User;
+        formularioInstancia?: {  // Hazlo opcional con '?'
+            user?: User;  // Hazlo opcional
             estancia: Estancia & { paciente: Paciente };
         };
     };
@@ -31,13 +32,15 @@ const Show = ({ interconsulta, paciente, estancia }: ShowInterconsultaProps) => 
             <Head title={`Detalles de Interconsulta: ${paciente.nombre}`} />
 
             <InfoCard title={`Interconsulta para: ${paciente.nombre} ${paciente.apellido_paterno} ${paciente.apellido_materno}`}>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <InfoField label="Tensión Arterial" value={interconsulta.ta || 'N/A'} />
                     <InfoField label="Frecuencia Cardíaca" value={interconsulta.fc ? interconsulta.fc.toString() : 'N/A'} />
                     <InfoField label="Frecuencia Respiratoria" value={interconsulta.fr ? interconsulta.fr.toString() : 'N/A'} />
                     <InfoField label="Temperatura" value={interconsulta.temp ? interconsulta.temp.toString() : 'N/A'} />
                     <InfoField label="Peso" value={interconsulta.peso ? interconsulta.peso.toString() : 'N/A'} />
                     <InfoField label="Talla" value={interconsulta.talla ? interconsulta.talla.toString() : 'N/A'} />
+                </div>
+                <div className="grid grid-cols-1 gap-4">
                     <InfoField label="Criterio Diagnóstico" value={interconsulta.criterio_diagnostico || 'N/A'} />
                     <InfoField label="Plan de Estudio" value={interconsulta.plan_de_estudio || 'N/A'} />
                     <InfoField label="Sugerencia Diagnóstica" value={interconsulta.sugerencia_diagnostica || 'N/A'} />
@@ -48,28 +51,36 @@ const Show = ({ interconsulta, paciente, estancia }: ShowInterconsultaProps) => 
                     <InfoField label="Tratamiento y Pronóstico" value={interconsulta.tratamiento_y_pronostico || 'N/A'} />
                     <InfoField label="Motivo de la Atención o Interconsulta" value={interconsulta.motivo_de_la_atencion_o_interconsulta || 'N/A'} />
                     <InfoField label="Diagnóstico o Problemas Clínicos" value={interconsulta.diagnostico_o_problemas_clinicos || 'N/A'} />
-                    <InfoField label="Registrado por" value={formularioInstancia.user.nombre} />
-                    <InfoField label="Fecha de Registro" value={new Date(formularioInstancia.fecha_hora).toLocaleString('es-MX', dateOptions)} />
                 </div>
+                    
             </InfoCard>
             <div className="mt-8">
-        <h2 className="text-xl font-semibold text-gray-800 mb-4">Honorarios Asociados</h2>
-        <div className="flex space-x-4">
-            <Link
-                href={route('honorarios.create', { interconsulta_id: interconsulta.id })}
-                className="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700"
-            >
-                <Plus size={16} className="mr-2" />
-                Agregar Honorario
-            </Link>
-            <Link
-                href={route('honorarios.index', { interconsulta_id: interconsulta.id })}
-                className="inline-flex items-center px-4 py-2 bg-gray-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700"
-            >
-                Ver Honorarios
-            </Link>
-        </div>
-    </div>
+                <h2 className="text-xl font-semibold text-gray-800 mb-4">Honorarios Asociados</h2>
+                <div className="flex space-x-4">
+                    <Link
+                        href={route('pacientes.estancias.interconsultas.honorarios.create', {
+                            paciente: paciente.id,
+                            estancia: estancia.id,
+                            interconsulta: interconsulta.id
+                        })}
+                        className="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700"
+                    >
+                        <Plus size={16} className="mr-2" />
+                        Agregar Honorario
+                    </Link>
+                    <Link
+                        href={route('pacientes.estancias.interconsultas.honorarios.index', {
+                            paciente: paciente.id,
+                            estancia: estancia.id,
+                            interconsulta: interconsulta.id,
+                            honorarios: honorarios,
+                        })}
+                        className="inline-flex items-center px-4 py-2 bg-gray-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700"
+                    >
+                        Ver Honorarios
+                    </Link>
+                </div>
+            </div>
             <div className="mt-8 flex space-x-4">
                 <Link
                     href={route('interconsultas.edit', { interconsulta: interconsulta.id })}

@@ -7,6 +7,7 @@ import { useForm, Head } from '@inertiajs/react';
 import { route } from 'ziggy-js';
 import { Estancia, Paciente } from '@/types';
 import PacienteCard from '@/components/paciente-card';
+import { Link } from 'lucide-react';
 
 type Props = {
   paciente: Paciente;
@@ -32,11 +33,11 @@ const CreateInterconsulta: React.FC<Props> = ({ paciente, estancia }) => {
     diagnostico_o_problemas_clinicos: '',
     tratamiento_y_pronostico: '',
   });
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    post(route('pacientes.estancias.interconsultas.store', { paciente: paciente.id, estancia: estancia.id }));
-  };
+const handleSubmit = (e: React.FormEvent) => {
+  e.preventDefault();
+  console.log('Enviando a:', route('pacientes.estancias.interconsultas.store', { paciente: paciente.id, estancia: estancia.id }));
+  post(route('pacientes.estancias.interconsultas.store', { paciente: paciente.id, estancia: estancia.id }));
+};
   
   const textAreaClasses = `w-full px-3 py-2 rounded-md shadow-sm border text-gray-900 bg-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#2a2b56] focus:border-[#2a2b56] transition`;
   const labelClasses = `block text-sm font-medium text-gray-700 mb-1`;
@@ -48,12 +49,12 @@ const CreateInterconsulta: React.FC<Props> = ({ paciente, estancia }) => {
         estancia={estancia}
       />
       <Head title="Crear Interconsulta" />
-
+      
       <FormLayout
         title="Registrar Nueva Interconsulta"
         onSubmit={handleSubmit}
         actions={<PrimaryButton type="submit" disabled={processing}>{processing ? 'Creando...' : 'Crear Interconsulta'}</PrimaryButton>}
-      >
+             >
         {/* Sección 2: Motivo y Exploración */}
         <h2 className="text-xl font-semibold text-gray-800 mt-6 mb-4 col-span-full">Motivo y Exploración</h2>
         <div className="col-span-full md:col-span-1">
@@ -310,6 +311,7 @@ const CreateInterconsulta: React.FC<Props> = ({ paciente, estancia }) => {
             <p className="mt-1 text-xs text-red-500">{errors.tratamiento_y_pronostico}</p>
           )}
         </div>
+        
       </FormLayout>
     </>
   );
