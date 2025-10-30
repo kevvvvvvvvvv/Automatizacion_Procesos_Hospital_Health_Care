@@ -18,6 +18,7 @@ use App\Notifications\NuevaSolicitudMedicamentos;
 use Exception;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 
 use Illuminate\Support\Facades\DB; 
 
@@ -32,6 +33,7 @@ class FormularioHojaMedicamentoController extends Controller
                 'medicamentos_agregados.*.id' => 'required|exists:producto_servicios,id', 
                 'medicamentos_agregados.*.dosis' => 'required|string|max:255',
                 'medicamentos_agregados.*.via_id' => 'required|string|max:255',
+                'medicamentos_agregados.*.gramaje' => 'required',
                 'medicamentos_agregados.*.duracion' => 'nullable|numeric',  
             ]);
 
@@ -57,6 +59,7 @@ class FormularioHojaMedicamentoController extends Controller
                 $nuevoMedicamento = $hojasenfermeria->hojaMedicamentos()->create([
                     'producto_servicio_id' => $med['id'],
                     'dosis' => $med['dosis'],
+                    'gramaje' => $med['gramaje'],
                     'via_administracion' => $med['via_id'],
                     'fecha_hora_solicitud' => now(),
                     'duracion_tratamiento' => $med['duracion'], 
@@ -89,10 +92,17 @@ class FormularioHojaMedicamentoController extends Controller
 
     public function update(Request $request, HojaEnfermeria $hojasenfermeria, HojaMedicamento $hojasmedicamento)
     {
-        $hojasmedicamento->update([
-            'fecha_hora_inicio'=>$request->fecha_hora_inicio
+        $validatedData = $request->validate([
+            'fecha_hora_inicio' => 'required|date',
         ]);
 
+        $fechaMySQL = Carbon::parse($validatedData['fecha_hora_inicio'])
+                            ->setTimezone(config('app.timezone')) 
+                            ->format('Y-m-d H:i:s'); 
+
+        $hojasmedicamento->update([
+            'fecha_hora_inicio' => $fechaMySQL,
+        ]);
         return Redirect::back()->with('success', 'Fecha de medicamento actualizada.');
     }
 }
