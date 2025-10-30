@@ -103,6 +103,7 @@ class FormularioHojaMedicamentoController extends Controller
         $hojasmedicamento->update([
             'fecha_hora_inicio' => $fechaMySQL,
         ]);
+        
         return Redirect::back()->with('success', 'Fecha de medicamento actualizada.');
     }
 }

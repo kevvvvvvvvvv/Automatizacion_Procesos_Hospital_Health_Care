@@ -240,6 +240,15 @@ const MedicamentosForm: React.FC<Props> = ({ hoja, medicamentos }) => {
                 
                 <div className="overflow-x-auto border rounded-lg">
                     <table className="min-w-full divide-y divide-gray-200">
+                        <thead>
+                            <tr className='text-left'>
+                                <th className="px-4 py-4 text-sm text-gray-900">Nombre del medicamento</th>
+                                <th className="px-4 py-4 text-sm text-gray-900">Dosis</th>
+                                <th className="px-4 py-4 text-sm text-gray-900">Gramaje</th>
+                                <th className="px-4 py-4 text-sm text-gray-900">Via administración</th>
+                                <th className="px-4 py-4 text-sm text-gray-900">Acciones</th>
+                            </tr>
+                        </thead>
                         <tbody className="bg-white divide-y divide-gray-200">
                             {data.medicamentos_agregados.length === 0 ? (
                                 <tr>
@@ -254,7 +263,6 @@ const MedicamentosForm: React.FC<Props> = ({ hoja, medicamentos }) => {
                                         <td className="px-4 py-4 text-sm text-gray-500">{med.dosis}</td>
                                         <td className="px-4 py-4 text-sm text-gray-500">{med.gramaje}</td>
                                         <td className="px-4 py-4 text-sm text-gray-500">{med.via_label}</td>
-                                        <td className="px-4 py-4 text-sm text-gray-500">{med.inicio}</td>
                                         <td className="px-4 py-4 text-sm">
                                             <button
                                                 type="button"
@@ -281,6 +289,15 @@ const MedicamentosForm: React.FC<Props> = ({ hoja, medicamentos }) => {
                 <h3 className="text-lg font-semibold mb-2">Historial de Medicamentos Guardados</h3>
                 <div className="overflow-x-auto border rounded-lg">
                     <table className="min-w-full divide-y divide-gray-200">
+                        <thead>
+                            <tr className='text-left'>
+                                <th className="px-4 py-4 text-sm text-gray-900">Nombre del medicamento</th>
+                                <th className="px-4 py-4 text-sm text-gray-900">Dosis</th>
+                                <th className="px-4 py-4 text-sm text-gray-900">Via administración</th>
+                                <th className="px-4 py-4 text-sm text-gray-900">Fecha de inicio</th>
+                                <th className="px-4 py-4 text-sm text-gray-900">Acciones</th>
+                            </tr>
+                        </thead>
                         <tbody className="bg-white divide-y divide-gray-200">
                             {(hoja.hoja_medicamentos ?? []).length === 0 ? (
                                 <tr>
@@ -307,7 +324,7 @@ const MedicamentosForm: React.FC<Props> = ({ hoja, medicamentos }) => {
                                                         handleDateUpdate(med.id, now_iso);
                                                     }}
                                                 >
-                                                    Registrar Inicio
+                                                    Registrar inicio
                                                 </PrimaryButton>
                                             )}
                                         </td>
