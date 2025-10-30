@@ -1,6 +1,6 @@
 import React from 'react';
 import { Head, Link } from '@inertiajs/react';
-import { Plus,ChevronDown, Pencil } from 'lucide-react'; 
+import { Plus,ChevronDown, Pencil, Eye } from 'lucide-react'; 
 import { Menu } from '@headlessui/react';
 import { route } from 'ziggy-js';
 import { Printer } from 'lucide-react'; 
@@ -144,7 +144,7 @@ const Show = ({ estancia }: ShowEstanciaProps) => {
                 <div className="space-y-4">
                     {formulario_instancias && formulario_instancias.length > 0 ? (
                         formulario_instancias.map((formulario) => (
-                            <div key={formulario.id} className="p-4 border rounded-md bg-gray-50 flex justify-between items-center">
+                            <div key={formulario.id} className="p-4 border rounded-md bg-gray-50 flex justify-between items-center"> 
                                 <div>
                                     <p className="font-semibold text-indigo-600">
                                         {formulario.catalogo.nombre_formulario}
@@ -158,22 +158,21 @@ const Show = ({ estancia }: ShowEstanciaProps) => {
                                 </div>
                                 <div className="flex items-center space-x-2">
                                     <Link
-                                        href={route(`${formulario.catalogo.route_prefix}.edit`, formulario.id )}
+                                        href={route(`${formulario.catalogo.route_prefix}.edit`, formulario.id)}
                                         className="p-2 text-blue-500 hover:bg-blue-100 hover:text-blue-700 rounded-full transition"
                                         title="Editar Hoja Frontal"
                                     >
                                         <Pencil size={18} />
                                     </Link>
 
-
-                                    {/*<Link 
-                                        href={route('hoja-frontales.show', formulario.id)}
+                                    <Link 
+                                        href={route(`${formulario.catalogo.route_prefix}.show`, formulario.id)}
                                         className="p-2 text-gray-500 hover:bg-gray-200 hover:text-gray-800 rounded-full transition"
                                         title="Ver detalles del formulario"
                                     >
                                         <Eye size={18} />
-                                    </Link>*/}
-                                </div>
+                                    </Link>
+
                                     <a 
                                         href={route(`${formulario.catalogo.route_prefix}.pdf`, formulario.id)}
                                         target="_blank"
@@ -182,7 +181,9 @@ const Show = ({ estancia }: ShowEstanciaProps) => {
                                     >
                                         <Printer size={18} />
                                     </a>
+                                </div>
                             </div>
+       
                         ))
                     ) : (
                         <p className="text-gray-500 italic text-center py-4">No hay formularios registrados para esta estancia.</p>
