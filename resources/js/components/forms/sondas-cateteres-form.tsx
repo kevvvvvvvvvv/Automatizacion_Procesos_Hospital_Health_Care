@@ -52,7 +52,7 @@ const SondasCateteresForm: React.FC<Props> = ({ hoja, estancia }) => {
         });
     }
 
-    const handleRemoveSaved = (sondaId: number) => {
+    /*const handleRemoveSaved = (sondaId: number) => {
         if (confirm('¿Seguro que deseas eliminar este registro?')) {
             router.delete(route('hojasondas.destroy', { 
                 hojaenfermeria: hoja.id, 
@@ -61,7 +61,7 @@ const SondasCateteresForm: React.FC<Props> = ({ hoja, estancia }) => {
                 preserveScroll: true,
             });
         }
-    }
+    }*/
 
     return (
         <div>
@@ -91,7 +91,7 @@ const SondasCateteresForm: React.FC<Props> = ({ hoja, estancia }) => {
                         <InputText 
                             id="dispositivo_fecha_instalacion"
                             name="dispositivo_fecha_instalacion"
-                            label="Fecha de Instalación"
+                            label="Fecha de instalación"
                             type="date"
                             value={data.fecha_instalacion} 
                             onChange={e => setData('fecha_instalacion', e.target.value)}
@@ -99,9 +99,9 @@ const SondasCateteresForm: React.FC<Props> = ({ hoja, estancia }) => {
                         />
 
                         <InputText 
-                            id="dispositivo_fecha_colocacion"
-                            name="dispositivo_fecha_colocacion"
-                            label="Fecha de Colocación"
+                            id="dispositivo_fecha_caducidad"
+                            name="dispositivo_fecha_caducidad"
+                            label="Fecha de caducidad"
                             type="date"
                             value={data.fecha_caducidad} 
                             onChange={e => setData('fecha_caducidad', e.target.value)}
@@ -122,7 +122,7 @@ const SondasCateteresForm: React.FC<Props> = ({ hoja, estancia }) => {
                 
                 <div className="flex justify-end mt-4">
                     <PrimaryButton type="submit" disabled={processing || !data.tipo_dispositivo}>
-                        {processing ? 'Guardando...' : 'Guardar Dispositivo'}
+                        {processing ? 'Guardando...' : 'Guardar dispositivo'}
                     </PrimaryButton>
                 </div>
             </form>

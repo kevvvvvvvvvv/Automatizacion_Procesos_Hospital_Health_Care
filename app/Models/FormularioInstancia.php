@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class FormularioInstancia extends Model
@@ -40,4 +41,8 @@ class FormularioInstancia extends Model
         return $this->belongsTo(FormularioCatalogo::class, 'formulario_catalogo_id');
     }
 
+    public function hojaEnfermeria(): HasOne
+    {
+        return $this->hasOne(HojaEnfermeria::class,'id','id');
+    }
 }
