@@ -20,6 +20,7 @@ use App\Http\Controllers\HonorarioController;
 use App\Http\Controllers\FormularioHojaTerapiaIVController;
 use App\Http\Controllers\FormularioHojaSignosController;
 use App\Http\Controllers\FarmaciaController;
+use App\Http\Controllers\FormularioHojaSondaCateterController;
 use App\Http\Controllers\HojaMedicamentoController;
 
 use App\Models\History;
@@ -61,6 +62,8 @@ Route::post('hojasmedicamentos/{hojasenfermeria}',[FormularioHojaMedicamentoCont
 Route::patch('hojasmedicamentos/{hojasenfermeria}/{hojasmedicamento}',[FormularioHojaMedicamentoController::class, 'update'])->name('hojasmedicamentos.update');
 
 Route::post('hojassignos/{hojasenfermeria}',[FormularioHojaSignosController::class, 'store'])->name('hojassignos.store');
+
+Route::post('hojassondascateters/{hojasenfermeria}',[FormularioHojaSondaCateterController::class, 'store'])->name('hojassondascateters.store');
 
 Route::resource('pacientes.estancias.interconsultas', InterconsultaController::class)
     ->shallow()

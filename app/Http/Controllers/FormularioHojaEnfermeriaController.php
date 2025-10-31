@@ -73,6 +73,8 @@ class FormularioHojaEnfermeriaController extends Controller
             'hojaMedicamentos.productoServicio'
         );
         $estancia = $hojasenfermeria->formularioInstancia->estancia;
+        $estancia->load('hojaSondasCateters');
+
         $paciente = $hojasenfermeria->formularioInstancia->estancia->paciente;
 
         $medicamentos = ProductoServicio::where('subtipo','MEDICAMENTOS')->get();
