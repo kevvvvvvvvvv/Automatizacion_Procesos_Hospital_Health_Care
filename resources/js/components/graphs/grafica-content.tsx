@@ -2,7 +2,7 @@
 import React from 'react';
 import GraficaTensionArterial from './grafica-tension-arterial';
 import GraficaSignoVitalSimple from './grafica-signos-simple'; 
-//import GraficaEstadoConciencia from './GraficaEstadoConciencia';
+import GraficaEstadoConciencia from './grafica-estado-conciencia';
 import { HojaSignosGraficas } from '@/types';
 
 
@@ -85,11 +85,13 @@ export default function SeccionGraficas({ historialSignos }: Props) {
                     />
                 </div>
 
-                 {/* 7. Caso Especial: Estado de Conciencia 
+                 
                  <div className="p-4 border rounded-lg shadow-sm bg-gray-50/50">
-                    <h3 className="font-medium text-gray-700 mb-3">Evolución Estado de Conciencia</h3>
-                    <GraficaEstadoConciencia data={historialSignos} />
-                </div>*/}
+                    <h3 className="font-medium text-gray-700 mb-3">Evolución del estado de conciencia</h3>
+                    <GraficaEstadoConciencia
+                        data={historialSignos} 
+                    />
+                </div>
             </div>
         </div>
     );
