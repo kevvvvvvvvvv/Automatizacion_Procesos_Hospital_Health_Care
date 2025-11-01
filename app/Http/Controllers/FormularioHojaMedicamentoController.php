@@ -34,7 +34,8 @@ class FormularioHojaMedicamentoController extends Controller
                 'medicamentos_agregados.*.dosis' => 'required|string|max:255',
                 'medicamentos_agregados.*.via_id' => 'required|string|max:255',
                 'medicamentos_agregados.*.gramaje' => 'required',
-                'medicamentos_agregados.*.duracion' => 'nullable|numeric',  
+                'medicamentos_agregados.*.duracion' => 'required|numeric', 
+                'medicamentos_agregados.*.unidad' => 'required',
             ]);
 
             $hojasenfermeria->load('formularioInstancia.estancia');
@@ -63,6 +64,7 @@ class FormularioHojaMedicamentoController extends Controller
                     'via_administracion' => $med['via_id'],
                     'fecha_hora_solicitud' => now(),
                     'duracion_tratamiento' => $med['duracion'], 
+                    'unidad' => $med['unidad'],
                     'hoja_enfermeria_id' => $hojasenfermeria->id,
                 ]);
                 $medicamentosGuardados->push($nuevoMedicamento);

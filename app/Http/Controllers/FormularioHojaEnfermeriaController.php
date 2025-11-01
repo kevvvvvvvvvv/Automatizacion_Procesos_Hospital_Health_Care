@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\HojaEnfermeriaRequest;
 use Illuminate\Http\Request;
+use Illuminate\Http\RedirectResponse;
 
 use App\Models\Paciente;
 use App\Models\Estancia;
@@ -100,6 +102,7 @@ class FormularioHojaEnfermeriaController extends Controller
             'saturacion_oxigeno', 
             'glucemia_capilar',
             'talla',
+            'estado_conciencia',
             'peso',
         ];
 
@@ -125,18 +128,13 @@ class FormularioHojaEnfermeriaController extends Controller
      * @param  \App\Models\HojaEnfermeria  
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function update(Request $request, HojaEnfermeria $hojasenfermeria)
+    public function update(HojaEnfermeriaRequest $request, HojaEnfermeria $hojasenfermeria)
     {
-        $validatedData = $request->validate([
-            'observaciones' => 'nullable|string',
-            'estado'        => 'string|in:Abierto,Cerrado', 
-        ]);
-
         if ($hojasenfermeria->estado === 'Cerrado' && !$request->has('estado')) {
              return Redirect::back()->with('error', 'Esta hoja ya está cerrada y no puede ser modificada.');
         }
 
-        $hojasenfermeria->update($validatedData);
+        $hojasenfermeria->update($request->validated());
         
         $message = 'Hoja de enfermería actualizada.';
 

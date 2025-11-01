@@ -17,6 +17,7 @@ class HojaMedicamento extends Model
         'producto_servicio_id',
         'dosis',
         'gramaje',
+        'unidad',
         'via_administracion',
         'duracion_tratamiento',
         'fecha_hora_inicio',
