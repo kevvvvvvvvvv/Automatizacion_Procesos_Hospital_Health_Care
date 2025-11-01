@@ -3,11 +3,17 @@ import { Head, Link } from '@inertiajs/react';
 import { Pencil, Printer, Plus } from 'lucide-react';
 import { route } from 'ziggy-js';
 import MainLayout from '@/layouts/MainLayout';
-import { Interconsulta, Paciente, Estancia, User } from '@/types';
+import { Interconsulta, Paciente, Estancia, User} from '@/types';
 import InfoCard from '@/components/ui/info-card';
 import InfoField from '@/components/ui/info-field';
-import honorarios from '@/routes/honorarios';
-
+type Honorario = {
+  id: number;
+  interconsulta_id: number;
+  monto: number | string;
+  descripcion: string | null;
+  created_at?: string;
+  updated_at?: string;
+};
 interface ShowInterconsultaProps {
     interconsulta: Interconsulta & {
         formularioInstancia?: {  // Hazlo opcional con '?'
@@ -17,9 +23,12 @@ interface ShowInterconsultaProps {
     };
     paciente: Paciente;
     estancia: Estancia;
+    honorarios: Honorario[];
+    honorarios_total?: number; 
 }
 
-const Show = ({ interconsulta, paciente, estancia }: ShowInterconsultaProps) => {
+
+const Show = ({ interconsulta, paciente, estancia, honorarios }: ShowInterconsultaProps) => {
     const { formularioInstancia } = interconsulta;
 
     const dateOptions: Intl.DateTimeFormatOptions = {
@@ -56,8 +65,49 @@ const Show = ({ interconsulta, paciente, estancia }: ShowInterconsultaProps) => 
             </InfoCard>
             <div className="mt-8">
                 <h2 className="text-xl font-semibold text-gray-800 mb-4">Honorarios Asociados</h2>
-                <div className="flex space-x-4">
-                    <Link
+
+                {honorarios.length === 0 ? (
+                <p className="text-sm text-gray-600">No hay honorarios registrados.</p>
+                ) : (
+                <div className="overflow-x-auto">
+                    <table className="min-w-full divide-y divide-gray-200 border rounded-lg">
+                    <thead className="bg-gray-50">
+                        <tr>
+                        <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+                        <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Monto</th>
+                        <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Descripción</th>
+                        <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fecha</th>
+                        </tr>
+                    </thead>
+                    <tbody className="bg-white divide-y divide-gray-200">
+                        {honorarios.map(h => (
+                        <tr key={h.id}>
+                            <td className="px-4 py-2">{h.id}</td>
+                            <td className="px-4 py-2">${Number(h.monto).toFixed(2)}</td>
+                            <td className="px-4 py-2">{h.descripcion ?? '-'}</td>
+                            <td className="px-4 py-2">{h.created_at ? new Date(h.created_at).toLocaleString() : '-'}</td>
+                        </tr>
+                        ))}
+                    </tbody>
+                    <tfoot>
+                        <tr className="bg-gray-50">
+                        <td className="px-4 py-2 font-semibold" colSpan={1}>Total</td>
+                        <td className="px-4 py-2 font-semibold">
+                            ${typeof honorarios_total !== 'undefined'
+                                ? Number(honorarios_total).toFixed(2)
+                                : honorarios.reduce((acc, h) => acc + Number(h.monto || 0), 0).toFixed(2)}
+                        </td>
+                        <td colSpan={2}></td>
+                        </tr>
+                    </tfoot>
+                    </table>
+                </div>
+                )}
+
+                    
+                
+            </div>
+            <Link
                         href={route('pacientes.estancias.interconsultas.honorarios.create', {
                             paciente: paciente.id,
                             estancia: estancia.id,
@@ -67,20 +117,7 @@ const Show = ({ interconsulta, paciente, estancia }: ShowInterconsultaProps) => 
                     >
                         <Plus size={16} className="mr-2" />
                         Agregar Honorario
-                    </Link>
-                    <Link
-                        href={route('pacientes.estancias.interconsultas.honorarios.index', {
-                            paciente: paciente.id,
-                            estancia: estancia.id,
-                            interconsulta: interconsulta.id,
-                            honorarios: honorarios,
-                        })}
-                        className="inline-flex items-center px-4 py-2 bg-gray-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700"
-                    >
-                        Ver Honorarios
-                    </Link>
-                </div>
-            </div>
+                    </Link> 
             <div className="mt-8 flex space-x-4">
                 <Link
                     href={route('interconsultas.edit', { interconsulta: interconsulta.id })}

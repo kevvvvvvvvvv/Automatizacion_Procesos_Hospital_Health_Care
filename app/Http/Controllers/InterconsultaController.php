@@ -71,12 +71,16 @@ class InterconsultaController extends Controller
         {
             $interconsulta->load([
                 'formularioInstancia.estancia.paciente',
-                'formularioInstancia.user'
+                'formularioInstancia.user',
+                'honorarios'
             ]);
+            // dd($interconsulta->toArray());
             return Inertia::render('formularios/interconsulta/show', [
                 'interconsulta' => $interconsulta,
                 'paciente' => $interconsulta->formularioInstancia->estancia->paciente,
                 'estancia' => $interconsulta->formularioInstancia->estancia,
+                'honorarios' => $interconsulta->honorarios,
+                'honorarios_total' => $interconsulta->honorarios->sum('monto'),
             ]);
         }
     /**

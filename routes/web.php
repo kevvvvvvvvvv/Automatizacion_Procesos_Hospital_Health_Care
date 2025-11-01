@@ -21,6 +21,7 @@ use App\Http\Controllers\FormularioHojaSignosController;
 use App\Http\Controllers\FarmaciaController;
 use App\Http\Controllers\FormularioHojaSondaCateterController;
 use App\Http\Controllers\HojaMedicamentoController;
+use App\Http\Controllers\TransladoController;
 
 
     use App\Models\History;
@@ -75,8 +76,10 @@ Route::resource('pacientes.estancias.interconsultas', InterconsultaController::c
     ->parameters([
         'honorarios' => 'honorario',
         'interconsultas' => 'interconsulta'
-    ]); 
-    
+    ]);
+Route::resource('pacientes.estancias.translados', TransladoController::class)
+    ->shallow()
+    ->parameters(['translado' => 'translado']);
 Route::get('pacientes/{paciente}/estancias/{estancia}/interconsultas/{interconsulta}', [InterconsultaController::class, 'show'])
     ->name('pacientes.estancias.interconsultas.show')
     ->middleware('auth');

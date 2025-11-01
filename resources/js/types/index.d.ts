@@ -338,3 +338,44 @@ export interface HojaSondaCateter {
     user: User;
     estancia: Estancia;
 }
+
+export interface Honorarios{
+    id: number
+    interconsulta_id: number;
+    monto: number;
+    descripcion: string | null;
+    created_at: string;
+    updated_at: string;
+}
+export interface Interconsulta{
+    id:number;
+    criterio_diagnostico:String;
+    plan_de_estudio:String;
+    sugerencia_diagnostica:String;
+    resumen_del_interrogatorio:String;
+    exploracion_fisica:String;
+    estado_mental:String;
+    resultados_relevantes_del_estudio_diagnostico:String;
+    tratamiento_y_pronostico:String;
+    motivo_de_la_atencion_o_interconsulta:String;
+    diagnostico_o_problemas_clinicos:StringIterator;
+    fc:number;
+    fr:number;
+    temp:number;
+    peso:number;
+    talla:number;
+    ta:number;
+}
+export interface Translado{
+    id:number;
+    unidad_medica_envia:String;
+    unidad_medica_recibe:String;
+    resumen_clinico:String;
+    ta:String;
+    fc:String;
+    fr:String;
+    sat:String;
+    temp:String;
+    dxtx:String;
+    tratamiento_terapeutico_administradao:String;
+}
