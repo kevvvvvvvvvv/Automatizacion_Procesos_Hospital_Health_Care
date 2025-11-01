@@ -84,3 +84,9 @@ npm install react-hot-toast
 ```bash
 npm install react-chartjs-2 chart.js
 ```
+
+<h2>Instalar paquete de alertas</h2>
+
+```bash
+npm install sweetalert2
+```

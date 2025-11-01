@@ -125,6 +125,8 @@ export interface Estancia {
     familiar_responsable_id: number | null;
     estancia_anterior_id: number | null;
 
+    hoja_sondas_cateters: HojaSondaCateter[];
+
     created_at: string;
     updated_at: string | null;
     created_by: number;
@@ -284,6 +286,7 @@ export interface HojaMedicamento {
     gramaje:string;
     via_administracion: string;
     duracion_tratamiento: number;
+    unidad: string;
     fecha_hora_inicio: string;
     estado: string;
     fecha_hora_solicitud: string;
@@ -322,4 +325,16 @@ export interface SharedProps extends PageProps {
         success?: string;
         error?: string;
     };
+}
+
+export interface HojaSondaCateter {
+    id: number;
+    tipo_dispositivo: string;
+    calibre: string;
+    fecha_instalacion: string;
+    fecha_caducidad: string;
+    user_id: number;
+    observaciones: string;
+    user: User;
+    estancia: Estancia;
 }

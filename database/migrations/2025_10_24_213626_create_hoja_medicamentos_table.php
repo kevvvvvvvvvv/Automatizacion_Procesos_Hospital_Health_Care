@@ -22,6 +22,7 @@ return new class extends Migration
 
             $table->integer('dosis');
             $table->string('gramaje');
+            $table->string('unidad');
             $table->string('via_administracion');
             $table->integer('duracion_tratamiento');
             $table->datetime('fecha_hora_inicio')->nullable();

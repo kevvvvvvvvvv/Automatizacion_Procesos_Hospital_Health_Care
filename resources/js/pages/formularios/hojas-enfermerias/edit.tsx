@@ -1,15 +1,20 @@
 import React, { useState } from 'react'; 
 import { Paciente, Estancia, ProductoServicio, HojaEnfermeria, HojaSignosGraficas } from '@/types';
-import { Head, useForm } from '@inertiajs/react';
+import { Head, useForm, router } from '@inertiajs/react';
+import { route } from 'ziggy-js';
+import Swal from 'sweetalert2';
+import 'sweetalert2/dist/sweetalert2.min.css';
+
+import InputTextArea from '@/components/ui/input-text-area';
+import PrimaryButton from '@/components/ui/primary-button';
+
 import MainLayout from '@/layouts/MainLayout';
 import PacienteCard from '@/components/paciente-card';
-import InputText from '@/components/ui/input-text';
-import SelectInput from '@/components/ui/input-select'; 
-import InputTextArea from '@/components/ui/input-text-area';
 import TerapiaIVForm from '@/components/terapia-iv-form';
 import SignosVitalesForm from '@/components/signos-vitales-form';
 import GraficaContent from '@/components/graphs/grafica-content'
 import MedicamentosForm from '@/components/forms/medicamentos-form';
+import SondasCateteresForm from '@/components/forms/sondas-cateteres-form';
 
 interface CreateProps {
     paciente: Paciente;
@@ -18,17 +23,6 @@ interface CreateProps {
     medicamentos: ProductoServicio[];
     soluciones: ProductoServicio[];
     dataParaGraficas: HojaSignosGraficas[];
-}
-
-interface MedicamentoAgregado {
-    id: string;
-    nombre: string;
-    dosis: string;
-    via_id: string;
-    via_label: string;
-    duracion: string;
-    inicio: string;
-    temp_id: string; 
 }
 
 type SeccionHoja = 'signos' | 'medicamentos' | 'terapia_iv' | 'estudios' | 'sondas' | 'liquidos' | 'dieta' | 'observaciones' | 'graficas';
@@ -45,56 +39,122 @@ const secciones: { id: SeccionHoja, label: string }[] = [
     { id: 'graficas', label: 'Gráficas' },
 ];
 
-const opcionesDispositivo = [
-    { value: '', label: 'Seleccionar un dispositivo...' },
-    { value: 'Catéter venoso central', label: 'Catéter venoso central' },
-    { value: 'Sonda vesical', label: 'Sonda vesical' },
-    { value: 'Sonda nasogástrica', label: 'Sonda nasogástrica' },
-    { value: 'Catéter venoso', label: 'Catéter venoso' }
-];
+interface CerrarHojaProps {
+    hoja: HojaEnfermeria;
+    estanciaId: number; 
+}
+
+const CerrarHojaSection: React.FC<CerrarHojaProps> = ({ hoja, estanciaId }) => {
+    
+    const { put, processing } = useForm({
+        estado: 'Cerrado',
+    });
+
+    const handleCerrarHoja = () => {
+        Swal.fire({
+            title: '¿Estás seguro de cerrar la hoja?',
+            text: "Una vez cerrada, esta hoja de enfermería no podrá ser modificada.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33', 
+            cancelButtonColor: '#3085d6', 
+            confirmButtonText: 'Sí, ¡cerrar hoja!',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                put(route('hojasenfermerias.update', { hojasenfermeria: hoja.id }), {
+
+                    onSuccess: () => {
+                         Swal.fire(
+                            '¡Cerrada!',
+                            'La hoja de enfermería ha sido cerrada.',
+                            'success'
+                        );
+                        router.get(route('estancias.show', { estancia: estanciaId }));
+                    },
+                    onError: () => {
+                        Swal.fire(
+                            'Error',
+                            'No se pudo cerrar la hoja. Intenta de nuevo.',
+                            'error'
+                        );
+                    }
+                });
+            }
+        });
+    };
+
+    if (hoja.estado === 'Cerrado') {
+        return (
+            <div className="p-4 mb-4 text-sm text-green-800 rounded-lg bg-green-100" role="alert">
+                <span className="font-medium">Hoja cerrada:</span> Esta hoja de enfermería ya ha sido finalizada y no puede ser editada.
+            </div>
+        );
+    }
+
+    return (
+        <div className="p-4 mb-6 border border-red-300 rounded-lg bg-red-50">
+            <h3 className="text-lg font-medium text-red-800">Cerrar hoja de enfermería</h3>
+            <p className="mt-1 text-sm text-red-700">
+                Esta acción finalizará la hoja de enfermería y la marcará como "Cerrada".
+                No podrás realizar más cambios después de esto.
+            </p>
+            <div className="mt-4">
+                <PrimaryButton
+                    type="button"
+                    className="bg-red-600 hover:bg-red-700 focus:bg-red-700 active:bg-red-800 focus:ring-red-500"
+                    onClick={handleCerrarHoja}
+                    disabled={processing}
+                >
+                    {processing ? 'Cerrando...' : 'Cerrar hoja permanentemente'}
+                </PrimaryButton>
+            </div>
+        </div>
+    );
+}
+
 
 type CreateComponent = React.FC<CreateProps> & {
     layout: (page: React.ReactElement) => React.ReactNode;
 };
 
+interface Props {
+    hojasenfermeria: HojaEnfermeria
+}
+
+const Observaciones = ({hojasenfermeria}: Props) => {
+
+    const { data, setData, put, processing, errors } = useForm({
+        observaciones: hojasenfermeria.observaciones || '',
+    });
+
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        put(route('hojasenfermerias.update', { hojasenfermeria: hojasenfermeria.id }));
+    };
+
+    return (
+        <form onSubmit={handleSubmit}>
+            <InputTextArea
+                id='observaciones'
+                label='Observaciones'
+                value={data.observaciones}
+                onChange={e => setData('observaciones', e.target.value)}
+                error={errors.observaciones}
+            />
+
+            <div className="mt-4">
+                <PrimaryButton type='submit' disabled={processing}>
+                    {processing ? 'Guardando...' : 'Guardar observaciones'}
+                </PrimaryButton>
+            </div>
+        </form>
+    )
+}
+
 const Create: CreateComponent = ({ paciente, estancia, hojaenfermeria ,medicamentos, soluciones, dataParaGraficas}) => {
 
     const [activeSection, setActiveSection] = useState<SeccionHoja>('signos');
-
-    const { data, setData, errors } = useForm({
-        medicamento_id: '',
-        medicamento_nombre: '',
-        medicamento_dosis: '',
-        medicamento_via: '',
-        medicamento_via_label: '',
-        medicamento_duracion_tratamiento: '',
-        medicamento_fecha_hora_inicio: '',
-        medicamentos_agregados: [] as MedicamentoAgregado[],
-
-        tipo_dispositivo: '',
-        calibre: '',
-        fecha_instalacion: '',
-        fecha_colocacion: '',
-        observaciones: '',
-
-        duracion: '',
-        flujo:'',
-        terapia_fecha_hora_inicio: '',
-
-        terapia_tipo_solucion: '',
-        terapia_flujo_ml_hr: '',
-        terapia_sitio_insercion: '',
-        estudio_solicitado: '',
-        estudio_motivo: '',
-        sonda_tipo: '', 
-        sonda_calibre: '',
-        sonda_observaciones: '',
-        liquidos_ingeridos_ml: '',
-        liquidos_eliminados_ml: '',
-        liquidos_balance: '', 
-        dieta_tipo: '',
-        dieta_tolerancia: '', 
-    });
 
     const NavigationTabs = () => (
         <nav className="mb-6 -mt-2">
@@ -121,77 +181,6 @@ const Create: CreateComponent = ({ paciente, estancia, hojaenfermeria ,medicamen
         </nav>
     );
 
-    
-    
-    const SondasCateteres = () => {
-
-        const handleTipoChange = (value: string) => {
-            setData(data => ({
-                ...data,
-                tipo_dispositivo: value,
-                ...(value === '' && {
-                    calibre: '',
-                    fecha_instalacion: '',
-                    fecha_colocacion: '',
-                    observaciones: '',
-                })
-            }));
-        };
-
-        return (
-            <div>
-                <SelectInput
-                    label="Tipo de Dispositivo"
-                    options={opcionesDispositivo}
-                    value={data.tipo_dispositivo}
-                    onChange={(value) => handleTipoChange(value as string)}
-                    error={errors.tipo_dispositivo}
-                />
-
-                {data.tipo_dispositivo && (
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6 border-t pt-6">
-                        <InputText 
-                            id="calibre"
-                            name="calibre"
-                            label="Calibre"
-                            value={data.calibre}
-                            onChange={e => setData('calibre', e.target.value)}
-                            error={errors.calibre}
-                        />
-
-                        <InputText 
-                            id="dispositivo_fecha_instalacion"
-                            name="dispositivo_fecha_instalacion"
-                            label="Fecha de Instalación"
-                            value={data.fecha_instalacion}
-                            onChange={e => setData('fecha_instalacion', e.target.value)}
-                            error={errors.fecha_instalacion}
-                        />
-
-                        <InputText 
-                            id="dispositivo_fecha_colocacion"
-                            name="dispositivo_fecha_colocacion"
-                            label="Fecha de Colocación"
-                            value={data.fecha_colocacion}
-                            onChange={e => setData('fecha_colocacion', e.target.value)}
-                            error={errors.fecha_colocacion}
-                        />
-
-                        <div className="md:col-span-3">
-                            <InputTextArea 
-                                id="dispositivo_observaciones"
-                                label="Observaciones"
-                                value={data.observaciones}
-                                onChange={e => setData('observaciones', e.target.value)}
-                                error={errors.observaciones}
-                            />
-                        </div>
-                    </div>
-                )}
-            </div>
-        );
-    };
-
     const renderActiveSection = () => {
         switch (activeSection) {
             case 'signos':
@@ -207,11 +196,16 @@ const Create: CreateComponent = ({ paciente, estancia, hojaenfermeria ,medicamen
                         soluciones={soluciones}/>;
             //case 'estudios':
             case 'sondas':
-                return <SondasCateteres/>
+                return <SondasCateteresForm
+                        hoja={hojaenfermeria}
+                        estancia={estancia}/>
             case 'liquidos':
                 return <div><p>Campos para Control de Líquidos...</p></div>;
             case 'dieta':
                 return <div><p>Campos para Dieta...</p></div>;
+            case 'observaciones':
+                return <Observaciones
+                        hojasenfermeria={hojaenfermeria}/>
             case 'graficas':
                 return <GraficaContent
                         historialSignos={dataParaGraficas ?? []}/>
@@ -228,6 +222,11 @@ const Create: CreateComponent = ({ paciente, estancia, hojaenfermeria ,medicamen
                 estancia={estancia}
             />
             <div className="bg-white shadow-sm ring-1 ring-gray-900/5 sm:rounded-xl md:col-span-2 mt-6 p-6">
+                <CerrarHojaSection 
+                    hoja={hojaenfermeria} 
+                    estanciaId={estancia.id} 
+                />
+                
                 <NavigationTabs />
                 
                 <div className="mt-4">

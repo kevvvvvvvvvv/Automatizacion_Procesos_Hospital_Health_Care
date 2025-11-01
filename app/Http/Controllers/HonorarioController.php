@@ -51,17 +51,18 @@ class HonorarioController extends Controller
     ])->with('success', 'Honorario creado exitosamente.');
     }
 
-    public function show(Honorario $honorario)
-        {
-            $honorario->load('interconsulta.formularioInstancia.estancia.paciente');
-
-            return Inertia::render('formularios/interconsulta/honorarios/show', [
-                'honorario'     => $honorario,
-                'interconsulta' => $honorario->interconsulta,
-                'estancia'      => $honorario->interconsulta->formularioInstancia->estancia,
-                'paciente'      => $honorario->interconsulta->formularioInstancia->estancia->paciente,
-            ]);
-        }
+   public function show(Paciente $paciente, Estancia $estancia, Interconsulta $interconsulta, Honorario $honorario)
+    {
+        
+        return Inertia::render('honorarios/show', [
+            'paciente' => $paciente,
+            'estancia' => $estancia,
+            'interconsulta' => $interconsulta,
+            'honorario' => $honorario,  // Asegúrate de que esto se pase
+            
+        ]);
+        dd($honorario);
+    }
 
 
     public function edit(Paciente $paciente, Estancia $estancia, Interconsulta $interconsulta, Honorario $honorario)

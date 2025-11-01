@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\HojaEnfermeriaRequest;
 use Illuminate\Http\Request;
+use Illuminate\Http\RedirectResponse;
 
 use App\Models\Paciente;
 use App\Models\Estancia;
@@ -16,14 +18,24 @@ use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
 use Illuminate\Support\Facades\Redirect;
-use Illuminate\Support\Facades\DB; 
+use Illuminate\Support\Facades\DB;
+use PhpParser\Node\Stmt\Return_;
 
 class FormularioHojaEnfermeriaController extends Controller
 {
     public function create(Paciente $paciente, Estancia $estancia)
     {
+        $estancia->load('formularioInstancias.hojaEnfermeria');
+
+        foreach ($estancia->formularioInstancias as $instancia) {
+            if ($instancia->hojaEnfermeria && $instancia->hojaEnfermeria->estado == 'Abierto') {
+                return Redirect::back()->with('error', 'Se tiene que cerrar la hoja de enfermería antes de crear una nueva');
+            }
+        }
+
         $medicamentos = ProductoServicio::where('subtipo','MEDICAMENTOS')->get();
         $soluciones = ProductoServicio::where('subtipo','INSUMOS')->get();
+
 
         return Inertia::render('formularios/hojas-enfermerias/create',[
             'paciente' => $paciente,
@@ -73,6 +85,8 @@ class FormularioHojaEnfermeriaController extends Controller
             'hojaMedicamentos.productoServicio'
         );
         $estancia = $hojasenfermeria->formularioInstancia->estancia;
+        $estancia->load('hojaSondasCateters');
+
         $paciente = $hojasenfermeria->formularioInstancia->estancia->paciente;
 
         $medicamentos = ProductoServicio::where('subtipo','MEDICAMENTOS')->get();
@@ -88,6 +102,7 @@ class FormularioHojaEnfermeriaController extends Controller
             'saturacion_oxigeno', 
             'glucemia_capilar',
             'talla',
+            'estado_conciencia',
             'peso',
         ];
 
@@ -106,8 +121,27 @@ class FormularioHojaEnfermeriaController extends Controller
         ]);
     }
 
-    public function update(HojaEnfermeria $hojaenfermeria)
+    /**
+     * Actualiza la hoja de enfermería (Observaciones o Estado).
+     *
+     * @param  \Illuminate\Http\Request  
+     * @param  \App\Models\HojaEnfermeria  
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function update(HojaEnfermeriaRequest $request, HojaEnfermeria $hojasenfermeria)
     {
+        if ($hojasenfermeria->estado === 'Cerrado' && !$request->has('estado')) {
+             return Redirect::back()->with('error', 'Esta hoja ya está cerrada y no puede ser modificada.');
+        }
 
+        $hojasenfermeria->update($request->validated());
+        
+        $message = 'Hoja de enfermería actualizada.';
+
+        if ($request->has('estado')) {
+            $message = '¡Hoja de enfermería cerrada exitosamente!';
+        }
+        
+        return Redirect::back()->with('success', $message);
     }
 }

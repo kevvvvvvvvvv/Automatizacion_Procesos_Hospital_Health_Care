@@ -33,6 +33,7 @@ class HojaSignos extends Model
         'estado_conciencia',
         'escala_braden',
         'escala_glasgow',
+        'escala_ramsey',
         'escala_eva',
     ];
 

@@ -1,26 +1,27 @@
-    <?php
+<?php
+use App\Http\Controllers\PacienteController;
+use App\Http\Controllers\EstanciaController;
+use App\Http\Controllers\HabitacionController;
+use App\Http\Controllers\FormularioHojaFrontalController;
+use App\Http\Controllers\FormularioHistoriaClinicaController;
+use App\Http\Controllers\FormularioInstanciaController;
+use App\Http\Controllers\DoctorController; 
+use App\Http\Controllers\ProductoServicioController;
+use App\Http\Controllers\InterconsultaController;
+use App\Http\Controllers\CargoController;
+use App\Http\Controllers\FamiliarResponsableController;
+use App\Http\Controllers\HistoryController;
+use App\Http\Controllers\VentaController;
+use App\Http\Controllers\DetalleVentaController;
+use App\Http\Controllers\FormularioHojaEnfermeriaController;
+use App\Http\Controllers\FormularioHojaMedicamentoController;
+use App\Http\Controllers\HonorarioController;
+use App\Http\Controllers\FormularioHojaTerapiaIVController;
+use App\Http\Controllers\FormularioHojaSignosController;
+use App\Http\Controllers\FarmaciaController;
+use App\Http\Controllers\FormularioHojaSondaCateterController;
+use App\Http\Controllers\HojaMedicamentoController;
 
-    use App\Http\Controllers\PacienteController;
-    use App\Http\Controllers\EstanciaController;
-    use App\Http\Controllers\HabitacionController;
-    use App\Http\Controllers\FormularioHojaFrontalController;
-    use App\Http\Controllers\FormularioHistoriaClinicaController;
-    use App\Http\Controllers\FormularioInstanciaController;
-    use App\Http\Controllers\DoctorController; 
-    use App\Http\Controllers\ProductoServicioController;
-    use App\Http\Controllers\InterconsultaController;
-    use App\Http\Controllers\CargoController;
-    use App\Http\Controllers\FamiliarResponsableController;
-    use App\Http\Controllers\HistoryController;
-    use App\Http\Controllers\VentaController;
-    use App\Http\Controllers\DetalleVentaController;
-    use App\Http\Controllers\FormularioHojaEnfermeriaController;
-    use App\Http\Controllers\FormularioHojaMedicamentoController;
-    use App\Http\Controllers\HonorarioController;
-    use App\Http\Controllers\FormularioHojaTerapiaIVController;
-    use App\Http\Controllers\FormularioHojaSignosController;
-    use App\Http\Controllers\FarmaciaController;
-    use App\Http\Controllers\HojaMedicamentoController;
 
     use App\Models\History;
     use App\Models\HojaTerapiaIV;
@@ -66,7 +67,10 @@
         ->shallow()
         ->parameters(['interconsultas' => 'interconsulta']);
 
-   Route::resource('pacientes.estancias.interconsultas.honorarios', HonorarioController::class)
+
+Route::post('hojassondascateters/{hojasenfermeria}',[FormularioHojaSondaCateterController::class, 'store'])->name('hojassondascateters.store');
+
+Route::resource('pacientes.estancias.interconsultas', InterconsultaController::class)
     ->shallow()
     ->parameters([
         'honorarios' => 'honorario',
