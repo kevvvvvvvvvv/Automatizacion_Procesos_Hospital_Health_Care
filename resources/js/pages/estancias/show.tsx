@@ -136,6 +136,18 @@ const Show = ({ estancia }: ShowEstanciaProps) => {
                                             </Link>
                                         )}
                                     </Menu.Item>
+                                    <Menu.Item>
+                                        {({ active }) => (
+                                            <Link
+                                                href={route('pacientes.estancias.translados.create', { paciente: paciente.id, estancia: estancia.id })}
+                                                className={`${
+                                                    active ? 'bg-blue-500 text-white' : 'text-gray-900'
+                                                } group flex rounded-md items-center w-full px-2 py-2 text-sm`}
+                                            >
+                                                Añadir traslado
+                                            </Link>
+                                        )}
+                                    </Menu.Item>
                                 </div>
                             </Menu.Items>
                         </Menu>
