@@ -104,11 +104,6 @@ const MedicamentosForm: React.FC<Props> = ({ hoja, medicamentos }) => {
     });
 
     const handleDateUpdate = (medicamentoId: number, newDate: string) => {
-        if (!newDate) {
-            console.warn("La fecha está vacía, no se guardará.");
-            return;
-        }
-
         router.patch(route('hojasmedicamentos.update', { 
             hojasenfermeria: hoja.id, 
             hojasmedicamento: medicamentoId 
@@ -367,6 +362,8 @@ const MedicamentosForm: React.FC<Props> = ({ hoja, medicamentos }) => {
                                                 </PrimaryButton>
                                             )}
                                         </td>
+                                            
+
 
 
                                         <td className="px-4 py-4 text-sm space-x-2 whitespace-nowrap">

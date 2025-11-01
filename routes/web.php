@@ -64,6 +64,7 @@ Route::patch('hojasmedicamentos/{hojasenfermeria}/{hojasmedicamento}',[Formulari
 Route::post('hojassignos/{hojasenfermeria}',[FormularioHojaSignosController::class, 'store'])->name('hojassignos.store');
 
 Route::post('hojassondascateters/{hojasenfermeria}',[FormularioHojaSondaCateterController::class, 'store'])->name('hojassondascateters.store');
+Route::patch('hojassondascateters/{hojasenfermeria}/{hojassondascateter}',[FormularioHojaSondaCateterController::class, 'update'])->name('hojassondascateters.update');
 
 Route::resource('pacientes.estancias.interconsultas', InterconsultaController::class)
     ->shallow()
