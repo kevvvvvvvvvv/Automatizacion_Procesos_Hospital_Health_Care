@@ -286,6 +286,7 @@ export interface HojaMedicamento {
     gramaje:string;
     via_administracion: string;
     duracion_tratamiento: number;
+    unidad: string;
     fecha_hora_inicio: string;
     estado: string;
     fecha_hora_solicitud: string;
