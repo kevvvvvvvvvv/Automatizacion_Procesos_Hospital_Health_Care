@@ -294,6 +294,7 @@ export interface HojaMedicamento {
     farmaceutico_id: number;
     fecha_hora_recibido_enfermeria: srting;
     producto_servicio?: ProductoServicio;
+    aplicaciones: AplicacionMedicamento[];
 }
 
 export interface NotificationData {
@@ -337,4 +338,12 @@ export interface HojaSondaCateter {
     observaciones: string;
     user: User;
     estancia: Estancia;
+}
+
+export interface AplicacionMedicamento {
+    id: number;
+    hoja_medicamento_id: number;
+    fecha_aplicacion: string; 
+    user_id: number | null;
+    created_at: string;
 }

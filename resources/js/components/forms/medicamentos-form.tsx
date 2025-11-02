@@ -171,16 +171,34 @@ const MedicamentosForm: React.FC<Props> = ({ hoja, medicamentos }) => {
         });
     }
 
-    const handleRemoveSavedMedicamento = (medicamentoId: number) => {
-        if (confirm('¿Seguro que deseas eliminar este medicamento?')) {
-            router.delete(route('hojasenfermerias.medicamentos.destroy', { 
-                hojaenfermeria: hoja.id,
-                medicamento: medicamentoId
-            }), {
-                preserveScroll: true,
-            });
-        }
-    }
+    const handleStoreAplicacion = (medicamentoId: number) => {
+
+        Swal.fire({
+            title: '¿Estás seguro?',
+            text: "Esto registrará una nueva aplicación del medicamento.",
+            icon: 'question', 
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33', 
+            confirmButtonText: 'Sí, registrar',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            
+            if (result.isConfirmed) {
+                
+                router.post(route('aplicaciones.store', { hoja_medicamento: medicamentoId }), {}, {
+                    preserveScroll: true,
+                    onError: (errors) => {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error al registrar',
+                            text: JSON.stringify(errors)
+                        });
+                    },
+                });
+            }
+        });
+    };
 
     return (
         <div>
@@ -327,7 +345,7 @@ const MedicamentosForm: React.FC<Props> = ({ hoja, medicamentos }) => {
                                 <th className="px-4 py-4 text-sm text-gray-900">Dosis</th>
                                 <th className="px-4 py-4 text-sm text-gray-900">Duración</th>
                                 <th className="px-4 py-4 text-sm text-gray-900">Via administración</th>
-                                <th className="px-4 py-4 text-sm text-gray-900">Fecha de inicio</th>
+                                <th className="px-4 py-4 text-sm text-gray-900">Fecha de aplicación</th>
                                 <th className="px-4 py-4 text-sm text-gray-900">Acciones</th>
                             </tr>
                         </thead>
@@ -347,10 +365,7 @@ const MedicamentosForm: React.FC<Props> = ({ hoja, medicamentos }) => {
                                         <td className="px-4 py-4 text-sm text-gray-500">{med.via_administracion}</td>
 
                                         <td className="px-2 py-1 text-sm text-gray-500" style={{ minWidth: '200px' }}>
-
-                                            {med.fecha_hora_inicio ? (
-                                                <span>{formatDateTime(med.fecha_hora_inicio)}</span>
-                                            ) : (
+                                            {!med.fecha_hora_inicio && (
                                                 <PrimaryButton
                                                     type="button"
                                                     onClick={() => {
@@ -358,22 +373,38 @@ const MedicamentosForm: React.FC<Props> = ({ hoja, medicamentos }) => {
                                                         handleDateUpdate(med.id, now_iso);
                                                     }}
                                                 >
-                                                    Registrar inicio
+                                                    Registrar 1ra Dosis
                                                 </PrimaryButton>
                                             )}
+
+                                            {med.fecha_hora_inicio && (
+                                                <div className="flex flex-col space-y-2">
+                                                    
+
+                                                    <div className="flex justify-between items-center">
+                                                        <span>
+                                                            1. {formatDateTime(med.fecha_hora_inicio)}
+                                                        </span>
+                                                    </div>
+
+                                                    {med.aplicaciones.map((app, index) => (
+                                                        <div key={app.id} className="flex justify-between items-center">
+                                                            <span>
+                                                                {index + 2}. {formatDateTime(app.fecha_aplicacion)}
+                                                            </span>
+
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            )}
                                         </td>
-                                            
-
-
-
                                         <td className="px-4 py-4 text-sm space-x-2 whitespace-nowrap">
-                                            <button
+                                            <PrimaryButton
                                                 type="button"
-                                                onClick={() => handleRemoveSavedMedicamento(med.id)}
-                                                className="text-red-600 hover:text-red-900"
+                                                onClick={() => handleStoreAplicacion(med.id)}
                                             >
-                                                Eliminar
-                                            </button>
+                                                + Registrar Siguiente Dosis
+                                            </PrimaryButton>
                                         </td>
                                     </tr>
                                 ))
