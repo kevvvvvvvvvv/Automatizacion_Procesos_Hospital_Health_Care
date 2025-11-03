@@ -18,6 +18,7 @@ return new class extends Migration
             $table->decimal('total', 8, 2);
             $table->decimal('descuento', 8, 2)->nullable();
             $table->string('estado');
+            //$table->string('descripcion');
             $table->foreignId('estancia_id')
                 ->nullable()
                 ->constrained('estancias')
