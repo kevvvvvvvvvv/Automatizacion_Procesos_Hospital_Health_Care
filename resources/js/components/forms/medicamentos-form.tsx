@@ -294,7 +294,7 @@ const MedicamentosForm: React.FC<Props> = ({ hoja, medicamentos }) => {
                             <tr className='text-left'>
                                 <th className="px-4 py-4 text-sm text-gray-900">Nombre del medicamento</th>
                                 <th className="px-4 py-4 text-sm text-gray-900">Dosis</th>
-                                <th className="px-4 py-4 text-sm text-gray-900">Duración</th>
+                                <th className="px-4 py-4 text-sm text-gray-900">Duración (frecuencia)</th>
                                 <th className="px-4 py-4 text-sm text-gray-900">Via administración</th>
                                 <th className="px-4 py-4 text-sm text-gray-900">Acciones</th>
                             </tr>
@@ -343,7 +343,7 @@ const MedicamentosForm: React.FC<Props> = ({ hoja, medicamentos }) => {
                             <tr className='text-left'>
                                 <th className="px-4 py-4 text-sm text-gray-900">Nombre del medicamento</th>
                                 <th className="px-4 py-4 text-sm text-gray-900">Dosis</th>
-                                <th className="px-4 py-4 text-sm text-gray-900">Duración</th>
+                                <th className="px-4 py-4 text-sm text-gray-900">Duración (frecuencia)</th>
                                 <th className="px-4 py-4 text-sm text-gray-900">Via administración</th>
                                 <th className="px-4 py-4 text-sm text-gray-900">Fecha de aplicación</th>
                                 <th className="px-4 py-4 text-sm text-gray-900">Acciones</th>
