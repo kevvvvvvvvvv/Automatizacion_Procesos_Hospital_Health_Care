@@ -366,16 +366,17 @@ export interface Interconsulta{
     talla:number;
     ta:number;
 }
-export interface Translado{
+export interface Traslado{
     id:number;
     unidad_medica_envia:String;
     unidad_medica_recibe:String;
+    motivo_translado:String;
     resumen_clinico:String;
-    ta:String;
-    fc:String;
-    fr:String;
-    sat:String;
-    temp:String;
-    dxtx:String;
-    tratamiento_terapeutico_administradao:String;
+    ta: number | null;
+    fc: number | null;
+    fr: number | null;
+    temp: number | null;
+    sat: number | null;
+    dxtx: string | null;
+    tratamiento_terapeutico_administrada: string | null;
 }

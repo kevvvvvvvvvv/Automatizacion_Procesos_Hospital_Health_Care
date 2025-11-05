@@ -93,10 +93,10 @@
             <p>{{ $notaData['exploracion_fisica'] ?? 'Sin datos.' }}</p>
             <p>
                 <strong>Signos Vitales:</strong> 
-                T.A.: <strong>{{ $notaData['ta'] ?? 'N/A' }}</strong> mm Hg | 
-                F.C.: <strong>{{ $notaData['fc'] ?? 'N/A' }}</strong> x min | 
-                F.R.: <strong>{{ $notaData['fr'] ?? 'N/A' }}</strong> x min | 
-                Temp: <strong>{{ $notaData['temp'] ?? 'N/A' }}</strong> °C | 
+                Tensión arterial.: <strong>{{ $notaData['ta'] ?? 'N/A' }}</strong> mm Hg | 
+                Frecuencia cardíaca: <strong>{{ $notaData['fc'] ?? 'N/A' }}</strong> x min | 
+                Frecuencia respiratoría: <strong>{{ $notaData['fr'] ?? 'N/A' }}</strong> x min | 
+                Temperatura: <strong>{{ $notaData['temp'] ?? 'N/A' }}</strong> °C | 
                 Peso: <strong>{{ $notaData['peso'] ?? 'N/A' }}</strong> kg | 
                 Talla: <strong>{{ $notaData['talla'] ?? 'N/A' }}</strong> cm
             </p>
@@ -135,8 +135,7 @@
                         @endforeach
                     </div>
                 @endif
-            </div>
-        @endif
+           
        
     </main>
 </body>

@@ -44,7 +44,7 @@ class FormularioCatalogoSeeder extends Seeder
         ]);
         FormularioCatalogo::create([
             'nombre_formulario' => 'Traslados',
-            'nombre_tabla_fisica' => 'translados',
+            'nombre_tabla_fisica' => 'traslados',
             'route_prefix' => 'traslados',
         ]);
     }

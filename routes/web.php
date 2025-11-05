@@ -21,7 +21,7 @@ use App\Http\Controllers\FormularioHojaSignosController;
 use App\Http\Controllers\FarmaciaController;
 use App\Http\Controllers\FormularioHojaSondaCateterController;
 use App\Http\Controllers\HojaMedicamentoController;
-use App\Http\Controllers\TransladoController;
+use App\Http\Controllers\TrasladoController;
 
 
     use App\Models\History;
@@ -56,6 +56,8 @@ use App\Http\Controllers\TransladoController;
     Route::resource('pacientes.estancias.ventas', VentaController::class)->shallow();
     Route::resource('pacientes.estancias.ventas.detallesventas',DetalleVentaController::class)->shallow()->middleware ('auth');
     Route::resource('pacientes.estancias.interconsultas.honorarios', HonorarioController::class)->shallow();
+    Route::resource('pacientes.estancias.traslados', TrasladoController::class)->shallow()->middleware('auth');
+    
     Route::post('hojasterapiasiv/{hojasenfermeria}',[FormularioHojaTerapiaIVController::class,'store'])->name('hojasterapiasiv.store');
     Route::patch('hojasterapiasiv/{hojasenfermeria}/{hojasterapiasiv}',[FormularioHojaTerapiaIVController::class,'update'])->name('hojasterapiasiv.update');
 
@@ -77,9 +79,9 @@ Route::resource('pacientes.estancias.interconsultas', InterconsultaController::c
         'honorarios' => 'honorario',
         'interconsultas' => 'interconsulta'
     ]);
-Route::resource('pacientes.estancias.translados', TransladoController::class)
-    ->shallow()
-    ->parameters(['translado' => 'translado']);
+
+
+
 Route::get('pacientes/{paciente}/estancias/{estancia}/interconsultas/{interconsulta}', [InterconsultaController::class, 'show'])
     ->name('pacientes.estancias.interconsultas.show')
     ->middleware('auth');
@@ -105,6 +107,9 @@ Route::get('pacientes/{paciente}/estancias/{estancia}/interconsultas/{interconsu
 
     Route::get('/hojasenfermerias/{hojasenfermerias}/pdf', [FormularioHojaEnfermeriaController::class, 'generarPDF'])
         ->name('hojasenfermerias.pdf')
+        ->middleware('auth');
+    Route::get('/traslados/{traslado}/pdf', [TrasladoController::class, 'generarPDF'])
+        ->name('traslados.pdf')
         ->middleware('auth');
 
 

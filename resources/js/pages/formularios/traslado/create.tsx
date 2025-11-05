@@ -30,7 +30,7 @@ const CreateTranslado: React.FC<Props> = ({ paciente, estancia }) => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    post(route('pacientes.estancias.translados.store', {
+    post(route('pacientes.estancias.traslados.store', {
       paciente: paciente.id,
       estancia: estancia.id,
     }));
@@ -76,7 +76,7 @@ const CreateTranslado: React.FC<Props> = ({ paciente, estancia }) => {
         {/* Sección 2: Motivo y Resumen */}
         <h2 className="text-xl font-semibold text-gray-800 mt-6 mb-4 col-span-full">Motivo y Resumen</h2>
         <div className="col-span-full md:col-span-1">
-          <label htmlFor="motivo_translado" className={labelClasses}>
+          <label htmlFor="motivo_traslado" className={labelClasses}>
             Motivo del Traslado
           </label>
           <textarea
@@ -116,7 +116,7 @@ const CreateTranslado: React.FC<Props> = ({ paciente, estancia }) => {
         <h2 className="text-xl font-semibold text-gray-800 mt-6 mb-4 col-span-full">Signos Vitales</h2>
         <InputText
           id="ta"
-          label="T.A. (Tensión Arterial)"
+          label="Tensión Arterial"
           name="ta"
           value={data.ta}
           onChange={(e) => setData('ta', e.target.value)}
@@ -125,7 +125,7 @@ const CreateTranslado: React.FC<Props> = ({ paciente, estancia }) => {
         />
         <InputText
           id="fc"
-          label="FC (Frecuencia Cardíaca)"
+          label="Frecuencia Cardíaca"
           name="fc"
           type="number"
           value={data.fc}
@@ -136,7 +136,7 @@ const CreateTranslado: React.FC<Props> = ({ paciente, estancia }) => {
         />
         <InputText
           id="fr"
-          label="FR (Frecuencia Respiratoria)"
+          label="Frecuencia Respiratoria"
           name="fr"
           type="number"
           value={data.fr}
@@ -147,7 +147,7 @@ const CreateTranslado: React.FC<Props> = ({ paciente, estancia }) => {
         />
         <InputText
           id="sat"
-          label="SAT (Saturación de Oxígeno)"
+          label="Saturación de Oxígeno"
           name="sat"
           type="number"
           value={data.sat}
@@ -159,7 +159,7 @@ const CreateTranslado: React.FC<Props> = ({ paciente, estancia }) => {
         />
         <InputText
           id="temp"
-          label="TEMP (Temperatura)"
+          label="Temperatura"
           name="temp"
           type="number"
           step="0.01"
@@ -184,14 +184,14 @@ const CreateTranslado: React.FC<Props> = ({ paciente, estancia }) => {
         {/* Sección 4: Tratamiento */}
         <h2 className="text-xl font-semibold text-gray-800 mt-6 mb-4 col-span-full">Tratamiento</h2>
         <div className="col-span-full">
-          <label htmlFor="tratamiento_terapeutico_administradao" className={labelClasses}>
+          <label htmlFor="tratamiento_terapeutico_administrada" className={labelClasses}>
             Tratamiento Terapéutico Administrado
           </label>
           <textarea
-            id="tratamiento_terapeutico_administradao"
-            name="tratamiento_terapeutico_administradao"
-            value={data.tratamiento_terapeutico_administradao}
-            onChange={(e) => setData('tratamiento_terapeutico_administradao', e.target.value)}
+            id="tratamiento_terapeutico_administrada"
+            name="tratamiento_terapeutico_administrada"
+            value={data.tratamiento_terapeutico_administrada}
+            onChange={(e) => setData('tratamiento_terapeutico_administrada', e.target.value)}
             placeholder="Describa el tratamiento administrado..."
             rows={4}
             className={`${textAreaClasses} ${errors.tratamiento_terapeutico_administradao ? 'border-red-500' : 'border-gray-600'}`}
