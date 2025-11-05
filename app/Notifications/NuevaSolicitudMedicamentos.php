@@ -59,12 +59,33 @@ class NuevaSolicitudMedicamentos extends Notification implements ShouldBroadcast
     public function toArray($notifiable): array
     {
         $nombreCompleto = trim("{$this->paciente->nombre} {$this->paciente->apellido_paterno} {$this->paciente->apellido_materno}");
+
+        $itemsMensaje = [];
+        $conteoSinStock = 0;
+
+        foreach ($this->medicamentos as $info) {
+            $nombreMed = $info['medicamento']->productoServicio->nombre_prestacion;
+            
+            if (!$info['tiene_stock']) {
+                $itemsMensaje[] = "{$nombreMed} (¡SIN STOCK!)";
+                $conteoSinStock++;
+            } else {
+                $itemsMensaje[] = $nombreMed;
+            }
+        }
+        
+        $mensajePrincipal = "Nueva solicitud para {$nombreCompleto}.";
+        if ($conteoSinStock > 0) {
+            $mensajePrincipal = "¡ALERTA DE STOCK! Solicitud para {$nombreCompleto}.";
+        }
+
         return [
-            'message' => "Nueva solicitud de {$this->medicamentos->count()} medicamento(s) para {$nombreCompleto}.",
+            'message' =>  $mensajePrincipal,
             'paciente_id' => $this->paciente->id,
             'paciente_nombre' => $nombreCompleto,
             'meds_count' => $this->medicamentos->count(),
             'hoja_id' => $this->hojaId,
+            'items' => $itemsMensaje,
         ];
     }
 }

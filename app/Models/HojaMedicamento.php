@@ -37,4 +37,10 @@ class HojaMedicamento extends Model
     {
         return $this->belongsTo(HojaEnfermeria::class,'hoja_enfermeria_id','id');
     }
+
+    public function aplicaciones()
+    {
+        return $this->hasMany(AplicacionMedicamento::class)
+                    ->orderBy('fecha_aplicacion', 'asc');
+    }
 }

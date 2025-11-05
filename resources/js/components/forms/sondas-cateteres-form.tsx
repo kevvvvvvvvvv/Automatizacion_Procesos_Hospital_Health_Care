@@ -8,6 +8,8 @@ import InputText from '@/components/ui/input-text';
 import InputTextArea from '@/components/ui/input-text-area';
 import PrimaryButton from '@/components/ui/primary-button';
 
+import ContadorTiempo from '../counter-time';
+
 const opcionesDispositivo = [
     { value: '', label: 'Seleccionar un dispositivo...' },
     { value: 'Catéter venoso central', label: 'Catéter venoso central' },
@@ -20,6 +22,14 @@ interface Props {
     hoja: HojaEnfermeria;
     estancia:Estancia;
 }
+
+const formatDateTime = (isoString: string | null) => {
+    if (!isoString) return 'Pendiente';
+    return new Date(isoString).toLocaleString('es-MX', {
+        dateStyle: 'short',
+        timeStyle: 'short',
+    });
+};
 
 const SondasCateteresForm: React.FC<Props> = ({ hoja, estancia }) => {
 
@@ -49,6 +59,20 @@ const SondasCateteresForm: React.FC<Props> = ({ hoja, estancia }) => {
         post(route('hojassondascateters.store', { hojasenfermeria: hoja.id }), {
             preserveScroll: true,
             onSuccess: () => reset(),
+        });
+    }
+
+    const handleUpdate = (sondacateterId: number, dataToUpdate: Record<string, any>) => {
+        router.patch(route('hojassondascateters.update',{
+            hojasenfermeria: hoja.id,
+            hojassondascateter: sondacateterId
+        }),
+        dataToUpdate,
+        {
+            preserveScroll: true,
+            onError: (errors) => {
+                alert('Error al actualizar: \n' + JSON.stringify(errors));
+            }
         });
     }
 
@@ -88,26 +112,6 @@ const SondasCateteresForm: React.FC<Props> = ({ hoja, estancia }) => {
                             error={errors.calibre}
                         />
 
-                        <InputText 
-                            id="dispositivo_fecha_instalacion"
-                            name="dispositivo_fecha_instalacion"
-                            label="Fecha de instalación"
-                            type="date"
-                            value={data.fecha_instalacion} 
-                            onChange={e => setData('fecha_instalacion', e.target.value)}
-                            error={errors.fecha_instalacion}
-                        />
-
-                        <InputText 
-                            id="dispositivo_fecha_caducidad"
-                            name="dispositivo_fecha_caducidad"
-                            label="Fecha de caducidad"
-                            type="date"
-                            value={data.fecha_caducidad} 
-                            onChange={e => setData('fecha_caducidad', e.target.value)}
-                            error={errors.fecha_caducidad}
-                        />
-
                         <div className="md:col-span-3">
                             <InputTextArea 
                                 id="dispositivo_observaciones"
@@ -135,7 +139,9 @@ const SondasCateteresForm: React.FC<Props> = ({ hoja, estancia }) => {
                             <tr className='text-left text-xs font-medium text-gray-500 uppercase'>
                                 <th className="px-4 py-3">Dispositivo</th>
                                 <th className="px-4 py-3">Calibre</th>
-                                <th className="px-4 py-3">F. Instalación</th>
+                                <th className="px-4 py-3">F. instalación</th>
+                                <th className="px-4 py-3">Tiempo transcurrido</th>
+                                <th className="px-4 py-3">F. caducidad</th>
                                 <th className="px-4 py-3">Observaciones</th>
                                 <th className="px-4 py-3">Acciones</th>
                             </tr>
@@ -153,8 +159,61 @@ const SondasCateteresForm: React.FC<Props> = ({ hoja, estancia }) => {
                                     <tr key={sonda.id}>
                                         <td className="px-4 py-4 text-sm text-gray-900">{sonda.tipo_dispositivo}</td>
                                         <td className="px-4 py-4 text-sm text-gray-500">{sonda.calibre || 'N/A'}</td>
-                                        <td className="px-4 py-4 text-sm text-gray-500">{sonda.fecha_instalacion || 'N/A'}</td>
-                                        <td className="px-4 py-4 text-sm text-gray-500 truncate max-w-xs">{sonda.observaciones || 'N/A'}</td>
+                                        <td className="px-4 py-4 text-sm text-gray-500" style={{minWidth: '200px'}}>
+                                            {sonda.fecha_instalacion ? (
+                                                <span>{formatDateTime(sonda.fecha_instalacion)}</span>
+                                            ):(
+                                                <PrimaryButton
+                                                    type="button"
+                                                    onClick={()=>{
+                                                        const now_iso = new Date().toISOString();
+                                                       handleUpdate(sonda.id, { fecha_instalacion: now_iso });
+                                                    }}>
+                                                        Registrar inicio
+                                                </PrimaryButton>
+                                            )}
+                                        </td>
+                                        <td className="px-4 py-4 text-sm font-medium text-gray-900">
+                                            <ContadorTiempo 
+                                                fechaInicioISO={sonda.fecha_instalacion} 
+                                                fechaFinISO={sonda.fecha_caducidad}/>
+                                        </td>
+                                        <td className="px-4 py-4 text-sm text-gray-500" style={{minWidth:'200px'}}>
+                                            {sonda.fecha_instalacion ? (
+                                                sonda.fecha_caducidad ? (
+                                                    <span>{formatDateTime(sonda.fecha_caducidad)}</span>
+                                                ):(
+                                                    <PrimaryButton
+                                                        type='button'
+                                                        onClick={() => {
+                                                            const now_iso = new Date().toISOString();
+                                                            handleUpdate(sonda.id, { fecha_caducidad: now_iso });
+                                                        }}
+                                                    >
+                                                        Registar caducidad    
+                                                    </PrimaryButton>
+                                                )
+                                            ):(
+                                                <span>Registra la fecha de instalacion</span>
+                                            )}
+                                        </td>
+                                        <td className="px-4 py-4 text-sm text-gray-500 truncate max-w-xs" style={{minWidth:'200px'}}>
+                                            <InputTextArea
+                                                    label=''
+                                                    id={`obs-${sonda.id}`} 
+                                                    defaultValue={sonda.observaciones || ''} 
+                                                    className="w-full text-sm"
+                                                    rows={2} 
+                                                    onBlur={(e) => {
+                                                        const newValue = e.target.value;
+                                                        const oldValue = sonda.observaciones || '';
+
+                                                        if (newValue !== oldValue) {
+                                                            handleUpdate(sonda.id, { observaciones: newValue });
+                                                        }
+                                                    }}
+                                                />
+                                        </td>
                                         <td className="px-4 py-4 text-sm space-x-2 whitespace-nowrap">
                                            
                                         </td>
