@@ -69,9 +69,15 @@ use App\Http\Controllers\TrasladoController;
     Route::resource('pacientes.estancias.interconsultas', InterconsultaController::class)
         ->shallow()
         ->parameters(['interconsultas' => 'interconsulta']);
+use App\Http\Controllers\AplicacionMedicamentoController;
 
 
 Route::post('hojassondascateters/{hojasenfermeria}',[FormularioHojaSondaCateterController::class, 'store'])->name('hojassondascateters.store');
+Route::patch('hojassondascateters/{hojasenfermeria}/{hojassondascateter}',[FormularioHojaSondaCateterController::class, 'update'])->name('hojassondascateters.update');
+
+Route::post('hoja-medicamentos/{hoja_medicamento}/aplicaciones', 
+    [AplicacionMedicamentoController::class, 'store'])
+    ->name('aplicaciones.store');
 
 Route::resource('pacientes.estancias.interconsultas', InterconsultaController::class)
     ->shallow()

@@ -26,8 +26,7 @@ class FormularioHojaMedicamentoController extends Controller
 {
     public function store(Request $request, HojaEnfermeria $hojasenfermeria, VentaService $ventaService)
     {
-        DB::beginTransaction();
-        try{
+        try {
             $validatedData = $request->validate([
                 'medicamentos_agregados' => 'required|array|min:1',
                 'medicamentos_agregados.*.id' => 'required|exists:producto_servicios,id', 
@@ -38,24 +37,11 @@ class FormularioHojaMedicamentoController extends Controller
                 'medicamentos_agregados.*.unidad' => 'required',
             ]);
 
-            $hojasenfermeria->load('formularioInstancia.estancia');
-            $estanciaId = $hojasenfermeria->formularioInstancia->estancia->id;
-            $itemsParaVenta = array_map(function ($med) {
-                return [
-                    'id' => $med['id'],
-                    'cantidad' => $med['dosis'],
-                ];
-            }, $validatedData['medicamentos_agregados']);
+            $hojasenfermeria->load('formularioInstancia.estancia.paciente');
+            $medicamentosParaNotificacion = collect();
 
-            $venta = $ventaService->crearVenta($itemsParaVenta, $estanciaId, Auth::id());
-
-            $medicamentosGuardados = collect();
             foreach ($validatedData['medicamentos_agregados'] as $med) {
-                $producto = ProductoServicio::findOrFail($med['id']);
-                if($med['dosis'] > $producto->cantidad){
-                    DB::rollBack();
-                    return redirect()->route('hojasenfermerias.edit',$hojasenfermeria)->with('error','No hay cantidad suficiente del medicamento '. $producto->nombre_prestacion);
-                }
+                $producto = ProductoServicio::find($med['id']);
 
                 $nuevoMedicamento = $hojasenfermeria->hojaMedicamentos()->create([
                     'producto_servicio_id' => $med['id'],
@@ -65,30 +51,31 @@ class FormularioHojaMedicamentoController extends Controller
                     'fecha_hora_solicitud' => now(),
                     'duracion_tratamiento' => $med['duracion'], 
                     'unidad' => $med['unidad'],
-                    'hoja_enfermeria_id' => $hojasenfermeria->id,
+                    'estado' => 'solicitado', 
                 ]);
-                $medicamentosGuardados->push($nuevoMedicamento);
 
+                $tieneStock = ($producto->cantidad >= 1) && ($producto->tipo !== 'SERVICIO');
+                $medicamentosParaNotificacion->push([
+                    'medicamento' => $nuevoMedicamento->load('productoServicio'), 
+                    'tiene_stock' => $tieneStock,
+                ]);
             }
 
-            $hojasenfermeria->load('formularioInstancia.estancia.paciente');
             $paciente = $hojasenfermeria->formularioInstancia->estancia->paciente;
+            $paciente->append('nombre_completo'); 
 
             $usuariosFarmacia = User::role('farmacia')->get(); 
-
             Notification::send($usuariosFarmacia, 
                     new NuevaSolicitudMedicamentos(
-                        $medicamentosGuardados, 
+                        $medicamentosParaNotificacion, 
                         $paciente,
                         $hojasenfermeria->id
                     )
                 );     
             
-            DB::commit();
-            return Redirect::back()->with('success', 'Medicamentos guardados exitosamente.');                                                           
-        }catch(\Exception $e){
-            DB::rollBack();
-            return redirect()->route('hojasenfermerias.edit',$hojasenfermeria)->with('error','No se puedo realizar la petición de medicamento: ' . $e->getMessage());
+            return Redirect::back()->with('success', 'Solicitud de medicamentos enviada.');                                                           
+        } catch(\Exception $e) {
+            return redirect()->route('hojasenfermerias.edit',$hojasenfermeria)->with('error','No se pudo realizar la petición: ' . $e->getMessage());
         }
     }
 
