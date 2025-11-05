@@ -21,13 +21,13 @@ export default function SeccionGraficas({ historialSignos }: Props) {
                 
                 {/* 1. Gráfica de Tensión Arterial*/}
                 <div className="p-4 border rounded-lg shadow-sm bg-gray-50/50">
-                    <h3 className="font-medium text-gray-700 mb-3">Tensión Arterial (mmHg)</h3>
+                    <h3 className="font-medium text-gray-700 mb-3">Evolución de la Tensión Arterial (mmHg)</h3>
                     <GraficaTensionArterial data={historialSignos} />
                 </div>
 
                 {/* 2. Gráfica de Temperatura */}
                 <div className="p-4 border rounded-lg shadow-sm bg-gray-50/50">
-                    <h3 className="font-medium text-gray-700 mb-3">Temperatura (°C)</h3>
+                    <h3 className="font-medium text-gray-700 mb-3">Evolución de la Temperatura (°C)</h3>
                     <GraficaSignoVitalSimple 
                         data={historialSignos}
                         dataKey="temperatura"
@@ -39,7 +39,7 @@ export default function SeccionGraficas({ historialSignos }: Props) {
 
                 {/* 3. Gráfica de Frecuencia Cardíaca */}
                 <div className="p-4 border rounded-lg shadow-sm bg-gray-50/50">
-                    <h3 className="font-medium text-gray-700 mb-3">Frecuencia Cardíaca (lpm)</h3>
+                    <h3 className="font-medium text-gray-700 mb-3">Evolución de la Frecuencia Cardíaca (lpm)</h3>
                     <GraficaSignoVitalSimple 
                         data={historialSignos}
                         dataKey="frecuencia_cardiaca"
@@ -51,7 +51,7 @@ export default function SeccionGraficas({ historialSignos }: Props) {
 
                 {/* 4. Gráfica de Frecuencia Respiratoria */}
                 <div className="p-4 border rounded-lg shadow-sm bg-gray-50/50">
-                    <h3 className="font-medium text-gray-700 mb-3">Frecuencia Respiratoria (rpm)</h3>
+                    <h3 className="font-medium text-gray-700 mb-3"> Evolución de laFrecuencia Respiratoria (rpm)</h3>
                     <GraficaSignoVitalSimple 
                         data={historialSignos}
                         dataKey="frecuencia_respiratoria"
@@ -63,11 +63,11 @@ export default function SeccionGraficas({ historialSignos }: Props) {
 
                 {/* 5. Gráfica de Saturación de Oxígeno (SpO2) */}
                 <div className="p-4 border rounded-lg shadow-sm bg-gray-50/50">
-                    <h3 className="font-medium text-gray-700 mb-3">Saturación de Oxígeno (SpO2)</h3>
+                    <h3 className="font-medium text-gray-700 mb-3">Evolución de la Saturación de Oxígeno (SpO2)</h3>
                     <GraficaSignoVitalSimple 
                         data={historialSignos}
                         dataKey="saturacion_oxigeno"
-                        label="SpO2"
+                        label="Saturación de oxígeno"
                         unit="%"
                         borderColor="rgb(37, 99, 235)" 
                     />
@@ -75,11 +75,11 @@ export default function SeccionGraficas({ historialSignos }: Props) {
 
                 {/* 6. Gráfica de Glucemia Capilar */}
                 <div className="p-4 border rounded-lg shadow-sm bg-gray-50/50">
-                    <h3 className="font-medium text-gray-700 mb-3">Glucemia Capilar (mg/dL)</h3>
+                    <h3 className="font-medium text-gray-700 mb-3"> Evolución de la Glucemia Capilar (mg/dL)</h3>
                     <GraficaSignoVitalSimple 
                         data={historialSignos}
                         dataKey="glucemia_capilar"
-                        label="Glucemia"
+                        label="Glucemia capilar"
                         unit="mg/dL"
                         borderColor="rgb(107, 114, 128)" 
                     />
@@ -90,6 +90,17 @@ export default function SeccionGraficas({ historialSignos }: Props) {
                     <h3 className="font-medium text-gray-700 mb-3">Evolución del estado de conciencia</h3>
                     <GraficaEstadoConciencia
                         data={historialSignos} 
+                    />
+                </div>
+
+                <div className="p-4 border rounded-lg shadow-sm bg-gray-50/50">
+                    <h3 className="font-medium text-gray-700 mb-3">Evolución del peso</h3>
+                    <GraficaSignoVitalSimple 
+                        data={historialSignos}
+                        dataKey="peso"
+                        label="Peso"
+                        unit="Kilogramos"
+                        borderColor="rgb(218, 146, 160)" 
                     />
                 </div>
             </div>
