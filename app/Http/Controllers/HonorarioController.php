@@ -3,101 +3,102 @@
 namespace App\Http\Controllers;
 
 use App\Models\Honorario;
+use App\Models\Paciente;
+use App\Models\Estancia;
 use App\Models\Interconsulta;
-use App\Http\Requests\HonorarioRequest; // Importa la clase de validación que crearemos
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 
 class HonorarioController extends Controller
 {
-    /**
-     * Display a listing of the honorarios.
-     * Opcionalmente, puedes filtrar por interconsulta_id si se pasa como parámetro.
-     */
-    public function index(Request $request)
+    public function index(Paciente $paciente, Estancia $estancia, Interconsulta $interconsulta)
     {
-        $query = Honorario::with('interconsulta');
-
-        if ($request->has('interconsulta_id') && $request->interconsulta_id) {
-            $query->where('interconsulta_id', $request->interconsulta_id);
-        }
-
-        $honorarios = $query->paginate(10); // O usa get() si no quieres paginación
-
-        return Inertia::render('honorarios/index', [
+        $honorarios = $interconsulta->honorarios;  // Asumiendo que tienes la relación en Interconsulta
+        return Inertia::render('formularios/interconsulta/honorarios/show', [
+            'paciente' => $paciente,
+            'estancia' => $estancia,
+            'interconsulta' => $interconsulta,
             'honorarios' => $honorarios,
-            'interconsulta_id' => $request->interconsulta_id,
         ]);
     }
 
-    /**
-     * Show the form for creating a new honorario.
-     */
-    public function create(Request $request)
+    public function create(Paciente $paciente, Estancia $estancia, Interconsulta $interconsulta)
     {
-        $interconsulta = null;
-        if ($request->has('interconsulta_id')) {
-            $interconsulta = Interconsulta::find($request->interconsulta_id);
-        }
-
-        return Inertia::render('honorarios/create', [
+        return Inertia::render('formularios/interconsulta/honorarios/create', [ 
+            'paciente' => $paciente,
+            'estancia' => $estancia,
             'interconsulta' => $interconsulta,
         ]);
     }
 
-    /**
-     * Store a newly created honorario in storage.
-     */
-    public function store(HonorarioRequest $request)
+    public function store(Request $request, Paciente $paciente, Estancia $estancia, Interconsulta $interconsulta)
     {
-        Honorario::create($request->validated());
+        $validated = $request->validate([
+            'monto' => 'required|numeric|min:0',
+            'descripcion' => 'nullable|string|max:255',
+        ]);
 
-        return Redirect::back()->with('success', 'Honorario creado exitosamente.');
+        $honorario = Honorario::create([
+            'interconsulta_id' => $interconsulta->id,
+            'monto' => $validated['monto'],
+            'descripcion' => $validated['descripcion'],
+        ]);
+
+          return redirect()->route('pacientes.estancias.interconsultas.show', [
+        'paciente' => $paciente->id,
+        'estancia' => $estancia->id,
+        'interconsulta' => $interconsulta->id,
+    ])->with('success', 'Honorario creado exitosamente.');
     }
 
-    /**
-     * Display the specified honorario.
-     */
-    public function show(Honorario $honorario)
+   public function show(Paciente $paciente, Estancia $estancia, Interconsulta $interconsulta, Honorario $honorario)
     {
-        $honorario->load('interconsulta');
+        dd($honorario);
 
-        return Inertia::render('honorarios/show', [
+        return Inertia::render('formularios/interconsulta/honorarios/show', [
+            'paciente' => $paciente,
+            'estancia' => $estancia,
+            'interconsulta' => $interconsulta,
+            'honorario' => $honorario,  // Asegúrate de que esto se pase
+            
+        ]);
+    }
+
+
+    public function edit(Paciente $paciente, Estancia $estancia, Interconsulta $interconsulta, Honorario $honorario)
+    {
+        return Inertia::render('formularios/interconsulta/honorarios/edit', [
+            'paciente' => $paciente,
+            'estancia' => $estancia,
+            'interconsulta' => $interconsulta,
             'honorario' => $honorario,
         ]);
     }
 
-    /**
-     * Show the form for editing the specified honorario.
-     */
-    public function edit(Honorario $honorario)
+    public function update(Request $request, Paciente $paciente, Estancia $estancia, Interconsulta $interconsulta, Honorario $honorario)
     {
-        $interconsultas = Interconsulta::all();
-
-        return Inertia::render('honorarios/edit', [
-            'honorario' => $honorario,
-            'interconsultas' => $interconsultas,
+        $validated = $request->validate([
+            'monto' => 'required|numeric|min:0',
+            'descripcion' => 'nullable|string|max:255',
         ]);
+
+        $honorario->update($validated);
+
+        return redirect()->route('pacientes.estancias.interconsultas.honorarios.show', [
+            'paciente' => $paciente->id,
+            'estancia' => $estancia->id,
+            'interconsulta' => $interconsulta->id,
+            'honorario' => $honorario->id,
+        ])->with('success', 'Honorario actualizado exitosamente.');
     }
 
-    /**
-     * Update the specified honorario in storage.
-     */
-    public function update(HonorarioRequest $request, Honorario $honorario)
-    {
-        $honorario->update($request->validated());
-
-        return Redirect::back()->with('success', 'Honorario actualizado exitosamente.');
-    }
-
-    /**
-     * Remove the specified honorario from storage.
-     */
-    public function destroy(Honorario $honorario)
+    public function destroy(Paciente $paciente, Estancia $estancia, Interconsulta $interconsulta, Honorario $honorario)
     {
         $honorario->delete();
-
-        return Redirect::back()->with('success', 'Honorario eliminado exitosamente.');
+        return redirect()->route('pacientes.estancias.interconsultas.honorarios.index', [
+            'paciente' => $paciente->id,
+            'estancia' => $estancia->id,
+            'interconsulta' => $interconsulta->id,
+        ])->with('success', 'Honorario eliminado exitosamente.');
     }
 }

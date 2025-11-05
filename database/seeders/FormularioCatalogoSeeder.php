@@ -42,5 +42,10 @@ class FormularioCatalogoSeeder extends Seeder
             'nombre_tabla_fisica' => 'hoja_enfermerias',
             'route_prefix' => 'hojasenfermerias',
         ]);
+        FormularioCatalogo::create([
+            'nombre_formulario' => 'Traslados',
+            'nombre_tabla_fisica' => 'translados',
+            'route_prefix' => 'traslados',
+        ]);
     }
 }
