@@ -10,16 +10,6 @@ use \Exception;
 
 class VentaService
 {
-    /**
-     * Crea una Venta y sus detalles a partir de una lista de items.
-     * Esta función ASUME que está dentro de una transacción de BD.
-     *
-     * @param array $items - Array de items (ej: [['id' => 1, 'cantidad' => 2], ...])
-     * @param int $estanciaId - ID de la estancia para asociar la venta
-     * @param int $userId - ID del usuario que crea la venta
-     * @return Venta - La venta creada
-     * @throws \Exception - Si no hay stock para un producto
-     */
     public function crearVenta(array $items, int $estanciaId, int $userId): Venta
     {
         $venta = Venta::create([
@@ -38,10 +28,8 @@ class VentaService
             $producto = ProductoServicio::findOrFail($item['id']);
             $cantidad = $item['cantidad'];
 
-            if ($producto->tipo === 'INSUMOS') { 
-                if ($cantidad > $producto->cantidad) {
-                    throw new Exception('No hay cantidad suficiente del producto: ' . $producto->nombre_prestacion);
-                }
+
+            if ($producto->tipo !== 'SERVICIO' && $producto->cantidad >= $cantidad) {
                 $producto->decrement('cantidad', $cantidad);
             }
 
@@ -49,7 +37,6 @@ class VentaService
                 'precio_unitario' => $producto->importe,
                 'cantidad' => $cantidad,
                 'subtotal' => $producto->importe * $cantidad,
-                'descuento' => 0,
                 'estado' => DetalleVenta::ESTADO_PENDIENTE,
                 'venta_id' => $venta->id,
                 'producto_servicio_id' => $producto->id,
@@ -60,7 +47,35 @@ class VentaService
 
         $venta->update([
             'subtotal' => $total,
-            'total' => $total * (ProductoServicio::IVA), 
+            'total' => $total * (ProductoServicio::IVA),
+        ]);
+
+        return $venta;
+    }
+
+    public function addItemToVenta(Venta $venta, array $item): Venta
+    {
+        $producto = ProductoServicio::findOrFail($item['id']);
+        $cantidad = $item['cantidad'];
+        
+        if ($producto->tipo !== 'SERVICIO' && $producto->cantidad >= $cantidad) {
+            $producto->decrement('cantidad', $cantidad);
+        }
+
+        $detalleVenta = DetalleVenta::create([
+            'precio_unitario' => $producto->importe,
+            'cantidad' => $cantidad,
+            'subtotal' => $producto->importe * $cantidad,
+            'estado' => DetalleVenta::ESTADO_PENDIENTE,
+            'venta_id' => $venta->id,
+            'producto_servicio_id' => $producto->id,
+        ]);
+
+        $nuevoSubtotal = $venta->detalles()->sum('subtotal');
+        
+        $venta->update([
+            'subtotal' => $nuevoSubtotal,
+            'total' => $nuevoSubtotal * (ProductoServicio::IVA),
         ]);
 
         return $venta;

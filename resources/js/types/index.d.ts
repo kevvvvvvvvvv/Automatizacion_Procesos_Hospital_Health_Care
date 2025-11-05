@@ -294,6 +294,7 @@ export interface HojaMedicamento {
     farmaceutico_id: number;
     fecha_hora_recibido_enfermeria: srting;
     producto_servicio?: ProductoServicio;
+    aplicaciones: AplicacionMedicamento[];
 }
 
 export interface NotificationData {
@@ -379,4 +380,11 @@ export interface Traslado{
     sat: number | null;
     dxtx: string | null;
     tratamiento_terapeutico_administrada: string | null;
+}
+export interface AplicacionMedicamento {
+    id: number;
+    hoja_medicamento_id: number;
+    fecha_aplicacion: string; 
+    user_id: number | null;
+    created_at: string;
 }

@@ -4,6 +4,7 @@ import { HojaEnfermeria, Paciente, HojaMedicamento } from '@/types';
 import MainLayout from '@/layouts/MainLayout';
 import PrimaryButton from '@/components/ui/primary-button';
 import { route } from 'ziggy-js';
+import Swal from 'sweetalert2';
 
 interface Props {
     hoja: HojaEnfermeria;
@@ -16,13 +17,24 @@ const ShowSolicitud: React.FC<Props> & { layout: any } = ({ hoja, paciente }) =>
     const surtidos = hoja.hoja_medicamentos?.filter(m => m.estado === 'surtido') || [];
 
     const handleSurtirMedicamento = (medicamentoId: number) => {
-        if (confirm('¿Confirmar que este medicamento ha sido surtido?')) {
-            router.patch(route('medicamentos.actualizar-estado', { medicamento: medicamentoId }), {
-                estado: 'surtido',
-            }, {
-                preserveScroll: true,
-            });
-        }
+        Swal.fire({
+            title: '¿Confirmar Surtido?',
+            text: "¿Estás seguro de surtir este medicamento? Esta acción registrará el cargo.",
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6', 
+            cancelButtonColor: '#d33',  
+            confirmButtonText: 'Sí, surtir',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                router.patch(route('medicamentos.actualizar-estado', { medicamento: medicamentoId }), {
+                    estado: 'surtido',
+                }, {
+                    preserveScroll: true,
+                });
+            }
+        });
     }
 
     return (

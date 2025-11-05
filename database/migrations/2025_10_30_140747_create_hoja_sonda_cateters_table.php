@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('tipo_dispositivo');
             $table->string('calibre');
-            $table->datetime('fecha_instalacion');
-            $table->date('fecha_caducidad');
+            $table->datetime('fecha_instalacion')->nullable();
+            $table->datetime('fecha_caducidad')->nullable();
             $table->foreignId('user_id')
                 ->constrained('users')
                 ->onDelete('cascade');
