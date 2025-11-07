@@ -127,6 +127,8 @@ export interface Estancia {
 
     hoja_sondas_cateters: HojaSondaCateter[];
 
+    paciente?: Paiente;
+
     created_at: string;
     updated_at: string | null;
     created_by: number;
@@ -346,4 +348,43 @@ export interface AplicacionMedicamento {
     fecha_aplicacion: string; 
     user_id: number | null;
     created_at: string;
+}
+
+export interface CatalogoEstudio {
+    id: number;
+    codigo: number;
+    nombre: string;
+    tipo_estudio: string;
+    departamento: string | null;
+    tiempo_entrega: number;
+    costo: number; 
+    created_at: string;
+    updated_at: string;
+}
+
+export interface SolicitudItem {
+    id: number;
+    solicitud_estudio_id: number;
+    catalogo_estudio_id: number;
+    user_realiza_id: number | null;
+    estado: string;
+    resultados: string | null;
+    created_at: string;
+    updated_at: string;
+    catalogo_estudio?: CatalogoEstudio;
+    user_realiza?: User;
+}
+
+export interface SolicitudEstudio {
+    id: number;
+    user_solicita_id: number;
+    user_llena_id: number;
+    problemas_clinicos: string | null;
+    incidentes_accidentes: string | null;
+    resultado: string | null; 
+    created_at: string;
+    updated_at: string;
+    user_solicita?: User;
+    user_llena?: User;
+    solicitud_items?: SolicitudItem[]; 
 }

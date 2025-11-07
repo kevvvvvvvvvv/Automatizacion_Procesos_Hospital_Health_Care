@@ -23,7 +23,7 @@ use App\Http\Controllers\FarmaciaController;
 use App\Http\Controllers\FormularioHojaSondaCateterController;
 use App\Http\Controllers\HojaMedicamentoController;
 use App\Http\Controllers\AplicacionMedicamentoController;
-
+use App\Http\Controllers\SolicitudEstudioController;
 use App\Models\History;
 use App\Models\HojaTerapiaIV;
 use App\Models\Interconsulta;
@@ -70,6 +70,10 @@ Route::patch('hojassondascateters/{hojasenfermeria}/{hojassondascateter}',[Formu
 Route::post('hoja-medicamentos/{hoja_medicamento}/aplicaciones', 
     [AplicacionMedicamentoController::class, 'store'])
     ->name('aplicaciones.store');
+
+// MANEJO DE ESTUDIOS
+
+Route::post('solicitudes-estudios/{estancia}',[SolicitudEstudioController::class, 'store'])->name('solicitudes-estudios.store');
 
 Route::resource('pacientes.estancias.interconsultas', InterconsultaController::class)
     ->shallow()
