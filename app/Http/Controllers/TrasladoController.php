@@ -85,7 +85,11 @@ class TrasladoController extends Controller
     }
     public function destroy($id)
     {
-        //
+         $traslado->delete();
+        return redirect()->route('pacientes.estancias.show', [
+            'paciente' => $paciente->id,
+            'estancia' => $estancia->id,
+        ])->with('success', 'Traslado eliminado exitosamente.');
     }
     public function generarPDF(Traslado $traslado)
     {

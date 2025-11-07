@@ -1,6 +1,6 @@
 import React from 'react';
 import { Head, Link } from '@inertiajs/react';
-import { Plus,ChevronDown, Pencil, Eye } from 'lucide-react'; 
+import { Plus,ChevronDown, Pencil, Eye, Paperclip } from 'lucide-react'; 
 import { Menu } from '@headlessui/react';
 import { route } from 'ziggy-js';
 import { Printer } from 'lucide-react'; 
@@ -169,6 +169,7 @@ const Show = ({ estancia }: ShowEstanciaProps) => {
                                     </p>
                                 </div>
                                 <div className="flex items-center space-x-2">
+                                    
                                     <Link
                                         href={route(`${formulario.catalogo.route_prefix}.edit`, formulario.id)}
                                         className="p-2 text-blue-500 hover:bg-blue-100 hover:text-blue-700 rounded-full transition"
