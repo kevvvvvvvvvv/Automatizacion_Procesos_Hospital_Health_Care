@@ -13,7 +13,7 @@ class Traslado extends Model
         'unidad_medica_envia',
         'unidad_medica_recibe',
         'motivo_translado',
-        'Resumen_clinico',
+        'resumen_clinico',
         'ta',
         'fc',
         'fr',

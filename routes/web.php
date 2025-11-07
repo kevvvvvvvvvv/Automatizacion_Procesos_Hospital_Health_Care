@@ -65,7 +65,7 @@ use App\Http\Controllers\TrasladoController;
     Route::patch('hojasmedicamentos/{hojasenfermeria}/{hojasmedicamento}',[FormularioHojaMedicamentoController::class, 'update'])->name('hojasmedicamentos.update');
 
     Route::post('hojassignos/{hojasenfermeria}',[FormularioHojaSignosController::class, 'store'])->name('hojassignos.store');
-
+    
     Route::resource('pacientes.estancias.interconsultas', InterconsultaController::class)
         ->shallow()
         ->parameters(['interconsultas' => 'interconsulta']);
