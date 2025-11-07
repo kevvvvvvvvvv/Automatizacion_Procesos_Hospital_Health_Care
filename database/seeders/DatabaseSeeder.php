@@ -29,6 +29,7 @@ class DatabaseSeeder extends Seeder
             CatalogoPreguntaSeeder::class,
             UserSeeder::class,
             EstanciaSeeder::class,
+            CatalogoEstudioSeeder::class,
         ]);
 
     }

@@ -22,16 +22,18 @@ use App\Http\Controllers\FarmaciaController;
 use App\Http\Controllers\FormularioHojaSondaCateterController;
 use App\Http\Controllers\HojaMedicamentoController;
 use App\Http\Controllers\TrasladoController;
+use App\Http\Controllers\AplicacionMedicamentoController;
+use App\Http\Controllers\SolicitudEstudioController;
+use App\Models\History;
+use App\Models\HojaTerapiaIV;
+use App\Models\Interconsulta;
+use App\Models\Paciente;
+use App\Models\ProductoServicio;
+use Illuminate\Support\Facades\Route;
+use Inertia\Inertia;
+use Illuminate\Support\Facades\Auth;
 
 
-    use App\Models\History;
-    use App\Models\HojaTerapiaIV;
-    use App\Models\Interconsulta;
-    use App\Models\Paciente;
-    use App\Models\ProductoServicio;
-    use Illuminate\Support\Facades\Route;
-    use Inertia\Inertia;
-    use Illuminate\Support\Facades\Auth;
 
     Route::get('/', function () {
         return Inertia::render('auth/login');
@@ -69,7 +71,6 @@ use App\Http\Controllers\TrasladoController;
     Route::resource('pacientes.estancias.interconsultas', InterconsultaController::class)
         ->shallow()
         ->parameters(['interconsultas' => 'interconsulta']);
-use App\Http\Controllers\AplicacionMedicamentoController;
 
 
 Route::post('hojassondascateters/{hojasenfermeria}',[FormularioHojaSondaCateterController::class, 'store'])->name('hojassondascateters.store');
@@ -78,6 +79,10 @@ Route::patch('hojassondascateters/{hojasenfermeria}/{hojassondascateter}',[Formu
 Route::post('hoja-medicamentos/{hoja_medicamento}/aplicaciones', 
     [AplicacionMedicamentoController::class, 'store'])
     ->name('aplicaciones.store');
+
+// MANEJO DE ESTUDIOS
+
+Route::post('solicitudes-estudios/{estancia}',[SolicitudEstudioController::class, 'store'])->name('solicitudes-estudios.store');
 
 Route::resource('pacientes.estancias.interconsultas', InterconsultaController::class)
     ->shallow()
