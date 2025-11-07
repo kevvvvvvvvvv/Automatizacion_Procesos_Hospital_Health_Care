@@ -4,10 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Translado extends Model
+class Traslado extends Model
 {
     public const CATALOGO_ID = 6;
-    protected $table = 'translado';
+    protected $table = 'traslado';
     protected $fillable = [
         'id',
         'unidad_medica_envia',

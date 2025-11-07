@@ -53,7 +53,7 @@ class HonorarioController extends Controller
 
    public function show(Paciente $paciente, Estancia $estancia, Interconsulta $interconsulta, Honorario $honorario)
     {
-        dd($honorario);
+        // dd($honorario);
 
         return Inertia::render('formularios/interconsulta/honorarios/show', [
             'paciente' => $paciente,
