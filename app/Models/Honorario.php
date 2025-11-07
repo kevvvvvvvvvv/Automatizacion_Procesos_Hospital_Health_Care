@@ -15,7 +15,11 @@ class Honorario extends Model
         'descripcion',
     ];
 
-    // Relación con Interconsulta (una interconsulta puede tener muchos honorarios)
+    protected $casts = [
+        'monto' => 'decimal:2',  // Para manejar decimales correctamente
+    ];
+
+    // Relación con Interconsulta
     public function interconsulta()
     {
         return $this->belongsTo(Interconsulta::class);

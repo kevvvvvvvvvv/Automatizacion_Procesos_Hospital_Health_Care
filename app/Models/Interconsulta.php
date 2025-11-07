@@ -23,6 +23,10 @@ class Interconsulta extends Model
     {
         return $this->belongsTo(FormularioInstancia::class, 'id','id');
     }
+    public function honorarios()
+    {
+        return $this->hasMany(Honorario::class);
+    }
 
    
 }
