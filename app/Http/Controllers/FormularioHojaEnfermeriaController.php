@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\HojaEnfermeriaRequest;
+use App\Models\CatalogoEstudio;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 
@@ -14,6 +15,7 @@ use App\Models\ProductoServicio;
 use App\Models\HojaMedicamento;
 use App\Models\HojaSignos;
 use Illuminate\Support\Facades\Auth;
+use App\Models\User;
 
 use Inertia\Inertia;
 
@@ -107,6 +109,14 @@ class FormularioHojaEnfermeriaController extends Controller
             'peso',
         ];
 
+        $catalogoEstudios = CatalogoEstudio::all();
+        $solicitudesAnteriores = $estancia->formularioInstancias
+                                ->map(fn($instancia) => $instancia->solicitudEstudio)
+                                ->filter() 
+                                ->sortByDesc('created_at')
+                                ->values();
+        $medicos = User::all();
+
         $dataParaGraficas = HojaSignos::select($columnasGraficas)
             ->where('hoja_enfermeria_id', $hojasenfermeria->id)
             ->orderBy('fecha_hora_registro', 'asc')
@@ -119,6 +129,9 @@ class FormularioHojaEnfermeriaController extends Controller
             'medicamentos' => $medicamentos,
             'soluciones' => $soluciones,
             'dataParaGraficas' => $dataParaGraficas,
+            'catalogoEstudios' => $catalogoEstudios,
+            'solicitudesAnteriores' => $solicitudesAnteriores,
+            'medicos' => $medicos,
         ]);
     }
 
