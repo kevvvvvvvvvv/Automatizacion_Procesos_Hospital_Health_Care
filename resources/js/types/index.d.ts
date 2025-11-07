@@ -127,6 +127,8 @@ export interface Estancia {
 
     hoja_sondas_cateters: HojaSondaCateter[];
 
+    paciente?: Paiente;
+
     created_at: string;
     updated_at: string | null;
     created_by: number;
@@ -225,6 +227,7 @@ export interface HojaEnfermeria {
     hojas_terapia_i_v: HojaTerapiaIV[] | null; 
     hoja_medicamentos: HojaMedicamento[] | null;
     hoja_signos: HojaSignos[] | null;
+    solicitud_dietas: SolicitudDieta[] | null;
 }
 
 export interface HojaTerapia {
@@ -350,15 +353,15 @@ export interface Honorarios{
 }
 export interface Interconsulta{
     id:number;
-    criterio_diagnostico:String;
-    plan_de_estudio:String;
-    sugerencia_diagnostica:String;
-    resumen_del_interrogatorio:String;
-    exploracion_fisica:String;
-    estado_mental:String;
-    resultados_relevantes_del_estudio_diagnostico:String;
-    tratamiento_y_pronostico:String;
-    motivo_de_la_atencion_o_interconsulta:String;
+    criterio_diagnostico:string;
+    plan_de_estudio:string;
+    sugerencia_diagnostica:string;
+    resumen_del_interrogatorio:string;
+    exploracion_fisica:string;
+    estado_mental:string;
+    resultados_relevantes_del_estudio_diagnostico:string;
+    tratamiento_y_pronostico:string;
+    motivo_de_la_atencion_o_interconsulta:string;
     diagnostico_o_problemas_clinicos:StringIterator;
     fc:number;
     fr:number;
@@ -387,4 +390,60 @@ export interface AplicacionMedicamento {
     fecha_aplicacion: string; 
     user_id: number | null;
     created_at: string;
+}
+
+export interface CatalogoEstudio {
+    id: number;
+    codigo: number;
+    nombre: string;
+    tipo_estudio: string;
+    departamento: string | null;
+    tiempo_entrega: number;
+    costo: number; 
+    created_at: string;
+    updated_at: string;
+}
+
+export interface SolicitudItem {
+    id: number;
+    solicitud_estudio_id: number;
+    catalogo_estudio_id: number;
+    user_realiza_id: number | null;
+    estado: string;
+    resultados: string | null;
+    created_at: string;
+    updated_at: string;
+    catalogo_estudio?: CatalogoEstudio;
+    user_realiza?: User;
+}
+
+export interface SolicitudEstudio {
+    id: number;
+    user_solicita_id: number;
+    user_llena_id: number;
+    problemas_clinicos: string | null;
+    incidentes_accidentes: string | null;
+    resultado: string | null; 
+    created_at: string;
+    updated_at: string;
+    user_solicita?: User;
+    user_llena?: User;
+    solicitud_items?: SolicitudItem[]; 
+}
+
+export interface SolicitudDieta {
+    id: number;
+    hoja_enfermeria_id: number;
+    tipo_dieta: string;
+    opcion_seleccionada: string;
+    horario_solicitud: string;
+    user_supervisa_id: number;
+    horario_entrega: string;
+    user_entrega_id: number;
+
+    horario_operacion: string;
+    horario_termino: string;
+    horario_inicio_dieta:string;
+
+    user_supervisa?: User; 
 }

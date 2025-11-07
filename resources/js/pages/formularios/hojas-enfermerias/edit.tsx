@@ -1,5 +1,5 @@
 import React, { useState } from 'react'; 
-import { Paciente, Estancia, ProductoServicio, HojaEnfermeria, HojaSignosGraficas } from '@/types';
+import { Paciente, Estancia, ProductoServicio, HojaEnfermeria, HojaSignosGraficas, CatalogoEstudio, User, SolicitudEstudio } from '@/types';
 import { Head, useForm, router } from '@inertiajs/react';
 import { route } from 'ziggy-js';
 import Swal from 'sweetalert2';
@@ -15,6 +15,8 @@ import SignosVitalesForm from '@/components/signos-vitales-form';
 import GraficaContent from '@/components/graphs/grafica-content'
 import MedicamentosForm from '@/components/forms/medicamentos-form';
 import SondasCateteresForm from '@/components/forms/sondas-cateteres-form';
+import EstudiosForm from '@/components/forms/estudios-form';
+import DietasForm from '@/components/forms/dietas-form';
 
 interface CreateProps {
     paciente: Paciente;
@@ -23,6 +25,9 @@ interface CreateProps {
     medicamentos: ProductoServicio[];
     soluciones: ProductoServicio[];
     dataParaGraficas: HojaSignosGraficas[];
+    catalogoEstudios: CatalogoEstudio[];
+    solicitudesAnteriores: SolicitudEstudio[];
+    medicos: User[];
 }
 
 type SeccionHoja = 'signos' | 'medicamentos' | 'terapia_iv' | 'estudios' | 'sondas' | 'liquidos' | 'dieta' | 'observaciones' | 'graficas';
@@ -152,7 +157,7 @@ const Observaciones = ({hojasenfermeria}: Props) => {
     )
 }
 
-const Create: CreateComponent = ({ paciente, estancia, hojaenfermeria ,medicamentos, soluciones, dataParaGraficas}) => {
+const Create: CreateComponent = ({ paciente, estancia, hojaenfermeria ,medicamentos, soluciones, dataParaGraficas, catalogoEstudios, solicitudesAnteriores, medicos}) => {
 
     const [activeSection, setActiveSection] = useState<SeccionHoja>('signos');
 
@@ -194,7 +199,13 @@ const Create: CreateComponent = ({ paciente, estancia, hojaenfermeria ,medicamen
                 return <TerapiaIVForm
                         hoja={hojaenfermeria}
                         soluciones={soluciones}/>;
-            //case 'estudios':
+            case 'estudios':
+                return <EstudiosForm
+                        estancia={estancia}
+                        catalogoEstudios={catalogoEstudios}
+                        solicitudesAnteriores={solicitudesAnteriores}
+                        medicos={medicos}
+                        />
             case 'sondas':
                 return <SondasCateteresForm
                         hoja={hojaenfermeria}
@@ -202,7 +213,9 @@ const Create: CreateComponent = ({ paciente, estancia, hojaenfermeria ,medicamen
             case 'liquidos':
                 return <div><p>Campos para Control de Líquidos...</p></div>;
             case 'dieta':
-                return <div><p>Campos para Dieta...</p></div>;
+                return <DietasForm
+                        hoja={hojaenfermeria}
+                        usuarios={}/>
             case 'observaciones':
                 return <Observaciones
                         hojasenfermeria={hojaenfermeria}/>
