@@ -16,7 +16,7 @@ class Honorario extends Model
     ];
 
     protected $casts = [
-        'monto' => 'decimal:2',  // Para manejar decimales correctamente
+        'monto' => 'decimal:2', 
     ];
 
     // Relación con Interconsulta
