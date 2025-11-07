@@ -56,27 +56,33 @@ class InterconsultaController extends Controller
             ...$validatedData
         ]);
         DB::commit();
-        // Redirige a crear honorario con el ID de la interconsulta recién creada
-        return redirect()->route('honorarios.create', ['interconsulta_id' => $interconsulta->id])
-                         ->with('success', 'Interconsulta registrada exitosamente. Ahora puedes agregar honorarios.');
+        return Inertia::render('formularios/interconsulta/show', [
+            'paciente' => $paciente,
+            'estancia' => $estancia,
+            'interconsulta' => $interconsulta,
+        ]);
     }
      
 
     /**
      * Display the specified resource.
      */
-     public function show(Interconsulta $interconsulta)
-    {
-        $interconsulta->load([
-            'formularioInstancia.estancia.paciente',
-            'formularioInstancia.user'
-        ]);
-        return Inertia::render('formularios/interconsulta/show', [
-            'interconsulta' => $interconsulta,
-            'paciente' => $interconsulta->formularioInstancia->estancia->paciente,
-            'estancia' => $interconsulta->formularioInstancia->estancia,
-        ]);
-    }
+     public function show(Paciente $paciente, Estancia $estancia, Interconsulta $interconsulta)
+        {
+            $interconsulta->load([
+                'formularioInstancia.estancia.paciente',
+                'formularioInstancia.user',
+                'honorarios'
+            ]);
+            // dd($interconsulta->toArray());
+            return Inertia::render('formularios/interconsulta/show', [
+                'interconsulta' => $interconsulta,
+                'paciente' => $interconsulta->formularioInstancia->estancia->paciente,
+                'estancia' => $interconsulta->formularioInstancia->estancia,
+                'honorarios' => $interconsulta->honorarios,
+                'honorarios_total' => $interconsulta->honorarios->sum('monto'),
+            ]);
+        }
     /**
      * Show the form for editing the specified interconsulta.
      */
