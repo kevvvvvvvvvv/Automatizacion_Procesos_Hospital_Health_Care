@@ -3,7 +3,6 @@ import { useForm } from '@inertiajs/react';
 import { Estancia, CatalogoEstudio, SolicitudEstudio, User } from '@/types';
 import { route } from 'ziggy-js';
 
-// Componentes UI
 import InputTextArea from '@/components/ui/input-text-area';
 import PrimaryButton from '@/components/ui/primary-button';
 import Checkbox from '@/components/ui/input-checkbox';
@@ -14,12 +13,12 @@ interface Props {
     estancia: Estancia;
     catalogoEstudios: CatalogoEstudio[]; 
     solicitudesAnteriores: SolicitudEstudio[];
-    medicos: User;
+    medicos: User[];
 }
 
 interface PropsPatologia{
     estancia: Estancia;
-    medicos: User;
+    medicos: User[];
 }
 
 const optionsEstudios = [
@@ -33,7 +32,7 @@ const optionsEstudios = [
 
 const FormularioPatologia: React.FC<PropsPatologia> = ({ estancia, medicos }) => {
     
-    const { data, setData, post, processing, errors, wasSuccessful } = useForm({
+    const { data, setData, post, processing, errors } = useForm({
         estudio_solicitado: '',
         biopsia_pieza_quirurgica: '',
         revision_laminillas: '',
@@ -44,9 +43,10 @@ const FormularioPatologia: React.FC<PropsPatologia> = ({ estancia, medicos }) =>
         medico_id: '',
     });
 
-    const optionsMedico = [
-        { value: medicos.id, label: medicos.nombre},
-    ];
+    const optionsMedico = medicos.map(medico => ({
+        value: medico.id.toString(),
+        label: medico.nombre 
+    }))
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -56,58 +56,66 @@ const FormularioPatologia: React.FC<PropsPatologia> = ({ estancia, medicos }) =>
     }
 
     return (
-        <form onSubmit={handleSubmit} className="space-y-4 grid grid-cols-1 md:grid-cols-3 gap-6">
-            {wasSuccessful && <div className="mb-4 text-sm text-green-600">Solicitud de patología guardada.</div>}
-            <InputText
-                id='estudio_solicitado'
-                name = 'estudio_solicitado'
-                label="Estudio solicitado"
-                value={data.estudio_solicitado}
-                onChange={e => setData('estudio_solicitado', e.target.value)}
-                error={errors.estudio_solicitado}
-            />
-            <InputText
-                id='biopsia_pieza'
-                name = 'biopsia_pieza'
-                label="Biopsia o pieza quirúrgica"
-                value={data.biopsia_pieza_quirurgica}
-                onChange={e => setData('biopsia_pieza_quirurgica', e.target.value)}
-                error={errors.biopsia_pieza_quirurgica}
-            />
-            <InputText
-                id='laminillas'
-                name = 'laminillas'
-                label="Revisión de laminillas"
-                value={data.revision_laminillas}
-                onChange={e => setData('revision_laminillas', e.target.value)}
-                error={errors.revision_laminillas}
-            />
-            <InputText
-                id='estudios_especiales'
-                name = 'estudios_especiales'
-                label="Estudios especiales"
-                value={data.estudios_especiales_pcr}
-                onChange={e => setData('estudios_especiales_pcr', e.target.value)}
-                error={errors.estudios_especiales_pcr}
-            />
-            <InputText
-                id='pieza_remitida'
-                name = 'pieza_remitida'
-                label="Pieza remitida"
-                value={data.pieza_remitira}
-                onChange={e => setData('pieza_remitira', e.target.value)}
-                error={errors.pieza_remitira}
-            />
-            <InputTextArea
-                label="Datos Clínicos (Diagnóstico)"
-                value={data.datos_clinicos}
-                onChange={e => setData('datos_clinicos', e.target.value)}
-                error={errors.datos_clinicos}
-            />
+        <form onSubmit={handleSubmit} >
+            <div className="space-y-4 grid grid-cols-1 md:grid-cols-3 gap-6">
+                <InputText
+                    id='estudio_solicitado'
+                    name = 'estudio_solicitado'
+                    label="Estudio solicitado"
+                    value={data.estudio_solicitado}
+                    onChange={e => setData('estudio_solicitado', e.target.value)}
+                    error={errors.estudio_solicitado}
+                />
+                <InputText
+                    id='biopsia_pieza'
+                    name = 'biopsia_pieza'
+                    label="Biopsia o pieza quirúrgica"
+                    value={data.biopsia_pieza_quirurgica}
+                    onChange={e => setData('biopsia_pieza_quirurgica', e.target.value)}
+                    error={errors.biopsia_pieza_quirurgica}
+                />
+                <InputText
+                    id='laminillas'
+                    name = 'laminillas'
+                    label="Revisión de laminillas"
+                    value={data.revision_laminillas}
+                    onChange={e => setData('revision_laminillas', e.target.value)}
+                    error={errors.revision_laminillas}
+                />
+                <InputText
+                    id='estudios_especiales'
+                    name = 'estudios_especiales'
+                    label="Estudios especiales"
+                    value={data.estudios_especiales_pcr}
+                    onChange={e => setData('estudios_especiales_pcr', e.target.value)}
+                    error={errors.estudios_especiales_pcr}
+                />
+                <InputText
+                    id='pieza_remitida'
+                    name = 'pieza_remitida'
+                    label="Pieza remitida"
+                    value={data.pieza_remitira}
+                    onChange={e => setData('pieza_remitira', e.target.value)}
+                    error={errors.pieza_remitira}
+                />
+                <InputTextArea
+                    label="Datos Clínicos (Diagnóstico)"
+                    value={data.datos_clinicos}
+                    onChange={e => setData('datos_clinicos', e.target.value)}
+                    error={errors.datos_clinicos}
+                />
 
+                <SelectInput
+                    label="Medico que solicita"
+                    value={data.medico_id}
+                    options={optionsMedico} 
+                    onChange={(value) => setData('medico_id', value as string)}
+                    error={errors.medico_id} 
+                />
+            </div>
             <div className="flex justify-end mt-4">
                 <PrimaryButton type="submit" disabled={processing}>
-                    {processing ? 'Guardando...' : 'Guardar Solicitud Patología'}
+                    {processing ? 'Guardando...' : 'Guardar solicitud de patología'}
                 </PrimaryButton>
             </div>
         </form>

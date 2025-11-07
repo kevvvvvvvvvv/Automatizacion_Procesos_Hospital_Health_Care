@@ -16,6 +16,7 @@ import GraficaContent from '@/components/graphs/grafica-content'
 import MedicamentosForm from '@/components/forms/medicamentos-form';
 import SondasCateteresForm from '@/components/forms/sondas-cateteres-form';
 import EstudiosForm from '@/components/forms/estudios-form';
+import DietasForm from '@/components/forms/dietas-form';
 
 interface CreateProps {
     paciente: Paciente;
@@ -212,7 +213,9 @@ const Create: CreateComponent = ({ paciente, estancia, hojaenfermeria ,medicamen
             case 'liquidos':
                 return <div><p>Campos para Control de Líquidos...</p></div>;
             case 'dieta':
-                return <div><p>Campos para Dieta...</p></div>;
+                return <DietasForm
+                        hoja={hojaenfermeria}
+                        usuarios={}/>
             case 'observaciones':
                 return <Observaciones
                         hojasenfermeria={hojaenfermeria}/>
