@@ -45,9 +45,11 @@ class Paciente extends Model
 
     protected $appends = ['age']; 
 
-    public function getAgeAttribute(): int
+    public function getAgeAttribute(): ?int
     {
-        return $this->fecha_nacimiento->age;
+         return $this->fecha_nacimiento
+        ? Carbon::parse($this->fecha_nacimiento)->age
+        : null;
     }
 
     public function estancias(): HasMany

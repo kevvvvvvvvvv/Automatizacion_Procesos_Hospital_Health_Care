@@ -135,7 +135,8 @@
                         @endforeach
                     </div>
                 @endif
-           
+            </div>
+        @endif  
        
     </main>
 </body>
