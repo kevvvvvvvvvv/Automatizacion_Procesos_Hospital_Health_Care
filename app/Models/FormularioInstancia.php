@@ -53,4 +53,9 @@ class FormularioInstancia extends Model
     {
         return $this->hasOne(Translado::class,'id','id');
     }
+    public function preoperatoria(): HasOne
+    {
+        return $this->hasOne(Preoperatoria::class,'id','id');
+    }
+    
 }

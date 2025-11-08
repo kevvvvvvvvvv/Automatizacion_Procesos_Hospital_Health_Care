@@ -18,14 +18,8 @@ const CreateTranslado: React.FC<Props> = ({ paciente, estancia }) => {
     unidad_medica_envia: '',
     motivo_translado: '',
     unidad_medica_recibe: '',
-    resumen_clinico: '',
-    ta: '',
-    fc: '',
-    fr: '',
-    sat: '',
-    temp: '',
-    dxtx: '',
-    tratamiento_terapeutico_administradao: '',
+    impresion_diagnostica: '',
+    terapeutica_empleada: '',
   });
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -74,10 +68,10 @@ const CreateTranslado: React.FC<Props> = ({ paciente, estancia }) => {
         />
 
         {/* Sección 2: Motivo y Resumen */}
-        <h2 className="text-xl font-semibold text-gray-800 mt-6 mb-4 col-span-full">Motivo y Resumen</h2>
+        <h2 className="text-xl font-semibold text-gray-800 mt-6 mb-4 col-span-full">Resumen Clínico</h2>
         <div className="col-span-full md:col-span-1">
           <label htmlFor="motivo_traslado" className={labelClasses}>
-            Motivo del Traslado
+            Motivo del Traslado:
           </label>
           <textarea
             id="motivo_translado"
@@ -93,112 +87,44 @@ const CreateTranslado: React.FC<Props> = ({ paciente, estancia }) => {
             <p className="mt-1 text-xs text-red-500">{errors.motivo_translado}</p>
           )}
         </div>
-        <div className="col-span-full md:col-span-1">
-          <label htmlFor="resumen_clinico" className={labelClasses}>
-            Resumen Clínico
+        <div className="col-span-full md:col-span-2">
+          <label htmlFor="impresion_diagnostica" className={labelClasses}>
+            Impresión Diagnóstica (incluido abuso y dependencia del tabaco, del alcohol y de otras sustancias
+            psicoactivas):
           </label>
           <textarea
-            id="resumen_clinico"
-            name="resumen_clinico"
-            value={data.resumen_clinico}
-            onChange={(e) => setData('resumen_clinico', e.target.value)}
-            placeholder="Resumen de la condición clínica..."
-            rows={3}
-            className={`${textAreaClasses} ${errors.resumen_clinico ? 'border-red-500' : 'border-gray-600'}`}
+            id="impresion_diagnostica"
+            name="impresion_diagnostica"
+            value={data.impresion_diagnostica}
+            onChange={(e) => setData('impresion_diagnostica', e.target.value)}
+            placeholder="Describa la impresión diagnóstica"
+            rows={4}
+            className={`${textAreaClasses} ${errors.impresion_diagnostica ? 'border-red-500' : 'border-gray-600'}`}
             autoComplete="off"
           />
-          {errors.resumen_clinico && (
-            <p className="mt-1 text-xs text-red-500">{errors.resumen_clinico}</p>
+          {errors.impresion_diagnostica && (
+            <p className="mt-1 text-xs text-red-500">{errors.impresion_diagnostica}</p>
           )}
         </div>
 
-        {/* Sección 3: Signos Vitales */}
-        <h2 className="text-xl font-semibold text-gray-800 mt-6 mb-4 col-span-full">Signos Vitales</h2>
-        <InputText
-          id="ta"
-          label="Tensión Arterial"
-          name="ta"
-          value={data.ta}
-          onChange={(e) => setData('ta', e.target.value)}
-          placeholder="Ej: 120/80"
-          error={errors.ta}
-        />
-        <InputText
-          id="fc"
-          label="Frecuencia Cardíaca"
-          name="fc"
-          type="number"
-          value={data.fc}
-          onChange={(e) => setData('fc', e.target.value)}
-          placeholder="Ej: 70"
-          min={0}
-          error={errors.fc}
-        />
-        <InputText
-          id="fr"
-          label="Frecuencia Respiratoria"
-          name="fr"
-          type="number"
-          value={data.fr}
-          onChange={(e) => setData('fr', e.target.value)}
-          placeholder="Ej: 16"
-          min={0}
-          error={errors.fr}
-        />
-        <InputText
-          id="sat"
-          label="Saturación de Oxígeno"
-          name="sat"
-          type="number"
-          value={data.sat}
-          onChange={(e) => setData('sat', e.target.value)}
-          placeholder="Ej: 98"
-          min={0}
-          max={100}
-          error={errors.sat}
-        />
-        <InputText
-          id="temp"
-          label="Temperatura"
-          name="temp"
-          type="number"
-          step="0.01"
-          value={data.temp}
-          onChange={(e) => setData('temp', e.target.value)}
-          placeholder="Ej: 36.50"
-          min={20}
-          error={errors.temp}
-        />
-         <InputText
-          id="dxtx"
-          label="DXTX (Glucometría Capilar)"
-          name="dxtx"
-          type="text"
-          value={data.dxtx}
-          onChange={(e) => setData('dxtx', e.target.value)}
-          placeholder="Ej: 16"
-          min={0}
-          error={errors.fr}
-        />
-
         {/* Sección 4: Tratamiento */}
-        <h2 className="text-xl font-semibold text-gray-800 mt-6 mb-4 col-span-full">Tratamiento</h2>
+       
         <div className="col-span-full">
-          <label htmlFor="tratamiento_terapeutico_administrada" className={labelClasses}>
-            Tratamiento Terapéutico Administrado
+          <label htmlFor="terapeutica_empleada" className={labelClasses}>
+            Tratamiento Terapéutico Administrado:
           </label>
           <textarea
-            id="tratamiento_terapeutico_administrada"
-            name="tratamiento_terapeutico_administrada"
-            value={data.tratamiento_terapeutico_administrada}
-            onChange={(e) => setData('tratamiento_terapeutico_administrada', e.target.value)}
+            id="terapeutica_empleada"
+            name="terapeutica_empleada"
+            value={data.terapeutica_empleada}
+            onChange={(e) => setData('terapeutica_empleada', e.target.value)}
             placeholder="Describa el tratamiento administrado..."
             rows={4}
-            className={`${textAreaClasses} ${errors.tratamiento_terapeutico_administradao ? 'border-red-500' : 'border-gray-600'}`}
+            className={`${textAreaClasses} ${errors.terapeutica_empleada ? 'border-red-500' : 'border-gray-600'}`}
             autoComplete="off"
           />
-          {errors.tratamiento_terapeutico_administradao && (
-            <p className="mt-1 text-xs text-red-500">{errors.tratamiento_terapeutico_administradao}</p>
+          {errors.terapeutica_empleada && (
+            <p className="mt-1 text-xs text-red-500">{errors.terapeutica_empleada}</p>
           )}
         </div>
       </FormLayout>

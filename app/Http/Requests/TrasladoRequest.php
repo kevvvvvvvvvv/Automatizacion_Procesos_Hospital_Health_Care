@@ -24,14 +24,8 @@ class TrasladoRequest extends FormRequest
             'unidad_medica_envia' => ['string', 'required', 'max:255'],
             'unidad_medica_recibe' => ['string', 'required', 'max:255'],
             'motivo_translado' => ['string', 'required'],
-            'resumen_clinico' => ['string', 'nullable'],
-            'ta' => ['string', 'nullable', 'max:255'],
-            'fc' => ['numeric', 'nullable'],
-            'fr' => ['numeric', 'nullable'],
-            'sat' => ['numeric', 'nullable'],
-            'temp' => ['numeric', 'nullable'],
-            'dxtx' => ['string', 'nullable', 'max:255'],
-            'tratamiento_terapeutico_administrada' => ['string', 'nullable'],
+            'impresion_diagnostica' => ['string', 'nullable'],
+            'terapeutica_empleada' => ['string', 'nullable'],
         ];
     }
     public function messages()

@@ -375,14 +375,8 @@ export interface Traslado{
     unidad_medica_envia:String;
     unidad_medica_recibe:String;
     motivo_translado:String;
-    resumen_clinico:String;
-    ta: number | null;
-    fc: number | null;
-    fr: number | null;
-    temp: number | null;
-    sat: number | null;
-    dxtx: string | null;
-    tratamiento_terapeutico_administrada: string | null;
+    impresion_diagnostica:String;
+    terapeutica_empleada: string | null;
 }
 export interface AplicacionMedicamento {
     id: number;
@@ -446,6 +440,21 @@ export interface SolicitudDieta {
     horario_inicio_dieta:string;
 
     user_supervisa?: User; 
+}
+
+export interface Preoperatoria {
+    id: number;
+    
+    fecha_cirugia: string;
+    diagnostico_preoperatorio: string;
+    plan_quirurgico: string;
+    tipo_intervencion_quirurgica: string;
+    riesgo_quirurgico: string | null;
+    observaciones_riesgo: string|null;
+    cuidados_plan_preoperatorios: string | null;
+    pronostico: string | null;
+    
+    
 }
 
  export interface HojaPostoperatoria {
