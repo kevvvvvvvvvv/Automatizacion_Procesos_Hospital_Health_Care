@@ -56,7 +56,7 @@ class InterconsultaController extends Controller
             ...$validatedData
         ]);
         DB::commit();
-        return Inertia::render('formularios/interconsulta/show', [
+        return Inertia::render('paciente.estancia.show', [
             'paciente' => $paciente,
             'estancia' => $estancia,
             'interconsulta' => $interconsulta,

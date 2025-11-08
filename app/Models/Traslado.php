@@ -13,14 +13,8 @@ class Traslado extends Model
         'unidad_medica_envia',
         'unidad_medica_recibe',
         'motivo_translado',
-        'Resumen_clinico',
-        'ta',
-        'fc',
-        'fr',
-        'sat',
-        'temp',
-        'dxtx',
-        'tratamiento_terapeutico_administrada',
+        'impresion_diagnostica',
+        'terapeutica_empleada',
     ];
     public function formularioInstancia()
     {
