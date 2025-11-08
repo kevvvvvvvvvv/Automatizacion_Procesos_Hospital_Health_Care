@@ -1,6 +1,6 @@
 import React from 'react';
 import { Head, Link } from '@inertiajs/react';
-import { Plus,ChevronDown, Pencil, Eye } from 'lucide-react'; 
+import { Plus,ChevronDown, Pencil, Eye, Paperclip } from 'lucide-react'; 
 import { Menu } from '@headlessui/react';
 import { route } from 'ziggy-js';
 import { Printer } from 'lucide-react'; 
@@ -148,6 +148,18 @@ const Show = ({ estancia }: ShowEstanciaProps) => {
                                             </Link>
                                         )}
                                     </Menu.Item>
+                                    <Menu.Item>
+                                        {({ active }) => (
+                                            <Link
+                                                href={route('pacientes.estancias.preoperatorias.create', { paciente: paciente.id, estancia: estancia.id })}
+                                                className={`${
+                                                    active ? 'bg-blue-500 text-white' : 'text-gray-900'
+                                                } group flex rounded-md items-center w-full px-2 py-2 text-sm`}
+                                            >
+                                                Añadir preoperatoria
+                                            </Link>
+                                        )}
+                                    </Menu.Item>
                                 </div>
                             </Menu.Items>
                         </Menu>
@@ -169,6 +181,7 @@ const Show = ({ estancia }: ShowEstanciaProps) => {
                                     </p>
                                 </div>
                                 <div className="flex items-center space-x-2">
+                                    
                                     <Link
                                         href={route(`${formulario.catalogo.route_prefix}.edit`, formulario.id)}
                                         className="p-2 text-blue-500 hover:bg-blue-100 hover:text-blue-700 rounded-full transition"

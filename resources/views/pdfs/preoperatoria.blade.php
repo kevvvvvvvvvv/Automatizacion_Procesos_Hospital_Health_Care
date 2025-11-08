@@ -31,7 +31,7 @@
             color: #333;
             line-height: 1.4;
         }
-        
+
         .header {
             display: flex; 
             justify-content: space-between;
@@ -135,55 +135,41 @@
         .signature-section {
             text-align: center;
             margin-top: 60px;
-            page-break-inside: avoid;
         }
-
         .signature-line {
-            border-top: 1px solid #333;
-            width: 280px;
-            margin: 0 auto 5px auto;
+            border-top: 1px solid #000;
+            width: 250px;
+            margin: 0 auto;
+            margin-bottom: 5px;
         }
-
         .signature-section p {
             margin: 0;
             line-height: 1.4;
         }
-
-        .credentials-list {
-            font-size: 8pt;
-            color: #555;
-            margin-top: 8px;
-        }
     </style>
 </head>
+
 <body>
-    
-
-    <h1>Nota de Traslado</h1>
-
-    {{-- Sección Establecimiento de salud --}}
-    <h2>Establecimiento de Salud</h2>
+    <h1>Nota preoperatoria</h1>
+    {{-- Sección Detalles de la nota preoperatoria --}}
+    <h2>FECHA:</h2>
     <div class="section-content">
-        <p><strong>Unidad Médica que Envía:</strong> {{ $notaData->unidad_medica_envia ?? 'Sin datos.' }}</p>
-        <p><strong>Unidad Médica que Recibe:</strong> {{ $notaData->unidad_medica_recibe ?? 'Sin datos.' }}</p>
-        
+        <p><strong>Fecha de la cirugía:</strong> {{ $nota->fecha ?? 'Sin datos.' }}</p>
     </div>
-
-    {{-- Sección Resumen Clínico --}}
-    <h2>Resumen Clínico</h2>
+    <h2>Diagnóstico:</h2>
     <div class="section-content">
-        <p>{{ $notaData->resumen_clinico ?? 'Sin datos.' }}</p>
-        <p><strong>Motivo de Traslado:</strong> {{ $notaData->motivo_translado ?? 'Sin datos.' }}</p>
-        <p><strong>Impresión Diagnóstica:</strong> {{ $notaData->impresion_diagnostica ?? 'Sin datos.' }}</p>
-        <p><strong>Terapéutica Empleada:</strong> {{ $notaData->terapeutica_empleada ?? 'Sin datos.' }}</p>
+        <p><strong>Diagnóstico preoperatorio:</strong> {{ $preoperatoria->diagnostico ?? 'Sin datos.' }}</p>
+        <p><strong>Plan quirúrgico:</strong> {{ $preoperatoria->plan_quirurgico ?? 'Sin datos.' }}</p>
+        <p><strong>Tipo de intervención:</strong> {{ $preoperatoria->tipo_intervencion ?? 'Sin datos.' }}</p>
+        <p><strong>Riesgo quirúrgico:</strong> {{ $preoperatoria->riesgo_quirurgico ?? 'Sin datos.' }}</p>
+        <p><strong>Cuidado y plan preoperatorio:</strong> {{ $preoperatoria->cuidado_plan_preoperatorio ?? 'Sin datos.' }}</p>
+        <p><strong>Pronóstico:</strong> {{ $preoperatoria->pronostico ?? 'Sin datos.' }}</p>
     </div>
-
-    
     <div class="signature-section">
         @if(isset($medico))
             <div class="signature-line"></div>
             <p>{{ $medico->nombre . " " . $medico->apellido_paterno . " " . $medico->apellido_materno }}</p>
-            <p style="font-size: 9pt; color: #555;">Nombre y Firma del Médico</p>
+            <p style="font-size: 9pt; color: #555;">Nombre y firma del médico que interviene al paciente </p>
 
             @if($medico->credenciales->isNotEmpty())
                 <div class="credentials-list">
@@ -194,13 +180,6 @@
                     @endforeach
                 </div>
             @endif
-        @endif
-    </div>
-    <div class="signature-section">
-        @if(isset($familiar_responsable))
-            <div class="signature-line"></div>
-            <p>{{ $familiar_responsable->nombre . " " . $familiar_responsable->apellido_paterno . " " . $familiar_responsable->apellido_materno }}</p>
-            <p style="font-size: 9pt; color: #555;">Nombre y Firma del Familiar Responsable</p>
         @endif
     </div>
 </body>
