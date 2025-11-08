@@ -11,21 +11,25 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('traslado', function (Blueprint $table) {
+        Schema::create('preoperatorios', function (Blueprint $table) {
             $table->unsignedBigInteger('id');
             $table->primary('id');
             $table->foreign('id')
                 ->references('id')
                 ->on('formulario_instancias')
                 ->onDelete('cascade');
-                
-            $table->string('unidad_medica_envia')->nullable();
-            $table->string('unidad_medica_recibe')->nullable();
-            $table->text('motivo_translado')->nullable();
-            $table->text('impresion_diagnostica')->nullable();
-        
-            $table->string('terapeutica_empleada')->nullable();
+            
+            $table->date('fecha_cirugia')->nullable();
+            $table->string('diagnostico_preoperatorio')->nullable();
+            $table->string('plan_quirurgico')->nullable();
+            $table->string('tipo_intervencion_quirurgica')->nullable();
+            
+            $table->string('riesgo_quirurgico')->nullable();
+            $table->string('cuidados_plan_preoperatorios')->nullable();
+
+            $table->string('pronostico')->nullable();
             $table->timestamps();
+       
         });
     }
 
@@ -34,6 +38,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('traslado');
+        Schema::dropIfExists('preoperatorios');
     }
 };
