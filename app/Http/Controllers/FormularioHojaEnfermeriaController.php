@@ -115,7 +115,9 @@ class FormularioHojaEnfermeriaController extends Controller
                                 ->filter() 
                                 ->sortByDesc('created_at')
                                 ->values();
+        
         $medicos = User::all();
+        $usuarios = User::all();
 
         $dataParaGraficas = HojaSignos::select($columnasGraficas)
             ->where('hoja_enfermeria_id', $hojasenfermeria->id)
@@ -132,6 +134,7 @@ class FormularioHojaEnfermeriaController extends Controller
             'catalogoEstudios' => $catalogoEstudios,
             'solicitudesAnteriores' => $solicitudesAnteriores,
             'medicos' => $medicos,
+            'usuarios' => $usuarios
         ]);
     }
 

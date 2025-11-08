@@ -29,10 +29,14 @@ return new class extends Migration
             $table->foreignId('user_entrega_id')->nullable() // "Quién entrega"
                   ->constrained('users')
                   ->onDelete('set null');
+
+            $table->string('observaciones')->nullable();
             
             $table->datetime('horario_operacion')->nullable();
             $table->datetime('horario_termino')->nullable();
             $table->datetime('horario_inicio_dieta')->nullable();
+
+            $table->string('tipo_paciente')->nullable();
 
             $table->timestamps();
         });

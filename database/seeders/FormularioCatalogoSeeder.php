@@ -42,10 +42,17 @@ class FormularioCatalogoSeeder extends Seeder
             'nombre_tabla_fisica' => 'hoja_enfermerias',
             'route_prefix' => 'hojasenfermerias',
         ]);
+
         FormularioCatalogo::create([
             'nombre_formulario' => 'Traslados',
             'nombre_tabla_fisica' => 'traslados',
             'route_prefix' => 'traslados',
+        ]);
+
+        FormularioCatalogo::create([
+            'nombre_formulario' => 'Nota post-operatoria',
+            'nombre_tabla_fisica' => 'nota_postoperatorias',
+            'route_prefix' => 'notaspostoperatorias',
         ]);
     }
 }

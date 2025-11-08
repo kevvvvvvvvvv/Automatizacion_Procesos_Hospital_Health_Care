@@ -48,10 +48,10 @@ const handleSubmit = (e: React.FormEvent) => {
         paciente={paciente}
         estancia={estancia}
       />
-      <Head title="Crear Interconsulta" />
+      <Head title="Crear interconsulta" />
       
       <FormLayout
-        title="Registrar Nueva Interconsulta"
+        title="Registrar nueva interconsulta"
         onSubmit={handleSubmit}
         actions={<PrimaryButton type="submit" disabled={processing}>{processing ? 'Creando...' : 'Crear Interconsulta'}</PrimaryButton>}
              >
