@@ -47,5 +47,10 @@ class FormularioCatalogoSeeder extends Seeder
             'nombre_tabla_fisica' => 'traslados',
             'route_prefix' => 'traslados',
         ]);
+        FormularioCatalogo::create([
+            'nombre_formulario' => 'Preoperatoria',
+            'nombre_tabla_fisica' => 'preoperatorias',
+            'route_prefix' => 'preoperatorias',
+        ]);
     }
 }

@@ -92,36 +92,43 @@ class TrasladoController extends Controller
         ])->with('success', 'Traslado eliminado exitosamente.');
     }
     public function generarPDF(Traslado $traslado)
-    {
-       
-        $traslado->load([
-            'formularioInstancia.estancia',
-            'formularioInstancia.user.credenciales',
-        ]);
-        $paciente = $traslado->formularioInstancia->estancia->paciente;
-        $medico = $traslado->formularioInstancia->user;
-        $estancia = $traslado->formularioInstancia->estancia;
-         
-        $logoDataUri = '';
-        $imagePath = public_path('images/Logo_HC_2.png');
-         if (file_exists($imagePath)) {
-            $imageData = base64_encode(file_get_contents($imagePath));
-            $imageMime = mime_content_type($imagePath);
-            $logoDataUri = 'data:' . $imageMime . ';base64,' . $imageData;
-        }
-        $headerData = [
-            'historiaclinica' => $traslado,
-            'paciente' => $paciente,
-            'logoDataUri' => $logoDataUri,
-            'estancia' => $estancia
-        ];
-        return Pdf::view('pdfs.traslado', [
-            'notaData' => $traslado,
-            'paciente' => $paciente,
-            'medico' => $medico
-        ])
-        ->headerView('header', $headerData)
-        ->inline('traslado.pdf');
+{
+    $traslado->load([
+        'formularioInstancia.estancia',
+        'formularioInstancia.user.credenciales',
+    ]);
 
+    // Verificación para evitar null
+    if (!$traslado->formularioInstancia || !$traslado->formularioInstancia->estancia || !$traslado->formularioInstancia->estancia->paciente) {
+        abort(404, 'Datos del traslado no encontrados para generar PDF.');
     }
+
+    $paciente = $traslado->formularioInstancia->estancia->paciente;
+    $medico = $traslado->formularioInstancia->user;
+    $estancia = $traslado->formularioInstancia->estancia;
+
+    $logoDataUri = '';
+    $imagePath = public_path('images/Logo_HC_2.png');
+    if (file_exists($imagePath)) {
+        $imageData = base64_encode(file_get_contents($imagePath));
+        $imageMime = mime_content_type($imagePath);
+        $logoDataUri = 'data:' . $imageMime . ';base64,' . $imageData;
+    }
+
+    $headerData = [
+        'historiaclinica' => $traslado,
+        'paciente' => $paciente,
+        'logoDataUri' => $logoDataUri,
+        'estancia' => $estancia
+    ];
+
+    return Pdf::view('pdfs.traslado', [
+        'notaData' => $traslado,
+        'paciente' => $paciente,
+        'medico' => $medico
+    ])
+    ->headerView('header', $headerData)
+    ->inline('traslado.pdf');
+}
+
 }

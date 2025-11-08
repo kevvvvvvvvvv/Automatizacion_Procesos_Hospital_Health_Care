@@ -24,6 +24,7 @@ use App\Http\Controllers\HojaMedicamentoController;
 use App\Http\Controllers\TrasladoController;
 use App\Http\Controllers\AplicacionMedicamentoController;
 use App\Http\Controllers\SolicitudEstudioController;
+use App\Http\Controllers\PreoperatoriaController;
 use App\Models\History;
 use App\Models\HojaTerapiaIV;
 use App\Models\Interconsulta;
@@ -59,7 +60,8 @@ use Illuminate\Support\Facades\Auth;
     Route::resource('pacientes.estancias.ventas.detallesventas',DetalleVentaController::class)->shallow()->middleware ('auth');
     Route::resource('pacientes.estancias.interconsultas.honorarios', HonorarioController::class)->shallow();
     Route::resource('pacientes.estancias.traslados', TrasladoController::class)->shallow()->middleware('auth');
-    
+    Route::resource('pacientes.estancias.preoperatorias', PreoperatoriaController::class)->shallow()->middleware('auth');
+
     Route::post('hojasterapiasiv/{hojasenfermeria}',[FormularioHojaTerapiaIVController::class,'store'])->name('hojasterapiasiv.store');
     Route::patch('hojasterapiasiv/{hojasenfermeria}/{hojasterapiasiv}',[FormularioHojaTerapiaIVController::class,'update'])->name('hojasterapiasiv.update');
 
@@ -121,6 +123,9 @@ Route::get('pacientes/{paciente}/estancias/{estancia}/interconsultas/{interconsu
         ->middleware('auth');
     Route::get('/traslados/{traslado}/pdf', [TrasladoController::class, 'generarPDF'])
         ->name('traslados.pdf')
+        ->middleware('auth');
+    Route::get('/preoperatorias/{preoperatoria}/pdf', [PreoperatoriaController::class, 'generarPDF'])
+        ->name('preoperatorias.pdf')
         ->middleware('auth');
 
 
