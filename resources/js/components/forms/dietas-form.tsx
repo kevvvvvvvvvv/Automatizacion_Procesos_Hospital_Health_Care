@@ -1,13 +1,16 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useForm } from '@inertiajs/react';
-import { HojaEnfermeria, SolicitudDieta, User } from '@/types'; 
+import { HojaEnfermeria, SolicitudDieta } from '@/types'; 
 import { route } from 'ziggy-js';
 import SelectInput from '@/components/ui/input-select';
 import PrimaryButton from '@/components/ui/primary-button';
-import InputDateTime from '@/components/ui/input-date-time';
+//import InputDateTime from '@/components/ui/input-date-time';
+
+import InputText from '../ui/input-text';
+import Checkbox from '../ui/input-checkbox';
 
 const opcionesDeDieta = {
-    'Dieta de Líquidos Claros': [
+    'Dieta de Llquidos claros': [
         { value: 'Opción 1', label: 'Gelatina, Té, Jugo de Manzana diluido' },
     ],
     'Dieta Blanda - Desayuno': [
@@ -22,7 +25,7 @@ const opcionesDeDieta = {
         { value: 'Opción 2', label: 'Caldito de verduras con pollo deshebrado' },
         { value: 'Opción 3', label: 'Fajitas de pollo con morrón y queso panela' },
         { value: 'Opción 4', label: 'Rollitos de pechuga rellenos' },
-        { value: 'Opción 5', label: 'Consomé (PX Bichectomía)' },
+        { value: 'Opción 5', label: 'Consomé (paciente bichectomía)' },
     ],
     'Dieta Blanda - Cena': [
         { value: 'Opción 1', label: 'Huevo revuelto con jamón de pavo' },
@@ -33,30 +36,38 @@ const opcionesDeDieta = {
     ],
 };
 
+const restricciones = [
+    { id: 'DIABETICO', label: 'Paciente diabético' },
+    { id: 'CELIACO', label: 'Paciente celiaco (sin gluten)' },
+    { id: 'HIPERTENSO', label: 'Paciente hipertenso (bajo en sodio)' },
+    { id: 'COLECISTO', label: 'Sin colecitoqueneticos' },
+];
+
+
 interface Props {
     hoja: HojaEnfermeria;
-    usuarios: User[];
 }
 
-const DietaForm: React.FC<Props> = ({ hoja, usuarios }) => {
-    
-    const optionsUsuarios = usuarios.map(u => ({
-        value: u.id.toString(),
-        label: u.nombre, 
-    }));
+const DietaForm: React.FC<Props> = ({ hoja }) => {
     
     const tiposDeDietaOptions = Object.keys(opcionesDeDieta).map(tipo => ({
         value: tipo,
         label: tipo,
     }));
 
-    const { data, setData, post, processing, errors, reset, wasSuccessful } = useForm({
+    const { data, setData, post, processing, errors, reset } = useForm({
         tipo_dieta: '',
         opcion_seleccionada: '',
         horario_solicitud: new Date().toISOString().slice(0, 16),
         user_supervisa_id: '',
         horario_entrega: '',
         user_entrega_id: '',
+        observaciones: '',
+
+        horario_operacion: '',
+        horario_termino: '',
+        horario_inicio_dieta: '',
+        restricciones: [] as string[],
     });
 
     const opcionesDeComida = useMemo(() => {
@@ -74,42 +85,90 @@ const DietaForm: React.FC<Props> = ({ hoja, usuarios }) => {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        post(route('dietas.store', { hojaenfermeria: hoja.id }), {
+        post(route('dietas.store', { hojasenfermeria: hoja.id }), {
             preserveScroll: true,
             onSuccess: () => reset(),
         });
+    }
+
+    const handleRestrictionChange = (restriccionId: string, isChecked: boolean) => {
+        if (isChecked) {
+            setData(currentData => ({
+                ...currentData,
+                restricciones: [...currentData.restricciones, restriccionId]
+            }));
+        } else {
+            setData(currentData => ({
+                ...currentData,
+                restricciones: currentData.restricciones.filter(r => r !== restriccionId)
+            }));
+        }
+        setData('opcion_seleccionada', '');
     }
 
     return (
         <div className="space-y-6">
 
             <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
-                <h3 className="text-lg font-semibold mb-2 text-gray-800">Indicaciones para Elaboración de Dietas</h3>
+                <h3 className="text-lg font-semibold mb-2 text-gray-800">Indicaciones para elaboración de dietas</h3>
                 <details className="p-2 border rounded-md">
-                    <summary className="font-medium cursor-pointer text-sm">Sin Colecitoqueneticos</summary>
+                    <summary className="font-medium cursor-pointer text-sm">Sin colecitoqueneticos</summary>
                     <p className="text-xs text-gray-600 mt-2">No ofrecer: calabacitas, brócoli, coles, coliflor, yema de huevo, leche, crema, quesos (manchego, americano), mantequilla, pan dulce, galletas, pasteles, leguminosas (frijoles, lentejas, etc.), embutidos (chorizo, tocino), fritos o capeados.</p>
                 </details>
                 <details className="p-2 border rounded-md mt-2">
-                    <summary className="font-medium cursor-pointer text-sm">PX Celiacos (Sin Gluten)</summary>
+                    <summary className="font-medium cursor-pointer text-sm">Pacientes celiacos (sin gluten)</summary>
                     <p className="text-xs text-gray-600 mt-2">No ofrecer: trigo, sémolas, espelta, harinas, avena, cebada, malta, centeno, triticale, pasta, pan, galletas, almidones modificados o levadura.</p>
                 </details>
                 <details className="p-2 border rounded-md mt-2">
-                    <summary className="font-medium cursor-pointer text-sm">PX Diabéticos</summary>
+                    <summary className="font-medium cursor-pointer text-sm">Pacientes diabéticos</summary>
                     <p className="text-xs text-gray-600 mt-2">No ofrecer: gelatinas (excepto light), jugos (envasados o naturales), frutas con alto índice glucémico (plátano, papaya, melón, sandía), arroz, pasta, pan blanco, galletas, margarinas, manteca, embutidos.</p>
                 </details>
                 <details className="p-2 border rounded-md mt-2">
-                    <summary className="font-medium cursor-pointer text-sm">PX Hipertensos (Sin Sal)</summary>
+                    <summary className="font-medium cursor-pointer text-sm">Pacientes hipertensos (sin sal)</summary>
                     <p className="text-xs text-gray-600 mt-2">No ofrecer: embutidos (jamón, salchicha), enlatados, carnes ahumadas, lácteos, margarinas, mantequillas, fritos o capeados. Omitir sal en la preparación.</p>
                 </details>
             </div>
 
             <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow-md space-y-4">
-                <h3 className="text-lg font-semibold mb-4">Definir la Dieta (Pedido)</h3>
-                {wasSuccessful && <div className="mb-4 text-sm text-green-600">Pedido de dieta guardado.</div>}
+                {/*<h3 className="text-lg font-semibold mb-4">Datos operatorios</h3>
+                <InputDateTime
+                    id='horario_operacion'
+                    name='horario_operacion'
+                    label='Horario de operación'
+                    value={data.horario_operacion}
+                    onChange={e=> setData('horario_operacion', e as string)}/>
+
+                <InputDateTime
+                    id='horario_termino'
+                    name='horario_termino'
+                    label='Horario de termino de operación'
+                    value={data.horario_termino}
+                    onChange={e=> setData('horario_termino', e as string)}/>*/}
+
+                <h3 className="text-lg font-semibold mb-4">Definir la dieta (pedido)</h3>
+
+            <div className="bg-white p-6 rounded-lg shadow-md space-y-4">
+                <h3 className="text-lg font-semibold">1. Indicar Restricciones del Paciente</h3>
+                <p className="text-sm text-gray-600">
+                    Selecciona las condiciones del paciente para filtrar las opciones de dieta.
+                </p>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+                    {restricciones.map(restriccion => (
+                        <Checkbox
+                            key={restriccion.id}
+                            id={`restriccion_${restriccion.id}`}
+                            label={restriccion.label}
+                            checked={data.restricciones.includes(restriccion.id)}
+                            onChange={e => handleRestrictionChange(restriccion.id, e.target.checked)}
+                        />
+                    ))}
+                </div>
+            </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <SelectInput
-                        label="Tipo de Dieta"
+                        label="Tipo de dieta"
                         options={tiposDeDietaOptions}
                         value={data.tipo_dieta}
                         onChange={(value) => handleTipoDietaChange(value as string)}
@@ -117,7 +176,7 @@ const DietaForm: React.FC<Props> = ({ hoja, usuarios }) => {
                     />
                     
                     <SelectInput
-                        label="Opción Específica"
+                        label="Opción específica"
                         options={opcionesDeComida}
                         value={data.opcion_seleccionada}
                         onChange={(value) => setData('opcion_seleccionada', value as string)}
@@ -125,39 +184,14 @@ const DietaForm: React.FC<Props> = ({ hoja, usuarios }) => {
                         //disabled={!data.tipo_dieta} // Deshabilitado hasta que se elija un tipo
                     />
 
-                    <InputDateTime
-                        id='horario_soliciud'
-                        name='horario_soliciud'
-                        label="Horario de Solicitud"
-                        value={data.horario_solicitud}
-                        onChange={(val) => setData('horario_solicitud', val as string)}
-                        error={errors.horario_solicitud}
-                    />
+                    <InputText
+                        label='Observaciones'
+                        id='observaciones'
+                        name='observaciones'
+                        value={data.observaciones}
+                        onChange={value => setData('observaciones',value.target.value)}
+                        error={errors.observaciones}/>
                     
-                    <SelectInput
-                        label="Quién Supervisó"
-                        options={optionsUsuarios}
-                        value={data.user_supervisa_id}
-                        onChange={(value) => setData('user_supervisa_id', value as string)}
-                        error={errors.user_supervisa_id}
-                    />
-
-                    <InputDateTime
-                        id='horario_entrega'
-                        name='horario_entrega'
-                        label="Horario de Entrega (Opcional)"
-                        value={data.horario_entrega}
-                        onChange={(val) => setData('horario_entrega', val as string)}
-                        error={errors.horario_entrega}
-                    />
-
-                    <SelectInput
-                        label="Quién Entrega (Opcional)"
-                        options={optionsUsuarios}
-                        value={data.user_entrega_id}
-                        onChange={(value) => setData('user_entrega_id', value as string)}
-                        error={errors.user_entrega_id}
-                    />
                 </div>
 
                 <div className="flex justify-end pt-4">
@@ -168,15 +202,15 @@ const DietaForm: React.FC<Props> = ({ hoja, usuarios }) => {
             </form>
 
             <div className="mt-12">
-                <h3 className="text-lg font-semibold mb-2">Historial de Dietas Solicitadas</h3>
+                <h3 className="text-lg font-semibold mb-2">Historial de dietas solicitadas</h3>
                 <div className="overflow-x-auto border rounded-lg bg-white shadow-sm">
                     <table className="min-w-full divide-y divide-gray-200">
                         <thead className="bg-gray-50">
                             <tr className='text-left text-xs font-medium text-gray-500 uppercase'>
-                                <th className="px-4 py-3">Tipo de Dieta</th>
+                                <th className="px-4 py-3">Tipo de dieta</th>
                                 <th className="px-4 py-3">Opción</th>
                                 <th className="px-4 py-3">Solicitó</th>
-                                <th className="px-4 py-3">Hora Solicitud</th>
+                                <th className="px-4 py-3">Hora solicitud</th>
                             </tr>
                         </thead>
                         <tbody className="bg-white divide-y divide-gray-200">

@@ -447,3 +447,34 @@ export interface SolicitudDieta {
 
     user_supervisa?: User; 
 }
+
+ export interface HojaPostoperatoria {
+    id: number;
+    hora_inicio_operacion: string; 
+    hora_termino_operacion: string; 
+
+    diagnostico_preoperatorio: string | null; 
+    operacion_planeada: string | null;
+    operacion_realizada: string | null;
+    diagnostico_postoperatorio: string | null;
+
+    descripcion_tecnica_quirurgica: string | null;
+    hallazgos_transoperatorios: string | null;
+
+    reporte_conteo: string | null;
+    incidentes_accidentes: string | null;
+    cuantificacion_sangrado: string | null;
+    estudios_transoperatorios: string | null;
+
+    ayudantes: string | null;
+    envio_piezas: string | null;
+    
+    estado_postquirurgico: string | null;
+    manejo_tratamiento: string | null; 
+    pronostico: string | null;
+    hallazgos_importancia: string | null;
+
+    created_at: string;
+    updated_at: string;
+}
+
