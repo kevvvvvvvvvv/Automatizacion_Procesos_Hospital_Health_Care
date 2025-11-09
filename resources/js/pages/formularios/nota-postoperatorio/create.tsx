@@ -1,15 +1,16 @@
-import React from 'react';
+import React,{ useState} from 'react';
 import { Head, useForm } from '@inertiajs/react';
 import { HojaEnfermeria, HojaPostoperatoria, Paciente, Estancia } from '@/types';
 import { route } from 'ziggy-js';
 
 import InputDateTime from '@/components/ui/input-date-time';
 import InputTextArea from '@/components/ui/input-text-area';
-//import InputText from '@/components/ui/input-text';
+import InputText from '@/components/ui/input-text';
 import PrimaryButton from '@/components/ui/primary-button';
 import FormLayout from '@/components/form-layout';
 import PacienteCard from '@/components/paciente-card';
 import MainLayout from '@/layouts/MainLayout';
+import SelectInput from '@/components/ui/input-select';
 
 interface Props {
     paciente: Paciente;
@@ -21,6 +22,20 @@ interface Props {
 type NotaPostoperatoriaComponent = React.FC<Props> & {
     layout: (page: React.ReactElement) => React.ReactNode;
 };
+
+
+const optionsTipoTransfusion = [
+    { value: 'plasma fresco congelado', label: 'Plasma fresco congelado' },
+    { value: 'paquete globular', label: 'Paquete globular' },
+    { value: 'aferesis plaquetaria', label: 'Aféresis plaquetaria' },
+    { value: 'otro', label: 'Otro' },
+];
+
+interface TransfusionAgregada {
+    tipo_transfusion: string;
+    cantidad: string;
+    temp_id: string; 
+}
 
 const NotaPostoperatoriaForm: NotaPostoperatoriaComponent= ({ paciente, estancia, nota }) => {
 
@@ -34,8 +49,8 @@ const NotaPostoperatoriaForm: NotaPostoperatoriaComponent= ({ paciente, estancia
         descripcion_tecnica_quirurgica: nota?.descripcion_tecnica_quirurgica || '',
         hallazgos_transoperatorios: nota?.hallazgos_transoperatorios || '',
         reporte_conteo: nota?.reporte_conteo || '',
-        incidentes_accidentes: nota?.incidentes_accidentes || '',
         cuantificacion_sangrado: nota?.cuantificacion_sangrado || '',
+        incidentes_accidentes: nota?.incidentes_accidentes || '',
         estudios_transoperatorios: nota?.estudios_transoperatorios || '',
         ayudantes: nota?.ayudantes || '',
         envio_piezas: nota?.envio_piezas || '',
@@ -43,7 +58,34 @@ const NotaPostoperatoriaForm: NotaPostoperatoriaComponent= ({ paciente, estancia
         manejo_tratamiento: nota?.manejo_tratamiento || '',
         pronostico: nota?.pronostico || '',
         hallazgos_importancia: nota?.hallazgos_importancia || '',
+        transfusiones_agregadas: [] as TransfusionAgregada[],
     });
+
+    const [localTransfusion, setLocalTransfusion] = useState({
+        tipo_transfusion: '',
+        cantidad: ''
+    });
+
+    const handleAddTransfusion = (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault();
+        if (!localTransfusion.tipo_transfusion || !localTransfusion.cantidad) {
+            alert('Debe especificar el tipo y la cantidad de la transfusión.');
+            return;
+        }
+
+        const nuevaTransfusion: TransfusionAgregada = {
+            ...localTransfusion,
+            temp_id: crypto.randomUUID(),
+        };
+        setData('transfusiones_agregadas', [...data.transfusiones_agregadas, nuevaTransfusion]);
+        setLocalTransfusion({ tipo_transfusion: '', cantidad: '' });
+    }
+
+    const handleRemoveTransfusion = (temp_id: string) => {
+        setData('transfusiones_agregadas',
+            data.transfusiones_agregadas.filter(t => t.temp_id !== temp_id)
+        );
+    }
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -152,7 +194,7 @@ const NotaPostoperatoriaForm: NotaPostoperatoriaComponent= ({ paciente, estancia
                     </div>
                 </div>
 
-                <div className="p-4 bg-white rounded-lg shadow-sm border">
+                <div className="p-4 bg-white rounded-lg shadow-sm border mb-2">
                     <h3 className="text-lg font-semibold mb-4 border-b pb-2">Reportes y sucesos</h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <InputTextArea
@@ -197,6 +239,67 @@ const NotaPostoperatoriaForm: NotaPostoperatoriaComponent= ({ paciente, estancia
                             error={errors.envio_piezas}
                             rows={2}
                         />
+                    </div>
+                </div>
+                <div className="mt-6 pt-6 border-t mb-8">
+                    <h4 className="text-md font-semibold mb-3">Registro de transfusiones</h4>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+                        <SelectInput
+                            label="Tipo de Transfusión"
+                            options={optionsTipoTransfusion}
+                            value={localTransfusion.tipo_transfusion}
+                            onChange={(value) => setLocalTransfusion(d => ({ ...d, tipo_transfusion: value as string }))}
+                            error={errors['transfusiones_agregadas.0.tipo_transfusion']}
+                        />
+                        <InputText 
+                            label="Cantidad (unidades, ml, etc.)"
+                            id="cantidad_transfusion_local"
+                            name='cantidad_transfusion_local'
+                            value={localTransfusion.cantidad}
+                            onChange={e => setLocalTransfusion(d => ({ ...d, cantidad: e.target.value }))}
+                            error={errors['transfusiones_agregadas.0.cantidad']}
+                        />
+                        <PrimaryButton type="button" onClick={handleAddTransfusion}>
+                            Agregar
+                        </PrimaryButton>
+                    </div>
+                    <h5 className="text-sm font-semibold mt-6 mb-2">Transfusiones a Registrar</h5>
+                    <div className="overflow-x-auto border rounded-lg">
+                        <table className="min-w-full">
+                            <thead className="bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase">
+                                <tr>
+                                    <th className="px-4 py-2">Tipo</th>
+                                    <th className="px-4 py-2">Cantidad</th>
+                                    <th className="px-4 py-2">Acción</th>
+                                </tr>
+                            </thead>
+                            <tbody className="divide-y">
+                                {data.transfusiones_agregadas.length === 0 ? (
+                                    <tr>
+                                        <td colSpan={3} className="px-4 py-3 text-center text-sm text-gray-500">
+                                            No se han agregado transfusiones.
+                                        </td>
+                                    </tr>
+                                ) : (
+                                    data.transfusiones_agregadas.map(t => (
+                                        <tr key={t.temp_id}>
+                                            <td className="px-4 py-3 text-sm">{t.tipo_transfusion}</td>
+                                            <td className="px-4 py-3 text-sm">{t.cantidad}</td>
+                                            <td className="px-4 py-3 text-sm">
+                                                <button
+                                                    type="button"
+                                                    onClick={() => handleRemoveTransfusion(t.temp_id)}
+                                                    className="text-yellow-600 hover:text-yellow-900"
+                                                >
+                                                    Quitar
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    ))
+                                )}
+                            </tbody>
+                        </table>
                     </div>
                 </div>
 

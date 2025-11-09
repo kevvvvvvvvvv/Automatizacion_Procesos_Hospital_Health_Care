@@ -487,3 +487,10 @@ export interface Preoperatoria {
     updated_at: string;
 }
 
+
+export interface TransfusionRealizada {
+    id: number;
+    nota_postoperatoria_id: numer;
+    tipo_transfucion: string;
+    cantidad: string;
+}

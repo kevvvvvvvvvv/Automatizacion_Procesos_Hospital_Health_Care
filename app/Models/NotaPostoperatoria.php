@@ -7,7 +7,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class NotaPostoperatoria extends Model
 {
-    public const ID_CATALOGO =
+    public const ID_CATALOGO = 8;
+
+    public $incrementing = false;
 
     protected $fillable = [
         'id',
