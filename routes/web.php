@@ -30,6 +30,7 @@ use App\Http\Controllers\PreoperatoriaController;
 use App\Models\History;
 use App\Models\HojaTerapiaIV;
 use App\Models\Interconsulta;
+use App\Models\NotaPostoperatoria;
 use App\Models\Paciente;
 use App\Models\ProductoServicio;
 use Illuminate\Support\Facades\Route;
@@ -141,22 +142,29 @@ Route::get('/interconsultas/{interconsulta}/pdf', [InterconsultaController::clas
     ->name('interconsultas.pdf')
     ->middleware('auth');
 
-    Route::get('/hojasenfermerias/{hojasenfermerias}/pdf', [FormularioHojaEnfermeriaController::class, 'generarPDF'])
-        ->name('hojasenfermerias.pdf')
-        ->middleware('auth');
-    Route::get('/traslados/{traslado}/pdf', [TrasladoController::class, 'generarPDF'])
-        ->name('traslados.pdf')
-        ->middleware('auth');
-    Route::get('/preoperatorias/{preoperatoria}/pdf', [PreoperatoriaController::class, 'generarPDF'])
-        ->name('preoperatorias.pdf')
-        ->middleware('auth');
 Route::get('/hojasenfermerias/{hojasenfermerias}/pdf', [FormularioHojaEnfermeriaController::class, 'generarPDF'])
     ->name('hojasenfermerias.pdf')
     ->middleware('auth');
+
 Route::get('/traslados/{traslado}/pdf', [TrasladoController::class, 'generarPDF'])
     ->name('traslados.pdf')
     ->middleware('auth');
 
+Route::get('/preoperatorias/{preoperatoria}/pdf', [PreoperatoriaController::class, 'generarPDF'])
+    ->name('preoperatorias.pdf')
+    ->middleware('auth');
+
+Route::get('/hojasenfermerias/{hojasenfermerias}/pdf', [FormularioHojaEnfermeriaController::class, 'generarPDF'])
+    ->name('hojasenfermerias.pdf')
+    ->middleware('auth');
+
+Route::get('/traslados/{traslado}/pdf', [TrasladoController::class, 'generarPDF'])
+    ->name('traslados.pdf')
+    ->middleware('auth');
+
+Route::get('/notaspostoperatorias/{notaspostoperatoria}/pdf', [NotaPostoperatoria::class, 'generarPDF'])
+    ->name('notaspostoperatorias.pdf')
+    ->middleware('auth');
 
 //Farmacia
 Route::get('/farmacia/solicitudes/{hojaenfermeria}', [FarmaciaController::class, 'show'])
