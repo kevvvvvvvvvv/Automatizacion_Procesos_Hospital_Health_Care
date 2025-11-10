@@ -55,9 +55,15 @@ class FormularioCatalogoSeeder extends Seeder
         ]);
 
         FormularioCatalogo::create([
-            'nombre_formulario' => 'Nota post-operatoria',
+            'nombre_formulario' => 'Nota postoperatoria',
             'nombre_tabla_fisica' => 'nota_postoperatorias',
             'route_prefix' => 'notaspostoperatorias',
+        ]);
+
+        FormularioCatalogo::create([
+            'nombre_formulario' => 'Estudio anatomopatológico',
+            'nombre_tabla_fisica' => 'solicitud_patologias',
+            'route_prefix' => 'solicitudes-patologias'
         ]);
     }
 }

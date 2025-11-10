@@ -33,15 +33,14 @@ const optionsEstudios = [
 const FormularioPatologia: React.FC<PropsPatologia> = ({ estancia, medicos }) => {
     
     const { data, setData, post, processing, errors } = useForm({
+        user_solicita_id: '',
         estudio_solicitado: '',
         biopsia_pieza_quirurgica: '',
         revision_laminillas: '',
         estudios_especiales: '',
         pcr: '',
-        pieza_remitira: '',
+        pieza_remitida: '',
         datos_clinicos: '',
-        fecha_estudio: '',
-        medico_id: '',
     });
 
     const optionsMedico = medicos.map(medico => ({
@@ -51,7 +50,7 @@ const FormularioPatologia: React.FC<PropsPatologia> = ({ estancia, medicos }) =>
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        post(route('solicitudes-patologia.store', { estancia: estancia.id }), {
+        post(route('solicitudes-patologias.store', { estancia: estancia.id }), {
             preserveScroll: true,
         });
     }
@@ -105,12 +104,13 @@ const FormularioPatologia: React.FC<PropsPatologia> = ({ estancia, medicos }) =>
                     id='pieza_remitida'
                     name = 'pieza_remitida'
                     label="Pieza remitida"
-                    value={data.pieza_remitira}
-                    onChange={e => setData('pieza_remitira', e.target.value)}
-                    error={errors.pieza_remitira}
+                    value={data.pieza_remitida}
+                    onChange={e => setData('pieza_remitida', e.target.value)}
+                    error={errors.pieza_remitida}
                 />
+
                 <InputTextArea
-                    label="Datos Clínicos (Diagnóstico)"
+                    label="Datos clínicos (anotar el número de registro si cuenta con estudio anatomopatólogico previo)"
                     value={data.datos_clinicos}
                     onChange={e => setData('datos_clinicos', e.target.value)}
                     error={errors.datos_clinicos}
@@ -118,14 +118,14 @@ const FormularioPatologia: React.FC<PropsPatologia> = ({ estancia, medicos }) =>
 
                 <SelectInput
                     label="Medico que solicita"
-                    value={data.medico_id}
+                    value={data.user_solicita_id}
                     options={optionsMedico} 
-                    onChange={(value) => setData('medico_id', value as string)}
-                    error={errors.medico_id} 
+                    onChange={(value) => setData('user_solicita_id', value as string)}
+                    error={errors.user_solicita_id} 
                 />
             </div>
             <div className="flex justify-end mt-4">
-                <PrimaryButton type="submit" disabled={processing}>
+                <PrimaryButton type="submit" disabled={processing || !data.biopsia_pieza_quirurgica || !data.datos_clinicos || !data.estudio_solicitado || !data.estudios_especiales || !data.user_solicita_id || !data.pcr || !data.pieza_remitida || !data.revision_laminillas}>
                     {processing ? 'Guardando...' : 'Guardar solicitud de patología'}
                 </PrimaryButton>
             </div>
