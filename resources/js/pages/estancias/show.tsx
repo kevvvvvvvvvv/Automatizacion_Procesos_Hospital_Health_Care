@@ -1,6 +1,6 @@
 import React from 'react';
 import { Head, Link } from '@inertiajs/react';
-import { Plus,ChevronDown, Pencil, Eye, Paperclip } from 'lucide-react'; 
+import { Plus,ChevronDown, Pencil, Eye } from 'lucide-react'; 
 import { Menu } from '@headlessui/react';
 import { route } from 'ziggy-js';
 import { Printer } from 'lucide-react'; 
@@ -168,7 +168,7 @@ const Show = ({ estancia }: ShowEstanciaProps) => {
                                                     active ? 'bg-blue-500 text-white' : 'text-gray-900'
                                                 } group flex rounded-md items-center w-full px-2 py-2 text-sm`}
                                             >
-                                                Añadir nota post-operatoria
+                                                Añadir nota postoperatoria
                                             </Link>
                                         )}
                                     </Menu.Item>

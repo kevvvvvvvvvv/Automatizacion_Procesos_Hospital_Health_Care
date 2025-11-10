@@ -1,7 +1,8 @@
 import React,{ useState} from 'react';
 import { Head, useForm } from '@inertiajs/react';
-import { HojaEnfermeria, HojaPostoperatoria, Paciente, Estancia } from '@/types';
+import { HojaEnfermeria, HojaPostoperatoria, Paciente, Estancia, User } from '@/types';
 import { route } from 'ziggy-js';
+import Swal from 'sweetalert2';
 
 import InputDateTime from '@/components/ui/input-date-time';
 import InputTextArea from '@/components/ui/input-text-area';
@@ -17,18 +18,24 @@ interface Props {
     estancia: Estancia;
     hoja: HojaEnfermeria;
     nota?: HojaPostoperatoria; 
+    users: User[];
 }
 
 type NotaPostoperatoriaComponent = React.FC<Props> & {
     layout: (page: React.ReactElement) => React.ReactNode;
 };
 
-
 const optionsTipoTransfusion = [
     { value: 'plasma fresco congelado', label: 'Plasma fresco congelado' },
     { value: 'paquete globular', label: 'Paquete globular' },
     { value: 'aferesis plaquetaria', label: 'Aféresis plaquetaria' },
-    { value: 'otro', label: 'Otro' },
+];
+
+const optionsCargo = [
+    { value: 'ayudante', label: 'Ayudante' },
+    { value: 'instrumentista', label: 'Instrumentista' },
+    { value: 'anestesiológo', label: 'Anestesiólogo' },
+    { value: 'circulante', label: 'Cirtulante' },
 ];
 
 interface TransfusionAgregada {
@@ -37,7 +44,18 @@ interface TransfusionAgregada {
     temp_id: string; 
 }
 
-const NotaPostoperatoriaForm: NotaPostoperatoriaComponent= ({ paciente, estancia, nota }) => {
+interface AyudanteAgregado {
+    ayudante_id: number;
+    cargo: string;
+    temp_id: string;
+}
+
+const NotaPostoperatoriaForm: NotaPostoperatoriaComponent= ({ paciente, estancia, nota, users }) => {
+
+    const optionsAyudantes = users.map(user => ({
+        value: user.id.toString(), 
+        label: `${user.nombre} ${user.apellido_paterno} ${user.apellido_materno}`
+    }));
 
     const { data, setData, post, patch, processing, errors } = useForm({
         hora_inicio_operacion: nota?.hora_inicio_operacion || '',
@@ -52,7 +70,7 @@ const NotaPostoperatoriaForm: NotaPostoperatoriaComponent= ({ paciente, estancia
         cuantificacion_sangrado: nota?.cuantificacion_sangrado || '',
         incidentes_accidentes: nota?.incidentes_accidentes || '',
         estudios_transoperatorios: nota?.estudios_transoperatorios || '',
-        ayudantes: nota?.ayudantes || '',
+        ayudantes_agregados: [] as AyudanteAgregado[],
         envio_piezas: nota?.envio_piezas || '',
         estado_postquirurgico: nota?.estado_postquirurgico || '',
         manejo_tratamiento: nota?.manejo_tratamiento || '',
@@ -69,8 +87,13 @@ const NotaPostoperatoriaForm: NotaPostoperatoriaComponent= ({ paciente, estancia
     const handleAddTransfusion = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         if (!localTransfusion.tipo_transfusion || !localTransfusion.cantidad) {
-            alert('Debe especificar el tipo y la cantidad de la transfusión.');
-            return;
+            Swal.fire({
+                title: 'Campos Incompletos',
+                text: 'Debe especificar el tipo y la cantidad de la transfusión.',
+                icon: 'error',
+                confirmButtonText: 'Entendido'
+            });
+            return; 
         }
 
         const nuevaTransfusion: TransfusionAgregada = {
@@ -84,6 +107,40 @@ const NotaPostoperatoriaForm: NotaPostoperatoriaComponent= ({ paciente, estancia
     const handleRemoveTransfusion = (temp_id: string) => {
         setData('transfusiones_agregadas',
             data.transfusiones_agregadas.filter(t => t.temp_id !== temp_id)
+        );
+    }
+
+    const [localAyudante, setLocalAyudante] = useState({
+        ayudante_id: '', 
+        cargo: ''
+    });
+
+    const handleAddAyudante = (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault();
+        
+        if(!localAyudante.ayudante_id || !localAyudante.cargo){
+            Swal.fire({
+                title: 'Campos Incompletos',
+                text: 'Debe especificar el personal y el cargo que desempeñó.',
+                icon: 'error',
+                confirmButtonText: 'Entendido'
+            });
+            return;
+        }
+        const nuevoAyudante: AyudanteAgregado = {
+            ayudante_id: Number(localAyudante.ayudante_id), 
+            cargo: localAyudante.cargo,                   
+            temp_id: crypto.randomUUID()
+        }
+        
+        setData('ayudantes_agregados', [...data.ayudantes_agregados, nuevoAyudante]);
+        setLocalAyudante({ ayudante_id: '', cargo: ''});
+    }
+
+
+    const handleRemoveAyudante = (temp_id: string) =>{
+        setData('ayudantes_agregados', 
+            data.ayudantes_agregados.filter(t => t.temp_id !== temp_id)
         );
     }
 
@@ -211,12 +268,14 @@ const NotaPostoperatoriaForm: NotaPostoperatoriaComponent= ({ paciente, estancia
                             error={errors.incidentes_accidentes}
                             rows={3}
                         />
-                        <InputTextArea
-                            label="Cuantificación de sangrado, si lo hubo y en su caso transfusiones"
+                        <InputText
+                            id="cuantificacion_sangre"
+                            name="cuantificacion_sangre"
+                            label="Cuantificación de sangrado (ml)"
                             value={data.cuantificacion_sangrado}
                             onChange={e => setData('cuantificacion_sangrado', e.target.value)}
                             error={errors.cuantificacion_sangrado}
-                            rows={2}
+                            type='number'
                         />
                         <InputTextArea
                             label="Estudios de servicios auxiliares de diagnóstico y tratamiento transoperatorios"
@@ -225,13 +284,7 @@ const NotaPostoperatoriaForm: NotaPostoperatoriaComponent= ({ paciente, estancia
                             error={errors.estudios_transoperatorios}
                             rows={2}
                         />
-                        <InputTextArea
-                            label=" Ayudantes, instrumentistas, anestesiólogo y circulante"
-                            value={data.ayudantes}
-                            onChange={e => setData('ayudantes', e.target.value)}
-                            error={errors.ayudantes}
-                            rows={2}
-                        />
+
                         <InputTextArea
                             label="Envío de piezas o biopsias quirúrgicas para examen macroscópico e histopatológico"
                             value={data.envio_piezas}
@@ -260,11 +313,11 @@ const NotaPostoperatoriaForm: NotaPostoperatoriaComponent= ({ paciente, estancia
                             onChange={e => setLocalTransfusion(d => ({ ...d, cantidad: e.target.value }))}
                             error={errors['transfusiones_agregadas.0.cantidad']}
                         />
-                        <PrimaryButton type="button" onClick={handleAddTransfusion}>
-                            Agregar
-                        </PrimaryButton>
                     </div>
-                    <h5 className="text-sm font-semibold mt-6 mb-2">Transfusiones a Registrar</h5>
+                    <PrimaryButton type="button" onClick={handleAddTransfusion}>
+                        Agregar
+                    </PrimaryButton>
+                    <h5 className="text-sm font-semibold mt-6 mb-2">Transfusiones a registrar</h5>
                     <div className="overflow-x-auto border rounded-lg">
                         <table className="min-w-full">
                             <thead className="bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase">
@@ -290,6 +343,67 @@ const NotaPostoperatoriaForm: NotaPostoperatoriaComponent= ({ paciente, estancia
                                                 <button
                                                     type="button"
                                                     onClick={() => handleRemoveTransfusion(t.temp_id)}
+                                                    className="text-yellow-600 hover:text-yellow-900"
+                                                >
+                                                    Quitar
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    ))
+                                )}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div className="mt-6 pt-6 border-t mb-8">
+                    <h4 className="text-md font-semibold mb-3">Registro de ayudantes, instrumentistas, anestesiólogo y circulante</h4>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+                        <SelectInput
+                            label="Personal encargado"
+                            options={optionsAyudantes}
+                            value={localAyudante.ayudante_id}
+                            onChange={(value) => setLocalAyudante(d => ({ ...d, ayudante_id: value as string }))}
+                            error={errors['ayudantes_agregados.0.ayudante_id']}
+                        />
+                        <SelectInput
+                            label='Cargo'
+                            options={optionsCargo}
+                            value={localAyudante.cargo}
+                            onChange={(value)=> setLocalAyudante(d => ({...d, cargo: value as string}))}
+                        />
+                    </div>
+                    <PrimaryButton type="button" onClick={handleAddAyudante}>
+                        Agregar
+                    </PrimaryButton>
+                    <h5 className="text-sm font-semibold mt-6 mb-2">Ayudantes, instrumentistas, anestesiólogo y circulante a registrar</h5>
+                    <div className="overflow-x-auto border rounded-lg">
+                        <table className="min-w-full">
+                            <thead className="bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase">
+                                <tr>
+                                    <th className="px-4 py-2">Personal</th>
+                                    <th className="px-4 py-2">Cargo</th>
+                                    <th className="px-4 py-2">Acción</th>
+                                </tr>
+                            </thead>
+                            <tbody className="bg-white divide-y divide-gray-200">
+                                {data.ayudantes_agregados.length === 0 ? (
+                                    <tr>
+                                        <td colSpan={3} className="px-4 py-4 text-sm text-gray-500 text-center">
+                                            No se han agregado ayudantes.
+                                        </td>
+                                    </tr>
+                                ) : (
+                                    data.ayudantes_agregados.map((ayudante) => (
+                                        <tr key={ayudante.temp_id}>
+
+                                            <td className="px-4 py-4 text-sm text-gray-900">
+                                                {optionsAyudantes.find(opt => opt.value === ayudante.ayudante_id.toString())?.label || '...'}
+                                            </td>
+                                            <td className="px-4 py-4 text-sm text-gray-500">{ayudante.cargo}</td>
+                                            <td className="px-4 py-4 text-sm">
+                                                <button
+                                                    type="button"
+                                                    onClick={() => handleRemoveAyudante(ayudante.temp_id)}
                                                     className="text-yellow-600 hover:text-yellow-900"
                                                 >
                                                     Quitar

@@ -32,7 +32,7 @@ return new class extends Migration
             $table->text('incidentes_accidentes');
             $table->text('cuantificacion_sangrado');
             $table->text('estudios_transoperatorios');
-            $table->text('ayudantes');
+            
             $table->text('estado_postquirurgico');
             $table->text('manejo_tratamiento');
             $table->text('pronostico');
