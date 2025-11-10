@@ -372,10 +372,10 @@ export interface Interconsulta{
 }
 export interface Traslado{
     id:number;
-    unidad_medica_envia:String;
-    unidad_medica_recibe:String;
-    motivo_translado:String;
-    impresion_diagnostica:String;
+    unidad_medica_envia:string;
+    unidad_medica_recibe:string;
+    motivo_translado:string;
+    impresion_diagnostica:string;
     terapeutica_empleada: string | null;
 }
 export interface AplicacionMedicamento {
@@ -456,6 +456,7 @@ export interface Preoperatoria {
     
     
 }
+<<<<<<< HEAD
 export interface notaUrgencia {
     id: number;
     ta: string;
@@ -472,4 +473,42 @@ export interface notaUrgencia {
     diagnostico_problemas_clinicos:string;
     tratamiento: string;
     pronostico:string;
+=======
+
+ export interface HojaPostoperatoria {
+    id: number;
+    hora_inicio_operacion: string; 
+    hora_termino_operacion: string; 
+
+    diagnostico_preoperatorio: string | null; 
+    operacion_planeada: string | null;
+    operacion_realizada: string | null;
+    diagnostico_postoperatorio: string | null;
+
+    descripcion_tecnica_quirurgica: string | null;
+    hallazgos_transoperatorios: string | null;
+
+    reporte_conteo: string | null;
+    incidentes_accidentes: string | null;
+    cuantificacion_sangrado: string | null;
+    estudios_transoperatorios: string | null;
+
+    envio_piezas: string | null;
+    
+    estado_postquirurgico: string | null;
+    manejo_tratamiento: string | null; 
+    pronostico: string | null;
+    hallazgos_importancia: string | null;
+
+    created_at: string;
+    updated_at: string;
+}
+
+
+export interface TransfusionRealizada {
+    id: number;
+    nota_postoperatoria_id: numer;
+    tipo_transfucion: string;
+    cantidad: string;
+>>>>>>> 10b5ae63badc50e0b617aab98a2de11801ee75f6
 }
