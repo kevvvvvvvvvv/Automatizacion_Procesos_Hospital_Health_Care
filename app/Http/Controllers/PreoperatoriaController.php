@@ -31,21 +31,26 @@ class PreoperatoriaController extends Controller
         $validatedData = $request->validated();
 
         DB::beginTransaction();
-        $formularioInstancia = FormularioInstancia::create([
-            'fecha_hora' => now(),  
-            'estancia_id' => $estancia->id,
-            'formulario_catalogo_id' => 7, 
-            'user_id' => Auth::id(),
-        ]);
-        $preoperatoria = Preoperatoria::create([
-            'id' => $formularioInstancia->id,
-            ...$validatedData
-        ]);
-        //dd($preoperatoria->toArray());
-        DB::commit();
-        return redirect()->route('estancias.show', [
-            'estancia' => $estancia->id,
-        ])->with('success', 'Preoperatoria creada exitosamente.');
+        try {
+            $formularioInstancia = FormularioInstancia::create([
+                'fecha_hora' => now(),  
+                'estancia_id' => $estancia->id,
+                'formulario_catalogo_id' => 7, 
+                'user_id' => Auth::id(),
+            ]);
+            $preoperatoria = Preoperatoria::create([
+                'id' => $formularioInstancia->id,
+                ...$validatedData
+            ]);
+            //dd($preoperatoria->toArray());
+            DB::commit();
+            return redirect()->route('estancias.show', [
+                'estancia' => $estancia->id,
+            ])->with('success', 'Preoperatoria creada exitosamente.');
+    } catch (\Exception $e) {
+        DB::rollBack();
+        return redirect()->back()->withErrors(['error' => 'Error al crear la preoperatoria: ' . $e->getMessage()])->withInput();
+    }
     }
     public function show(Paciente $paciente, Estancia $estancia, Preoperatoria $preoperatoria)
     {

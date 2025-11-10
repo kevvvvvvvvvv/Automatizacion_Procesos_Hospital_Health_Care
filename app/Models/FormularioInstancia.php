@@ -57,5 +57,8 @@ class FormularioInstancia extends Model
     {
         return $this->hasOne(Preoperatoria::class,'id','id');
     }
-    
+    public function notaUrgencia(): HasOne
+    {
+        return $this->hasOne(NotaEvolucion::class,'id','id');
+    }
 }
