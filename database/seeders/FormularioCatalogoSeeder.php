@@ -42,6 +42,7 @@ class FormularioCatalogoSeeder extends Seeder
             'nombre_tabla_fisica' => 'hoja_enfermerias',
             'route_prefix' => 'hojasenfermerias',
         ]);
+
         FormularioCatalogo::create([
             'nombre_formulario' => 'Traslados',
             'nombre_tabla_fisica' => 'traslados',
@@ -52,10 +53,18 @@ class FormularioCatalogoSeeder extends Seeder
             'nombre_tabla_fisica' => 'preoperatorias',
             'route_prefix' => 'preoperatorias',
         ]);
+<<<<<<< HEAD
         FormularioCatalogo::create([
             'nombre_formulario' => 'Nota de urgencias',
             'nombre_tabla_fisica' => 'nota_urgencias',
             'route_prefix' => 'notasurgencias',
+=======
+
+        FormularioCatalogo::create([
+            'nombre_formulario' => 'Nota post-operatoria',
+            'nombre_tabla_fisica' => 'nota_postoperatorias',
+            'route_prefix' => 'notaspostoperatorias',
+>>>>>>> 10b5ae63badc50e0b617aab98a2de11801ee75f6
         ]);
     }
 }

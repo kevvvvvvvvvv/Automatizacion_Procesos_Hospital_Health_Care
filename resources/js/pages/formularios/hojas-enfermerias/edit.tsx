@@ -28,6 +28,7 @@ interface CreateProps {
     catalogoEstudios: CatalogoEstudio[];
     solicitudesAnteriores: SolicitudEstudio[];
     medicos: User[];
+    usuarios: User[];
 }
 
 type SeccionHoja = 'signos' | 'medicamentos' | 'terapia_iv' | 'estudios' | 'sondas' | 'liquidos' | 'dieta' | 'observaciones' | 'graficas';
@@ -157,7 +158,7 @@ const Observaciones = ({hojasenfermeria}: Props) => {
     )
 }
 
-const Create: CreateComponent = ({ paciente, estancia, hojaenfermeria ,medicamentos, soluciones, dataParaGraficas, catalogoEstudios, solicitudesAnteriores, medicos}) => {
+const Create: CreateComponent = ({ paciente, estancia, hojaenfermeria ,medicamentos, soluciones, dataParaGraficas, catalogoEstudios, solicitudesAnteriores, medicos, usuarios}) => {
 
     const [activeSection, setActiveSection] = useState<SeccionHoja>('signos');
 
@@ -215,7 +216,7 @@ const Create: CreateComponent = ({ paciente, estancia, hojaenfermeria ,medicamen
             case 'dieta':
                 return <DietasForm
                         hoja={hojaenfermeria}
-                        usuarios={}/>
+                        />
             case 'observaciones':
                 return <Observaciones
                         hojasenfermeria={hojaenfermeria}/>
