@@ -30,13 +30,14 @@ class FormularioNotaPostoperatorioController extends Controller
         return Inertia::render('formularios/nota-postoperatorio/create',[
             'paciente' => $paciente,
             'estancia' => $estancia,
+            'users' => $personal,
         ]);
     }
 
     public function store(NotaPostoperatoriaRequest $request, Paciente $paciente, Estancia $estancia)
     {
         $validatedData = $request->validated();
-        dd($request->toArray());
+        ;
         DB::beginTransaction();
         try{
             $formulario = FormularioInstancia::create([

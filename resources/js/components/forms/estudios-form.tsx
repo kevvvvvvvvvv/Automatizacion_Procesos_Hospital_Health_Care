@@ -36,7 +36,8 @@ const FormularioPatologia: React.FC<PropsPatologia> = ({ estancia, medicos }) =>
         estudio_solicitado: '',
         biopsia_pieza_quirurgica: '',
         revision_laminillas: '',
-        estudios_especiales_pcr: '',
+        estudios_especiales: '',
+        pcr: '',
         pieza_remitira: '',
         datos_clinicos: '',
         fecha_estudio: '',
@@ -45,7 +46,7 @@ const FormularioPatologia: React.FC<PropsPatologia> = ({ estancia, medicos }) =>
 
     const optionsMedico = medicos.map(medico => ({
         value: medico.id.toString(),
-        label: medico.nombre 
+        label: `${medico.nombre} ${medico.apellido_paterno} ${medico.apellido_materno}`
     }))
 
     const handleSubmit = (e: React.FormEvent) => {
@@ -86,10 +87,20 @@ const FormularioPatologia: React.FC<PropsPatologia> = ({ estancia, medicos }) =>
                     id='estudios_especiales'
                     name = 'estudios_especiales'
                     label="Estudios especiales"
-                    value={data.estudios_especiales_pcr}
-                    onChange={e => setData('estudios_especiales_pcr', e.target.value)}
-                    error={errors.estudios_especiales_pcr}
+                    value={data.estudios_especiales}
+                    onChange={e => setData('estudios_especiales', e.target.value)}
+                    error={errors.estudios_especiales}
                 />
+
+                <InputText
+                    id='pcr'
+                    name = 'pcr'
+                    label="PCR"
+                    value={data.pcr}
+                    onChange={e => setData('pcr', e.target.value)}
+                    error={errors.pcr}
+                />
+
                 <InputText
                     id='pieza_remitida'
                     name = 'pieza_remitida'

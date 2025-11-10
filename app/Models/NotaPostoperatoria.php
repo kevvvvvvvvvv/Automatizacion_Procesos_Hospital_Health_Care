@@ -25,7 +25,6 @@ class NotaPostoperatoria extends Model
         'incidentes_accidentes',
         'cuantificacion_sangrado',
         'estudios_transoperatorios',
-        'ayudantes',
         'estado_postquirurgico',
         'manejo_tratamiento',
         'pronostico',

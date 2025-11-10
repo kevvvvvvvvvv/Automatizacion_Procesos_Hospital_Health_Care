@@ -372,10 +372,10 @@ export interface Interconsulta{
 }
 export interface Traslado{
     id:number;
-    unidad_medica_envia:String;
-    unidad_medica_recibe:String;
-    motivo_translado:String;
-    impresion_diagnostica:String;
+    unidad_medica_envia:string;
+    unidad_medica_recibe:string;
+    motivo_translado:string;
+    impresion_diagnostica:string;
     terapeutica_empleada: string | null;
 }
 export interface AplicacionMedicamento {
@@ -475,7 +475,6 @@ export interface Preoperatoria {
     cuantificacion_sangrado: string | null;
     estudios_transoperatorios: string | null;
 
-    ayudantes: string | null;
     envio_piezas: string | null;
     
     estado_postquirurgico: string | null;
