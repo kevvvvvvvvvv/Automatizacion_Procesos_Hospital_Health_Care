@@ -456,3 +456,20 @@ export interface Preoperatoria {
     
     
 }
+export interface notaUrgencia {
+    id: number;
+    ta: string;
+    fc: number;
+    fr: number;
+    temp: number;
+    peso: number;
+    talla:number;
+    motivo_atencion: string;
+    resumen_interrogatorio: string;
+    estado_mental:string;
+    exploracion_fisica:string;
+    resultados_relevantes:string;
+    diagnostico_problemas_clinicos:string;
+    tratamiento: string;
+    pronostico:string;
+}
