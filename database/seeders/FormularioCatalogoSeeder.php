@@ -52,5 +52,10 @@ class FormularioCatalogoSeeder extends Seeder
             'nombre_tabla_fisica' => 'preoperatorias',
             'route_prefix' => 'preoperatorias',
         ]);
+        FormularioCatalogo::create([
+            'nombre_formulario' => 'Nota de urgencias',
+            'nombre_tabla_fisica' => 'nota_urgencias',
+            'route_prefix' => 'notasurgencias',
+        ]);
     }
 }
