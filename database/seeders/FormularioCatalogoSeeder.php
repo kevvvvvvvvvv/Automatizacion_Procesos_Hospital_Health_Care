@@ -55,6 +55,19 @@ class FormularioCatalogoSeeder extends Seeder
         ]);
 
         FormularioCatalogo::create([
+            'nombre_formulario' => 'Nota post-operatoria',
+            'nombre_tabla_fisica' => 'nota_postoperatorias',
+            'route_prefix' => 'notaspostoperatorias',
+        ]);
+        
+        FormularioCatalogo::create([
+            'nombre_formulario' => 'Nota de urgencias',
+            'nombre_tabla_fisica' => 'nota_urgencias',
+            'route_prefix' => 'notasurgencias',
+        ]);
+
+        
+        FormularioCatalogo::create([
             'nombre_formulario' => 'Nota postoperatoria',
             'nombre_tabla_fisica' => 'nota_postoperatorias',
             'route_prefix' => 'notaspostoperatorias',
@@ -70,6 +83,11 @@ class FormularioCatalogoSeeder extends Seeder
             'nombre_formulario' => 'Estudio anatomopatológico',
             'nombre_tabla_fisica' => 'solicitud_patologias',
             'route_prefix' => 'solicitudes-patologias'
+        ]);
+        FormularioCatalogo::create([
+            'nombre_formulario' => 'Nota de egreso',
+            'nombre_tabla_fisica' => 'nota_egreso',
+            'route_prefix' => 'notasegresos',
         ]);
     }
 }
