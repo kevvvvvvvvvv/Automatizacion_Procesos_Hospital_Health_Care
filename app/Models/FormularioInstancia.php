@@ -69,13 +69,10 @@ class FormularioInstancia extends Model
     public function notaUrgencia(): HasOne
     {
         return $this->hasOne(NotaUrgencia::class,'id','id');
-<<<<<<< HEAD
-=======
     }
     
     public function estudioPatologia(): HasMany
     {
         return $this->hasMany(SolicitudPatologia::class, 'id', 'id');
->>>>>>> 2c867426a9ad68234f4e0a17d1da6b375574ca07
     }
 }
