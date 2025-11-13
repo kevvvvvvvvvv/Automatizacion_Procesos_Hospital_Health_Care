@@ -106,21 +106,63 @@
         </div>
 
         <div class="section-content">
-            <p><strong>Descripción de la técnica quirúrgica:</strong></p>
-            <p>{{ $notaData->descripcion_tecnica_quirurgica ?? 'Sin datos.' }}</p>
+            <p><strong>Descripción de la técnica quirúrgica:</strong>
+            {{ $notaData->descripcion_tecnica_quirurgica ?? 'Sin datos.' }}</p>
             
-            <p><strong>Hallazgos transoperatorios:</strong></p>
-            <p>{{ $notaData->hallazgos_transoperatorios ?? 'Sin datos.' }}</p>
+            <p><strong>Hallazgos transoperatorios:</strong>
+            {{ $notaData->hallazgos_transoperatorios ?? 'Sin datos.' }}</p>
             
-            <p><strong>Hallazgos de importancia:</strong></p>
-            <p>{{ $notaData->hallazgos_importancia ?? 'Sin datos.' }}</p>
+            <p><strong>Hallazgos de importancia:</strong>
+            {{ $notaData->hallazgos_importancia ?? 'Sin datos.' }}</p>
         </div>
 
         <div class="section-content">
-            <p><strong>Reporte de conteo (gasas, instrumental, etc.):</strong> {{ $notaData->reporte_conteo ?? 'Sin datos.' }}</p>
+            <p><strong>Reporte del conteo de gasas, compresas y de instrumental quirúrgico:</strong> {{ $notaData->reporte_conteo ?? 'Sin datos.' }}</p>
             <p><strong>Incidentes y accidentes:</strong> {{ $notaData->incidentes_accidentes ?? 'Sin datos.' }}</p>
-            <p><strong>Cuantificación de sangrado:</strong> {{ $notaData->cuantificacion_sangrado ?? 'Sin datos.' }}</p>
-            <p><strong>Estudios transoperatorios (Patología, etc.):</strong> {{ $notaData->estudios_transoperatorios ?? 'Sin datos.' }}</p>
+            <p><strong>Cuantificación de sangrado:</strong> {{ $notaData->cuantificacion_sangrado . ' mililitros' ?? 'Sin datos.' }}</p>
+            <p><strong>Transfusiones:</strong> 
+                @foreach ($notaData->transfusiones ?? [] as $transfusion )
+                    {{ $transfusion->tipo_transfusion . ' '}} <strong> cantidad:  </strong>{{ $transfusion->cantidad }},
+                @endforeach
+            </p>
+        </div>
+
+            
+        <div class="section-content">
+            </p>
+            <p><strong>Estudios de servicios auxiliares de diagnóstico y tratamiento transoperatorios:</strong> {{ $notaData->estudios_transoperatorios ?? 'Sin datos.' }}</p>
+            <p><strong>Ayudantes:</strong>
+                @foreach ($notaData->personalEmpleados ?? [] as $personal_empleado)
+                    @if($personal_empleado->cargo == 'ayudante')
+                        {{ $personal_empleado->user->nombre . ' ' . $personal_empleado->user->apellido_paterno . ' ' . $personal_empleado->user->apellido_materno}}
+                    @endif
+                @endforeach
+            </p>
+
+            <p><strong>Instrumentistas:</strong>
+                @foreach ($notaData->personalEmpleados ?? [] as $personal_empleado)
+                    @if($personal_empleado->cargo == 'instrumentista')
+                        {{ $personal_empleado->user->nombre . ' ' . $personal_empleado->user->apellido_paterno . ' ' . $personal_empleado->user->apellido_materno}}
+                    @endif
+                @endforeach
+            </p>
+
+            <p><strong>Anestesiólogos:</strong>
+                @foreach ($notaData->personalEmpleados ?? [] as $personal_empleado)
+                    @if($personal_empleado->cargo == 'anestesiologo')
+                        {{ $personal_empleado->user->nombre . ' ' . $personal_empleado->user->apellido_paterno . ' ' . $personal_empleado->user->apellido_materno}}
+                    @endif
+                @endforeach
+            </p>
+
+            <p><strong>Circulante:</strong>
+                @foreach ($notaData->personalEmpleados ?? [] as $personal_empleado)
+                    @if($personal_empleado->cargo == 'circulante')
+                        {{ $personal_empleado->user->nombre . ' ' . $personal_empleado->user->apellido_paterno . ' ' . $personal_empleado->user->apellido_materno}}
+                    @endif
+                @endforeach
+            </p>
+
             <p><strong>Envío de piezas:</strong> {{ $notaData->envio_piezas ?? 'Sin datos.' }}</p>
         </div>
 

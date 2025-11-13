@@ -34,7 +34,7 @@ const optionsTipoTransfusion = [
 const optionsCargo = [
     { value: 'ayudante', label: 'Ayudante' },
     { value: 'instrumentista', label: 'Instrumentista' },
-    { value: 'anestesiológo', label: 'Anestesiólogo' },
+    { value: 'anestesiologo', label: 'Anestesiólogo' },
     { value: 'circulante', label: 'Cirtulante' },
 ];
 

@@ -93,7 +93,7 @@ class FormularioNotaPostoperatorioController extends Controller
         $notaspostoperatoria->load(
             'formularioInstancia.estancia',
             'formularioInstancia.user.credenciales',
-            'personalEmpleados',
+            'personalEmpleados.user',
             'transfusiones'
         );
 
@@ -116,6 +116,7 @@ class FormularioNotaPostoperatorioController extends Controller
             'estancia' => $estancia
         ];
 
+        //dd($notaspostoperatoria->toArray());
         return Pdf::view('pdfs.nota-postoperatoria',[
             'notaData' => $notaspostoperatoria,
             'medico' => $medico
