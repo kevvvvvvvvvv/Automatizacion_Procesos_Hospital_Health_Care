@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class NotaUrgencia extends Model
 {
     public const CATALOGO_ID = 9;
-    protected $table = 'nota_urgencia';
+    protected $table = 'nota_urgencias';
     protected $fillable = [
         'id',
         'ta',

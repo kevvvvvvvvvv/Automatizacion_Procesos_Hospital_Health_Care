@@ -88,6 +88,13 @@ Route::patch('hojasterapiasiv/{hojasenfermeria}/{hojasterapiasiv}',[FormularioHo
 Route::post('hojasmedicamentos/{hojasenfermeria}',[FormularioHojaMedicamentoController::class, 'store'])->name('hojasmedicamentos.store');
 Route::patch('hojasmedicamentos/{hojasenfermeria}/{hojasmedicamento}',[FormularioHojaMedicamentoController::class, 'update'])->name('hojasmedicamentos.update');
 
+
+Route::get(
+    '/pacientes/{paciente}/estancias/{estancia}/notas-urgencias/{notaUrgencia}',
+    [NotaUrgenciaController::class, 'show']
+)->name('pacientes.estancias.notasurgencias.show');
+
+
     Route::post('hojassignos/{hojasenfermeria}',[FormularioHojaSignosController::class, 'store'])->name('hojassignos.store');
     
     Route::resource('pacientes.estancias.interconsultas', InterconsultaController::class)
@@ -167,6 +174,10 @@ Route::get('/traslados/{traslado}/pdf', [TrasladoController::class, 'generarPDF'
 
 Route::get('/notaspostoperatorias/{notaspostoperatoria}/pdf', [NotaPostoperatoria::class, 'generarPDF'])
     ->name('notaspostoperatorias.pdf')
+    ->middleware('auth');
+
+    Route::get('/notasurgencias/{notasurgencias}/pdf', [NotaUrgenciaController::class, 'generarPDF'])
+    ->name('notasurgencias.pdf')
     ->middleware('auth');
 
 //Farmacia

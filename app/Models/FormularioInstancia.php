@@ -59,6 +59,6 @@ class FormularioInstancia extends Model
     }
     public function notaUrgencia(): HasOne
     {
-        return $this->hasOne(NotaEvolucion::class,'id','id');
+        return $this->hasOne(NotaUrgencia::class,'id','id');
     }
 }
