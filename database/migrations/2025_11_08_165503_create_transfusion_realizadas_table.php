@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('transfucion_realizadas', function (Blueprint $table) {
+        Schema::create('transfusion_realizadas', function (Blueprint $table) {
             $table->id();
             $table->foreignId('nota_postoperatoria_id')
                 ->constrained('nota_postoperatorias')
@@ -27,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('transfucion_realizadas');
+        Schema::dropIfExists('transfusion_realizadas');
     }
 };

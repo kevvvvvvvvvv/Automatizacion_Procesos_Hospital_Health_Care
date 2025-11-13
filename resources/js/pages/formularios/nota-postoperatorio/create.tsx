@@ -34,7 +34,7 @@ const optionsTipoTransfusion = [
 const optionsCargo = [
     { value: 'ayudante', label: 'Ayudante' },
     { value: 'instrumentista', label: 'Instrumentista' },
-    { value: 'anestesiológo', label: 'Anestesiólogo' },
+    { value: 'anestesiologo', label: 'Anestesiólogo' },
     { value: 'circulante', label: 'Cirtulante' },
 ];
 
@@ -306,7 +306,7 @@ const NotaPostoperatoriaForm: NotaPostoperatoriaComponent= ({ paciente, estancia
                             error={errors['transfusiones_agregadas.0.tipo_transfusion']}
                         />
                         <InputText 
-                            label="Cantidad (unidades, ml, etc.)"
+                            label="Cantidad (unidades)"
                             id="cantidad_transfusion_local"
                             name='cantidad_transfusion_local'
                             value={localTransfusion.cantidad}

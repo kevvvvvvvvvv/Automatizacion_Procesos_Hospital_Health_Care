@@ -4,10 +4,9 @@
     <meta charset="UTF-8">
     <title>Nota de Interconsulta / Evolución</title>
     <style>
-        /* Estilos copiados y adaptados de la Historia Clínica */
         @page {
             size: A4;
-            margin-top: 5cm; /* Margen superior para el headerView */
+            margin-top: 5cm;
             margin-bottom: 1.5cm;
             margin-left: 1.2cm;
             margin-right: 1.2cm;
