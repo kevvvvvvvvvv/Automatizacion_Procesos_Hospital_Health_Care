@@ -17,7 +17,7 @@ return new class extends Migration
                 ->constrained('nota_postoperatorias')
                 ->onDelete('cascade');
             $table->string('tipo_transfucion');
-            $table->stirng('cantidad');
+            $table->string('cantidad');
             $table->timestamps();
         });
     }
