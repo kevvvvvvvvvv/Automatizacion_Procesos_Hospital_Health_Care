@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('nota_postoperatoria_id')
                 ->constrained('nota_postoperatorias')
                 ->onDelete('cascade');
-            $table->string('tipo_transfusion');
+            $table->string('tipo_transfucion');
             $table->string('cantidad');
             $table->timestamps();
         });
