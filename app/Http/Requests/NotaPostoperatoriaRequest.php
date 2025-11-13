@@ -43,7 +43,6 @@ class NotaPostoperatoriaRequest extends FormRequest
             'estudios_transoperatorios' => 'required|string',
             
             // Equipo y Piezas (Opcionales)
-            'ayudantes' => 'nullable|string',
             'envio_piezas' => 'nullable|string',
             
             // Post-quirúrgico (Requeridos)
@@ -51,6 +50,15 @@ class NotaPostoperatoriaRequest extends FormRequest
             'manejo_tratamiento' => 'required|string',
             'pronostico' => 'required|string',
             'hallazgos_importancia' => 'required|string',
+
+            'ayudantes_agregados' => 'nullable|array',
+            'ayudantes_agregados.*.ayudante_id' => 'required|numeric|exists:users,id',
+            'ayudantes_agregados.*.cargo' => 'required|string|max:255',
+
+            // Reglas para Transfusiones
+            'transfusiones_agregadas' => 'nullable|array',
+            'transfusiones_agregadas.*.tipo_transfusion' => 'required|string|max:255',
+            'transfusiones_agregadas.*.cantidad' => 'required|string|max:255',
         ];
     }
 

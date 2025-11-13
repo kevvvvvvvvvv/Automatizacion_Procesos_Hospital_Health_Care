@@ -18,7 +18,6 @@ class SolicitudEstudioPatologiaController extends Controller
 {
     public function store(SolicitudPatologiaRequest $request, Estancia $estancia)
     {
-        //dd($request->toArray());
         DB::beginTransaction();
         try{
             $validatedData = $request->validated();
@@ -26,14 +25,14 @@ class SolicitudEstudioPatologiaController extends Controller
             $formularioInstancia = FormularioInstancia::create([
                 'fecha_hora' => now(),
                 'estancia_id' => $estancia->id,
-                'formulario_catalogo_id' => 10,
+                'formulario_catalogo_id' => SolicitudPatologia::ID_CATALOGO,
                 'user_id' =>  Auth::id(),
             ]);
 
             SolicitudPatologia::create([
                 ...$validatedData,
                 'id' => $formularioInstancia->id,
-                'fecha_solucitud' => now(),
+                'fecha_estudio' => now(),
             ]);
 
             DB::commit();
@@ -43,6 +42,10 @@ class SolicitudEstudioPatologiaController extends Controller
             Log::error('Error al crear la solicitud de estudio anatomopatológico');
             return Redirect::back()->with('error','Error al crear la solicitud de estudio anatomopatológico: ' . $e->getMessage());    
         }
+    }
 
+    public function generarPDF()
+    {
+        
     }
 }

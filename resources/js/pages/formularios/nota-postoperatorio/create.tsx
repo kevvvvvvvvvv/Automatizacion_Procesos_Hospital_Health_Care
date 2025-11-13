@@ -306,7 +306,7 @@ const NotaPostoperatoriaForm: NotaPostoperatoriaComponent= ({ paciente, estancia
                             error={errors['transfusiones_agregadas.0.tipo_transfusion']}
                         />
                         <InputText 
-                            label="Cantidad (unidades, ml, etc.)"
+                            label="Cantidad (unidades)"
                             id="cantidad_transfusion_local"
                             name='cantidad_transfusion_local'
                             value={localTransfusion.cantidad}

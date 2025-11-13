@@ -2,11 +2,11 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Nota de Interconsulta / Evolución</title>
+    <title>Nota postoperatoria</title>
     <style>
         @page {
             size: A4;
-            margin-top: 5cm;
+            margin-top: 5.5cm;
             margin-bottom: 1.5cm;
             margin-left: 1.2cm;
             margin-right: 1.2cm;
@@ -50,6 +50,21 @@
             margin: 0 0 8px 0;
         }
 
+        .one-line{
+            display: inline-block;
+            padding-right: 10px;
+        }
+
+        .contenedor-flex {
+            display: flex;
+            gap: 10px;
+        }
+
+        .cosa-inicio,
+        .cosa-fin {
+            flex: 1;
+        }
+
         .section-content {
             padding-left: 5px;
         }
@@ -77,48 +92,45 @@
 </head>
 <body>
     <main>
-        <h1>Nota de Interconsulta</h1>
-
-        {{-- SECCIÓN 1: RESUMEN CLÍNICO --}}
-        <h3>Resumen Clínico</h3>
-        <div class="section-content">
-            <p><strong>Motivo de la Atención o Interconsulta:</strong> {{ $notaData['motivo_de_la_atencion_o_interconsulta'] ?? 'Sin datos.' }}</p>
-            <p><strong>Resumen del Interrogatorio:</strong> {{ $notaData['resumen_del_interrogatorio'] ?? 'Sin datos.' }}</p>
+        <h1>Nota postoperatoria</h1>
+        <div class="section-content contenedor-flex">
+            <p class="hora-inicio"><strong>Hora inicio operación:</strong> {{ $notaData->hora_inicio_operacion ? \Carbon\Carbon::parse($notaData->hora_inicio_operacion)->format('H:i') : 'N/A' }}</p>
+            <p class="hora-fin"><strong>Hora término operación:</strong> {{ $notaData->hora_termino_operacion ? \Carbon\Carbon::parse($notaData->hora_termino_operacion)->format('H:i') : 'N/A' }}</p>
         </div>
 
-        {{-- SECCIÓN 2: EXPLORACIÓN FÍSICA Y SIGNOS VITALES --}}
-        <h3>Exploración Física</h3>
         <div class="section-content">
-            <p>{{ $notaData['exploracion_fisica'] ?? 'Sin datos.' }}</p>
-            <p>
-                <strong>Signos Vitales:</strong> 
-                Tensión arterial.: <strong>{{ $notaData['ta'] ?? 'N/A' }}</strong> mm Hg | 
-                Frecuencia cardíaca: <strong>{{ $notaData['fc'] ?? 'N/A' }}</strong> x min | 
-                Frecuencia respiratoría: <strong>{{ $notaData['fr'] ?? 'N/A' }}</strong> x min | 
-                Temperatura: <strong>{{ $notaData['temp'] ?? 'N/A' }}</strong> °C | 
-                Peso: <strong>{{ $notaData['peso'] ?? 'N/A' }}</strong> kg | 
-                Talla: <strong>{{ $notaData['talla'] ?? 'N/A' }}</strong> cm
-            </p>
-            <p><strong>Estado Mental:</strong> {{ $notaData['estado_mental'] ?? 'Sin datos.' }}</p>
+            <p><strong>Diagnóstico preoperatorio:</strong> {{ $notaData->diagnostico_preoperatorio ?? 'Sin datos.' }}</p>
+            <p><strong>Operación planeada:</strong> {{ $notaData->operacion_planeada ?? 'Sin datos.' }}</p>
+            <p><strong>Operación realizada:</strong> {{ $notaData->operacion_realizada ?? 'Sin datos.' }}</p>
+            <p><strong>Diagnóstico postoperatorio:</strong> {{ $notaData->diagnostico_postoperatorio ?? 'Sin datos.' }}</p>
         </div>
 
-        {{-- SECCIÓN 3: ANÁLISIS Y DIAGNÓSTICO --}}
-        <h3>Análisis y Diagnóstico</h3>
         <div class="section-content">
-            <p><strong>Resultados Relevantes de Estudios:</strong> {{ $notaData['resultados_relevantes_del_estudio_diagnostico'] ?? 'Sin datos.' }}</p>
-            <p><strong>Diagnóstico o Problemas Clínicos:</strong> {{ $notaData['diagnostico_o_problemas_clinicos'] ?? 'Sin datos.' }}</p>
-            <p><strong>Criterio Diagnóstico:</strong> {{ $notaData['criterio_diagnostico'] ?? 'Sin datos.' }}</p>
+            <p><strong>Descripción de la técnica quirúrgica:</strong></p>
+            <p>{{ $notaData->descripcion_tecnica_quirurgica ?? 'Sin datos.' }}</p>
+            
+            <p><strong>Hallazgos transoperatorios:</strong></p>
+            <p>{{ $notaData->hallazgos_transoperatorios ?? 'Sin datos.' }}</p>
+            
+            <p><strong>Hallazgos de importancia:</strong></p>
+            <p>{{ $notaData->hallazgos_importancia ?? 'Sin datos.' }}</p>
         </div>
 
-        {{-- SECCIÓN 4: PLAN Y PRONÓSTICO --}}
-        <h3>Plan y Pronóstico</h3>
         <div class="section-content">
-            <p><strong>Plan de Estudio:</strong> {{ $notaData['plan_de_estudio'] ?? 'Sin datos.' }}</p>
-            <p><strong>Sugerencia Diagnóstica y/o Terapéutica:</strong> {{ $notaData['sugerencia_diagnostica'] ?? 'Sin datos.' }}</p>
-            <p><strong>Tratamiento y Pronóstico:</strong> {{ $notaData['tratamiento_y_pronostico'] ?? 'Sin datos.' }}</p>
+            <p><strong>Reporte de conteo (gasas, instrumental, etc.):</strong> {{ $notaData->reporte_conteo ?? 'Sin datos.' }}</p>
+            <p><strong>Incidentes y accidentes:</strong> {{ $notaData->incidentes_accidentes ?? 'Sin datos.' }}</p>
+            <p><strong>Cuantificación de sangrado:</strong> {{ $notaData->cuantificacion_sangrado ?? 'Sin datos.' }}</p>
+            <p><strong>Estudios transoperatorios (Patología, etc.):</strong> {{ $notaData->estudios_transoperatorios ?? 'Sin datos.' }}</p>
+            <p><strong>Envío de piezas:</strong> {{ $notaData->envio_piezas ?? 'Sin datos.' }}</p>
         </div>
 
-        {{-- SECCIÓN DE FIRMA --}}
+        <div class="section-content">
+            <p><strong>Estado postquirúrgico inmediato:</strong> {{ $notaData->estado_postquirurgico ?? 'Sin datos.' }}</p>
+            <p><strong>Plan de manejo y tratamiento:</strong> {{ $notaData->manejo_tratamiento ?? 'Sin datos.' }}</p>
+            <p><strong>Pronóstico:</strong> {{ $notaData->pronostico ?? 'Sin datos.' }}</p>
+        </div>
+
+
         @if(isset($medico))
             <div class="signature-section">
                 <div class="signature-line"></div>

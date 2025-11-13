@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class NotaPostoperatoria extends Model
 {
@@ -38,5 +39,14 @@ class NotaPostoperatoria extends Model
         return $this->belongsTo(FormularioInstancia::class, 'id', 'id');
     }
 
+    public function personalEmpleados(): HasMany
+    {
+        return $this->hasMany(PersonalEmpleado::class, 'nota_postoperatoria_id', 'id');
+    }
+
+    public function transfusiones(): HasMany
+    {
+        return $this->hasMany(TransfusionRealizada::class, 'nota_postoperatoria_id', 'id');
+    }
 
 }
