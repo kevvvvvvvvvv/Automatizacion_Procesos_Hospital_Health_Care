@@ -26,6 +26,7 @@ use App\Http\Controllers\TrasladoController;
 use App\Http\Controllers\AplicacionMedicamentoController;
 use App\Http\Controllers\FormularioNotaPostoperatorioController;
 use App\Http\Controllers\SolicitudEstudioController;
+use App\Http\Controllers\SolicitudEstudioPatologiaController;
 use App\Http\Controllers\PreoperatoriaController;
 use App\Http\Controllers\NotaUrgenciaController;
 use App\Models\History;
@@ -69,8 +70,8 @@ Route::resource('doctores', DoctorController::class)->middleware('auth');
     Route::resource('pacientes.estancias.notasurgencias', NotaUrgenciaController::class)->shallow()->middleware('auth');
 
 
-    Route::post('hojasterapiasiv/{hojasenfermeria}',[FormularioHojaTerapiaIVController::class,'store'])->name('hojasterapiasiv.store');
-    Route::patch('hojasterapiasiv/{hojasenfermeria}/{hojasterapiasiv}',[FormularioHojaTerapiaIVController::class,'update'])->name('hojasterapiasiv.update');
+Route::post('hojasterapiasiv/{hojasenfermeria}',[FormularioHojaTerapiaIVController::class,'store'])->name('hojasterapiasiv.store');
+Route::patch('hojasterapiasiv/{hojasenfermeria}/{hojasterapiasiv}',[FormularioHojaTerapiaIVController::class,'update'])->name('hojasterapiasiv.update');
 Route::resource('pacientes.responsable', FamiliarResponsableController::class);
 Route::resource('pacientes.estancias', EstanciaController::class)->shallow()->middleware('auth');
 Route::resource('pacientes.estancias.hojasfrontales', FormularioHojaFrontalController::class)->shallow()->parameters(['hojasfrontales' => 'hojaFrontal'])->middleware('auth');
@@ -88,6 +89,7 @@ Route::patch('hojasterapiasiv/{hojasenfermeria}/{hojasterapiasiv}',[FormularioHo
 Route::post('hojasmedicamentos/{hojasenfermeria}',[FormularioHojaMedicamentoController::class, 'store'])->name('hojasmedicamentos.store');
 Route::patch('hojasmedicamentos/{hojasenfermeria}/{hojasmedicamento}',[FormularioHojaMedicamentoController::class, 'update'])->name('hojasmedicamentos.update');
 
+<<<<<<< HEAD
 
 Route::get(
     '/pacientes/{paciente}/estancias/{estancia}/notas-urgencias/{notaUrgencia}',
@@ -100,6 +102,14 @@ Route::get(
     Route::resource('pacientes.estancias.interconsultas', InterconsultaController::class)
         ->shallow()
         ->parameters(['interconsultas' => 'interconsulta']);
+=======
+Route::post('hojassignos/{hojasenfermeria}',[FormularioHojaSignosController::class, 'store'])->name('hojassignos.store');
+
+Route::resource('pacientes.estancias.interconsultas', InterconsultaController::class)
+    ->shallow()
+    ->parameters(['interconsultas' => 'interconsulta']);
+
+>>>>>>> 2c867426a9ad68234f4e0a17d1da6b375574ca07
 Route::post('hojassignos/{hojasenfermeria}',[FormularioHojaSignosController::class, 'store'])->name('hojassignos.store');
 
 Route::post('dietas/{hojasenfermeria}',[FormularioHojaDietaController::class, 'store'])->name('dietas.store')->middleware('auth');
@@ -112,13 +122,18 @@ Route::resource('pacientes.estancias.interconsultas', InterconsultaController::c
 Route::post('hojassondascateters/{hojasenfermeria}',[FormularioHojaSondaCateterController::class, 'store'])->name('hojassondascateters.store');
 Route::patch('hojassondascateters/{hojasenfermeria}/{hojassondascateter}',[FormularioHojaSondaCateterController::class, 'update'])->name('hojassondascateters.update');
 
-Route::post('hoja-medicamentos/{hoja_medicamento}/aplicaciones', 
-[AplicacionMedicamentoController::class, 'store'])
-->name('aplicaciones.store');
+Route::post('hoja-medicamentos/{hoja_medicamento}/aplicaciones', [AplicacionMedicamentoController::class, 'store'])
+    ->name('aplicaciones.store');
 
 // MANEJO DE ESTUDIOS
 
 Route::post('solicitudes-estudios/{estancia}',[SolicitudEstudioController::class, 'store'])->name('solicitudes-estudios.store');
+
+Route::post('solicitudes-patologias/{estancia}', [SolicitudEstudioPatologiaController::class, 'store'])->name('solicitudes-patologias.store')->middleware('auth');
+Route::post('solicitudes-patologias/{solicitud-patologia}/edit', [SolicitudEstudioPatologiaController::class, 'edit'])->name('solicitudes-patologias.edit')->middleware('auth');
+Route::put('solicitudes-patologias/{estancia}', [SolicitudEstudioPatologiaController::class, 'update'])->name('solicitudes-patologias.update')->middleware('auth');
+Route::post('solicitudes-patologias/{solicitud-patologia}/show', [SolicitudEstudioPatologiaController::class, 'show'])->name('solicitudes-patologias.show')->middleware('auth');
+
 
 Route::resource('pacientes.estancias.interconsultas', InterconsultaController::class)
     ->shallow()
@@ -127,15 +142,9 @@ Route::resource('pacientes.estancias.interconsultas', InterconsultaController::c
         'interconsultas' => 'interconsulta'
     ]);
 
-
-
 Route::get('pacientes/{paciente}/estancias/{estancia}/interconsultas/{interconsulta}', [InterconsultaController::class, 'show'])
 ->name('pacientes.estancias.interconsultas.show')
 ->middleware('auth');
-
-
-
-
 
 Route::put('/doctores/{doctor}', [DoctorController::class, 'update'])->name('doctores.update');
 
@@ -172,14 +181,25 @@ Route::get('/traslados/{traslado}/pdf', [TrasladoController::class, 'generarPDF'
     ->name('traslados.pdf')
     ->middleware('auth');
 
-Route::get('/notaspostoperatorias/{notaspostoperatoria}/pdf', [NotaPostoperatoria::class, 'generarPDF'])
+Route::get('/notaspostoperatorias/{notaspostoperatoria}/pdf', [FormularioNotaPostoperatorioController::class, 'generarPDF'])
     ->name('notaspostoperatorias.pdf')
     ->middleware('auth');
 
+<<<<<<< HEAD
     Route::get('/notasurgencias/{notasurgencias}/pdf', [NotaUrgenciaController::class, 'generarPDF'])
     ->name('notasurgencias.pdf')
     ->middleware('auth');
 
+=======
+
+
+
+Route::get('/solicitudes-patologias/{solicitud-patologia}/pdf', [SolicitudEstudioPatologiaController::class, 'generarPDF'])
+    ->name('solicitudes-patologias.pdf')
+    ->middleware('auth');
+
+
+>>>>>>> 2c867426a9ad68234f4e0a17d1da6b375574ca07
 //Farmacia
 Route::get('/farmacia/solicitudes/{hojaenfermeria}', [FarmaciaController::class, 'show'])
     ->name('farmacia.solicitud.show');

@@ -45,20 +45,37 @@ class FormularioInstancia extends Model
     {
         return $this->hasOne(HojaEnfermeria::class,'id','id');
     }
+
     public function interconsulta(): HasOne
     {
         return $this->hasOne(Interconsulta::class,'id','id');
     }
+
     public function traslado(): HasOne
     {
-        return $this->hasOne(Translado::class,'id','id');
+        return $this->hasOne(Traslado::class,'id','id');
     }
-    public function preoperatoria(): HasOne
+
+    public function preoperatoria(): HasMany
     {
-        return $this->hasOne(Preoperatoria::class,'id','id');
+        return $this->hasMany(Preoperatoria::class,'id','id');
     }
+
+    public function postoperatoria(): HasMany
+    {
+        return $this->hasMany(NotaPostoperatoria::class, 'id','id');
+    }
+
     public function notaUrgencia(): HasOne
     {
         return $this->hasOne(NotaUrgencia::class,'id','id');
+<<<<<<< HEAD
+=======
+    }
+    
+    public function estudioPatologia(): HasMany
+    {
+        return $this->hasMany(SolicitudPatologia::class, 'id', 'id');
+>>>>>>> 2c867426a9ad68234f4e0a17d1da6b375574ca07
     }
 }
