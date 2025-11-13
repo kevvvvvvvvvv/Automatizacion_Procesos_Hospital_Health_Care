@@ -107,15 +107,18 @@ Route::resource('pacientes.estancias.interconsultas', InterconsultaController::c
 Route::post('hojassondascateters/{hojasenfermeria}',[FormularioHojaSondaCateterController::class, 'store'])->name('hojassondascateters.store');
 Route::patch('hojassondascateters/{hojasenfermeria}/{hojassondascateter}',[FormularioHojaSondaCateterController::class, 'update'])->name('hojassondascateters.update');
 
-Route::post('hoja-medicamentos/{hoja_medicamento}/aplicaciones', 
-[AplicacionMedicamentoController::class, 'store'])
-->name('aplicaciones.store');
+Route::post('hoja-medicamentos/{hoja_medicamento}/aplicaciones', [AplicacionMedicamentoController::class, 'store'])
+    ->name('aplicaciones.store');
 
 // MANEJO DE ESTUDIOS
 
 Route::post('solicitudes-estudios/{estancia}',[SolicitudEstudioController::class, 'store'])->name('solicitudes-estudios.store');
 
-Route::post('solicitudes-patologias/{estancia}', [SolicitudEstudioPatologiaController::class, 'store'])->name('solicitudes-patologias.store');
+Route::post('solicitudes-patologias/{estancia}', [SolicitudEstudioPatologiaController::class, 'store'])->name('solicitudes-patologias.store')->middleware('auth');
+Route::post('solicitudes-patologias/{solicitud-patologia}/edit', [SolicitudEstudioPatologiaController::class, 'edit'])->name('solicitudes-patologias.edit')->middleware('auth');
+Route::put('solicitudes-patologias/{estancia}', [SolicitudEstudioPatologiaController::class, 'update'])->name('solicitudes-patologias.update')->middleware('auth');
+Route::post('solicitudes-patologias/{solicitud-patologia}/show', [SolicitudEstudioPatologiaController::class, 'show'])->name('solicitudes-patologias.show')->middleware('auth');
+
 
 Route::resource('pacientes.estancias.interconsultas', InterconsultaController::class)
     ->shallow()
@@ -124,15 +127,9 @@ Route::resource('pacientes.estancias.interconsultas', InterconsultaController::c
         'interconsultas' => 'interconsulta'
     ]);
 
-
-
 Route::get('pacientes/{paciente}/estancias/{estancia}/interconsultas/{interconsulta}', [InterconsultaController::class, 'show'])
 ->name('pacientes.estancias.interconsultas.show')
 ->middleware('auth');
-
-
-
-
 
 Route::put('/doctores/{doctor}', [DoctorController::class, 'update'])->name('doctores.update');
 
@@ -169,9 +166,17 @@ Route::get('/traslados/{traslado}/pdf', [TrasladoController::class, 'generarPDF'
     ->name('traslados.pdf')
     ->middleware('auth');
 
-Route::get('/notaspostoperatorias/{notaspostoperatoria}/pdf', [NotaPostoperatoria::class, 'generarPDF'])
+Route::get('/notaspostoperatorias/{notaspostoperatoria}/pdf', [FormularioNotaPostoperatorioController::class, 'generarPDF'])
     ->name('notaspostoperatorias.pdf')
     ->middleware('auth');
+
+
+
+
+Route::get('/solicitudes-patologias/{solicitud-patologia}/pdf', [SolicitudEstudioPatologiaController::class, 'generarPDF'])
+    ->name('solicitudes-patologias.pdf')
+    ->middleware('auth');
+
 
 //Farmacia
 Route::get('/farmacia/solicitudes/{hojaenfermeria}', [FarmaciaController::class, 'show'])
