@@ -65,5 +65,11 @@ class FormularioCatalogoSeeder extends Seeder
             'nombre_tabla_fisica' => 'nota_urgencias',
             'route_prefix' => 'notasurgencias',
         ]);
+
+        FormularioCatalogo::create([
+            'nombre_formulario' => 'Nota de egreso',
+            'nombre_tabla_fisica' => 'nota_egreso',
+            'route_prefix' => 'notasegresos',
+        ]);
     }
 }
