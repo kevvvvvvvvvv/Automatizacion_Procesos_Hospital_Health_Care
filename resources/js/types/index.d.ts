@@ -476,6 +476,7 @@ export interface notaUrgencia {
 }
 
 export interface HojaPostoperatoria {
+
     id: number;
     hora_inicio_operacion: string; 
     hora_termino_operacion: string; 

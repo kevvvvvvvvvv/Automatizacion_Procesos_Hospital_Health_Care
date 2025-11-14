@@ -25,12 +25,13 @@ const CreateNotaUrgencia: React.FC<Props> = ({ paciente, estancia }) => {
        estado_mental: '',
        exploracion_fisica: '',
        resultados_relevantes: '',
-       diagnostico_problemas_clinicos: '',  // Cambiado de diagnostico_problemas_clinicos
+       diagnostico_problemas_clinicos: '',  
        tratamiento: '',
        pronostico: '',
    });
     const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    //console.log('Datos', data);
     post(route('pacientes.estancias.notasurgencias.store', {
       paciente: paciente.id,
       estancia: estancia.id,
