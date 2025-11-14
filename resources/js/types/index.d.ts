@@ -514,7 +514,7 @@ export interface TransfusionRealizada {
 }
 
 export interface NotaPostoperatoria {
-id: number;
+    id: number;
 
     hora_inicio_operacion: string; 
     hora_termino_operacion: string; 
