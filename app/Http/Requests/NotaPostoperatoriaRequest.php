@@ -44,6 +44,12 @@ class NotaPostoperatoriaRequest extends FormRequest
             
             // Equipo y Piezas (Opcionales)
             'envio_piezas' => 'nullable|string',
+
+            'manejo_dieta' => 'nullable|string',
+            'manejo_soluciones' => 'nullable|string',
+            'manejo_medicamentos'=> 'nullable|string',
+            'manejo_medidas_generales' => 'nullable|string',
+            'manejo_laboratorios' => 'nullable|string',
             
             // Post-quirúrgico (Requeridos)
             'estado_postquirurgico' => 'required|string',
@@ -54,6 +60,7 @@ class NotaPostoperatoriaRequest extends FormRequest
             'ayudantes_agregados' => 'nullable|array',
             'ayudantes_agregados.*.ayudante_id' => 'required|numeric|exists:users,id',
             'ayudantes_agregados.*.cargo' => 'required|string|max:255',
+
 
             // Reglas para Transfusiones
             'transfusiones_agregadas' => 'nullable|array',

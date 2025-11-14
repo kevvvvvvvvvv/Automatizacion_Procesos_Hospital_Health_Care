@@ -456,7 +456,7 @@ export interface Preoperatoria {
     
     
 }
-<<<<<<< HEAD
+
 export interface notaUrgencia {
     id: number;
     ta: string;
@@ -473,9 +473,9 @@ export interface notaUrgencia {
     diagnostico_problemas_clinicos:string;
     tratamiento: string;
     pronostico:string;
-=======
+}
 
- export interface HojaPostoperatoria {
+export interface HojaPostoperatoria {
     id: number;
     hora_inicio_operacion: string; 
     hora_termino_operacion: string; 
@@ -510,5 +510,37 @@ export interface TransfusionRealizada {
     nota_postoperatoria_id: numer;
     tipo_transfucion: string;
     cantidad: string;
->>>>>>> 10b5ae63badc50e0b617aab98a2de11801ee75f6
+}
+
+export interface NotaPostoperatoria {
+id: number;
+
+    hora_inicio_operacion: string; 
+    hora_termino_operacion: string; 
+
+    diagnostico_preoperatorio: string;
+    operacion_planeada: string;
+    operacion_realizada: string;
+    diagnostico_postoperatorio: string;
+    descripcion_tecnica_quirurgica: string;
+    hallazgos_transoperatorios: string;
+    reporte_conteo: string;
+    incidentes_accidentes: string;
+    cuantificacion_sangrado: string;
+    estudios_transoperatorios: string;
+    
+    estado_postquirurgico: string;
+    
+    manejo_dieta: string;
+    manejo_soluciones: string;
+    manejo_medicamentos: string;
+    manejo_medidas_generales: string;
+    manejo_laboratorios: string;
+
+    pronostico: string;
+    envio_piezas: string;
+    hallazgos_importancia: string;
+
+    created_at: string; 
+    updated_at: string; 
 }
