@@ -27,7 +27,13 @@ class NotaPostoperatoria extends Model
         'cuantificacion_sangrado',
         'estudios_transoperatorios',
         'estado_postquirurgico',
-        'manejo_tratamiento',
+
+        'manejo_dieta',
+        'manejo_soluciones',
+        'manejo_medicamentos',
+        'manejo_medidas_generales',
+        'manejo_laboratorios',
+        
         'pronostico',
         'envio_piezas',
         'hallazgos_importancia',

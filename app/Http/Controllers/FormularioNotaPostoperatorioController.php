@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\NotaPostoperatoriaRequest;
+use App\Models\CatalogoEstudio;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -10,7 +11,8 @@ use App\Models\Paciente;
 use App\Models\Estancia;
 use App\Models\FormularioInstancia;
 use App\Models\NotaPostoperatoria;
-use App\Models\PersonalEmpleado;    
+use App\Models\PersonalEmpleado;
+use App\Models\ProductoServicio;
 use App\Models\TransfusionRealizada;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
@@ -30,18 +32,24 @@ class FormularioNotaPostoperatorioController extends Controller
     public function create(Paciente $paciente, Estancia $estancia)
     {
         $personal = User::all();
+        $soluciones = ProductoServicio::where('tipo','INSUMOS')->get();
+        $medicamentos = ProductoServicio::where('tipo','INSUMOS')->get();
+        $estudios = CatalogoEstudio::where('tipo_estudio','Laboratorio')->get();
 
         return Inertia::render('formularios/nota-postoperatorio/create',[
             'paciente' => $paciente,
             'estancia' => $estancia,
             'users' => $personal,
+            'soluciones' => $soluciones,
+            'medicamentos' => $medicamentos,
+            'estudios' => $estudios,
         ]);
     }
 
     public function store(NotaPostoperatoriaRequest $request, Paciente $paciente, Estancia $estancia)
     {
         $validatedData = $request->validated();
-        
+        dd($request->toArray());
         DB::beginTransaction();
         try{
             $formulario = FormularioInstancia::create([

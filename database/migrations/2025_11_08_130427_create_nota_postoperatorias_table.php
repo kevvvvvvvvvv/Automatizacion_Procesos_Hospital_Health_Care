@@ -34,7 +34,11 @@ return new class extends Migration
             $table->text('estudios_transoperatorios');
             
             $table->text('estado_postquirurgico');
-            $table->text('manejo_tratamiento');
+            $table->text('manejo_dieta')->nullable();
+            $table->text('manejo_soluciones')->nullable();
+            $table->text('manejo_medicamentos')->nullable();
+            $table->text('manejo_medidas_generales')->nullable();
+            $table->text('manejo_laboratorios')->nullable();
             $table->text('pronostico');
             $table->text('envio_piezas');
             $table->text('hallazgos_importancia');
