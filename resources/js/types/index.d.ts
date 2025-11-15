@@ -1,4 +1,5 @@
 import { InertiaLinkProps, PageProps } from '@inertiajs/react';
+import { StringOrTemplateHeader } from '@tanstack/react-table';
 import { LucideIcon } from 'lucide-react';
 
 export interface Auth {
@@ -508,4 +509,20 @@ export interface TransfusionRealizada {
     nota_postoperatoria_id: numer;
     tipo_transfucion: string;
     cantidad: string;
+}
+
+export interface notasEgresos{
+    id:number;
+    fecha_ingreso:string;
+    fecha_egreso:string;
+    motivo_egreso:String;
+    diagnosticos_finales:string;
+    resumen_evolucion_estado_actual:string;
+    manejo_durante_estancia:string;
+    problemas_pendientes:string;
+    plan_manejo_tratamiento:string;
+    recomendaciones:string;
+    factores_riesgo:string;
+    prosnostico:string;
+    defuncion:string;
 }
