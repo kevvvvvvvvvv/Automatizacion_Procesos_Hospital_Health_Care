@@ -61,7 +61,6 @@ class NotaPostoperatoriaRequest extends FormRequest
             'ayudantes_agregados.*.ayudante_id' => 'required|numeric|exists:users,id',
             'ayudantes_agregados.*.cargo' => 'required|string|max:255',
 
-
             // Reglas para Transfusiones
             'transfusiones_agregadas' => 'nullable|array',
             'transfusiones_agregadas.*.tipo_transfusion' => 'required|string|max:255',

@@ -33,10 +33,10 @@ const Show = ({ paciente }: ShowProps) => {
           
         </div>
         
-    <InfoCard title="Datos Personales">
+    <InfoCard title="Datos personales">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <InfoField
-                label="Nombre Completo"
+                label="Nombre completo"
                 value={`${paciente.nombre} ${paciente.apellido_paterno} ${paciente.apellido_materno}`}
             />
             <InfoField
@@ -62,7 +62,7 @@ const Show = ({ paciente }: ShowProps) => {
         </div>
     </InfoCard>
 
-    <InfoCard title="Información de Contacto" className="mt-8">
+    <InfoCard title="Información de contacto" className="mt-8">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <InfoField
                 label="Teléfono"
@@ -88,7 +88,7 @@ const Show = ({ paciente }: ShowProps) => {
         </AddButton>
         
       </div>
-          <h2 className="text-xl font-semibold border-b pb-2 mt-8 mb-4">Historial de Estancias</h2>
+          <h2 className="text-xl font-semibold border-b pb-2 mt-8 mb-4">Historial de estancias</h2>
 <div className="space-y-4">
             {paciente.estancias && paciente.estancias.length > 0 ? (
               paciente.estancias.map((estancia) => (
@@ -141,7 +141,7 @@ const Show = ({ paciente }: ShowProps) => {
 };
 
 Show.layout = (page: React.ReactElement) => (
-  <MainLayout pageTitle="Ficha del Paciente" children={page} />
+  <MainLayout pageTitle="Ficha del paciente" children={page} />
 );
 
 export default Show;
