@@ -100,7 +100,7 @@ const Index = ({ histories }: IndexProps) => {
 
     return (
         <div>
-            <h1 className="text-2xl font-bold mb-4">Historial de Cambios</h1>
+            <h1 className="text-2xl font-bold mb-4">Historial de cambios</h1>
 
             <table className="min-w-full bg-white border">
                 <thead>
