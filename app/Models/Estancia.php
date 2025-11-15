@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use App\Auditable;
 
 class Estancia extends Model
@@ -83,5 +84,18 @@ class Estancia extends Model
     public function hojaSondasCateters():HasMany
     {
         return $this->hasMany(HojaSondaCateter::class);
+    }
+
+
+    public function notasPostoperatorias(): HasManyThrough
+    {
+        return $this->hasManyThrough(
+            NotaPostoperatoria::class, 
+            FormularioInstancia::class, 
+            'estancia_id',              
+            'id',                       
+            'id',                       
+            'id'                        
+        );
     }
 }

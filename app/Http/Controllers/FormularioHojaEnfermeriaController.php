@@ -124,6 +124,8 @@ class FormularioHojaEnfermeriaController extends Controller
             ->orderBy('fecha_hora_registro', 'asc')
             ->get();
 
+
+        $notaPostoperatoria = $estancia->notasPostoperatorias()->latest()->first();
         return Inertia::render('formularios/hojas-enfermerias/edit',[
             'paciente' => $paciente,
             'estancia' => $estancia,
@@ -134,7 +136,8 @@ class FormularioHojaEnfermeriaController extends Controller
             'catalogoEstudios' => $catalogoEstudios,
             'solicitudesAnteriores' => $solicitudesAnteriores,
             'medicos' => $medicos,
-            'usuarios' => $usuarios
+            'usuarios' => $usuarios,
+            'notaPostoperatoria' => $notaPostoperatoria,
         ]);
     }
 
