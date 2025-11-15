@@ -25,13 +25,13 @@ return new class extends Migration
 
             $table->date('fecha_estudio');
             $table->string('estudio_solicitado'); 
-            $table->string('biopsia_pieza_quirurgica');
-            $table->string('revision_laminillas');
-            $table->string('estudios_especiales');
-            $table->string('pcr');
+            $table->string('biopsia_pieza_quirurgica')->nullable();
+            $table->string('revision_laminillas')->nullable();
+            $table->string('estudios_especiales')->nullable();
+            $table->string('pcr')->nullable();
             $table->string('pieza_remitida');
             
-            $table->text('datos_clinicos'); 
+            $table->text('datos_clinicos')->nullable(); 
             $table->text('resultados')->nullable();
             $table->timestamps();
         });

@@ -101,11 +101,11 @@ Route::get(
 )->name('pacientes.estancias.notasurgencias.show');
 
 
-    Route::post('hojassignos/{hojasenfermeria}',[FormularioHojaSignosController::class, 'store'])->name('hojassignos.store');
-    
-    Route::resource('pacientes.estancias.interconsultas', InterconsultaController::class)
-        ->shallow()
-        ->parameters(['interconsultas' => 'interconsulta']);
+Route::post('hojassignos/{hojasenfermeria}',[FormularioHojaSignosController::class, 'store'])->name('hojassignos.store');
+
+Route::resource('pacientes.estancias.interconsultas', InterconsultaController::class)
+    ->shallow()
+    ->parameters(['interconsultas' => 'interconsulta']);
 Route::post('hojassignos/{hojasenfermeria}',[FormularioHojaSignosController::class, 'store'])->name('hojassignos.store');
 
 Route::resource('pacientes.estancias.interconsultas', InterconsultaController::class)
