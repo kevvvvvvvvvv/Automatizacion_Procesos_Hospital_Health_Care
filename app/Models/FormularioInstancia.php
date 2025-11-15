@@ -75,4 +75,8 @@ class FormularioInstancia extends Model
     {
         return $this->hasMany(SolicitudPatologia::class, 'id', 'id');
     }
+    public function notaEgreso(): HasMany
+    {
+        return $this->hasMany(notaEgreso::class,'id', 'id');
+    }
 }
