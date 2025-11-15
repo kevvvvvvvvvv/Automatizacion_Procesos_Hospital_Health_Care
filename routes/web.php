@@ -58,17 +58,17 @@ Route::resource('producto-servicios',ProductoServicioController::class)->middlew
 Route::resource('pacientes', PacienteController::class)->middleware('auth');
 Route::resource('doctores', DoctorController::class)->middleware('auth');  
 
-    Route::resource('pacientes.responsable', FamiliarResponsableController::class);
-    Route::resource('pacientes.estancias', EstanciaController::class)->shallow()->middleware('auth');
-    Route::resource('pacientes.estancias.hojasfrontales', FormularioHojaFrontalController::class)->shallow()->parameters(['hojasfrontales' => 'hojaFrontal'])->middleware('auth');
-    Route::resource('pacientes.estancias.historiasclinicas', FormularioHistoriaClinicaController::class)->shallow()->middleware('auth');
-    Route::resource('pacientes.estancias.hojasenfermerias',FormularioHojaEnfermeriaController::class)->shallow()-> middleware('auth');
-    Route::resource('pacientes.estancias.ventas', VentaController::class)->shallow();
-    Route::resource('pacientes.estancias.ventas.detallesventas',DetalleVentaController::class)->shallow()->middleware ('auth');
-    Route::resource('pacientes.estancias.interconsultas.honorarios', HonorarioController::class)->shallow();
-    Route::resource('pacientes.estancias.traslados', TrasladoController::class)->shallow()->middleware('auth');
-    Route::resource('pacientes.estancias.preoperatorias', PreoperatoriaController::class)->shallow()->middleware('auth');
-    Route::resource('pacientes.estancias.notasurgencias', NotaUrgenciaController::class)->shallow()->middleware('auth');
+Route::resource('pacientes.responsable', FamiliarResponsableController::class);
+Route::resource('pacientes.estancias', EstanciaController::class)->shallow()->middleware('auth');
+Route::resource('pacientes.estancias.hojasfrontales', FormularioHojaFrontalController::class)->shallow()->parameters(['hojasfrontales' => 'hojaFrontal'])->middleware('auth');
+Route::resource('pacientes.estancias.historiasclinicas', FormularioHistoriaClinicaController::class)->shallow()->middleware('auth');
+Route::resource('pacientes.estancias.hojasenfermerias',FormularioHojaEnfermeriaController::class)->shallow()-> middleware('auth');
+Route::resource('pacientes.estancias.ventas', VentaController::class)->shallow();
+Route::resource('pacientes.estancias.ventas.detallesventas',DetalleVentaController::class)->shallow()->middleware ('auth');
+Route::resource('pacientes.estancias.interconsultas.honorarios', HonorarioController::class)->shallow();
+Route::resource('pacientes.estancias.traslados', TrasladoController::class)->shallow()->middleware('auth');
+Route::resource('pacientes.estancias.preoperatorias', PreoperatoriaController::class)->shallow()->middleware('auth');
+Route::resource('pacientes.estancias.notasurgencias', NotaUrgenciaController::class)->shallow()->middleware('auth');
 
 
 Route::post('hojasterapiasiv/{hojasenfermeria}',[FormularioHojaTerapiaIVController::class,'store'])->name('hojasterapiasiv.store');
