@@ -197,7 +197,7 @@ const NotaPostoperatoriaForm: NotaPostoperatoriaComponent= ({ paciente, estancia
         const horas = e.target.value;
         setHorasDietaLiquida(horas);
         if (dietaPreset === 'liquida') {
-            const texto = `Iniciar dieta líquida progresar a blanda en cuanto tiempo ${horas || '__'} horas.`;
+            const texto = `Iniciar dieta líquida progresar a blanda en ${horas || '__'} horas.`;
             setData('manejo_dieta', texto);
         }
     };
@@ -488,7 +488,7 @@ const NotaPostoperatoriaForm: NotaPostoperatoriaComponent= ({ paciente, estancia
     const handleAddPatologiaAlPlan = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         
-        const { estudio_solicitado, pieza_remitida, datos_clinicos } = localPatologia;
+        const { estudio_solicitado, pieza_remitida } = localPatologia;
 
         if (!estudio_solicitado || !pieza_remitida ) {
             Swal.fire('Campos Incompletos', 'Debe especificar al menos "Estudio solicitado" y "Pieza remitida" .', 'error');
@@ -497,11 +497,11 @@ const NotaPostoperatoriaForm: NotaPostoperatoriaComponent= ({ paciente, estancia
 
         let texto = `• Estudio: ${estudio_solicitado}.`;
         texto += `\n  - Pieza Remitida: ${pieza_remitida}.`;
-        texto += `\n  - Datos Clínicos: ${datos_clinicos}.`;
 
+        if (localPatologia.datos_clinicos) texto += `\n - Datos clinicos: ${localPatologia.datos_clinicos}`;
         if (localPatologia.biopsia_pieza_quirurgica) texto += `\n  - Biopsia/Pieza: ${localPatologia.biopsia_pieza_quirurgica}.`;
-        if (localPatologia.revision_laminillas) texto += `\n  - Rev. Laminillas: ${localPatologia.revision_laminillas}.`;
-        if (localPatologia.estudios_especiales) texto += `\n  - Est. Especiales: ${localPatologia.estudios_especiales}.`;
+        if (localPatologia.revision_laminillas) texto += `\n  - Revisión de laminillas: ${localPatologia.revision_laminillas}.`;
+        if (localPatologia.estudios_especiales) texto += `\n  - Estudios especiales: ${localPatologia.estudios_especiales}.`;
         if (localPatologia.pcr) texto += `\n  - PCR: ${localPatologia.pcr}.`;
 
         setData(currentData => ({
@@ -526,9 +526,6 @@ const NotaPostoperatoriaForm: NotaPostoperatoriaComponent= ({ paciente, estancia
         setData('envio_piezas', e.target.value);
     };
 
-    if(nota?.envio_piezas){
-        console.log("DATOS DE PIEZAS:", JSON.stringify(nota.envio_piezas));
-    }
 
     return (
         <>
@@ -539,120 +536,104 @@ const NotaPostoperatoriaForm: NotaPostoperatoriaComponent= ({ paciente, estancia
 
             <Head title="Crear nota postoperatoria" />
             <FormLayout 
-            title='Registrar nota postoperatoria'
-            onSubmit={handleSubmit}
-            actions={<PrimaryButton type="submit" disabled={processing}>{processing ? 'Creando...' : 'Crear nota postoperatoria'}</PrimaryButton>}>
-                <div className="p-4 bg-white rounded-lg shadow-sm border">
-                    <h3 className="text-lg font-semibold mb-4 border-b pb-2">Datos de la cirugía</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <InputDateTime
-                            id='hora_inicio'
-                            name='hora_inicio'
-                            label="Hora de inicio de la operación"
-                            value={data.hora_inicio_operacion}
-                            onChange={val => setData('hora_inicio_operacion', val as string)}
-                            error={errors.hora_inicio_operacion}
-                        />
-                        <InputDateTime
-                            id='hora_termino'
-                            name='hora_termino'
-                            label="Hora de término de la operación"
-                            value={data.hora_termino_operacion}
-                            onChange={val => setData('hora_termino_operacion', val as string)}
-                            error={errors.hora_termino_operacion}
-                        />
-                        
-                        <InputTextArea
-                            label="Diagnóstico preoperatorio"
-                            value={data.diagnostico_preoperatorio}
-                            onChange={e => setData('diagnostico_preoperatorio', e.target.value)}
-                            error={errors.diagnostico_preoperatorio}
-                            rows={3}
-                        />
+                title='Registrar nota postoperatoria'
+                onSubmit={handleSubmit}
+                actions={<PrimaryButton type="submit" disabled={processing}>{processing ? 'Creando...' : 'Crear nota postoperatoria'}</PrimaryButton>}>
 
-                        <InputTextArea
-                            label="Operación planeada"
-                            value={data.operacion_planeada}
-                            onChange={e => setData('operacion_planeada', e.target.value)}
-                            error={errors.operacion_planeada}
-                            rows={3}
-                        />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <InputDateTime
+                        id='hora_inicio'
+                        name='hora_inicio'
+                        label="Hora de inicio de la operación"
+                        value={data.hora_inicio_operacion}
+                        onChange={val => setData('hora_inicio_operacion', val as string)}
+                        error={errors.hora_inicio_operacion}
+                    />
+                    <InputDateTime
+                        id='hora_termino'
+                        name='hora_termino'
+                        label="Hora de término de la operación"
+                        value={data.hora_termino_operacion}
+                        onChange={val => setData('hora_termino_operacion', val as string)}
+                        error={errors.hora_termino_operacion}
+                    />
+                    
+                    <InputTextArea
+                        label="Diagnóstico preoperatorio"
+                        value={data.diagnostico_preoperatorio}
+                        onChange={e => setData('diagnostico_preoperatorio', e.target.value)}
+                        error={errors.diagnostico_preoperatorio}
+                        rows={3}
+                    />
 
-                        <InputTextArea
-                            label="Operación realizada"
-                            value={data.operacion_realizada}
-                            onChange={e => setData('operacion_realizada', e.target.value)}
-                            error={errors.operacion_realizada}
-                            rows={3}
-                        />
+                    <InputTextArea
+                        label="Operación planeada"
+                        value={data.operacion_planeada}
+                        onChange={e => setData('operacion_planeada', e.target.value)}
+                        error={errors.operacion_planeada}
+                        rows={3}
+                    />
 
-                        <InputTextArea
-                            label="Diagnóstico postoperatorio"
-                            value={data.diagnostico_postoperatorio}
-                            onChange={e => setData('diagnostico_postoperatorio', e.target.value)}
-                            error={errors.diagnostico_postoperatorio}
-                            rows={3}
-                        />
-                        
+                    <InputTextArea
+                        label="Operación realizada"
+                        value={data.operacion_realizada}
+                        onChange={e => setData('operacion_realizada', e.target.value)}
+                        error={errors.operacion_realizada}
+                        rows={3}
+                    />
 
-                    </div>
+                    <InputTextArea
+                        label="Diagnóstico postoperatorio"
+                        value={data.diagnostico_postoperatorio}
+                        onChange={e => setData('diagnostico_postoperatorio', e.target.value)}
+                        error={errors.diagnostico_postoperatorio}
+                        rows={3}
+                    />
+
+                    <InputTextArea
+                        label="Descripción de la técnica quirúrgica"
+                        value={data.descripcion_tecnica_quirurgica}
+                        onChange={e => setData('descripcion_tecnica_quirurgica', e.target.value)}
+                        error={errors.descripcion_tecnica_quirurgica}
+                        rows={5}
+                    />
+
+                    <InputTextArea
+                        label="Hallazgos transoperatorios"
+                        value={data.hallazgos_transoperatorios}
+                        onChange={e => setData('hallazgos_transoperatorios', e.target.value)}
+                        error={errors.hallazgos_transoperatorios}
+                        rows={4}
+                    />
+
+                    <InputTextArea
+                        label="Reporte del conteo de gasas, compresas y de instrumental quirúrgico"
+                        value={data.reporte_conteo}
+                        onChange={e => setData('reporte_conteo', e.target.value)}
+                        error={errors.reporte_conteo}
+                        rows={3}
+                    />
+
+                    <InputTextArea
+                        label="Incidentes y accidentes"
+                        value={data.incidentes_accidentes}
+                        onChange={e => setData('incidentes_accidentes', e.target.value)}
+                        error={errors.incidentes_accidentes}
+                        rows={3}
+                    />
+
+                    <InputText
+                        id="cuantificacion_sangre"
+                        name="cuantificacion_sangre"
+                        label="Cuantificación de sangrado (ml)"
+                        value={data.cuantificacion_sangrado}
+                        onChange={e => setData('cuantificacion_sangrado', e.target.value)}
+                        error={errors.cuantificacion_sangrado}
+                        type='number'
+                    />
                 </div>
 
-                <div className="p-4 bg-white rounded-lg shadow-sm border">
-                    <h3 className="text-lg font-semibold mb-4 border-b pb-2">Descripción transoperatoria</h3>
-                    <div className="space-y-4">
-                        <InputTextArea
-                            label="Descripción de la técnica quirúrgica"
-                            value={data.descripcion_tecnica_quirurgica}
-                            onChange={e => setData('descripcion_tecnica_quirurgica', e.target.value)}
-                            error={errors.descripcion_tecnica_quirurgica}
-                            rows={5}
-                        />
-                        <InputTextArea
-                            label="Hallazgos transoperatorios"
-                            value={data.hallazgos_transoperatorios}
-                            onChange={e => setData('hallazgos_transoperatorios', e.target.value)}
-                            error={errors.hallazgos_transoperatorios}
-                            rows={4}
-                        />
-                    </div>
-                </div>
-
-                <div className="p-4 bg-white rounded-lg shadow-sm border mb-2">
-                    <h3 className="text-lg font-semibold mb-4 border-b pb-2">Reportes y sucesos</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <InputTextArea
-                            label="Reporte del conteo de gasas, compresas y de instrumental quirúrgico"
-                            value={data.reporte_conteo}
-                            onChange={e => setData('reporte_conteo', e.target.value)}
-                            error={errors.reporte_conteo}
-                            rows={3}
-                        />
-                        <InputTextArea
-                            label="Incidentes y accidentes"
-                            value={data.incidentes_accidentes}
-                            onChange={e => setData('incidentes_accidentes', e.target.value)}
-                            error={errors.incidentes_accidentes}
-                            rows={3}
-                        />
-                        <InputText
-                            id="cuantificacion_sangre"
-                            name="cuantificacion_sangre"
-                            label="Cuantificación de sangrado (ml)"
-                            value={data.cuantificacion_sangrado}
-                            onChange={e => setData('cuantificacion_sangrado', e.target.value)}
-                            error={errors.cuantificacion_sangrado}
-                            type='number'
-                        />
-                        <InputTextArea
-                            label="Estudios de servicios auxiliares de diagnóstico y tratamiento transoperatorios"
-                            value={data.estudios_transoperatorios}
-                            onChange={e => setData('estudios_transoperatorios', e.target.value)}
-                            error={errors.estudios_transoperatorios}
-                            rows={2}
-                        />
-                    </div>
-                </div>
+                {/* TRANSFUSIONES*/}
                 <div className="mt-6 pt-6 border-t mb-8">
                     <h4 className="text-md font-semibold mb-3">Registro de transfusiones</h4>
                     
@@ -714,8 +695,20 @@ const NotaPostoperatoriaForm: NotaPostoperatoriaComponent= ({ paciente, estancia
                         </table>
                     </div>
                 </div>
-                <div className="mt-6 pt-6 border-t mb-8">
-                    <h4 className="text-md font-semibold mb-3">Registro de ayudantes, instrumentistas, anestesiólogo y circulante</h4>
+
+                <div className="grid grid-cols-1 gap-6 mb-15 mt-15">
+                    <InputTextArea
+                        label="Estudios de servicios auxiliares de diagnóstico y tratamiento transoperatorios"
+                        value={data.estudios_transoperatorios}
+                        onChange={e => setData('estudios_transoperatorios', e.target.value)}
+                        error={errors.estudios_transoperatorios}
+                        rows={2}
+                    />
+                </div>
+                
+                {/* PERSONAL EMPLEADO */}
+                <div className="mt-6 pt-6 border-t mb-15">
+                    <h3 className="text-md font-semibold mb-3">Registro de ayudantes, instrumentistas, anestesiólogo y circulante</h3>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
                         <SelectInput
                             label="Personal encargado"
@@ -776,17 +769,17 @@ const NotaPostoperatoriaForm: NotaPostoperatoriaComponent= ({ paciente, estancia
                     </div>
                 </div>
 
-                <div className="p-4 bg-white rounded-lg shadow-sm border">
-                    <h3 className="text-lg font-semibold mb-4 border-b pb-2">Estado y plan postoperatoria</h3>
-                    <div className="space-y-4">
-                        <InputTextArea
-                            label="Estado postquirúrgico inmediato"
-                            value={data.estado_postquirurgico}
-                            onChange={e => setData('estado_postquirurgico', e.target.value)}
-                            error={errors.estado_postquirurgico}
-                            rows={3}
-                        />
-
+                <div className="grid grid-cols-1 gap-6 mb-15">
+                    <InputTextArea
+                        label="Estado postquirúrgico inmediato"
+                        value={data.estado_postquirurgico}
+                        onChange={e => setData('estado_postquirurgico', e.target.value)}
+                        error={errors.estado_postquirurgico}
+                        rows={3}
+                    />
+                </div>
+                <div>
+                    <h3 className="text-md font-semibold mb-3">Plan de manejo y tratamiento postoperatorio inmediato</h3>
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-2">
                                 Plan de dieta
@@ -830,7 +823,9 @@ const NotaPostoperatoriaForm: NotaPostoperatoriaComponent= ({ paciente, estancia
                                 rows={4}
                             />
                         </div>
+                    </div>
                             
+                    <div>
                         <div>
                              <h4 className="text-md font-semibold mb-3 pt-4 border-t">Plan de soluciones</h4>
                             
@@ -875,7 +870,7 @@ const NotaPostoperatoriaForm: NotaPostoperatoriaComponent= ({ paciente, estancia
                             </div>
 
                             <InputTextArea
-                                label="Plan de Soluciones (Manual o Construido)"
+                                label="Plan de soluciones (campo libre)"
                                 value={data.manejo_soluciones}
                                 onChange={handleSolucionesManualChange}
                                 error={errors.manejo_soluciones}
@@ -949,7 +944,7 @@ const NotaPostoperatoriaForm: NotaPostoperatoriaComponent= ({ paciente, estancia
                             </div>
 
                             <InputTextArea
-                                label="Plan de medicamentos"
+                                label="Plan de medicamentos (campo libre)"
                                 value={data.manejo_medicamentos}
                                 onChange={handleMedicamentosManualChange}
                                 error={errors.manejo_medicamentos}
@@ -995,7 +990,7 @@ const NotaPostoperatoriaForm: NotaPostoperatoriaComponent= ({ paciente, estancia
                             </div>
 
                             <InputTextArea
-                                label="Plan de Medidas Generales (Manual o Construido)"
+                                label="Plan de medidas generales (campo libre)"
                                 value={data.manejo_medidas_generales}
                                 onChange={handleMedidasManualChange}
                                 error={errors.manejo_medidas_generales}
@@ -1004,7 +999,7 @@ const NotaPostoperatoriaForm: NotaPostoperatoriaComponent= ({ paciente, estancia
                             />
                         </div>
 
-                        <div>
+                        <div className='mb-15'>
                             <h4 className="text-md font-semibold mb-3 pt-4 border-t">Plan de laboratorios y gabinetes</h4>
                             
                             <div className="p-4 border rounded-lg bg-gray-50 space-y-4">
@@ -1025,7 +1020,7 @@ const NotaPostoperatoriaForm: NotaPostoperatoriaComponent= ({ paciente, estancia
                             </div>
 
                             <InputTextArea
-                                label="Plan de laboratorios y gabinetes (manual o construido)"
+                                label="Plan de laboratorios y gabinetes (campo libre)"
                                 value={data.manejo_laboratorios}
                                 onChange={handleLaboratoriosManualChange}
                                 error={errors.manejo_laboratorios}
@@ -1033,10 +1028,20 @@ const NotaPostoperatoriaForm: NotaPostoperatoriaComponent= ({ paciente, estancia
                                 className="mt-2"
                             />
                         </div>
-                        <div className="mt-6 pt-6 border-t">
-                            <h4 className="text-md font-semibold mb-3">Envío de piezas (patología)</h4>
+
+                    <InputTextArea
+                        label="Pronóstico"
+                        value={data.pronostico}
+                        onChange={e => setData('pronostico', e.target.value)}
+                        error={errors.pronostico}
+                        rows={2}
+                        className='mb-15'
+                    />
+
+                    <div className="mt-6 pt-6 border-t mb-15">
+                        <h4 className="text-md font-semibold mb-3">Envío de piezas (patología)</h4>
                         
-                            <div className="p-4 border rounded-lg bg-gray-50 space-y-4">                         
+                        <div className="p-4 border rounded-lg bg-gray-50 space-y-4">                         
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                 <InputText
                                     label="Estudio solicitado"
@@ -1114,21 +1119,13 @@ const NotaPostoperatoriaForm: NotaPostoperatoriaComponent= ({ paciente, estancia
                         />
                     </div>
 
-                        <InputTextArea
-                            label="Pronóstico"
-                            value={data.pronostico}
-                            onChange={e => setData('pronostico', e.target.value)}
-                            error={errors.pronostico}
-                            rows={2}
-                        />
-                        <InputTextArea
-                            label="Otros hallazgos de importancia para el paciente, relacionados con el quehacer médico"
-                            value={data.hallazgos_importancia}
-                            onChange={e => setData('hallazgos_importancia', e.target.value)}
-                            error={errors.hallazgos_importancia}
-                            rows={2}
-                        />
-                    </div>
+                    <InputTextArea
+                        label="Otros hallazgos de importancia para el paciente, relacionados con el quehacer médico"
+                        value={data.hallazgos_importancia}
+                        onChange={e => setData('hallazgos_importancia', e.target.value)}
+                        error={errors.hallazgos_importancia}
+                        rows={2}
+                    />
                 </div>
             </FormLayout>
         </>

@@ -171,23 +171,23 @@
             <h3>Plan de manejo y tratamiento postoperatorio inmediato</h3>
 
             <strong>Dieta:</strong>
-            <div className="texto-preformateado">
+            <div class="">
                 {{ $notaData->manejo_dieta ?? 'Sin datos.' }}
             </div>
             <strong>Soluciones:</strong>
-            <div className="texto-preformateado">
+            <div class="">
                 {{ $notaData->manejo_soluciones ?? 'Sin datos.' }}
             </div>
             <strong>Medicamentos:</strong>
-            <div className="texto-preformateado">
+            <div class="">
                 {{ $notaData->manejo_medicamentos ?? 'Sin datos.' }}
             </div>
             <strong>Medidas generales:</strong>
-            <div className="texto-preformateado">
+            <div class="">
                 {{ $notaData->manejo_medidas_generales ?? 'Sin datos.' }}
             </div>
             <strong>Laboratorios y gabinete:</strong>
-            <div className="texto-preformateado">
+            <div class="">
                 {{ $notaData->manejo_laboratorios ?? 'Sin datos.' }}
             </div>
             <h3></h3>
@@ -195,7 +195,7 @@
 
 
             <p><strong>Envío de piezas o biopsias quirúrgicas para examen macroscópico e histopatológico:</strong> </p>
-            <div className="texto-preformateado">
+            <div class="">
                 {{ $notaData->envio_piezas ?? 'Sin datos.' }}
             </div>
 
