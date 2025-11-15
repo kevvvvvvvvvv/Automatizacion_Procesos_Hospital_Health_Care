@@ -42,7 +42,7 @@ const Show = ({ estancia }: ShowEstanciaProps) => {
             <Link
                 href={route('pacientes.estancias.ventas.index', { paciente, estancia })}
             >
-                Ir a Ventas
+                Ir a ventas
             </Link>
 
             <InfoCard title={`Estancia para: ${paciente.nombre} ${paciente.apellido_paterno} ${paciente.apellido_materno}`}>
@@ -77,12 +77,12 @@ const Show = ({ estancia }: ShowEstanciaProps) => {
 
             <div className="mt-8">
                 <div className="flex justify-between items-center mb-4">
-                    <h2 className="text-xl font-semibold">Formularios Registrados</h2>
+                    <h2 className="text-xl font-semibold">Formularios registrados</h2>
                     <div className="relative inline-block text-left">
                         <Menu as="div">
                             <Menu.Button className="inline-flex items-center justify-center w-full px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700 active:bg-blue-900 focus:outline-none focus:border-blue-900 focus:ring focus:ring-blue-300 disabled:opacity-25 transition">
                                 <Plus size={16} className="mr-2"/>
-                                Añadir Documento
+                                Añadir documento
                                 <ChevronDown size={16} className="ml-2 -mr-1" />
                             </Menu.Button>
 
@@ -163,6 +163,7 @@ const Show = ({ estancia }: ShowEstanciaProps) => {
                                     <Menu.Item>
                                         {({ active }) => (
                                             <Link
+                                                href={route('pacientes.estancias.notaspostoperatorias.create', { paciente: paciente.id, estancia: estancia.id })}
                                                  className={`${
                                                     active ? 'bg-blue-500 text-white' : 'text-gray-900'
                                                 } group flex rounded-md items-center w-full px-2 py-2 text-sm`}
@@ -179,7 +180,7 @@ const Show = ({ estancia }: ShowEstanciaProps) => {
                                                     active ? 'bg-blue-500 text-white' : 'text-gray-900'
                                                 } group flex rounded-md items-center w-full px-2 py-2 text-sm`}
                                             >
-                                                Añadir Nota de Urgencias
+                                                Añadir nota de urgencias
                                             </Link>
                                         )}
                                     </Menu.Item>
@@ -191,7 +192,7 @@ const Show = ({ estancia }: ShowEstanciaProps) => {
                                                     active ? 'bg-blue-500 text-white' : 'text-gray-900'
                                                 } group flex rounded-md items-center w-full px-2 py-2 text-sm`}
                                             >
-                                                Añadir Nota de egreso
+                                                Añadir nota de egreso
                                              
                                             </Link>
                                         )}
