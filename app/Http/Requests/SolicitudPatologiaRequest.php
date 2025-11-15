@@ -23,7 +23,7 @@ class SolicitudPatologiaRequest extends FormRequest
     {
         return [
             'estudio_solicitado' => 'required|string|max:255',
-            'datos_clinicos' => 'required|string',
+            'datos_clinicos' => 'nullable|string',
             'pieza_remitida' => 'required|string|max:255',
 
             'biopsia_pieza_quirurgica' => 'nullable|string|max:255',
