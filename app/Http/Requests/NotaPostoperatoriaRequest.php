@@ -53,14 +53,12 @@ class NotaPostoperatoriaRequest extends FormRequest
             
             // Post-quirúrgico (Requeridos)
             'estado_postquirurgico' => 'required|string',
-            'manejo_tratamiento' => 'required|string',
             'pronostico' => 'required|string',
             'hallazgos_importancia' => 'required|string',
 
             'ayudantes_agregados' => 'nullable|array',
             'ayudantes_agregados.*.ayudante_id' => 'required|numeric|exists:users,id',
             'ayudantes_agregados.*.cargo' => 'required|string|max:255',
-
 
             // Reglas para Transfusiones
             'transfusiones_agregadas' => 'nullable|array',

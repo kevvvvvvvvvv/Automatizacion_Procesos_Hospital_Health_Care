@@ -490,8 +490,8 @@ const NotaPostoperatoriaForm: NotaPostoperatoriaComponent= ({ paciente, estancia
         
         const { estudio_solicitado, pieza_remitida, datos_clinicos } = localPatologia;
 
-        if (!estudio_solicitado || !pieza_remitida || !datos_clinicos) {
-            Swal.fire('Campos Incompletos', 'Debe especificar al menos "Estudio Solicitado", "Pieza Remitida" y "Datos Clínicos".', 'error');
+        if (!estudio_solicitado || !pieza_remitida ) {
+            Swal.fire('Campos Incompletos', 'Debe especificar al menos "Estudio solicitado" y "Pieza remitida" .', 'error');
             return;
         }
 
@@ -526,6 +526,10 @@ const NotaPostoperatoriaForm: NotaPostoperatoriaComponent= ({ paciente, estancia
         setData('envio_piezas', e.target.value);
     };
 
+    if(nota?.envio_piezas){
+        console.log("DATOS DE PIEZAS:", JSON.stringify(nota.envio_piezas));
+    }
+
     return (
         <>
             <PacienteCard
@@ -535,7 +539,7 @@ const NotaPostoperatoriaForm: NotaPostoperatoriaComponent= ({ paciente, estancia
 
             <Head title="Crear nota postoperatoria" />
             <FormLayout 
-            title='Registrar nota postoperatoria   '
+            title='Registrar nota postoperatoria'
             onSubmit={handleSubmit}
             actions={<PrimaryButton type="submit" disabled={processing}>{processing ? 'Creando...' : 'Crear nota postoperatoria'}</PrimaryButton>}>
                 <div className="p-4 bg-white rounded-lg shadow-sm border">
@@ -1030,12 +1034,9 @@ const NotaPostoperatoriaForm: NotaPostoperatoriaComponent= ({ paciente, estancia
                             />
                         </div>
                         <div className="mt-6 pt-6 border-t">
-                            <h4 className="text-md font-semibold mb-3">Envío de Piezas (Patología)</h4>
+                            <h4 className="text-md font-semibold mb-3">Envío de piezas (patología)</h4>
                         
-                        {/* --- 1. El Constructor --- */}
-                            <div className="p-4 border rounded-lg bg-gray-50 space-y-4">
-                            <h5 className="text-sm font-medium text-gray-700">Constructor de Solicitud de Patología</h5>
-                            
+                            <div className="p-4 border rounded-lg bg-gray-50 space-y-4">                         
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                 <InputText
                                     label="Estudio solicitado"

@@ -49,7 +49,7 @@ class FormularioNotaPostoperatorioController extends Controller
     public function store(NotaPostoperatoriaRequest $request, Paciente $paciente, Estancia $estancia)
     {
         $validatedData = $request->validated();
-        dd($request->toArray());
+        //dd($request->toArray());
         DB::beginTransaction();
         try{
             $formulario = FormularioInstancia::create([
@@ -94,6 +94,11 @@ class FormularioNotaPostoperatorioController extends Controller
             Log::error('Error al crear nota postoperatoria: ' . $e->getMessage());
             return Redirect::back()->with('error','No se pudo crear la nota postoperatoria: ' . $e->getMessage());
         }
+    }
+
+    public function edit()
+    {
+
     }
 
     public function generarPDF(NotaPostoperatoria $notaspostoperatoria)
