@@ -457,6 +457,7 @@ export interface Preoperatoria {
     
     
 }
+
 export interface notaUrgencia {
     id: number;
     ta: string;
@@ -474,7 +475,9 @@ export interface notaUrgencia {
     tratamiento: string;
     pronostico:string;
 }
- export interface HojaPostoperatoria {
+
+export interface HojaPostoperatoria {
+
     id: number;
     hora_inicio_operacion: string; 
     hora_termino_operacion: string; 
@@ -525,4 +528,36 @@ export interface notasEgresos{
     factores_riesgo:string;
     prosnostico:string;
     defuncion:string;
+}
+export interface NotaPostoperatoria {
+id: number;
+
+    hora_inicio_operacion: string; 
+    hora_termino_operacion: string; 
+
+    diagnostico_preoperatorio: string;
+    operacion_planeada: string;
+    operacion_realizada: string;
+    diagnostico_postoperatorio: string;
+    descripcion_tecnica_quirurgica: string;
+    hallazgos_transoperatorios: string;
+    reporte_conteo: string;
+    incidentes_accidentes: string;
+    cuantificacion_sangrado: string;
+    estudios_transoperatorios: string;
+    
+    estado_postquirurgico: string;
+    
+    manejo_dieta: string;
+    manejo_soluciones: string;
+    manejo_medicamentos: string;
+    manejo_medidas_generales: string;
+    manejo_laboratorios: string;
+
+    pronostico: string;
+    envio_piezas: string;
+    hallazgos_importancia: string;
+
+    created_at: string; 
+    updated_at: string; 
 }
