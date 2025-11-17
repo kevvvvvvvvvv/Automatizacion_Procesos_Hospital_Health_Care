@@ -31,11 +31,7 @@ class FormularioCatalogoSeeder extends Seeder
             'route_prefix' => 'interconsultas',
         ]);
 
-        FormularioCatalogo::create([
-            'nombre_formulario' => 'Interconsulta',
-            'nombre_tabla_fisica' => 'interconsultas',
-            'route_prefix' => 'interconsultas',
-        ]);
+        
 
         FormularioCatalogo::create([
             'nombre_formulario' => 'Hoja de enfermería',
@@ -53,19 +49,6 @@ class FormularioCatalogoSeeder extends Seeder
             'nombre_tabla_fisica' => 'preoperatorias',
             'route_prefix' => 'preoperatorias',
         ]);
-
-        FormularioCatalogo::create([
-            'nombre_formulario' => 'Nota post-operatoria',
-            'nombre_tabla_fisica' => 'nota_postoperatorias',
-            'route_prefix' => 'notaspostoperatorias',
-        ]);
-        
-        FormularioCatalogo::create([
-            'nombre_formulario' => 'Nota de urgencias',
-            'nombre_tabla_fisica' => 'nota_urgencias',
-            'route_prefix' => 'notasurgencias',
-        ]);
-
         
         FormularioCatalogo::create([
             'nombre_formulario' => 'Nota postoperatoria',
@@ -88,6 +71,11 @@ class FormularioCatalogoSeeder extends Seeder
             'nombre_formulario' => 'Nota de egreso',
             'nombre_tabla_fisica' => 'nota_egreso',
             'route_prefix' => 'notasegresos',
+        ]);
+        FormularioCatalogo::create([
+            'nombre_formulario' => 'Nota de evolucion',
+            'nombre_tabla_fisica' => 'notas_evoluciones',
+            'route_prefix' => 'notaevolucion',
         ]);
     }
 }

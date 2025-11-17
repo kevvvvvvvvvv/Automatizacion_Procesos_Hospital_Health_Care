@@ -13,11 +13,14 @@ use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Spatie\LaravelPdf\Facades\Pdf;
 use App\Http\Requests\NotaEgresoRequest;
-use Redirect;
+
 
 
 class NotasEgresoController extends Controller
 {
+    public function index(){
+        //
+    }
     public function create(paciente $paciente, Estancia $estancia){
         return Inertia::render('formularios/notaegreso/create', [
             'paciente' => $paciente,
@@ -37,7 +40,7 @@ class NotasEgresoController extends Controller
             $formularioInstancia = FormularioInstancia::create([
                 'fecha_hora' => now(),  
                 'estancia_id' => $estancia->id,
-                'formulario_catalogo_id' => 7, 
+                'formulario_catalogo_id' => 11, 
                 'user_id' => Auth::id(),
             ]);
             $notaEgreso = NotaEgreso::create([
@@ -45,30 +48,46 @@ class NotasEgresoController extends Controller
                 ...$validateData
             ]);
             DB::commit();
-            return redirect()->route('estancia.show', [
-                'estancia' => $estancia->id, 
-            ]) -> with('success', 'Nota Egreso creada exitosamente.');
+                    
+            return redirect()->route('pacientes.estancias.notasegresos.show', [
+                'paciente' => $paciente->id,
+                'estancia' => $estancia->id,
+                'notaEgreso' => $notaEgreso->id,
+            ])->with('success', 'Nota Egreso creada exitosamente.');
         } catch(\Exception $e) {
             DB::rollBack();
-             return Redirect::back()->with('error', 'Error al crear nota de egreso: ' . $e->getMessage()); 
+            return Redirect::back()->with('error', 'Error al crear nota de egreso: ' . $e->getMessage()); 
         }
     }
-    public function show(Paciente $paciente, Estancia $estancia, NotaEgreso $notaEgreso)
+    public function show(NotaEgreso $notasegreso, paciente $paciente, Estancia $estancia)
 {
-
-    $notaEgreso->load('formularioInstancia.user', 'formularioInstancia.estancia.paciente');
-
+    $notasegreso->load('formularioInstancia.estancia.paciente', 'formularioInstancia.user');
+    //dd($notasegreso->toArray());
+    $paciente = $notasegreso->formularioInstancia->estancia->paciente;  // Resuelve desde la relación
+    $estancia = $notasegreso->formularioInstancia->estancia;
+    
     return Inertia::render('formularios/notaegreso/show', [
-        'notaEgreso' => $notaEgreso,
+        'notaEgreso' => $notasegreso,
         'paciente'   => $paciente,
         'estancia'   => $estancia,
     ]);
 }
-
     public function update(paciente $paciente, Estancia $estancia){
 
     }
     public function edit(paciente $paciente, Estancia $estancia){
 
     }
+    public function generadPDF(Paciente $paciente, Estancia $estancia, NotaEgreso $notaEgreso) 
+{
+    $notaEgreso->load('formularioInstancia.estancia.paciente', 'formularioInstancia.user');
+    
+    $pdf = Pdf::loadView('pdf.notasEgresos', [ 
+        'notaEgresos' => $notaEgreso,  
+        'paciente' => $notaEgreso->formularioInstancia->estancia->paciente,  
+        'estancia' => $notaEgreso->formularioInstancia->estancia,
+    ]);
+    
+    return $pdf->download('nota_egreso.pdf');  // Agrega return para descargar
+}
 }

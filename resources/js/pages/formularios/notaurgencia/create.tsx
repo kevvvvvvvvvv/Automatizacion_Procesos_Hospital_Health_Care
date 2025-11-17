@@ -14,7 +14,7 @@ type Props = {
 };
 const CreateNotaUrgencia: React.FC<Props> = ({ paciente, estancia }) => {
    const { data, setData, post, processing, errors } = useForm({
-       motivo_atencion: '',  // Cambiado de motivo_consulta
+       motivo_atencion: '',  
        resumen_interrogatorio: '',
        ta: '',
        fc: '',

@@ -511,18 +511,31 @@ export interface TransfusionRealizada {
     cantidad: string;
 }
 
-export interface notasEgresos{
-    id:number;
-    fecha_ingreso:string;
-    fecha_egreso:string;
-    motivo_egreso:String;
-    diagnosticos_finales:string;
-    resumen_evolucion_estado_actual:string;
-    manejo_durante_estancia:string;
-    problemas_pendientes:string;
-    plan_manejo_tratamiento:string;
-    recomendaciones:string;
-    factores_riesgo:string;
-    prosnostico:string;
-    defuncion:string;
+export interface notasEgresos {
+    id: number;
+    motivo_egreso: string;
+    diagnosticos_finales: string;
+    resumen_evolucion_estado_actual: string;
+    manejo_durante_estancia: string;
+    problemas_pendientes: string;
+    plan_manejo_tratamiento: string;
+    recomendaciones: string;
+    factores_riesgo: string;
+    pronostico: string;
+    defuncion: string;
+}
+export interface notasEvoluciones {
+  id: number;
+  evolucion_actualizacion: string;
+  ta: string;  
+  fc: string;  
+  fr: string;  
+  temp: string;  
+  peso: string;  
+  talla: string;  
+  resultados_relevantes: string;
+  diagnostico_problema_clinico: string;
+  pronostico: string;
+  tratamimento_indicaciones_medicas: string;  // Asumí que es 'tratamiento_indicaciones_medicas' (corrige si es diferente)
+  
 }
