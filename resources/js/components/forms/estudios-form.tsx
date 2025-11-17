@@ -125,7 +125,7 @@ const FormularioPatologia: React.FC<PropsPatologia> = ({ estancia, medicos }) =>
                 />
             </div>
             <div className="flex justify-end mt-4">
-                <PrimaryButton type="submit" disabled={processing || !data.biopsia_pieza_quirurgica || !data.datos_clinicos || !data.estudio_solicitado || !data.estudios_especiales || !data.user_solicita_id || !data.pcr || !data.pieza_remitida || !data.revision_laminillas}>
+                <PrimaryButton type="submit" disabled={processing || !data.estudio_solicitado || !data.user_solicita_id || !data.pieza_remitida }>
                     {processing ? 'Guardando...' : 'Guardar solicitud de patología'}
                 </PrimaryButton>
             </div>

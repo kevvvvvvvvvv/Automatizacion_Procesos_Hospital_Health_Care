@@ -9,6 +9,7 @@ use Illuminate\Http\RedirectResponse;
 
 use App\Models\Paciente;
 use App\Models\Estancia;
+use App\Models\FormularioCatalogo;
 use App\Models\FormularioInstancia;
 use App\Models\HojaEnfermeria;
 use App\Models\ProductoServicio;
@@ -54,10 +55,9 @@ class FormularioHojaEnfermeriaController extends Controller
             $formulario = FormularioInstancia::create([
                 'fecha_hora' => now(),
                 'estancia_id' => $estancia->id,
-                'formulario_catalogo_id' => HojaEnfermeria::CATALOGO_ID,
+                'formulario_catalogo_id' => FormularioCatalogo::ID_HOJA_ENFERMERIA,
                 'user_id' =>  Auth::id(),
             ]);
-
              
             $hoja = HojaEnfermeria::create([
                 'id' => $formulario->id,
@@ -124,6 +124,8 @@ class FormularioHojaEnfermeriaController extends Controller
             ->orderBy('fecha_hora_registro', 'asc')
             ->get();
 
+
+        $notaPostoperatoria = $estancia->notasPostoperatorias()->latest()->first();
         return Inertia::render('formularios/hojas-enfermerias/edit',[
             'paciente' => $paciente,
             'estancia' => $estancia,
@@ -134,7 +136,8 @@ class FormularioHojaEnfermeriaController extends Controller
             'catalogoEstudios' => $catalogoEstudios,
             'solicitudesAnteriores' => $solicitudesAnteriores,
             'medicos' => $medicos,
-            'usuarios' => $usuarios
+            'usuarios' => $usuarios,
+            'notaPostoperatoria' => $notaPostoperatoria,
         ]);
     }
 

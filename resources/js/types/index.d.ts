@@ -457,6 +457,7 @@ export interface Preoperatoria {
     
     
 }
+
 export interface notaUrgencia {
     id: number;
     ta: string;
@@ -474,7 +475,9 @@ export interface notaUrgencia {
     tratamiento: string;
     pronostico:string;
 }
- export interface HojaPostoperatoria {
+
+export interface HojaPostoperatoria {
+
     id: number;
     hora_inicio_operacion: string; 
     hora_termino_operacion: string; 
@@ -511,6 +514,7 @@ export interface TransfusionRealizada {
     cantidad: string;
 }
 
+<<<<<<< HEAD
 export interface notasEgresos {
     id: number;
     motivo_egreso: string;
@@ -538,4 +542,52 @@ export interface notasEvoluciones {
   pronostico: string;
   tratamimento_indicaciones_medicas: string;  // Asumí que es 'tratamiento_indicaciones_medicas' (corrige si es diferente)
   
+=======
+export interface notasEgresos{
+    id:number;
+    fecha_ingreso:string;
+    fecha_egreso:string;
+    motivo_egreso:String;
+    diagnosticos_finales:string;
+    resumen_evolucion_estado_actual:string;
+    manejo_durante_estancia:string;
+    problemas_pendientes:string;
+    plan_manejo_tratamiento:string;
+    recomendaciones:string;
+    factores_riesgo:string;
+    prosnostico:string;
+    defuncion:string;
+}
+export interface NotaPostoperatoria {
+    id: number;
+
+    hora_inicio_operacion: string; 
+    hora_termino_operacion: string; 
+
+    diagnostico_preoperatorio: string;
+    operacion_planeada: string;
+    operacion_realizada: string;
+    diagnostico_postoperatorio: string;
+    descripcion_tecnica_quirurgica: string;
+    hallazgos_transoperatorios: string;
+    reporte_conteo: string;
+    incidentes_accidentes: string;
+    cuantificacion_sangrado: string;
+    estudios_transoperatorios: string;
+    
+    estado_postquirurgico: string;
+    
+    manejo_dieta: string;
+    manejo_soluciones: string;
+    manejo_medicamentos: string;
+    manejo_medidas_generales: string;
+    manejo_laboratorios: string;
+
+    pronostico: string;
+    envio_piezas: string;
+    hallazgos_importancia: string;
+
+    created_at: string; 
+    updated_at: string; 
+>>>>>>> ea903de46f4b4228f03d7ed960b19f727620601e
 }
