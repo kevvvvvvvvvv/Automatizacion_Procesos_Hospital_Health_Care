@@ -30,6 +30,7 @@ use App\Http\Controllers\SolicitudEstudioPatologiaController;
 use App\Http\Controllers\PreoperatoriaController;
 use App\Http\Controllers\NotaUrgenciaController;
 use App\Http\Controllers\NotasEgresoController;
+use App\Http\Controllers\NotaEvolucionController;
 use App\Models\History;
 use App\Models\HojaTerapiaIV;
 use App\Models\Interconsulta;
@@ -84,10 +85,15 @@ Route::resource('pacientes.estancias.interconsultas.honorarios', HonorarioContro
 Route::resource('pacientes.estancias.traslados', TrasladoController::class)->shallow()->middleware('auth');
 Route::resource('pacientes.estancias.notaspostoperatorias', FormularioNotaPostoperatorioController::class)->shallow()->middleware('auth');
 Route::resource('pacientes.estancias.notasegresos', NotasEgresoController::class)->shallow()->middleware('auth');
+Route::resource('pacientes.estancias.notasevoluciones', NotaEvolucionController::class)->shallow()->middleware('auth');
 
 
-
-
+Route::prefix('pacientes/{paciente}/estancias/{estancia}')->group(function () {
+    Route::get('notasegresos/create', [NotasEgresoController::class, 'create'])->name('pacientes.estancias.notasegresos.create');
+    Route::post('notasegresos', [NotasEgresoController::class, 'store'])->name('pacientes.estancias.notasegresos.store');
+    Route::get('notasegresos/{notaEgreso}', [NotasEgresoController::class, 'show'])->name('pacientes.estancias.notasegresos.show');
+    // Agrega edit, update, etc. si los usas
+});
 Route::post('hojasterapiasiv/{hojasenfermeria}',[FormularioHojaTerapiaIVController::class,'store'])->name('hojasterapiasiv.store');
 Route::patch('hojasterapiasiv/{hojasenfermeria}/{hojasterapiasiv}',[FormularioHojaTerapiaIVController::class,'update'])->name('hojasterapiasiv.update');
 
@@ -190,8 +196,9 @@ Route::get('/notaspostoperatorias/{notaspostoperatoria}/pdf', [FormularioNotaPos
     Route::get('/notasurgencias/{notasurgencias}/pdf', [NotaUrgenciaController::class, 'generarPDF'])
     ->name('notasurgencias.pdf')
     ->middleware('auth');
-
-
+Route::get('/notasegresos/{notasegresos}/pdf', [NotasEgresoController::class, 'generarPDF'])
+    ->name('notasegresos.pdf')
+    ->middleware('auth');
 
 
 Route::get('/solicitudes-patologias/{solicitud-patologia}/pdf', [SolicitudEstudioPatologiaController::class, 'generarPDF'])
