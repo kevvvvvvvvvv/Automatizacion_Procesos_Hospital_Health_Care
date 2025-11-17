@@ -11,6 +11,7 @@ use Auth;
 use Log;
 
 use App\Models\Estancia;
+use App\Models\FormularioCatalogo;
 use App\Models\FormularioInstancia;
 use App\Models\SolicitudPatologia;
 
@@ -25,7 +26,7 @@ class SolicitudEstudioPatologiaController extends Controller
             $formularioInstancia = FormularioInstancia::create([
                 'fecha_hora' => now(),
                 'estancia_id' => $estancia->id,
-                'formulario_catalogo_id' => SolicitudPatologia::ID_CATALOGO,
+                'formulario_catalogo_id' => FormularioCatalogo::ID_SOLICITUD_PATOLOGIA,
                 'user_id' =>  Auth::id(),
             ]);
 

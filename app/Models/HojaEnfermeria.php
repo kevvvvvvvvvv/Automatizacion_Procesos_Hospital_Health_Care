@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class HojaEnfermeria extends Model
 {
-    public const CATALOGO_ID = 5;
     protected $table = 'hoja_enfermerias';
     
     protected $fillable = [
