@@ -10,8 +10,6 @@ class NotaEgreso extends Model
     protected $table = 'nota_egresos';
     protected $fillable = [
         'id',
-        'fecha_ingereso',
-        'fecha_egreso',
         'motivo_egreso',
         'diagnosticos_finales',
         'resumen_evolucion_estado_actual',
