@@ -35,7 +35,7 @@ class PreoperatoriaController extends Controller
             $formularioInstancia = FormularioInstancia::create([
                 'fecha_hora' => now(),  
                 'estancia_id' => $estancia->id,
-                'formulario_catalogo_id' => 7, 
+                'formulario_catalogo_id' => 6, 
                 'user_id' => Auth::id(),
             ]);
             $preoperatoria = Preoperatoria::create([

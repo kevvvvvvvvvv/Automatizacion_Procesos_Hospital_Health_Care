@@ -14,18 +14,18 @@ type Props = {
 
 const CreateNotaEgreso: React.FC<Props> = ({ paciente, estancia }) => {
   const { data, setData, post, processing, errors } = useForm({
-    motivo_egreso: '',             
-    motivo_egreso_otro: '',  
-    diagnostico_finales: '',
-    resumen_evolucion_estado_actual: '',
-    manejo_durante_estancia: '',
-    problemas_pendientes: '',
-    plan_manejo_tratamiento: '',
-    recomendaciones: '',
-    factores_riesgo: '',
-    pronostico: '',
-    defuncion: '',
-  });
+  motivo_egreso: '',             
+  motivo_egreso_otro: '',  
+  diagnosticos_finales: '',  
+  resumen_evolucion_estado_actual: '',
+  manejo_durante_estancia: '',
+  problemas_pendientes: '',
+  plan_manejo_tratamiento: '',
+  recomendaciones: '',
+  factores_riesgo: '',
+  pronostico: '',
+  defuncion: '',
+});
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -105,21 +105,21 @@ const CreateNotaEgreso: React.FC<Props> = ({ paciente, estancia }) => {
 
         {/* Diagnósticos finales */}
         <div className="mb-4">
-          <label htmlFor="diagnostico_finales" className={labelClasses}>
+          <label htmlFor="diagnosticos_finales" className={labelClasses}>  
             Diagnósticos finales
           </label>
           <textarea
-            id="diagnostico_finales"
+            id="diagnosticos_finales"  
             className={textAreaClasses}
-            value={data.diagnostico_finales}
-            onChange={(e) => setData('diagnostico_finales', e.target.value)}
+            value={data.diagnosticos_finales}  
+            onChange={(e) => setData('diagnosticos_finales', e.target.value)}  
             placeholder="Anote los diagnósticos finales"
             rows={4}
             autoComplete="off"
           />
-          {errors.diagnostico_finales && (
+          {errors.diagnosticos_finales && (  
             <div className="text-red-500 text-sm">
-              {errors.diagnostico_finales}
+              {errors.diagnosticos_finales}  
             </div>
           )}
         </div>
