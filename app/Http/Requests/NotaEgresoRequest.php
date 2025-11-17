@@ -19,27 +19,20 @@ class NotaEgresoRequest extends FormRequest
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
-    public function rules(): array
+     public function rules(): array
     {
         return [
-
-             'motivo_egreso' => 'required|string|in:curacion,mejoria,alta_voluntaria,defuncion,otro',
-            'motivo_egreso_otro' => 'nullable|required_if:motivo_egreso,otro|string|max:500',
-
-            // Campos clínicos
-            'diagnostico_finales' => 'required|string',
-            'resumen_evolucion_estado_actual' => 'required|string',
-            'manejo_durante_estancia' => 'required|string',
-            'problemas_pendientes' => 'required|string',
-            'plan_manejo_tratamiento' => 'required|string',
-            'recomendaciones' => 'required|string',
-            'factores_riesgo' => 'required|string',
-
-            // Pronóstico obligatorio
-            'pronostico' => 'required|string',
-
-            // Defunción: solo obligatorio si motivo_egreso = defuncion
-            'defuncion' => 'nullable|required_if:motivo_egreso,defuncion|string',
+            'motivo_egreso' => 'required|string',
+            'motivo_egreso_otro' => 'nullable|string|required_if:motivo_egreso,otro',
+            'diagnosticos_finales' => 'required|string|max:1000',  // Asegúrate de que sea 'diagnosticos_finales' (con "s")
+            'resumen_evolucion_estado_actual' => 'required|string|max:1000',
+            'manejo_durante_estancia' => 'required|string|max:1000',
+            'problemas_pendientes' => 'required|string|max:1000',
+            'plan_manejo_tratamiento' => 'required|string|max:1000',
+            'recomendaciones' => 'required|string|max:1000',
+            'factores_riesgo' => 'required|string|max:1000',
+            'pronostico' => 'required|string|max:1000',
+            'defuncion' => 'nullable|string|max:1000',  // Nullable si no siempre es requerido
         ];
     }
 
@@ -60,7 +53,7 @@ class NotaEgresoRequest extends FormRequest
             'motivo_egreso_otro.max'         => 'El campo de motivo adicional no debe exceder los 500 caracteres.',
 
             // Campos clínicos
-            'diagnostico_finales.required' => 'El diagnóstico final es obligatorio.',
+            'diagnosticos_finales.required' => 'Los diagnósticos finales son obligatorios.',
             'resumen_evolucion_estado_actual.required' => 'El resumen de evolución es obligatorio.',
             'manejo_durante_estancia.required' => 'El manejo durante la estancia es obligatorio.',
             'problemas_pendientes.required' => 'Debe especificar los problemas pendientes.',

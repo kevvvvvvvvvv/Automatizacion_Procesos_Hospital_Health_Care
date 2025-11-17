@@ -18,8 +18,6 @@ return new class extends Migration
                 ->references('id')
                 ->on('formulario_instancias')
                 ->onDelete('cascade');
-            $table->datetime('fecha_ingreso');
-            $table->datetime('fecha_egreso');
             $table->String('motivo_egreso');
             $table->string('diagnosticos_finales');
             $table->string('resumen_evolucion_estado_actual');
