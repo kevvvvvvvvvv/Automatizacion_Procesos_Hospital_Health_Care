@@ -87,5 +87,12 @@ class FormularioCatalogoSeeder extends Seeder
             'nombre_tabla_fisica' => 'nota_egreso',
             'route_prefix' => 'notasegresos',
         ]);
+
+        FormularioCatalogo::create([
+            'id' => 13,
+            'nombre_formulario' => 'Nota postanestésica',
+            'nombre_tabla_fisica' => 'nota_postanestesicas',
+            'route_prefix' => 'notaspostanestesicas',
+        ]);
     }
 }

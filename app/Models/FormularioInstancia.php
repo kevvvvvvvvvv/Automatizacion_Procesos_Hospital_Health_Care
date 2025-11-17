@@ -79,4 +79,9 @@ class FormularioInstancia extends Model
     {
         return $this->hasMany(notaEgreso::class,'id', 'id');
     }
+
+    public function notaPostanestesica():HasMany
+    {
+        return $this->hasMany(NotaPostanestesica::class);
+    }
 }

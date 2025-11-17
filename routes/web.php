@@ -31,9 +31,11 @@ use App\Http\Controllers\PreoperatoriaController;
 use App\Http\Controllers\NotaUrgenciaController;
 use App\Http\Controllers\NotasEgresoController;
 use App\Http\Controllers\NotaEvolucionController;
+use App\Http\Controllers\NotaPostanestesicaController;
 use App\Models\History;
 use App\Models\HojaTerapiaIV;
 use App\Models\Interconsulta;
+use App\Models\NotaPostanestesica;
 use App\Models\NotaPostoperatoria;
 use App\Models\Paciente;
 use App\Models\ProductoServicio;
@@ -70,6 +72,7 @@ Route::resource('pacientes.estancias.interconsultas.honorarios', HonorarioContro
 Route::resource('pacientes.estancias.traslados', TrasladoController::class)->shallow()->middleware('auth');
 Route::resource('pacientes.estancias.preoperatorias', PreoperatoriaController::class)->shallow()->middleware('auth');
 Route::resource('pacientes.estancias.notasurgencias', NotaUrgenciaController::class)->shallow()->middleware('auth');
+Route::resource('pacientes.estancias.notaspostanestesicas',NotaPostanestesicaController::class)->shallow()->middleware('auth');
 
 
 Route::post('hojasterapiasiv/{hojasenfermeria}',[FormularioHojaTerapiaIVController::class,'store'])->name('hojasterapiasiv.store');
@@ -193,9 +196,9 @@ Route::get('/notaspostoperatorias/{notaspostoperatoria}/pdf', [FormularioNotaPos
     ->name('notaspostoperatorias.pdf')
     ->middleware('auth');
 
-    Route::get('/notasurgencias/{notasurgencias}/pdf', [NotaUrgenciaController::class, 'generarPDF'])
-    ->name('notasurgencias.pdf')
-    ->middleware('auth');
+Route::get('/notasurgencias/{notasurgencias}/pdf', [NotaUrgenciaController::class, 'generarPDF'])
+->name('notasurgencias.pdf')
+->middleware('auth');
 Route::get('/notasegresos/{notasegresos}/pdf', [NotasEgresoController::class, 'generarPDF'])
     ->name('notasegresos.pdf')
     ->middleware('auth');

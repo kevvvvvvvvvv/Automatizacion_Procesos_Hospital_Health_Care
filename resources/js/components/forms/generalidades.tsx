@@ -19,7 +19,7 @@ interface GeneralidadesProps {
     plan_de_estudio?: string;
     pronostico?: string;
   };
-  setData: (field: string, value: any) => void;
+  setData: (field: string, value: string) => void;
   errors: Record<string, string | undefined>;
 }
 
@@ -33,7 +33,7 @@ const Generalidades: React.FC<GeneralidadesProps> = ({ data, setData, errors }) 
 
       <InputText
         id="ta"
-        label="T.A. (Tensión Arterial)"
+        label="Tensión arterial"
         name="ta"
         value={data.ta ?? ''}
         onChange={(e) => setData('ta', e.target.value)}
@@ -43,7 +43,7 @@ const Generalidades: React.FC<GeneralidadesProps> = ({ data, setData, errors }) 
 
       <InputText
         id="fc"
-        label="FC (Frecuencia Cardíaca)"
+        label="Frecuencia cardiaca"
         name="fc"
         type="number"
         value={data.fc ?? ''}
@@ -54,7 +54,7 @@ const Generalidades: React.FC<GeneralidadesProps> = ({ data, setData, errors }) 
 
       <InputText
         id="fr"
-        label="FR (Frecuencia Respiratoria)"
+        label="Frecuencia respiratoria"
         name="fr"
         type="number"
         value={data.fr ?? ''}
@@ -65,7 +65,7 @@ const Generalidades: React.FC<GeneralidadesProps> = ({ data, setData, errors }) 
 
       <InputText
         id="temp"
-        label="TEMP (Temperatura)"
+        label="Temperatura (ºC)"
         name="temp"
         type="number"
         value={data.temp ?? ''}
