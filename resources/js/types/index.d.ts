@@ -591,3 +591,26 @@ export interface NotaPostoperatoria {
     updated_at: string; 
 }
 
+export interface NotaPostanestesica {
+    id: number; 
+    ta: string;
+    fc: number;
+    fr: number;
+    temp: number;
+    peso: number;
+    talla: number;
+    resumen_del_interrogatorio: string;
+    exploracion_fisica: string;
+    plan_de_estudio: string;
+    diagnostico_o_problemas_clinicos: string;
+    pronostico: string;
+    tecnica_anestesica: string;
+    farmacos_administrados: string;
+    duracion_anestesia: string; 
+    incidentes_anestesia: string;
+    balance_hidrico: string;
+    estado_clinico: string; 
+    plan_manejo: string;
+    created_at?: string;
+    updated_at?: string;
+}
