@@ -514,7 +514,6 @@ export interface TransfusionRealizada {
     cantidad: string;
 }
 
-<<<<<<< HEAD
 export interface notasEgresos {
     id: number;
     motivo_egreso: string;
@@ -541,8 +540,9 @@ export interface notasEvoluciones {
   diagnostico_problema_clinico: string;
   pronostico: string;
   tratamimento_indicaciones_medicas: string;  // Asumí que es 'tratamiento_indicaciones_medicas' (corrige si es diferente)
-  
-=======
+}
+  /*
+
 export interface notasEgresos{
     id:number;
     fecha_ingreso:string;
@@ -557,7 +557,7 @@ export interface notasEgresos{
     factores_riesgo:string;
     prosnostico:string;
     defuncion:string;
-}
+}*/
 export interface NotaPostoperatoria {
     id: number;
 
@@ -589,5 +589,5 @@ export interface NotaPostoperatoria {
 
     created_at: string; 
     updated_at: string; 
->>>>>>> ea903de46f4b4228f03d7ed960b19f727620601e
 }
+
