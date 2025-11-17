@@ -9,6 +9,7 @@ use Inertia\Inertia;
 
 use App\Models\Paciente;
 use App\Models\Estancia;
+use App\Models\FormularioCatalogo;
 use App\Models\FormularioInstancia;
 use App\Models\NotaPostoperatoria;
 use App\Models\PersonalEmpleado;
@@ -55,7 +56,7 @@ class FormularioNotaPostoperatorioController extends Controller
             $formulario = FormularioInstancia::create([
                 'fecha_hora' => now(),
                 'estancia_id' => $estancia->id,
-                'formulario_catalogo_id' => NotaPostoperatoria::ID_CATALOGO,
+                'formulario_catalogo_id' => FormularioCatalogo::ID_NOTA_POSTOPERATOIRA,
                 'user_id' => Auth::id(),
             ]);
 

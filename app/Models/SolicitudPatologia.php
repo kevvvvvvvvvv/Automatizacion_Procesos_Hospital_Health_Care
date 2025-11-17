@@ -7,8 +7,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class SolicitudPatologia extends Model
 {
-    public const ID_CATALOGO = 10;
-
     protected $table = 'solicitud_patologias';
 
     protected $fillable = [
