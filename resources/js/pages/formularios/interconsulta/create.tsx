@@ -148,7 +148,6 @@ const handleSubmit = (e: React.FormEvent) => {
           value={data.fc}
           onChange={(e) => setData('fc', e.target.value)}
           placeholder="Ej: 70"
-          min={0}
           error={errors.fc}
         />
         <InputText
@@ -159,7 +158,6 @@ const handleSubmit = (e: React.FormEvent) => {
           value={data.fr}
           onChange={(e) => setData('fr', e.target.value)}
           placeholder="Ej: 16"
-          min={0}
           error={errors.fr}
         />
         <InputText
@@ -167,11 +165,9 @@ const handleSubmit = (e: React.FormEvent) => {
           label="TEMP (Temperatura)"
           name="temp"
           type="number"
-          step="0.01"
           value={data.temp}
           onChange={(e) => setData('temp', e.target.value)}
           placeholder="Ej: 36.50"
-          min={20}
           error={errors.temp}
         />
         <InputText
@@ -179,11 +175,9 @@ const handleSubmit = (e: React.FormEvent) => {
           label="Peso (kg)"
           name="peso"
           type="number"
-          step="0.01"
           value={data.peso}
           onChange={(e) => setData('peso', e.target.value)}
           placeholder="Ej: 70.50"
-          min={0}
           error={errors.peso}
         />
         <InputText
