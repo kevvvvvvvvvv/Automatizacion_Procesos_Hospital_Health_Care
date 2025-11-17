@@ -1,5 +1,5 @@
 import React, { useState } from 'react'; 
-import { Paciente, Estancia, ProductoServicio, HojaEnfermeria, HojaSignosGraficas, CatalogoEstudio, User, SolicitudEstudio } from '@/types';
+import { Paciente, Estancia, ProductoServicio, HojaEnfermeria, HojaSignosGraficas, CatalogoEstudio, User, SolicitudEstudio, NotaPostoperatoria } from '@/types';
 import { Head, useForm, router } from '@inertiajs/react';
 import { route } from 'ziggy-js';
 import Swal from 'sweetalert2';
@@ -17,6 +17,7 @@ import MedicamentosForm from '@/components/forms/medicamentos-form';
 import SondasCateteresForm from '@/components/forms/sondas-cateteres-form';
 import EstudiosForm from '@/components/forms/estudios-form';
 import DietasForm from '@/components/forms/dietas-form';
+import PlanPostoperatorioChecklist from '@/components/plan-postoperatorio-check-list';
 
 interface CreateProps {
     paciente: Paciente;
@@ -29,6 +30,8 @@ interface CreateProps {
     solicitudesAnteriores: SolicitudEstudio[];
     medicos: User[];
     usuarios: User[];
+
+    notaPostoperatoria: NotaPostoperatoria;
 }
 
 type SeccionHoja = 'signos' | 'medicamentos' | 'terapia_iv' | 'estudios' | 'sondas' | 'liquidos' | 'dieta' | 'observaciones' | 'graficas';
@@ -158,12 +161,22 @@ const Observaciones = ({hojasenfermeria}: Props) => {
     )
 }
 
-const Create: CreateComponent = ({ paciente, estancia, hojaenfermeria ,medicamentos, soluciones, dataParaGraficas, catalogoEstudios, solicitudesAnteriores, medicos, usuarios}) => {
+const Create: CreateComponent = ({ paciente, estancia, hojaenfermeria ,medicamentos, soluciones, dataParaGraficas, catalogoEstudios, solicitudesAnteriores, medicos,          
+    notaPostoperatoria}) => {
 
     const [activeSection, setActiveSection] = useState<SeccionHoja>('signos');
 
     const NavigationTabs = () => (
-        <nav className="mb-6 -mt-2">
+        <>
+        <div className="mt-12">
+            <h2 className="text-2xl font-bold text-gray-800 mb-10">
+                Checklist de plan postoperatorio
+            </h2>
+            <PlanPostoperatorioChecklist 
+                nota={notaPostoperatoria} 
+            />
+        </div>
+        <nav className="mb-6 mt-12">
             <div className="border-b border-gray-200">
                 <div className="flex flex-wrap -mb-px gap-x-6 gap-y-2" aria-label="Tabs">
                     {secciones.map((seccion) => (
@@ -185,6 +198,7 @@ const Create: CreateComponent = ({ paciente, estancia, hojaenfermeria ,medicamen
                 </div>
             </div>
         </nav>
+        </>
     );
 
     const renderActiveSection = () => {

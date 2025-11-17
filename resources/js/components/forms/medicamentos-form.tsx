@@ -204,7 +204,7 @@ const MedicamentosForm: React.FC<Props> = ({ hoja, medicamentos }) => {
         <div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <SelectInput
-                    label="Medicamento"
+                    label="Medicamento (nombre)"
                     options={medicamentosOptions} 
                     value={localData.medicamento_id}
                     onChange={(value) => {

@@ -10,7 +10,7 @@ interface SelectInputProps {
   label?: string;
   options: SelectOption[];
   value: string | number | null; 
-  onChange: (value: string | number) => void; 
+  onChange: (value: string ) => void; 
   error?: string;
   placeholder?: string;
 }
@@ -46,7 +46,8 @@ const SelectInput: React.FC<SelectInputProps> = ({
   const selectedOption = options.find((opt) => opt.value == value) || null;
   
   const handleChange = (selected: OnChangeValue<SelectOption, false>) => {
-    onChange(selected ? selected.value : '');
+    const stringValue = selected ? String(selected.value) : '';
+    onChange(stringValue);
   };
 
   return (
