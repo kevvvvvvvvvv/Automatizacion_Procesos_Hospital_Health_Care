@@ -207,8 +207,8 @@ const Generalidades: React.FC<GeneralidadesProps> = ({ data, setData, errors }) 
           rows={4}
           autoComplete="off"
         />
-        {errors.pronostico && (
-          <div className="text-red-500 text-sm">{errors.pronostico}</div>
+        {errors.pronostico  && (
+          <div className="text-red-500 'border-gray-600'">{errors.pronostico}</div>
         )}
       </div>
     </>
