@@ -1,4 +1,3 @@
-import AuthenticatedSessionController from '@/actions/App/Http/Controllers/Auth/AuthenticatedSessionController';
 import InputError from '@/components/input-error';
 import TextLink from '@/components/text-link';
 import { Button } from '@/components/ui/button';
@@ -9,6 +8,7 @@ import AuthLayout from '@/layouts/auth-layout';
 import { request } from '@/routes/password';
 import { Form, Head } from '@inertiajs/react';
 import { LoaderCircle } from 'lucide-react';
+import { route } from 'ziggy-js'; // 👈 Importamos route de Ziggy
 
 interface LoginProps {
     status?: string;
@@ -24,7 +24,8 @@ export default function Login({ status, canResetPassword }: LoginProps) {
             <Head title="Log in" />
 
             <Form
-                {...AuthenticatedSessionController.store.form()}
+                method="post"
+                action={route('login')} // 👈 Aquí va la ruta del login en Laravel
                 resetOnSuccess={['password']}
                 className="flex flex-col gap-6"
             >
@@ -77,7 +78,7 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                                     name="remember"
                                     tabIndex={3}
                                 />
-                                <Label htmlFor="remember">Recuerdame</Label>
+                                <Label htmlFor="remember">Recuérdame</Label>
                             </div>
 
                             <Button
