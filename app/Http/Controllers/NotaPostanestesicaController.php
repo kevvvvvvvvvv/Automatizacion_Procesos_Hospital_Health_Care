@@ -17,4 +17,8 @@ class NotaPostanestesicaController extends Controller
             'estancia' => $estancia,
         ]);
     }
+
+    public function store(Request $request,){
+
+    }
 }
