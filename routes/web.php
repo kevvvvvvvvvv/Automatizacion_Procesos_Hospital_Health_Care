@@ -199,6 +199,7 @@ Route::get('/notaspostoperatorias/{notaspostoperatoria}/pdf', [FormularioNotaPos
 Route::get('/notasurgencias/{notasurgencias}/pdf', [NotaUrgenciaController::class, 'generarPDF'])
 ->name('notasurgencias.pdf')
 ->middleware('auth');
+
 Route::get('/notasegresos/{notasegresos}/pdf', [NotasEgresoController::class, 'generarPDF'])
     ->name('notasegresos.pdf')
     ->middleware('auth');
@@ -208,6 +209,9 @@ Route::get('/solicitudes-patologias/{solicitud-patologia}/pdf', [SolicitudEstudi
     ->name('solicitudes-patologias.pdf')
     ->middleware('auth');
 
+Route::get('/notaspostanestesicas/{notaspostanestesica}/pdf', [NotaPostanestesicaController::class, 'generarPDF'])
+    ->name('notaspostanestesicas.pdf')
+    ->middleware('auth');
 
 //Farmacia
 Route::get('/farmacia/solicitudes/{hojaenfermeria}', [FarmaciaController::class, 'show'])

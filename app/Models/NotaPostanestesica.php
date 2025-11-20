@@ -9,22 +9,26 @@ class NotaPostanestesica extends Model
 {
     protected $fillable = [
         'id',
-        'tension_arterial',
-        'frecuencia_cardiaca',
-        'frecuencia_respiratoria',
-        'temperatura',
+        'ta',
+        'fc',
+        'fr',
+        'temp',
         'peso',
         'talla',
-        'resumen_integarrogatorio',
+        'resumen_del_interrogatorio',
         'exploracion_fisica',
-        'resultados_estudios',
-        'diagnosticos_problemas',
+        'resultado_estudios',
+        'diagnostico_o_problemas_clinicos',
+        'plan_de_estudio',
         'pronostico',
-        'plan_estudio_tratamiento',
-        'evaluacion',
-        'plan_anestesico',
-        'valoracion_riesgo',
-        'indicaciones_recomendaciones',
+
+        'tecnica_anestesica',
+        'farmacos_administrados',
+        'duracion_anestesia',
+        'incidentes_anestesia',
+        'balance_hidrico',
+        'estado_clinico',
+        'plan_manejo',
     ];
 
     public function formularioInstancia():BelongsTo

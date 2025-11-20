@@ -302,9 +302,23 @@ const NotaPostoperatoriaForm: NotaPostoperatoriaComponent= ({ paciente, estancia
     ];
     
     const opcionesViaMedicamento = [
+        // --- Vías Comunes ---
         { value: 'Vía Oral', label: 'Oral' },
         { value: 'Intravenosa', label: 'Intravenosa' },
-        // ... (el resto de tus opciones de vía)
+        { value: 'Intramuscular', label: 'Intramuscular' },
+        { value: 'Subcutánea', label: 'Subcutánea' },
+        { value: 'Sublingual', label: 'Sublingual' },
+        { value: 'Rectal', label: 'Rectal' },
+
+        // --- Vías Tópicas/Otras ---
+        { value: 'Tópico', label: 'Tópico' },
+        { value: 'Oftálmico', label: 'Oftálmico' },
+        { value: 'Otológico', label: 'Otológico' },
+        { value: 'Nasal', label: 'Nasal' },
+        { value: 'Vaginal', label: 'Vaginal' },
+
+        // --- Vías Respiratorias ---
+        { value: 'Nebulizado', label: 'Nebulizado' },
     ];
 
     // 2. Estado local para los campos del constructor
