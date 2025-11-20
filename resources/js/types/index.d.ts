@@ -601,8 +601,9 @@ export interface NotaPostanestesica {
     talla: number;
     resumen_del_interrogatorio: string;
     exploracion_fisica: string;
-    plan_de_estudio: string;
+    resultado_estudios: string;
     diagnostico_o_problemas_clinicos: string;
+    plan_de_estudio: string;
     pronostico: string;
     tecnica_anestesica: string;
     farmacos_administrados: string;

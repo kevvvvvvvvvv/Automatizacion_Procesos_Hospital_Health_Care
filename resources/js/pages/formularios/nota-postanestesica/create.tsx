@@ -53,7 +53,7 @@ const NotaPostanestesicaForm: NotaPostanestesicaComponent = ({ paciente, estanci
                 preserveScroll: true,
             });
         } else {
-            post(route('notas-postanestesicas.store', { estancia: estancia.id }), {
+            post(route('pacientes.estancias.notaspostanestesicas.store', { paciente: paciente.id, estancia: estancia.id }), {
                 preserveScroll: true,
             });
         }
@@ -136,7 +136,7 @@ const NotaPostanestesicaForm: NotaPostanestesicaComponent = ({ paciente, estanci
                     <InputTextArea
                         id="plan_manejo"
                         label="Plan de manejo y tratamiento inmediato, incluyendo protocolo de analgesia y control de signos y
-síntomas asociados a la anestesia"
+                            síntomas asociados a la anestesia"
                         value={data.plan_manejo ?? ''}
                         onChange={(e) => setData('plan_manejo', e.target.value)}
                         rows={4}

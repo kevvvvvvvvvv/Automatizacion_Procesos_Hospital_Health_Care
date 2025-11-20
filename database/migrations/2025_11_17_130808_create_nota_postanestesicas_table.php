@@ -26,8 +26,9 @@ return new class extends Migration
             $table->integer('talla');
             $table->string('resumen_del_interrogatorio');
             $table->string('exploracion_fisica');
-            $table->string('plan_de_estudio');
+            $table->string('resultado_estudios');
             $table->string('diagnostico_o_problemas_clinicos');
+            $table->string('plan_de_estudio');
             $table->string('pronostico');
 
             $table->string('tecnica_anestesica');
@@ -35,7 +36,7 @@ return new class extends Migration
             $table->time('duracion_anestesia');
             $table->string('incidentes_anestesia');
             $table->string('balance_hidrico');
-            $table->string('estado clinico');
+            $table->string('estado_clinico');
             $table->string('plan_manejo');
 
             $table->timestamps();
