@@ -84,10 +84,10 @@ const CreateNotaPreanestesica: React.FC<Props> = ({ paciente, estancia }) => {
         
 
         
-          {/* Generalidades (signos vitales + exploración) */}
+          
           <Generalidades data={data} setData={setData} errors={errors} />
 
-          {/* Campos específicos de la Nota Preanestésica */}
+          
           <div className="col-span-full">
             <label
               htmlFor="plan_estudios_tratamiento"

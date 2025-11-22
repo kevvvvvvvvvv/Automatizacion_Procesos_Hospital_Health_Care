@@ -41,8 +41,8 @@ use App\Models\ProductoServicio;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;
-
-
+use Spatie\LaravelPdf\Facades\Pdf;
+use Illuminate\Support\Facades\Log;
 
 Route::get('/', function () {
     return Inertia::render('auth/login');
@@ -209,6 +209,7 @@ Route::get('/solicitudes-patologias/{solicitud-patologia}/pdf', [SolicitudEstudi
 Route::get('/notaspreanestesicas/{notaspreanestesica}/pdf',[NotaPreAnestesicaController::class, 'generarPDF'])
     ->name('notaspreanestesicas.pdf')
     ->middleware('auth');
+    
 
 //Farmacia
 Route::get('/farmacia/solicitudes/{hojaenfermeria}', [FarmaciaController::class, 'show'])
