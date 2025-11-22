@@ -104,5 +104,11 @@ class FormularioCatalogoSeeder extends Seeder
             'route_prefix' => 'notaspreanestesicas',
         ]);
 
+        FormularioCatalogo::create([
+            'id' => 13,
+            'nombre_formulario' => 'Nota postanestésica',
+            'nombre_tabla_fisica' => 'nota_postanestesicas',
+            'route_prefix' => 'notaspostanestesicas',
+        ]);
     }
 }

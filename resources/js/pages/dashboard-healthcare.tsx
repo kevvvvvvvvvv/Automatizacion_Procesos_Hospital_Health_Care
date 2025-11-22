@@ -10,15 +10,29 @@ import { User } from '@/types';
 import MainLayout from '@/layouts/MainLayout';
 import CardButton from '@/components/ui/card-button';
 
+
 interface PageProps extends InertiaPageProps {
     auth: {
         user: User;
     };
 }
 
+
+
 export default function Dashboard() {
-    const { props } = usePage<PageProps>();
-    const user = props.auth.user;
+    const { auth } = usePage<PageProps>().props;
+    const user = auth.user;
+
+    const can = (permissionName: string): boolean => {
+        const userRoles = user.roles || [];
+        const userPermissions = user.permissions || [];
+
+        if (userRoles.includes('admin')) {
+            return true;
+        }
+
+        return userPermissions.includes(permissionName);
+    };
 
     return (
         <>
@@ -27,45 +41,45 @@ export default function Dashboard() {
                 <div className="p-4 max-w-sm mx-auto">
                 </div>
                 <div>
+                    {can('consultar pacientes') && (
                     <CardButton
                         icon={FaUser}
                         text="Pacientes"
-                        bgColor="#1B1C38"
                         onClick={() => router.visit(route('pacientes.index'))}
-                    />
+                    />)}
                 </div>
                 <div>
+                    {can('consultar habitaciones') && (
                     <CardButton
                         icon={LuBedSingle}
                         text="Habitaciones"
-                        bgColor="#1B1C38"
                         onClick={() => router.visit(route('habitaciones.index'))}
-                    />
+                    />)}
                 </div>
                 <div>
+                    {can('consultar productos y servicios') && (
                     <CardButton
                         icon={RiArchiveDrawerFill}
                         text="Productos y servicios"
-                        bgColor="#1B1C38"
                         onClick={() => router.visit(route('producto-servicios.index'))}
-                    />
+                    />)}
                 </div>
                 
                 <div>
+                    {can('consultar colaboradores') && (
                     <CardButton
                         icon={FaUserDoctor}
                         text="Colaboradores"
-                        bgColor="#1B1C38"
                         onClick={() => router.visit(route('doctores.index'))}
-                    />
+                    />)}
                 </div>  
                 <div>
+                    {can('consultar historial') && (
                     <CardButton
                         icon={MdHistory}
                         text="Historial"
-                        bgColor="#1B1C38"
                         onClick={() => router.visit(route('historiales.index'))}
-                    />
+                    />)}
                 </div>               
             </MainLayout>
         </>

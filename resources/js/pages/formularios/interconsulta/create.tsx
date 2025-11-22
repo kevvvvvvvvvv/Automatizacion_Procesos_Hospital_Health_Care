@@ -7,7 +7,6 @@ import { useForm, Head } from '@inertiajs/react';
 import { route } from 'ziggy-js';
 import { Estancia, Paciente } from '@/types';
 import PacienteCard from '@/components/paciente-card';
-import { Link } from 'lucide-react';
 
 type Props = {
   paciente: Paciente;

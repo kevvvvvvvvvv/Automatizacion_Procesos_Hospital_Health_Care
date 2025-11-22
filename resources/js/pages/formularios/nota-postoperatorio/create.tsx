@@ -1,4 +1,4 @@
-import React,{ useState, useMemo} from 'react';
+import React,{ useState} from 'react';
 import { Head, useForm } from '@inertiajs/react';
 import { HojaEnfermeria, NotaPostoperatoria, Paciente, Estancia, User, ProductoServicio, CatalogoEstudio } from '@/types';
 import { route } from 'ziggy-js';
@@ -12,6 +12,12 @@ import FormLayout from '@/components/form-layout';
 import PacienteCard from '@/components/paciente-card';
 import MainLayout from '@/layouts/MainLayout';
 import SelectInput from '@/components/ui/input-select';
+
+import TratamientoDietasForm from '@/components/forms/tratamiento-dietas-form';
+import TratamientoSolucionesForm from '@/components/forms/tratamiento-soluciones-form';
+import TratamientoMedidasGeneralesForm from '@/components/forms/tratamiento-medidas-generales-form';
+import TratamientoMedicamentosForm from '@/components/forms/tratamiento-medicamentos-form';
+import TratamientoLaboratoriosForm from '@/components/forms/tratamiento-laboratorios-form';
 
 interface Props {
     paciente: Paciente;
@@ -86,6 +92,9 @@ const NotaPostoperatoriaForm: NotaPostoperatoriaComponent= ({ paciente, estancia
         pronostico: nota?.pronostico || '',
         hallazgos_importancia: nota?.hallazgos_importancia || '',
         transfusiones_agregadas: [] as TransfusionAgregada[],
+
+        //Solicitud de pieza patologica 
+
     });
 
     const [localTransfusion, setLocalTransfusion] = useState({
@@ -172,307 +181,7 @@ const NotaPostoperatoriaForm: NotaPostoperatoriaComponent= ({ paciente, estancia
         }
     }
 
-    //MANEJO DEL TRATAMINETO POSTOPERATORIO
 
-    const [dietaPreset, setDietaPreset] = useState<'ayuno'|'liquida'|'manual'|null>(null);
-    const [horasDietaLiquida, setHorasDietaLiquida] = useState('');
-
-    const handleSetDietaAyuno = () => {
-        const texto = "Ayuno estricto.";
-        setData('manejo_dieta', texto);
-        setDietaPreset('ayuno');
-        setHorasDietaLiquida(''); 
-    };
-
-    // Presiona "Dieta líquida"
-    const handleSetDietaLiquida = () => {
-        setDietaPreset('liquida');
-        const horas = horasDietaLiquida || '__'; 
-        const texto = `Iniciar dieta líquida progresar a blanda en cuanto tiempo ${horas} horas.`;
-        setData('manejo_dieta', texto);
-    };
-
-    // Maneja el cambio en el input de "horas"
-    const handleHorasChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-        const horas = e.target.value;
-        setHorasDietaLiquida(horas);
-        if (dietaPreset === 'liquida') {
-            const texto = `Iniciar dieta líquida progresar a blanda en ${horas || '__'} horas.`;
-            setData('manejo_dieta', texto);
-        }
-    };
-    
-    // Manual
-    const handleDietaManualChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-        setData('manejo_dieta', e.target.value);
-        setDietaPreset('manual'); 
-        setHorasDietaLiquida('');
-    };
-
-    //Soluciones
-
-    const solucionesOptions = soluciones.map(s => ({
-        value: s.id.toString(),
-        label: s.nombre_prestacion // Asumiendo que así se llama
-    }));
-
-    // 2. Estado local para los campos del constructor
-    const [localSolucion, setLocalSolucion] = useState({
-        solucion_id: '',
-        solucion_nombre: '',
-        cantidad: '', // ml
-        duracion: '', // hrs
-    });
-
-    // 3. Cálculo de flujo en tiempo real
-    const flujoCalculado = useMemo(() => {
-        const cantidad = Number(localSolucion.cantidad);
-        const duracion = Number(localSolucion.duracion);
-        if (cantidad > 0 && duracion > 0) {
-            return (cantidad / duracion).toFixed(2); // Retorna ej. "125.00"
-        }
-        return '0.00';
-    }, [localSolucion.cantidad, localSolucion.duracion]);
-
-    // 4. Manejador para el Select (guarda el nombre)
-    const handleSolucionSelectChange = (value: string) => {
-        const seleccionada = solucionesOptions.find(opt => opt.value === value);
-        setLocalSolucion(d => ({
-            ...d,
-            solucion_id: value,
-            solucion_nombre: seleccionada ? seleccionada.label : ''
-        }));
-    };
-
-    // 5. Manejador para el botón "Agregar al Plan"
-    const handleAddSolucion = (e: React.MouseEvent<HTMLButtonElement>) => {
-        e.preventDefault();
-        if (!localSolucion.solucion_id || !localSolucion.cantidad || !localSolucion.duracion) {
-            Swal.fire('Campos Incompletos', 'Debe seleccionar una solución, cantidad y duración.', 'error');
-            return;
-        }
-
-        // Formatea la nueva línea de texto
-        const nuevaLinea = `• ${localSolucion.solucion_nombre} ${localSolucion.cantidad}ml, para ${localSolucion.duracion} hrs (Flujo: ${flujoCalculado} ml/hr).`;
-
-        // Añade la nueva línea al textarea 'manejo_soluciones'
-        setData(currentData => ({
-            ...currentData,
-            // Añade un salto de línea si ya hay texto
-            manejo_soluciones: currentData.manejo_soluciones 
-                ? `${currentData.manejo_soluciones}\n${nuevaLinea}` 
-                : nuevaLinea
-        }));
-
-        // Limpia el constructor
-        setLocalSolucion({
-            solucion_id: '',
-            solucion_nombre: '',
-            cantidad: '',
-            duracion: '',
-        });
-    };
-
-    // 6. Manejador para la escritura manual (igual que el de Dieta)
-    const handleSolucionesManualChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-        setData('manejo_soluciones', e.target.value);
-    };
-
-
-    //MEDICAMNETOS
-
-    const medicamentosOptions = medicamentos.map(m => ({
-        value: m.id.toString(),
-        label: m.nombre_prestacion
-    }));
-    
-    const optionsGramaje = [
-        {value: 'mililitros', label: 'Mililitros (ml)'},
-        {value: 'gramos', label: 'Gramos (g)'},
-        {value: 'miligramos', label: 'Miligramos (mg)'},
-        {value: 'microgramos', label: 'Microgramos (mcg)'},
-        {value: 'unidades internacionales', label: 'Unidades internacionales (ui)'},
-        {value: 'gotas', label: 'Gotas'},
-    ];
-
-    const optionsUnidad = [
-        { value: 'horas', label: 'Horas' },
-        { value: 'minutos', label: 'Minutos'},
-        { value: 'dosis unica', label: 'Dosis única'}
-    ];
-    
-    const opcionesViaMedicamento = [
-        { value: 'Vía Oral', label: 'Oral' },
-        { value: 'Intravenosa', label: 'Intravenosa' },
-        // ... (el resto de tus opciones de vía)
-    ];
-
-    // 2. Estado local para los campos del constructor
-    const [localMedicamento, setLocalMedicamento] = useState({
-        medicamento_id: '',
-        medicamento_nombre: '',
-        dosis: '',
-        gramaje: '',
-        via: '',
-        via_label: '',
-        duracion_tratamiento: '',
-        unidad: 'horas', // Default a 'horas'
-    });
-
-    // 3. Manejadores para los Selects (para guardar el 'label')
-    const handleMedicamentoSelectChange = (value: string) => {
-        const sel = medicamentosOptions.find(o => o.value === value);
-        setLocalMedicamento(d => ({
-            ...d,
-            medicamento_id: value,
-            medicamento_nombre: sel ? sel.label : ''
-        }));
-    };
-
-    const handleViaSelectChange = (value: string) => {
-        const sel = opcionesViaMedicamento.find(o => o.value === value);
-        setLocalMedicamento(d => ({
-            ...d,
-            via: value,
-            via_label: sel ? sel.label : ''
-        }));
-    };
-
-    // 4. Manejador para el botón "Agregar al Plan"
-    const handleAddMedicamentoAlPlan = (e: React.MouseEvent<HTMLButtonElement>) => {
-        e.preventDefault();
-        
-        // Validación de campos
-        const { medicamento_id, dosis, gramaje, via, unidad, duracion_tratamiento } = localMedicamento;
-        if (!medicamento_id || !dosis || !gramaje || !via || !unidad) {
-            Swal.fire('Campos Incompletos', 'Debe llenar todos los campos del medicamento (excepto duración si es dosis única).', 'error');
-            return;
-        }
-        if (unidad !== 'dosis unica' && !duracion_tratamiento) {
-            Swal.fire('Campos Incompletos', 'Debe especificar la duración/frecuencia.', 'error');
-            return;
-        }
-
-        // Construir el texto
-        let texto = `• ${localMedicamento.medicamento_nombre} ${localMedicamento.dosis} ${localMedicamento.gramaje}`;
-        texto += `, ${localMedicamento.via_label}`;
-        if (localMedicamento.unidad === 'dosis unica') {
-            texto += ', Dosis única.';
-        } else {
-            texto += `, cada ${localMedicamento.duracion_tratamiento} ${localMedicamento.unidad}.`;
-        }
-
-        // Añadir al textarea principal
-        setData(currentData => ({
-            ...currentData,
-            manejo_medicamentos: currentData.manejo_medicamentos
-                ? `${currentData.manejo_medicamentos}\n${texto}`
-                : texto
-        }));
-
-        // Limpiar el constructor
-        setLocalMedicamento({
-            medicamento_id: '',
-            medicamento_nombre: '',
-            dosis: '',
-            gramaje: '',
-            via: '',
-            via_label: '',
-            duracion_tratamiento: '',
-            unidad: 'horas',
-        });
-    };
-
-    // 5. Manejador para la escritura manual
-    const handleMedicamentosManualChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-        setData('manejo_medicamentos', e.target.value);
-    };
-
-    //MEDIDAS GENERALES
-    const [horasSignosVitales, setHorasSignosVitales] = useState('');
-
-    const addMedidaAlPlan = (texto: string) => {
-        // Añade un "• " (viñeta) al inicio de la línea
-        const nuevaLinea = `• ${texto}`;
-
-        setData(currentData => ({
-            ...currentData,
-            manejo_medidas_generales: currentData.manejo_medidas_generales
-                ? `${currentData.manejo_medidas_generales}\n${nuevaLinea}` // Añade con salto de línea
-                : nuevaLinea // Es la primera línea
-        }));
-    };
-
-    // 2. Manejador para el botón "Agregar" del campo de horas
-    const handleAddMedidaHoras = (e: React.MouseEvent<HTMLButtonElement>) => {
-        e.preventDefault();
-        const horas = horasSignosVitales || '___'; // Usa un placeholder si está vacío
-        addMedidaAlPlan(`Cuidados generales de enfermería y signos vitales cada ${horas} horas.`);
-        setHorasSignosVitales(''); // Limpia el input
-    };
-
-    // 3. Manejador para la escritura manual (igual que los otros)
-    const handleMedidasManualChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-        setData('manejo_medidas_generales', e.target.value);
-    };
-
-    // 4. Lista de presets estáticos
-    const optionsMedidasGenerales = [
-        'Posición semifowler.',
-        'Reposo absoluto.',
-        'Vigilancia de heridas quirúrgicas.',
-        'Vigilancia y cuantificación de drenajes.',
-        'Deambulación.',
-        
-    ];
-
-    //LABORATORIOS Y GABINETES 
-    const [localEstudio, setLocalEstudio] = useState({
-        estudio_id: '',
-        estudio_nombre: '',
-    });
-
-    const optionsEstudios = useMemo(() => {
-        return estudios.map(estudio => ({
-            value: estudio.id.toString(),
-            label: `${estudio.nombre} (${estudio.departamento || estudio.tipo_estudio})`
-        }));
-    }, [estudios]);
-
-    // 2. Manejador para el Select (guarda el nombre)
-    const handleEstudioSelectChange = (value: string) => {
-        const seleccionada = optionsEstudios.find(opt => opt.value === value);
-        setLocalEstudio({
-            estudio_id: value,
-            estudio_nombre: seleccionada ? seleccionada.label : ''
-        });
-    };
-
-    // 3. Manejador para el botón "Agregar al Plan"
-    const handleAddEstudioAlPlan = (e: React.MouseEvent<HTMLButtonElement>) => {
-        e.preventDefault();
-        if (!localEstudio.estudio_id) {
-            Swal.fire('Sin selección', 'Debe seleccionar un estudio de la lista.', 'error');
-            return;
-        }
-
-        const nuevaLinea = `• ${localEstudio.estudio_nombre}`;
-
-        setData(currentData => ({
-            ...currentData,
-            manejo_laboratorios: currentData.manejo_laboratorios
-                ? `${currentData.manejo_laboratorios}\n${nuevaLinea}`
-                : nuevaLinea
-        }));
-
-        // Limpia el constructor
-        setLocalEstudio({ estudio_id: '', estudio_nombre: '' });
-    };
-
-    // 4. Manejador para la escritura manual
-    const handleLaboratoriosManualChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-        setData('manejo_laboratorios', e.target.value);
-    };
 
     // PIEZAS PATOLOGICAS
     const [localPatologia, setLocalPatologia] = useState({
@@ -781,251 +490,41 @@ const NotaPostoperatoriaForm: NotaPostoperatoriaComponent= ({ paciente, estancia
                 <div>
                     <h3 className="text-md font-semibold mb-3">Plan de manejo y tratamiento postoperatorio inmediato</h3>
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">
-                                Plan de dieta
-                            </label>
-                            
-                            <div className="flex flex-wrap gap-2 mb-2">
-                                <button
-                                    type="button"
-                                    onClick={handleSetDietaAyuno}
-                                    className={`text-xs px-3 py-1 rounded-full ${dietaPreset === 'ayuno' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700'}`}
-                                >
-                                    Ayuno estricto
-                                </button>
-                                <button
-                                    type="button"
-                                    onClick={handleSetDietaLiquida}
-                                    className={`text-xs px-3 py-1 rounded-full ${dietaPreset === 'liquida' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700'}`}
-                                >
-                                    Dieta líquida progresiva
-                                </button>
-                            </div>
-
-                            {dietaPreset === 'liquida' && (
-                                <div className="max-w-xs my-2">
-                                    <InputText
-                                        label="Iniciar en (horas)"
-                                        type="number"
-                                        id="horas_dieta_liquida"
-                                        name="horas_dieta_liquida"
-                                        value={horasDietaLiquida}
-                                        onChange={handleHorasChange}
-                                    />
-                                </div>
-                            )}
-
-                            <InputTextArea
-                                label="Descripción de la dieta (campo libre)"
+                            <TratamientoDietasForm
                                 value={data.manejo_dieta}
-                                onChange={handleDietaManualChange} 
-                                error={errors.manejo_dieta}
-                                rows={4}
+                                onChange={value=>(setData('manejo_dieta',value))}  
                             />
                         </div>
                     </div>
                             
                     <div>
                         <div>
-                             <h4 className="text-md font-semibold mb-3 pt-4 border-t">Plan de soluciones</h4>
-                            
-                            {/* Constructor de soluciones */}
-                            <div className="p-4 border rounded-lg bg-gray-50 space-y-4">
-                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
-                                    <SelectInput
-                                        label="Solución"
-                                        options={solucionesOptions}
-                                        value={localSolucion.solucion_id}
-                                        onChange={handleSolucionSelectChange}
-                                        error={errors.manejo_soluciones} 
-                                    />
-                                    <InputText
-                                        label="Cantidad (ml)"
-                                        type="number"
-                                        id="sol_cantidad"
-                                        name="sol_cantidad"
-                                        value={localSolucion.cantidad}
-                                        onChange={e => setLocalSolucion(d => ({...d, cantidad: e.target.value}))}
-                                    />
-                                    <InputText
-                                        label="Duración (hrs)"
-                                        type="number"
-                                        id="sol_duracion"
-                                        name="sol_duracion"
-                                        value={localSolucion.duracion}
-                                        onChange={e => setLocalSolucion(d => ({...d, duracion: e.target.value}))}
-                                    />
-                                    <div className="flex flex-col">
-                                        <label className="block text-sm font-medium text-gray-700">Flujo (calculado)</label>
-                                        <span className="mt-1 p-2 border border-gray-300 rounded-md bg-gray-100 text-sm">
-                                            {flujoCalculado} ml/hr
-                                        </span>
-                                    </div>
-                                </div>
-                                <div className="flex justify-end">
-                                    <PrimaryButton type="button" onClick={handleAddSolucion}>
-                                        + Agregar al plan
-                                    </PrimaryButton>
-                                </div>
-                            </div>
-
-                            <InputTextArea
-                                label="Plan de soluciones (campo libre)"
+                            <TratamientoSolucionesForm
                                 value={data.manejo_soluciones}
-                                onChange={handleSolucionesManualChange}
-                                error={errors.manejo_soluciones}
-                                rows={5}
-                                className="mt-2"
+                                onChange={value=>setData('manejo_soluciones',value)}
+                                soluciones={soluciones}
                             />
+
                         </div>
                         <div>
-                            <h4 className="text-md font-semibold mb-3 pt-4 border-t">Plan de medicamentos</h4>
-                            
-                            {/* Constructor de medicamentos */}
-                            <div className="p-4 border rounded-lg bg-gray-50 space-y-4">
-
-                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                    <SelectInput
-                                        label="Medicamento (nombre)"
-                                        options={medicamentosOptions} 
-                                        value={localMedicamento.medicamento_id}
-                                        onChange={handleMedicamentoSelectChange}
-                                        error={errors.manejo_medicamentos}
-                                    />
-                                    <InputText 
-                                        id="medicamento_dosis"
-                                        name="dosis"
-                                        label="Dosis" 
-                                        type="number"
-                                        value={localMedicamento.dosis} 
-                                        onChange={e => setLocalMedicamento(d => ({...d, dosis: e.target.value}))} 
-                                    />
-                                    <SelectInput
-                                        label="Gramaje"
-                                        options={optionsGramaje}
-                                        value={localMedicamento.gramaje}
-                                        onChange={(value) => setLocalMedicamento(d => ({...d, gramaje: value as string}))}
-                                    />
-                                </div>
-                                
-                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
-                                    <SelectInput
-                                        label="Vía de administración"
-                                        options={opcionesViaMedicamento}
-                                        value={localMedicamento.via}
-                                        onChange={handleViaSelectChange}
-                                    />
-
-                                    {localMedicamento.unidad !== 'dosis unica' && (
-                                        <InputText 
-                                            id="duracion"
-                                            name="duracion"
-                                            label="Duración (frecuencia)" 
-                                            type="number"
-                                            value={localMedicamento.duracion_tratamiento}
-                                            onChange={e => setLocalMedicamento(d => ({...d, duracion_tratamiento: e.target.value}))} 
-                                        />
-                                    )}
-
-                                    <SelectInput
-                                        label="Unidad"
-                                        options={optionsUnidad}
-                                        value={localMedicamento.unidad}
-                                        onChange={(value) => setLocalMedicamento(d => ({...d, unidad: value as string}))}
-                                    />
-                                    
-                                </div>
-        
-                                <div className="flex justify-end">
-                                    <PrimaryButton type="button" onClick={handleAddMedicamentoAlPlan}>
-                                        + Agregar al plan
-                                    </PrimaryButton>
-                                </div>
-                            </div>
-
-                            <InputTextArea
-                                label="Plan de medicamentos (campo libre)"
+                           <TratamientoMedicamentosForm
                                 value={data.manejo_medicamentos}
-                                onChange={handleMedicamentosManualChange}
-                                error={errors.manejo_medicamentos}
-                                rows={5}
-                                className="mt-2"
-                            />
+                                onChange={value=>setData('manejo_medicamentos',value)}
+                                medicamentos={medicamentos}
+                           />
                         </div>
                         <div>
-                            <h4 className="text-md font-semibold mb-3 pt-4 border-t">Plan de medidas generales</h4>
-
-                            <div className="p-4 border rounded-lg bg-gray-50 space-y-4">
-                                <h5 className="text-sm font-medium text-gray-700">Opciones (haga clic para agregar):</h5>
-
-                                <div className="flex flex-wrap gap-2">
-                                    {optionsMedidasGenerales.map((texto) => (
-                                        <button
-                                            type="button"
-                                            key={texto}
-                                            onClick={() => addMedidaAlPlan(texto)}
-                                            className="text-xs px-3 py-1 rounded-full bg-gray-200 text-gray-800 hover:bg-gray-300"
-                                        >
-                                            + {texto}
-                                        </button>
-                                    ))}
-                                </div>
-
-                                {/* Constructor Dinámico (Horas) */}
-                                <div className="flex items-end gap-2 pt-2 border-t">
-                                    <div className="flex-1">
-                                        <InputText
-                                            label="Signos vitales cada (horas)"
-                                            type="number"
-                                            id="horas_signos_vitales"
-                                            name="horas_signos_vitales"
-                                            value={horasSignosVitales}
-                                            onChange={e => setHorasSignosVitales(e.target.value)}
-                                        />
-                                    </div>
-                                    <PrimaryButton type="button" onClick={handleAddMedidaHoras}>
-                                        + Agregar
-                                    </PrimaryButton>
-                                </div>
-                            </div>
-
-                            <InputTextArea
-                                label="Plan de medidas generales (campo libre)"
-                                value={data.manejo_medidas_generales}
-                                onChange={handleMedidasManualChange}
-                                error={errors.manejo_medidas_generales}
-                                rows={5}
-                                className="mt-2"
-                            />
+                            <TratamientoLaboratoriosForm
+                                value={data.manejo_laboratorios}
+                                onChange={value=>setData('manejo_laboratorios',value)}
+                                estudios={estudios}
+                            />     
                         </div>
 
                         <div className='mb-15'>
-                            <h4 className="text-md font-semibold mb-3 pt-4 border-t">Plan de laboratorios y gabinetes</h4>
-                            
-                            <div className="p-4 border rounded-lg bg-gray-50 space-y-4">
-                                <div className="flex items-end gap-2">
-                                    <div className="flex-1">
-                                        <SelectInput
-                                            label="Seleccionar Estudio"
-                                            options={optionsEstudios}
-                                            value={localEstudio.estudio_id}
-                                            onChange={handleEstudioSelectChange}
-                                            error={errors.manejo_laboratorios}
-                                        />
-                                    </div>
-                                    <PrimaryButton type="button" onClick={handleAddEstudioAlPlan}>
-                                        + Agregar al plan
-                                    </PrimaryButton>
-                                </div>
-                            </div>
-
-                            <InputTextArea
-                                label="Plan de laboratorios y gabinetes (campo libre)"
-                                value={data.manejo_laboratorios}
-                                onChange={handleLaboratoriosManualChange}
-                                error={errors.manejo_laboratorios}
-                                rows={5}
-                                className="mt-2"
+                            <TratamientoMedidasGeneralesForm
+                                value={data.manejo_medidas_generales}
+                                onChange={value=>setData('manejo_medidas_generales',value)}
                             />
                         </div>
 
@@ -1090,6 +589,16 @@ const NotaPostoperatoriaForm: NotaPostoperatoriaComponent= ({ paciente, estancia
                                     onChange={e => setLocalPatologia(d => ({...d, pieza_remitida: e.target.value}))}
                                     error={errors.envio_piezas}
                                 />
+
+                                {/*
+                                <InputText
+                                    label='Empresa a enviar la pieza patologica'
+                                    id='empresa_enviar'
+                                    name='empresa_enviar'
+                                    value={localPatologia.empresa_enviar}
+                                    onChange={e => setLocalPatologia}
+                                />
+                                */}
                             </div>
 
                             <InputTextArea

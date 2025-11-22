@@ -32,9 +32,11 @@ use App\Http\Controllers\NotaUrgenciaController;
 use App\Http\Controllers\NotasEgresoController;
 use App\Http\Controllers\NotaEvolucionController;
 use App\Http\Controllers\NotaPreAnestesicaController;
+use App\Http\Controllers\NotaPostanestesicaController;
 use App\Models\History;
 use App\Models\HojaTerapiaIV;
 use App\Models\Interconsulta;
+use App\Models\NotaPostanestesica;
 use App\Models\NotaPostoperatoria;
 use App\Models\Paciente;
 use App\Models\ProductoServicio;
@@ -71,6 +73,7 @@ Route::resource('pacientes.estancias.interconsultas.honorarios', HonorarioContro
 Route::resource('pacientes.estancias.traslados', TrasladoController::class)->shallow()->middleware('auth');
 Route::resource('pacientes.estancias.preoperatorias', PreoperatoriaController::class)->shallow()->middleware('auth');
 Route::resource('pacientes.estancias.notasurgencias', NotaUrgenciaController::class)->shallow()->middleware('auth');
+Route::resource('pacientes.estancias.notaspostanestesicas',NotaPostanestesicaController::class)->shallow()->middleware('auth');
 
 
 Route::post('hojasterapiasiv/{hojasenfermeria}',[FormularioHojaTerapiaIVController::class,'store'])->name('hojasterapiasiv.store');
@@ -194,9 +197,10 @@ Route::get('/notaspostoperatorias/{notaspostoperatoria}/pdf', [FormularioNotaPos
     ->name('notaspostoperatorias.pdf')
     ->middleware('auth');
 
-    Route::get('/notasurgencias/{notasurgencias}/pdf', [NotaUrgenciaController::class, 'generarPDF'])
-    ->name('notasurgencias.pdf')
-    ->middleware('auth');
+Route::get('/notasurgencias/{notasurgencias}/pdf', [NotaUrgenciaController::class, 'generarPDF'])
+->name('notasurgencias.pdf')
+->middleware('auth');
+
 Route::get('/notasegresos/{notasegresos}/pdf', [NotasEgresoController::class, 'generarPDF'])
     ->name('notasegresos.pdf')
     ->middleware('auth');
@@ -210,6 +214,9 @@ Route::get('/notaspreanestesicas/{notaspreanestesica}/pdf',[NotaPreAnestesicaCon
     ->name('notaspreanestesicas.pdf')
     ->middleware('auth');
     
+Route::get('/notaspostanestesicas/{notaspostanestesica}/pdf', [NotaPostanestesicaController::class, 'generarPDF'])
+    ->name('notaspostanestesicas.pdf')
+    ->middleware('auth');
 
 //Farmacia
 Route::get('/farmacia/solicitudes/{hojaenfermeria}', [FarmaciaController::class, 'show'])
@@ -227,6 +234,9 @@ Route::post('/notifications/mark-all-as-read', function () {
     Auth::user()->unreadNotifications->markAsRead();
     return redirect()->back();
 })->name('notifications.mark-all-as-read')->middleware('auth');
+
+//Historial
+Route::get('/historial',[HistoryController::class,'index'])->name('historiales.index')->middleware('auth');
 
 require __DIR__.'/settings.php';
 require __DIR__.'/auth.php';

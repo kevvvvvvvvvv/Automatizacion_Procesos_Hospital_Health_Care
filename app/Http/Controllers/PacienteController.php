@@ -7,9 +7,25 @@ use App\Models\Paciente;
 use App\Models\FamiliarResponsable;  // Cambia a el modelo correcto
 use App\Models\Estancia;
 use Inertia\Inertia;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests; 
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 
-class PacienteController extends Controller
+class PacienteController extends Controller implements HasMiddleware
 {
+    use AuthorizesRequests;
+
+    public static function middleware(): array
+    {
+        $permission = \Spatie\Permission\Middleware\PermissionMiddleware::class;
+        return [
+            new Middleware($permission . ':consultar pacientes', only: ['index', 'show']),
+            new Middleware($permission . ':crear pacientes', only: ['create', 'store']),
+            new Middleware($permission . ':editar pacientes', only: ['edit', 'update']),
+            new Middleware($permission . ':eliminar pacientes', only: ['destroy']),
+        ];
+    }
+
     public function index()
     {
         $pacientes = Paciente::all();
