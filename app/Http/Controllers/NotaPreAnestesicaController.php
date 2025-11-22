@@ -7,6 +7,9 @@ use App\Models\Paciente;
 use App\Models\Estancia;
 use App\Models\FormularioInstancia;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;              // ← ESTA
+use Spatie\LaravelPdf\Facades\Pdf;              // ← si usas Pdf
+use Spatie\Browsershot\Browsershot;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
@@ -71,20 +74,39 @@ class NotaPreAnestesicaController extends Controller
                 ->with('error', 'Error al crear la nota preanestésica: ' . $e->getMessage());
         }
     }
-    public function show(Paciente $paciente, Estancia $estancia, NotaPreAnestesica $notaPreanestesica)
+    public function show( NotaPreAnestesica $notaspreanestesica)
 {
-    $notaPreanestesica->load(
+    $notaspreanestesica->load(
         'formularioInstancia.estancia.paciente',
         'formularioInstancia.user',
     );
 
     return Inertia::render('formularios/notapreanestesica/show', [
-        'notaPreanestesica' => $notaPreanestesica,
-        'paciente' => $notaPreanestesica->formularioInstancia->estancia->paciente,
-        'estancia' => $notapreanestesica->estancia,
+        'notaPreanestesica' => $notaspreanestesica,
+        'paciente' => $notaspreanestesica->formularioInstancia->estancia->paciente,
+        'estancia' => $notaspreanestesica->estancia,
     ]);
 }
-public function generarPDF(){
-    
-}
+  public function generarPDF(NotaPreAnestesica $notaspreanestesica)
+    {
+        try {
+            // 👇 NADA de ->load(['paciente','medico'])
+
+            $pdf = Pdf::loadView('pdf.notaspreanestesica', [
+                    'nota' => $notaspreanestesica,
+                ])
+                ->format('a4')
+                ->name('nota-preanestesica-'.$notaspreanestesica->id.'.pdf')
+                ->download();
+
+        } catch (\Throwable $e) {
+            Log::error('Error al generar PDF de Nota Preanestésica', [
+                'nota_id' => $notaspreanestesica->id ?? null,
+                'message' => $e->getMessage(),
+                'trace'   => $e->getTraceAsString(),
+            ]);
+
+            return back()->with('error', 'Ocurrió un error al generar el PDF: '.$e->getMessage());
+        }
+    }
 }
