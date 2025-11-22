@@ -1,8 +1,10 @@
 import React, { useState, useMemo } from 'react';
-import { Head, router } from '@inertiajs/react';
+import { Head, router, Link } from '@inertiajs/react';
 import MainLayout from '@/layouts/MainLayout';
 import {route}  from 'ziggy-js';
+import { Edit, Trash2 } from 'lucide-react'; 
 
+import { usePermission } from '@/hooks/use-permission';
 
 import {
     useReactTable,
@@ -20,177 +22,183 @@ import BackButton from '@/components/ui/back-button';
 
 
 type Paciente = {
-  id: number;
-  curp: string;
-  nombre: string;
-  apellido_paterno: string;
-  apellido_materno: string;
-  telefono: string;
+    id: number;
+    curp: string;
+    nombre: string;
+    apellido_paterno: string;
+    apellido_materno: string;
+    telefono: string;
 };
 
 type IndexProps = {
-  pacientes: Paciente[];
+    pacientes: Paciente[];
 };
 
 const Index = ({ pacientes }: IndexProps) => {
 
-  const [globalFilter, setGlobalFilter] = useState('');
+    const [globalFilter, setGlobalFilter] = useState('');
 
-  const [sorting, setSorting] = useState<SortingState>([]);
+    const [sorting, setSorting] = useState<SortingState>([]);
 
-  const columns = useMemo<ColumnDef<Paciente>[]>(
-    () => [
-      {
-        accessorKey: 'curp',
-        header: 'CURP',
-      },
-      {
-        id: 'nombreCompleto',
-        header: 'Nombre Completo',
-        accessorFn: row => `${row.nombre} ${row.apellido_paterno} ${row.apellido_materno}`,
-      },
-      {
-        accessorKey: 'telefono',
-        header: 'Teléfono',
-      },
-      {
-        id: 'actions',
-        header: 'Acciones',
-        cell: ({ row }) => (
-          <div className="flex space-x-2">
-            <button
-              onClick={(e) => {
-                e.stopPropagation(); 
-                router.get(route('pacientes.edit', row.original.id));
-              }}
-              className="px-3 py-1 bg-blue-500 text-white rounded text-sm hover:bg-blue-600"
-            >
-              Editar
-            </button>
-            <button
-              onClick={(e) => {
-                e.stopPropagation(); 
-                if (confirm('¿Estás seguro de eliminar este paciente?')) {
-                  router.delete(route('pacientes.destroy', row.original.id));
-                }
-              }}
-              className="px-3 py-1 bg-red-500 text-white rounded text-sm hover:bg-red-600"
-            >
-              Eliminar
-            </button>
-          </div>
-        ),
-      },
-    ],
-    []
-  );
+    const { can } = usePermission(); 
 
-  const data = useMemo(() => pacientes, [pacientes]);
+    const columns = useMemo<ColumnDef<Paciente>[]>(
+        () => [
+            {
+                accessorKey: 'curp',
+                header: 'CURP',
+            },
+            {
+                id: 'nombreCompleto',
+                header: 'Nombre Completo',
+                accessorFn: row => `${row.nombre} ${row.apellido_paterno} ${row.apellido_materno}`,
+            },
+            {
+                accessorKey: 'telefono',
+                header: 'Teléfono',
+            },
+            {
+                id: 'actions',
+                header: 'Acciones',
+                cell: ({ row }) => (
+                    <div className="flex space-x-2">
+                        {can('editar pacientes') && (
+                            <Link
+                                href={route('pacientes.edit', row.original.id)}
+                                className="p-1 text-blue-600 hover:bg-blue-100 rounded transition-colors"
+                                title="Editar paciente"
+                                onClick={(e) => e.stopPropagation()} 
+                            >
+                                <Edit size={16} />
+                            </Link>
+                        )}
+                        {can('eliminar pacientes') && (
+                            <button
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    if (confirm('¿Estás seguro de eliminar este paciente?')) {
+                                        router.delete(route('pacientes.destroy', row.original.id));
+                                    }
+                                }}
+                                className="p-1 text-red-600 hover:bg-red-100 rounded transition-colors"
+                                title="Eliminar paciente"
+                            >
+                                <Trash2 size={16} />
+                            </button>
+                        )}
+                    </div>
+                ),
+            },
+        ],
+        [can]
+    );
 
-  const table = useReactTable({
-    data,
-    columns,
-    state: {
-      globalFilter,
-      sorting,
-    },
-    onGlobalFilterChange: setGlobalFilter,
-    onSortingChange: setSorting,
-    getCoreRowModel: getCoreRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-  });
+    const data = useMemo(() => pacientes, [pacientes]);
 
-  return (
-    <>
-      <Head title="Pacientes" />
-      <div className="p-4 md:p-8">
-        <div className="flex justify-between items-center mb-6">
-          <div className="flex items-center space-x-4">
-            <BackButton />
-          </div>
-          
-          <AddButton href={route('pacientes.create')}>
-            Agregar Paciente
-          </AddButton>
-        </div>
+    const table = useReactTable({
+        data,
+        columns,
+        state: {
+        globalFilter,
+        sorting,
+        },
+        onGlobalFilterChange: setGlobalFilter,
+        onSortingChange: setSorting,
+        getCoreRowModel: getCoreRowModel(),
+        getFilteredRowModel: getFilteredRowModel(),
+        getSortedRowModel: getSortedRowModel(),
+        getPaginationRowModel: getPaginationRowModel(),
+    });
 
-        <div className="mb-4">
-          <input
-            type="text"
-            value={globalFilter}
-            onChange={e => setGlobalFilter(e.target.value)}
-            placeholder="Buscar en toda la tabla..."
-            className="w-full max-w-sm p-2 border border-gray-300 rounded-lg text-black"
-          />
-        </div>
+    return (
+        <>
+        <Head title="Pacientes" />
+        <div className="p-4 md:p-8">
+            <div className="flex justify-between items-center mb-6">
+                <div className="flex items-center space-x-4">
+                    <BackButton />
+                </div>
+                {can('crear pacientes') &&(
+                <AddButton href={route('pacientes.create')}>
+                    Agregar paciente
+                </AddButton> )}
+            </div>
+
+            <div className="mb-4">
+            <input
+                type="text"
+                value={globalFilter}
+                onChange={e => setGlobalFilter(e.target.value)}
+                placeholder="Buscar en toda la tabla..."
+                className="w-full max-w-sm p-2 border border-gray-300 rounded-lg text-black"
+            />
+            </div>
 
 
-        <div className="overflow-x-auto bg-white rounded-lg shadow">
-          <table className="w-full text-sm text-left text-gray-700">
-            <thead className="text-xs text-gray-700 uppercase bg-gray-50">
-              {table.getHeaderGroups().map(headerGroup => (
-                <tr key={headerGroup.id}>
-                  {headerGroup.headers.map(header => (
-                    <th key={header.id} scope="col" className="px-6 py-3">
-                      <div
-                        className="flex items-center cursor-pointer select-none"
-                        onClick={header.column.getToggleSortingHandler()}
-                      >
-                        {flexRender(header.column.columnDef.header, header.getContext())}
-                        {{ asc: ' 🔼', desc: ' 🔽' }[header.column.getIsSorted() as string] ?? null}
-                      </div>
-                    </th>
-                  ))}
-                </tr>
-              ))}
-            </thead>
-              <tbody>
-                {table.getRowModel().rows.map(row => (
-                  <tr 
-                    key={row.id} 
-                    className="border-b hover:bg-gray-100 cursor-pointer" 
-                    onClick={() => {
-                        router.get(route('pacientes.show', row.original.id));
-                    }}
-                  >
-                    {row.getVisibleCells().map(cell => (
-                      <td key={cell.id} className="px-6 py-4">
-                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                      </td>
+            <div className="overflow-x-auto bg-white rounded-lg shadow">
+            <table className="w-full text-sm text-left text-gray-700">
+                <thead className="text-xs text-gray-700 uppercase bg-gray-50">
+                {table.getHeaderGroups().map(headerGroup => (
+                    <tr key={headerGroup.id}>
+                    {headerGroup.headers.map(header => (
+                        <th key={header.id} scope="col" className="px-6 py-3">
+                        <div
+                            className="flex items-center cursor-pointer select-none"
+                            onClick={header.column.getToggleSortingHandler()}
+                        >
+                            {flexRender(header.column.columnDef.header, header.getContext())}
+                            {{ asc: ' 🔼', desc: ' 🔽' }[header.column.getIsSorted() as string] ?? null}
+                        </div>
+                        </th>
                     ))}
-                  </tr>
+                    </tr>
                 ))}
-              </tbody>
-          </table>
-        </div>
+                </thead>
+                <tbody>
+                    {table.getRowModel().rows.map(row => (
+                    <tr 
+                        key={row.id} 
+                        className="border-b hover:bg-gray-100 cursor-pointer" 
+                        onClick={() => {
+                            router.get(route('pacientes.show', row.original.id));
+                        }}
+                    >
+                        {row.getVisibleCells().map(cell => (
+                        <td key={cell.id} className="px-6 py-4">
+                            {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                        </td>
+                        ))}
+                    </tr>
+                    ))}
+                </tbody>
+            </table>
+            </div>
 
-        <div className="flex items-center justify-between mt-4">
-          <button
-            onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
-            className="px-4 py-2 text-sm font-medium text-white bg-blue-500 rounded-md disabled:opacity-50"
-          >
-            Anterior
-          </button>
-          <span className="text-sm">
-            Página{' '}
-            <strong>
-              {table.getState().pagination.pageIndex + 1} de {table.getPageCount()}
-            </strong>
-          </span>
-          <button
-            onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
-            className="px-4 py-2 text-sm font-medium text-white bg-blue-500 rounded-md disabled:opacity-50"
-          >
-            Siguiente
-          </button>
+            <div className="flex items-center justify-between mt-4">
+            <button
+                onClick={() => table.previousPage()}
+                disabled={!table.getCanPreviousPage()}
+                className="px-4 py-2 text-sm font-medium text-white bg-blue-500 rounded-md disabled:opacity-50"
+            >
+                Anterior
+            </button>
+            <span className="text-sm">
+                Página{' '}
+                <strong>
+                {table.getState().pagination.pageIndex + 1} de {table.getPageCount()}
+                </strong>
+            </span>
+            <button
+                onClick={() => table.nextPage()}
+                disabled={!table.getCanNextPage()}
+                className="px-4 py-2 text-sm font-medium text-white bg-blue-500 rounded-md disabled:opacity-50"
+            >
+                Siguiente
+            </button>
+            </div>
         </div>
-      </div>
-    </>
-  );
+        </>
+    );
 };
 
 

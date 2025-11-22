@@ -53,6 +53,15 @@ class HandleInertiaRequests extends Middleware
             'auth.user.notifications' => fn () => $request->user() 
                 ? $request->user()->unreadNotifications()->take(10)->get()
                 : [],
+            'auth' => [
+                'user' => $request->user() ? [
+                    'id' => $request->user()->id,
+                    'nombre' => $request->user()->nombre,
+                    'email' => $request->user()->email,
+                    'roles' => $request->user()->getRoleNames(),
+                    'permissions' => $request->user()->getAllPermissions()->pluck('name'),
+                ] : null,
+            ],
         ];
     }
 }

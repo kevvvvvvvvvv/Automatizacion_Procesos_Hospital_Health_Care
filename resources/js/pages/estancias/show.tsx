@@ -196,7 +196,8 @@ const Show = ({ estancia }: ShowEstanciaProps) => {
                                              
                                             </Link>
                                         )}
-                                    </Menu.Item><Menu.Item>
+                                    </Menu.Item>
+                                    <Menu.Item>
                                         {({ active }) => (
                                             <Link
                                                 href={route('pacientes.estancias.notasevoluciones.create', { paciente: paciente.id, estancia: estancia.id })}
