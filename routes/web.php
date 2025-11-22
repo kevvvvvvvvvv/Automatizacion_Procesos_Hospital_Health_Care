@@ -31,6 +31,7 @@ use App\Http\Controllers\PreoperatoriaController;
 use App\Http\Controllers\NotaUrgenciaController;
 use App\Http\Controllers\NotasEgresoController;
 use App\Http\Controllers\NotaEvolucionController;
+use App\Http\Controllers\NotaPreAnestesicaController;
 use App\Http\Controllers\NotaPostanestesicaController;
 use App\Models\History;
 use App\Models\HojaTerapiaIV;
@@ -42,8 +43,8 @@ use App\Models\ProductoServicio;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;
-
-
+use Spatie\LaravelPdf\Facades\Pdf;
+use Illuminate\Support\Facades\Log;
 
 Route::get('/', function () {
     return Inertia::render('auth/login');
@@ -89,12 +90,12 @@ Route::resource('pacientes.estancias.traslados', TrasladoController::class)->sha
 Route::resource('pacientes.estancias.notaspostoperatorias', FormularioNotaPostoperatorioController::class)->shallow()->middleware('auth');
 Route::resource('pacientes.estancias.notasegresos', NotasEgresoController::class)->shallow()->middleware('auth');
 Route::resource('pacientes.estancias.notasevoluciones', NotaEvolucionController::class)->shallow()->middleware('auth');
-
+Route::resource('pacientes.estancias.notaspreanestesicas', NotaPreAnestesicaController::class)->shallow()->middleware('auth');
 
 Route::prefix('pacientes/{paciente}/estancias/{estancia}')->group(function () {
     Route::get('notasegresos/create', [NotasEgresoController::class, 'create'])->name('pacientes.estancias.notasegresos.create');
     Route::post('notasegresos', [NotasEgresoController::class, 'store'])->name('pacientes.estancias.notasegresos.store');
-    Route::get('notasegresos/{notaEgreso}', [NotasEgresoController::class, 'show'])->name('pacientes.estancias.notasegresos.show');
+    Route::get('notasegresos/{notaEgreso}', [NotaPreAnestesicaController::class, 'show'])->name('pacientes.estancias.notasegresos.show');
     // Agrega edit, update, etc. si los usas
 });
 Route::post('hojasterapiasiv/{hojasenfermeria}',[FormularioHojaTerapiaIVController::class,'store'])->name('hojasterapiasiv.store');
@@ -209,6 +210,10 @@ Route::get('/solicitudes-patologias/{solicitud-patologia}/pdf', [SolicitudEstudi
     ->name('solicitudes-patologias.pdf')
     ->middleware('auth');
 
+Route::get('/notaspreanestesicas/{notaspreanestesica}/pdf',[NotaPreAnestesicaController::class, 'generarPDF'])
+    ->name('notaspreanestesicas.pdf')
+    ->middleware('auth');
+    
 Route::get('/notaspostanestesicas/{notaspostanestesica}/pdf', [NotaPostanestesicaController::class, 'generarPDF'])
     ->name('notaspostanestesicas.pdf')
     ->middleware('auth');

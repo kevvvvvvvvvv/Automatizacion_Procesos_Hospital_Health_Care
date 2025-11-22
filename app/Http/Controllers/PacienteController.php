@@ -160,4 +160,26 @@ class PacienteController extends Controller implements HasMiddleware
         $paciente->delete();
         return redirect()->route('pacientes.index')->with('success', 'Paciente eliminado correctamente.');
     }
+    
+
+    public function generarConsentimiento($pacienteId, $medicoId)
+    {
+        // Obtener el paciente registrado por ID
+        $paciente = Paciente::find($pacienteId);
+        
+        // Obtener el médico registrado por ID
+        $medico = Medico::find($medicoId);
+        
+        // Si no existen, puedes manejar errores (opcional)
+        if (!$paciente || !$medico) {
+            return redirect()->back()->with('error', 'Paciente o médico no encontrado.');
+        }
+        
+        // Generar el PDF usando el HTML (puedes usar DomPDF o similar)
+        $html = view('consentimiento', compact('paciente', 'medico'))->render();
+        $pdf = PDF::loadHTML($html)->setPaper('a4');
+        
+        // Descargar o guardar el PDF
+        return $pdf->download('consentimiento_medico.pdf');
+    }
 }

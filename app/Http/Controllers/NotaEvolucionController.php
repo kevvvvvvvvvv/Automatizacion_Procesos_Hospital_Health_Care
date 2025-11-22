@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\NotaEvolucion;  // Asumiendo que tienes el modelo NotaEvolucion
+use App\Models\NotaEvolucion;   
 use App\Models\Paciente;
 use App\Models\Estancia;
 use App\Models\FormularioInstancia;
@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Spatie\LaravelPdf\Facades\Pdf;
-use App\Http\Requests\NotaEvolucionRequest;  // Crea este request si no existe
+use App\Http\Requests\NotaEvolucionRequest;  
 use Redirect;
 
 class NotaEvolucionController extends Controller
@@ -33,7 +33,7 @@ class NotaEvolucionController extends Controller
             $formularioInstancia = FormularioInstancia::create([
                 'fecha_hora' => now(),
                 'estancia_id' => $estancia->id,
-                'formulario_catalogo_id' => 12,  // Ajusta el ID del catálogo si es diferente
+                'formulario_catalogo_id' => 11,  // Ajusta el ID del catálogo si es diferente
                 'user_id' => Auth::id(),
             ]);
 
