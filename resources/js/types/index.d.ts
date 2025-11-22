@@ -70,17 +70,19 @@ export interface Paciente {
 }
 
 export interface User {
-  id: number;
-  curp: string;
-  nombre: string;
-  apellido_paterno: string;
-  apellido_materno: string;
-  sexo: 'Masculino' | 'Femenino';
-  fecha_nacimiento: string; 
-  colaborador_responsable_id: number | null;
-  email: string;
-  created_at: string; 
-  updated_at: string;
+    id: number;
+    curp: string;
+    nombre: string;
+    apellido_paterno: string;
+    apellido_materno: string;
+    sexo: 'Masculino' | 'Femenino';
+    fecha_nacimiento: string; 
+    colaborador_responsable_id: number | null;
+    email: string;
+    created_at: string; 
+    updated_at: string;
+    roles: string[];       
+    permissions: string[]; 
 };
 
 export interface FormularioCatalogo {
@@ -615,3 +617,10 @@ export interface NotaPostanestesica {
     created_at?: string;
     updated_at?: string;
 }
+
+export type PageProps<T extends Record<string, unknown> = Record<string, unknown>> = T & {
+    auth: {
+        user: User;
+    };
+    [key: string]: unknown; 
+};

@@ -127,12 +127,15 @@ class UserSeeder extends Seeder
             'cargo_id' => 2,
         ]);
 
+        $user->assignRole('admin');
+
         CredencialEmpleado::create([
             'user_id' => $user->id,
             'titulo' => 'Médico Especialista en Pediatría',
             'cedula_profesional' => '8765432'
         ]);
 
+        //Rol de cada usuario
         $user = User::create([
             'curp' => 'HELC881105HMCLBZA9',
             'nombre' => 'Carlos Alberto',
@@ -146,5 +149,18 @@ class UserSeeder extends Seeder
         ]);
 
         $user->assignRole('farmacia');
+
+        $userRecepcion = User::create([
+            'curp' => 'PESA950615MDFRNS03',
+            'nombre' => 'Ana María',
+            'apellido_paterno' => 'Pérez',
+            'apellido_materno' => 'Sánchez',
+            'sexo' => 'Femenino',
+            'fecha_nacimiento' => '1995-06-15',
+            'email' => 'recepcion@gmail.com',
+            'password' => Hash::make('12345678'),
+        ]);
+
+        $userRecepcion->assignRole('recepcion');
     }
 }

@@ -24,9 +24,6 @@ const Show = ({ paciente }: ShowProps) => {
         
         <div className="p-4 md:p-8">
             <div className="flex justify-between items-center mb-6">
-
-
-
             <div>
             <BackButton />
             </div>

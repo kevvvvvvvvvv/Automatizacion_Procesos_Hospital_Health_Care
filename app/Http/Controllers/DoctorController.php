@@ -8,10 +8,26 @@ use Illuminate\Http\Request;
 use App\Models\Cargo;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Log;  // Para logs
+use Illuminate\Support\Facades\Log;  
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests; 
 
-class DoctorController extends Controller
+class DoctorController extends Controller implements HasMiddleware
 {
+    use AuthorizesRequests;
+
+    public static function middleware(): array
+    {
+        $permission = \Spatie\Permission\Middleware\PermissionMiddleware::class;
+        return [
+            new Middleware($permission . ':consultar colaboradores', only: ['index', 'show']),
+            new Middleware($permission . ':crear colaboradores', only: ['create', 'store']),
+            new Middleware($permission . ':editar colaboradores', only: ['edit', 'update']),
+            new Middleware($permission . ':eliminar colaboradores', only: ['destroy']),
+        ];
+    }
+
     public function index(Request $request)
     {
         $query = User::query()

@@ -29,12 +29,16 @@ class RoleAndPermissionSeeder extends Seeder
         $roleFisoterapeuta = Role::create(['name' => 'fisoterapeuta']);
         $roleRecepcion = Role::create(['name' => 'recepcion']);
 
-        //Permisos
         $permissions = [
             'pacientes' => ['crear', 'consultar', 'editar', 'eliminar'],
-            'estancia' => ['crear', 'consultar', 'editar', 'eliminar'],
-            'hojafrontal' => ['crear', 'consultar', 'editar', 'eliminar'],
-            'habitacion' => ['crear', 'consultar', 'editar', 'eliminar'],
+            'estancias' => ['crear', 'consultar', 'editar', 'eliminar'],
+            'hojas frontales' => ['crear', 'consultar', 'editar', 'eliminar'],
+            'habitaciones' => ['crear', 'consultar', 'editar', 'eliminar'],
+            'colaboradores' => ['crear', 'consultar', 'editar', 'eliminar'],
+            'productos y servivicios' => ['crear', 'consultar', 'editar', 'eliminar'],
+            'historial' =>['consultar'],
+            'hojas' => ['crear', 'consultar', 'editar', 'eliminar',], 
+            'hojas enfermerias' => ['crear', 'consultar', 'eliminar'], // Solo se puede editar el documento que una persona creó
         ];
 
         foreach ($permissions as $module => $actions) {
@@ -44,9 +48,18 @@ class RoleAndPermissionSeeder extends Seeder
                 ]);
             }
         }
-        
 
+        $roleAdmin->syncPermissions(Permission::all());
+
+        $roleRecepcion->syncPermissions([
+            'consultar pacientes',
+            'crear pacientes',
+            'editar pacientes',
+        ]);
         
-        
+        $roleEnfermera->syncPermissions([
+            'consultar hojas enfermerias',
+            'crear hojas enfermerias',
+        ]);
     }
 }

@@ -86,6 +86,9 @@ const NotaPostoperatoriaForm: NotaPostoperatoriaComponent= ({ paciente, estancia
         pronostico: nota?.pronostico || '',
         hallazgos_importancia: nota?.hallazgos_importancia || '',
         transfusiones_agregadas: [] as TransfusionAgregada[],
+
+        //Solicitud de pieza patologica 
+
     });
 
     const [localTransfusion, setLocalTransfusion] = useState({
@@ -1104,6 +1107,16 @@ const NotaPostoperatoriaForm: NotaPostoperatoriaComponent= ({ paciente, estancia
                                     onChange={e => setLocalPatologia(d => ({...d, pieza_remitida: e.target.value}))}
                                     error={errors.envio_piezas}
                                 />
+
+                                {/*
+                                <InputText
+                                    label='Empresa a enviar la pieza patologica'
+                                    id='empresa_enviar'
+                                    name='empresa_enviar'
+                                    value={localPatologia.empresa_enviar}
+                                    onChange={e => setLocalPatologia}
+                                />
+                                */}
                             </div>
 
                             <InputTextArea
