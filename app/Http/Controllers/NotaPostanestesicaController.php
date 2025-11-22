@@ -55,7 +55,6 @@ class NotaPostanestesicaController extends Controller
 
     public function generarPDF(NotaPostanestesica $notaspostanestesica)
     {
-        
         $notaspostanestesica->load(
             'formularioInstancia.estancia',
             'formularioInstancia.user.credenciales',

@@ -230,6 +230,9 @@ Route::post('/notifications/mark-all-as-read', function () {
     return redirect()->back();
 })->name('notifications.mark-all-as-read')->middleware('auth');
 
+//Historial
+Route::get('/historial',[HistoryController::class,'index'])->name('historiales.index')->middleware('auth');
+
 require __DIR__.'/settings.php';
 require __DIR__.'/auth.php';
 
