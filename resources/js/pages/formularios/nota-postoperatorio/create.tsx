@@ -92,9 +92,6 @@ const NotaPostoperatoriaForm: NotaPostoperatoriaComponent= ({ paciente, estancia
         pronostico: nota?.pronostico || '',
         hallazgos_importancia: nota?.hallazgos_importancia || '',
         transfusiones_agregadas: [] as TransfusionAgregada[],
-
-        //Solicitud de pieza patologica 
-
     });
 
     const [localTransfusion, setLocalTransfusion] = useState({

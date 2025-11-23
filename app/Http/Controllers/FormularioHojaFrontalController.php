@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Redirect;
 use Spatie\LaravelPdf\Facades\Pdf;
 use Illuminate\Support\Facades\DB; 
 use Illuminate\Support\Facades\Log;
+use Spatie\Browsershot\Browsershot;
 
 class FormularioHojaFrontalController extends Controller
 {
@@ -140,7 +141,19 @@ class FormularioHojaFrontalController extends Controller
             'paciente'    => $paciente,
             'medico'      => $medico,
             'familiar_responsable' => $familiar_responsable,
-        ])->inline('hoja-frontal-' . $paciente->id . '.pdf');
+        ])
+        ->withBrowsershot(function (Browsershot $browsershot) {
+            $browsershot->noSandbox();
+            $browsershot->setChromePath('/var/www/.puppeteer-cache/chrome/linux-142.0.7444.175/chrome-linux64/chrome');
+            $browsershot->addChromiumArguments([
+                'disable-dev-shm-usage', 
+                'disable-gpu',           
+                'disable-crash-reporter', 
+                'disable-software-rasterizer',
+                'disable-extensions'
+            ]);
+        })
+        ->inline('hoja-frontal-' . $paciente->id . '.pdf');
     }
 
 }
