@@ -88,6 +88,6 @@ class NotasEgresoController extends Controller
         'estancia' => $notaEgreso->formularioInstancia->estancia,
     ]);
     
-    return $pdf->download('nota_egreso.pdf');  // Agrega return para descargar
+    return $pdf->download('nota_egreso.pdf');  
 }
 }

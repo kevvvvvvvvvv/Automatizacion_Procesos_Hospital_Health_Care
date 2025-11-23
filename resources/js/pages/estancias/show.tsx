@@ -213,12 +213,12 @@ const Show = ({ estancia }: ShowEstanciaProps) => {
                                     <Menu.Item>
                                         {({ active }) => (
                                             <Link
-                                                href={route('pacientes.estancias.notaspostanestesicas.create', { paciente: paciente.id, estancia: estancia.id })}
+                                                href={route('pacientes.estancias.notaspreanestesicas.create', { paciente: paciente.id, estancia: estancia.id })}
                                                  className={`${
                                                     active ? 'bg-blue-500 text-white' : 'text-gray-900'
                                                 } group flex rounded-md items-center w-full px-2 py-2 text-sm`}
                                             >
-                                                Añadir nota postanestésica
+                                                Añadir Nota pre-anestesica
                                              
                                             </Link>
                                         )}

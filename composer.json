@@ -22,7 +22,7 @@
         "pusher/pusher-php-server": "*",
         "spatie/browsershot": "^5.0",
         "spatie/laravel-pdf": "^1.8",
-        "spatie/laravel-permission": "^6.21",
+        "spatie/laravel-permission": "^6.23",
         "tightenco/ziggy": "^2.6"
     },
     "require-dev": {

@@ -137,13 +137,13 @@ class UserSeeder extends Seeder
 
         //Rol de cada usuario
         $user = User::create([
-            'curp' => 'HELC881105HMCLBZA9',
-            'nombre' => 'Carlos Alberto',
+            'curp' => 'HEGE040302HMRMFA0',
+            'nombre' => 'Efrain ',
             'apellido_paterno' => 'Hernández',
-            'apellido_materno' => 'López',
+            'apellido_materno' => 'Gómez',
             'sexo' => 'Masculino', 
-            'fecha_nacimiento' => '1988-11-05',
-            'email' => 'farmacia@gmail.com',
+            'fecha_nacimiento' => '2004-03-02',
+            'email' => 'EfraHdz@gmail.com',
             'password' => Hash::make('12345678'),
             'cargo_id' => 9,
         ]);
