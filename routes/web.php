@@ -148,8 +148,6 @@ Route::get('pacientes/{paciente}/estancias/{estancia}/interconsultas/{interconsu
 ->name('pacientes.estancias.interconsultas.show')
 ->middleware('auth');
 
-Route::put('/doctores/{doctor}', [DoctorController::class, 'update'])->name('doctores.update');
-
 //PDFs
 Route::get('/hojasfrontales/{hojafrontal}/pdf', [FormularioHojaFrontalController::class, 'generarPDF'])
     ->name('hojasfrontales.pdf')
