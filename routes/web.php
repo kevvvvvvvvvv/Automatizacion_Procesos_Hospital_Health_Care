@@ -154,7 +154,7 @@ Route::get('/hojasfrontales/{hojafrontal}/pdf', [FormularioHojaFrontalController
     ->middleware('auth');
 
 Route::get('/historiasclinicas/{historiaclinica}/pdf', [FormularioHistoriaClinicaController::class, 'generarPDF'])
-    ->name('hojasfrontales.pdf')
+    ->name('historiasclinicas.pdf')
     ->middleware('auth');
 
 Route::get('/interconsultas/{interconsulta}/pdf', [InterconsultaController::class, 'generarPDF'])
