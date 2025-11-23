@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Redirect;
 use Spatie\LaravelPdf\Facades\Pdf;
 use Illuminate\Support\Facades\DB; 
 use Illuminate\Support\Facades\Log;
+use Spatie\Browsershot\Browsershot;
 
 class FormularioHojaFrontalController extends Controller
 {
@@ -140,7 +141,11 @@ class FormularioHojaFrontalController extends Controller
             'paciente'    => $paciente,
             'medico'      => $medico,
             'familiar_responsable' => $familiar_responsable,
-        ])->inline('hoja-frontal-' . $paciente->id . '.pdf');
+        ])
+        ->withBrowsershot(function (Browsershot $browsershot) {
+            $browsershot->noSandbox();
+        })
+        ->inline('hoja-frontal-' . $paciente->id . '.pdf');
     }
 
 }

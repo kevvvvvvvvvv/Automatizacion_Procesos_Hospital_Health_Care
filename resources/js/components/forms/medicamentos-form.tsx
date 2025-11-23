@@ -7,7 +7,7 @@ import { route } from 'ziggy-js';
 import InputText from '@/components/ui/input-text';
 import SelectInput from '@/components/ui/input-select'; 
 import PrimaryButton from '@/components/ui/primary-button';
-import Swal from 'sweetalert2';
+import Swal from 'sweetalert2';                     
 
 
 const opcionesViaMedicamento = [

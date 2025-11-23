@@ -24,6 +24,7 @@ use App\Http\Controllers\FormularioHojaDietaController;
 use App\Http\Controllers\HojaMedicamentoController;
 use App\Http\Controllers\TrasladoController;
 use App\Http\Controllers\AplicacionMedicamentoController;
+use App\Http\Controllers\FormularioHojaOxigenoController;
 use App\Http\Controllers\FormularioNotaPostoperatorioController;
 use App\Http\Controllers\SolicitudEstudioController;
 use App\Http\Controllers\SolicitudEstudioPatologiaController;
@@ -73,19 +74,6 @@ Route::resource('pacientes.estancias.traslados', TrasladoController::class)->sha
 Route::resource('pacientes.estancias.preoperatorias', PreoperatoriaController::class)->shallow()->middleware('auth');
 Route::resource('pacientes.estancias.notasurgencias', NotaUrgenciaController::class)->shallow()->middleware('auth');
 Route::resource('pacientes.estancias.notaspostanestesicas',NotaPostanestesicaController::class)->shallow()->middleware('auth');
-
-
-Route::post('hojasterapiasiv/{hojasenfermeria}',[FormularioHojaTerapiaIVController::class,'store'])->name('hojasterapiasiv.store');
-Route::patch('hojasterapiasiv/{hojasenfermeria}/{hojasterapiasiv}',[FormularioHojaTerapiaIVController::class,'update'])->name('hojasterapiasiv.update');
-Route::resource('pacientes.responsable', FamiliarResponsableController::class);
-Route::resource('pacientes.estancias', EstanciaController::class)->shallow()->middleware('auth');
-Route::resource('pacientes.estancias.hojasfrontales', FormularioHojaFrontalController::class)->shallow()->parameters(['hojasfrontales' => 'hojaFrontal'])->middleware('auth');
-Route::resource('pacientes.estancias.historiasclinicas', FormularioHistoriaClinicaController::class)->shallow()->middleware('auth');
-Route::resource('pacientes.estancias.hojasenfermerias',FormularioHojaEnfermeriaController::class)->shallow()-> middleware('auth');
-Route::resource('pacientes.estancias.ventas', VentaController::class)->shallow();
-Route::resource('pacientes.estancias.ventas.detallesventas',DetalleVentaController::class)->shallow()->middleware ('auth');
-Route::resource('pacientes.estancias.interconsultas.honorarios', HonorarioController::class)->shallow();
-Route::resource('pacientes.estancias.traslados', TrasladoController::class)->shallow()->middleware('auth');
 Route::resource('pacientes.estancias.notaspostoperatorias', FormularioNotaPostoperatorioController::class)->shallow()->middleware('auth');
 Route::resource('pacientes.estancias.notasegresos', NotasEgresoController::class)->shallow()->middleware('auth');
 Route::resource('pacientes.estancias.notasevoluciones', NotaEvolucionController::class)->shallow()->middleware('auth');
@@ -95,13 +83,16 @@ Route::prefix('pacientes/{paciente}/estancias/{estancia}')->group(function () {
     Route::get('notasegresos/create', [NotasEgresoController::class, 'create'])->name('pacientes.estancias.notasegresos.create');
     Route::post('notasegresos', [NotasEgresoController::class, 'store'])->name('pacientes.estancias.notasegresos.store');
     Route::get('notasegresos/{notaEgreso}', [NotasEgresoController::class, 'show'])->name('pacientes.estancias.notasegresos.show');
-    // Agrega edit, update, etc. si los usas
 });
+
+
 Route::post('hojasterapiasiv/{hojasenfermeria}',[FormularioHojaTerapiaIVController::class,'store'])->name('hojasterapiasiv.store');
 Route::patch('hojasterapiasiv/{hojasenfermeria}/{hojasterapiasiv}',[FormularioHojaTerapiaIVController::class,'update'])->name('hojasterapiasiv.update');
 
 Route::post('hojasmedicamentos/{hojasenfermeria}',[FormularioHojaMedicamentoController::class, 'store'])->name('hojasmedicamentos.store');
 Route::patch('hojasmedicamentos/{hojasenfermeria}/{hojasmedicamento}',[FormularioHojaMedicamentoController::class, 'update'])->name('hojasmedicamentos.update');
+
+Route:: post('hojasoxigenos/{hojasenfermeria}',[FormularioHojaOxigenoController::class, 'store'])->name('hojasoxigenos.store')->middleware('auth');
 
 
 Route::get(
@@ -182,10 +173,6 @@ Route::get('/traslados/{traslado}/pdf', [TrasladoController::class, 'generarPDF'
 
 Route::get('/preoperatorias/{preoperatoria}/pdf', [PreoperatoriaController::class, 'generarPDF'])
     ->name('preoperatorias.pdf')
-    ->middleware('auth');
-
-Route::get('/hojasenfermerias/{hojasenfermerias}/pdf', [FormularioHojaEnfermeriaController::class, 'generarPDF'])
-    ->name('hojasenfermerias.pdf')
     ->middleware('auth');
 
 Route::get('/traslados/{traslado}/pdf', [TrasladoController::class, 'generarPDF'])
