@@ -144,6 +144,7 @@ class FormularioHojaFrontalController extends Controller
         ])
         ->withBrowsershot(function (Browsershot $browsershot) {
             $browsershot->noSandbox();
+            $browsershot->setChromePath('/var/www/.puppeteer-cache/chrome/linux-142.0.7444.175/chrome-linux64/chrome');
         })
         ->inline('hoja-frontal-' . $paciente->id . '.pdf');
     }
