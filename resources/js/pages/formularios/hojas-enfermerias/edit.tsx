@@ -18,6 +18,7 @@ import SondasCateteresForm from '@/components/forms/sondas-cateteres-form';
 import EstudiosForm from '@/components/forms/estudios-form';
 import DietasForm from '@/components/forms/dietas-form';
 import PlanPostoperatorioChecklist from '@/components/plan-postoperatorio-check-list';
+import ServiciosEspecialesForm from '@/components/forms/servicios-especiales-form';
 
 interface CreateProps {
     paciente: Paciente;
@@ -34,16 +35,17 @@ interface CreateProps {
     notaPostoperatoria: NotaPostoperatoria;
 }
 
-type SeccionHoja = 'signos' | 'medicamentos' | 'terapia_iv' | 'estudios' | 'sondas' | 'liquidos' | 'dieta' | 'observaciones' | 'graficas';
+type SeccionHoja = 'signos' | 'medicamentos' | 'terapia_iv' | 'estudios' | 'sondas' | 'liquidos' | 'dieta' | 'servicios_especiales' | 'observaciones' | 'graficas' ;
 
 const secciones: { id: SeccionHoja, label: string }[] = [
-    { id: 'signos', label: 'Tomar Signos' },
-    { id: 'medicamentos', label: 'Ministración de Medicamentos' },
-    { id: 'terapia_iv', label: 'Terapia Intravenosa' },
-    { id: 'estudios', label: 'Ordenar Estudios' },
-    { id: 'sondas', label: 'Sondas y Catéteres' },
-    { id: 'liquidos', label: 'Control de Líquidos' },
+    { id: 'signos', label: 'Tomar signos' },
+    { id: 'medicamentos', label: 'Ministración de medicamentos' },
+    { id: 'terapia_iv', label: 'Terapia intravenosa' },
+    { id: 'estudios', label: 'Ordenar estudios' },
+    { id: 'sondas', label: 'Sondas y catéteres' },
+    { id: 'liquidos', label: 'Control de líquidos' },
     { id: 'dieta', label: 'Dieta' },
+    { id: 'servicios_especiales', label: 'Servicios especiales'},
     { id: 'observaciones', label: 'Observaciones' },
     { id: 'graficas', label: 'Gráficas' },
 ];
@@ -231,6 +233,11 @@ const Create: CreateComponent = ({ paciente, estancia, hojaenfermeria ,medicamen
                 return <DietasForm
                         hoja={hojaenfermeria}
                         />
+            case 'servicios_especiales':
+                    return <ServiciosEspecialesForm
+                            hoja={hojaenfermeria}
+                            
+                            />
             case 'observaciones':
                 return <Observaciones
                         hojasenfermeria={hojaenfermeria}/>

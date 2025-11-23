@@ -157,9 +157,7 @@
                 @endfor
             </table>
         </div>
-
-        <br>
-
+        
         <div class="graph-section">
             <table class="grid-table" style="table-layout: fixed; width: 100%;">
                 

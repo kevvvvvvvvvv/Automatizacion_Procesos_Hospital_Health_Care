@@ -132,7 +132,7 @@ const SondasCateteresForm: React.FC<Props> = ({ hoja, estancia }) => {
             </form>
 
             <div className="mt-12">
-                <h3 className="text-lg font-semibold mb-2">Historial de Sondas y Catéteres</h3>
+                <h3 className="text-lg font-semibold mb-2">Historial de sondas y catéteres</h3>
                 <div className="overflow-x-auto border rounded-lg">
                     <table className="min-w-full divide-y divide-gray-200">
                         <thead>
