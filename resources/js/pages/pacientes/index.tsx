@@ -18,7 +18,6 @@ import {
 } from '@tanstack/react-table';
 
 import AddButton from '@/components/ui/add-button';
-import BackButton from '@/components/ui/back-button';
 
 
 type Paciente = {
@@ -112,12 +111,9 @@ const Index = ({ pacientes }: IndexProps) => {
 
     return (
         <>
-        <Head title="Pacientes" />
-        <div className="p-4 md:p-8">
-            <div className="flex justify-between items-center mb-6">
-                <div className="flex items-center space-x-4">
-                    <BackButton />
-                </div>
+        <Head title="Consulta de pacientes" />
+        <div className="pt-5">
+            <div className="flex justify-end items-center mb-6">
                 {can('crear pacientes') &&(
                 <AddButton href={route('pacientes.create')}>
                     Agregar paciente
@@ -125,15 +121,14 @@ const Index = ({ pacientes }: IndexProps) => {
             </div>
 
             <div className="mb-4">
-            <input
-                type="text"
-                value={globalFilter}
-                onChange={e => setGlobalFilter(e.target.value)}
-                placeholder="Buscar en toda la tabla..."
-                className="w-full max-w-sm p-2 border border-gray-300 rounded-lg text-black"
-            />
+                <input
+                    type="text"
+                    value={globalFilter}
+                    onChange={e => setGlobalFilter(e.target.value)}
+                    placeholder="Buscar en toda la tabla..."
+                    className="w-full max-w-sm p-2 border border-gray-300 rounded-lg text-black"
+                />
             </div>
-
 
             <div className="overflow-x-auto bg-white rounded-lg shadow">
             <table className="w-full text-sm text-left text-gray-700">
@@ -202,6 +197,6 @@ const Index = ({ pacientes }: IndexProps) => {
 };
 
 
-Index.layout = (page: React.ReactNode) => <MainLayout pageTitle="Consulta de pacientes" children={page} />;
+Index.layout = (page: React.ReactNode) => <MainLayout pageTitle="Consulta de pacientes" children={page} link="dashboard"/>;
 
 export default Index;

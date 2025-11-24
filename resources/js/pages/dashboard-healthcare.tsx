@@ -17,8 +17,6 @@ interface PageProps extends InertiaPageProps {
     };
 }
 
-
-
 export default function Dashboard() {
     const { auth } = usePage<PageProps>().props;
     const user = auth.user;
@@ -37,7 +35,7 @@ export default function Dashboard() {
     return (
         <>
             <Head title="Dashboard" />
-            <MainLayout userName={user.nombre}>
+            <MainLayout pageTitle={`Dashboard de ${auth.user.roles}`}>
                 <div className="p-4 max-w-sm mx-auto">
                 </div>
                 <div>
