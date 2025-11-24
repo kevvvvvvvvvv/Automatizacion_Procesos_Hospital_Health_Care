@@ -10,8 +10,11 @@ use App\Http\Requests\InterconsultasRequest;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Spatie\LaravelPdf\Facades\Pdf;
+use Illuminate\Support\Facades\Log;
+use Spatie\Browsershot\Browsershot;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redirect;
 
 class InterconsultaController extends Controller
 {
@@ -40,27 +43,28 @@ class InterconsultaController extends Controller
      * @param \App\Models\Estancia
      * 
      */
-   public function store(InterconsultasRequest $request, Paciente $paciente, Estancia $estancia)
+    public function store(InterconsultasRequest $request, Paciente $paciente, Estancia $estancia)
     {
         $validatedData = $request->validated();
         DB::beginTransaction();
-        $formularioInstancia = FormularioInstancia::create([
-            'fecha_hora' => now(),
-            'estancia_id' => $estancia->id,
-            'formulario_catalogo_id' => 3,
-            'user_id' => Auth::id(),
-        ]);
-        // Asigna el resultado a $interconsulta
-        $interconsulta = Interconsulta::create([
-            'id' => $formularioInstancia->id,
-            ...$validatedData
-        ]);
-        DB::commit();
-        return Inertia::render('paciente.estancia.show', [
-            'paciente' => $paciente,
-            'estancia' => $estancia,
-            'interconsulta' => $interconsulta,
-        ]);
+        try {
+            $formularioInstancia = FormularioInstancia::create([
+                'fecha_hora' => now(),
+                'estancia_id' => $estancia->id,
+                'formulario_catalogo_id' => 3,
+                'user_id' => Auth::id(),
+            ]);
+            $interconsulta = Interconsulta::create([
+                'id' => $formularioInstancia->id,
+                ...$validatedData
+            ]);
+            DB::commit();
+            return Redirect::route('estancias.show',$estancia->id)->with('success','Se ha creado la interconsulta exitosamente.');
+        }catch(\Exception $e){
+            DB::rollBack();
+            Log::error('Error al crear la interconsulta: ' . $e->getMessage());
+            return Redirect::back()->with('error','No se pudo crear la interconsulta.');
+        }
     }
      
 
@@ -167,6 +171,19 @@ class InterconsultaController extends Controller
             'paciente' => $paciente,
             'medico' => $medico
         ])
+        ->withBrowsershot(function (Browsershot $browsershot) {
+            $chromePath = config('services.browsershot.chrome_path');
+            if ($chromePath) {
+                $browsershot->setChromePath($chromePath);
+                $browsershot->noSandbox();
+                $browsershot->addChromiumArguments([
+                    'disable-dev-shm-usage',
+                    'disable-gpu',
+                ]);
+            } else {
+
+            }
+        })
         ->headerView('header', $headerData)
         ->inline('interconsultas.pdf');
     }

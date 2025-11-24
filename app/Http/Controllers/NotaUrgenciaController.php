@@ -11,12 +11,22 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Spatie\LaravelPdf\Facades\Pdf; 
+use App\Services\PdfGeneratorService;
 
 use App\Http\Requests\NotaUrgenciaRequest;
+use App\Models\FormularioCatalogo;
 use Redirect;
 
 class NotaUrgenciaController extends Controller
 {
+
+    protected $pdfGenerator;
+
+    public function __construct(PdfGeneratorService $pdfGenerator)
+    {
+        $this->pdfGenerator = $pdfGenerator;
+    }
+
     public function index()
     {
         //
@@ -44,14 +54,13 @@ class NotaUrgenciaController extends Controller
         $formularioInstancia = FormularioInstancia::create([
             'fecha_hora' => now(),  
             'estancia_id' => $estancia->id,
-            'formulario_catalogo_id' => NotaUrgencia::CATALOGO_ID, 
+            'formulario_catalogo_id' => FormularioCatalogo::ID_NOTA_URGENCIAS, 
             'user_id' => Auth::id(),
         ]);
         
         $notaUrgencia = NotaUrgencia::create([
             'id' => $formularioInstancia->id,
             ...$validatedData
-            
         ]);
        
         \Log::info('NotaUrgencia creada:', $notaUrgencia->toArray());
@@ -60,9 +69,9 @@ class NotaUrgenciaController extends Controller
         return Redirect::route('estancias.show', $estancia->id)->with('success','Se ha creado la nota nota urgencia'); 
     } catch (\Exception $e) {
         
-        \Log::info('NotaUrgencia no creada', $notaUrgencia->toArray());
+        \Log::error('Error al crear la nota de urgencias.', $e->getMessage());
         DB::rollBack();
-        return redirect()->back()->withErrors(['error' => 'Error al crear la nota de urgencia: ' . $e->getMessage()])->withInput();
+        return Redirect::back()->with('error','Error al crear la nota de urgencia: ' . $e->getMessage());
     }
 }
 
@@ -109,11 +118,10 @@ public function update(NotaUrgenciaRequest $request, Paciente $paciente, Estanci
 }
     public function generarPDF(NotaUrgencia $notasurgencia)
     {
-        // Carga las relaciones necesarias
         $notasurgencia->load('formularioInstancia.user', 'formularioInstancia.estancia.paciente');
         
-        // Prepara los datos para el PDF
         $notaData = [
+            'fecha' => $notasurgencia->formularioInstancia->fecha_hora,
             'motivo_de_la_atencion_o_interconsulta' => $notasurgencia->motivo_atencion,
             'resumen_del_interrogatorio' => $notasurgencia->resumen_interrogatorio,
             'exploracion_fisica' => $notasurgencia->exploracion_fisica,
@@ -129,13 +137,24 @@ public function update(NotaUrgenciaRequest $request, Paciente $paciente, Estanci
             'tratamiento_y_pronostico' => $notasurgencia->tratamiento . ' | Pronóstico: ' . $notasurgencia->pronostico,
         ];
         
-        // Obtén el médico (usuario que creó la instancia)
-        $medico = $notasurgencia->formularioInstancia->user ?? null;
-        
-        // Genera el PDF usando la API de Spatie
-        $pdf = Pdf::view('pdf.notaurgencia', compact('notaData', 'medico'));
-        
-        // Descarga el PDF
-        return $pdf->download('nota_urgencia_' . $notasurgencia->id . '.pdf');
+        $headerData = [
+            'historiaclinica' => $notasurgencia,
+            'paciente' => $notasurgencia->formularioInstancia->estancia->paciente,
+            'estancia' =>  $notasurgencia->formularioInstancia->estancia
+        ];
+
+        $viewData = [
+            'notaData' => $notaData,
+            'paciente' => $notasurgencia->formularioInstancia->estancia->paciente,
+            'medico' => $notasurgencia->formularioInstancia->user
+        ];
+
+        return $this->pdfGenerator->generateStandardPdf(
+            'pdfs.nota-urgencias',
+            $viewData,
+            $headerData,
+            'nota-urgencias-',
+            $notasurgencia->formularioInstancia->estancia->folio
+        );
     }
 }
