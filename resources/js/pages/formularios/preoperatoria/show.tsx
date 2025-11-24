@@ -18,7 +18,7 @@ interface ShowPreoperatorioProps {
 }
 
 const Show = ({ preoperatoria, paciente, estancia }: ShowPreoperatorioProps) => {
-  const { formularioInstancia } = preoperatoria;
+  
 
   const dateOptions: Intl.DateTimeFormatOptions = {
     year: 'numeric',
@@ -39,7 +39,7 @@ const Show = ({ preoperatoria, paciente, estancia }: ShowPreoperatorioProps) => 
  
 
   return (
-    <MainLayout>
+    <>
       <Head title={`Preoperatorio ${preoperatoria.id}`} />
 
       <InfoCard
@@ -87,8 +87,20 @@ const Show = ({ preoperatoria, paciente, estancia }: ShowPreoperatorioProps) => 
           />
         </div>
       </InfoCard>
+    </>
+  );
+};
+Show.layout = (page: React.ReactElement) => {
+  const { estancia, paciente } = page.props as ShowPreoperatorioProps;
+
+  return (
+    <MainLayout
+      pageTitle={`Detalles de nota pre-operatoria de ${paciente.nombre} ${paciente.apellido_paterno} ${paciente.apellido_materno}`}
+      link="estancias.show"
+      linkParams={estancia.id} 
+    >
+      {page}
     </MainLayout>
   );
 };
-
 export default Show;
