@@ -2,10 +2,9 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Nota de Traslado</title>
+    <title>Nota de urgencia inicial</title>
     <style>
-        /* Estilos copiados y adaptados */
-        @page {
+       @page {
             size: A4;
             margin-top: 5cm;
             margin-bottom: 1.5cm;
@@ -31,7 +30,7 @@
             color: #333;
             line-height: 1.4;
         }
-        
+
         .header {
             display: flex; 
             justify-content: space-between;
@@ -135,73 +134,77 @@
         .signature-section {
             text-align: center;
             margin-top: 60px;
-            page-break-inside: avoid;
         }
-
         .signature-line {
-            border-top: 1px solid #333;
-            width: 280px;
-            margin: 0 auto 5px auto;
+            border-top: 1px solid #000;
+            width: 250px;
+            margin: 0 auto;
+            margin-bottom: 5px;
         }
-
         .signature-section p {
             margin: 0;
             line-height: 1.4;
         }
-
-        .credentials-list {
-            font-size: 8pt;
-            color: #555;
-            margin-top: 8px;
-        }
     </style>
 </head>
 <body>
-    
+    <main>
+        <h1>Nota de urgencia inicial</h1>
 
-    <h1>Nota de Traslado</h1>
+        <div class="section-content">
+            <p><strong>Fecha y hora en la que se otorga el servicio: </strong>{{$notaData['fecha']}}</p>
+        </div>
 
-    {{-- Sección Establecimiento de salud --}}
-    <h2>Establecimiento de Salud</h2>
-    <div class="section-content">
-        <p><strong>Unidad Médica que Envía:</strong> {{ $notaData->unidad_medica_envia ?? 'Sin datos.' }}</p>
-        <p><strong>Unidad Médica que Recibe:</strong> {{ $notaData->unidad_medica_recibe ?? 'Sin datos.' }}</p>
-        
-    </div>
+        <h2>Signos vitales</h2>
+        <div class="section-content">
+            <p>
+                Tensión arterial: <strong>{{ $notaData['ta'] ?? 'N/A' }}</strong> mm Hg | 
+                Frecuencia cardíaca: <strong>{{ $notaData['fc'] ?? 'N/A' }}</strong> por minuto | 
+                Frecuencia respiratoria: <strong>{{ $notaData['fr'] ?? 'N/A' }}</strong> por minuto | 
+                Temperatura: <strong>{{ $notaData['temp'] ?? 'N/A' }}</strong> Celsius (°C) | 
+                Peso: <strong>{{ $notaData['peso'] ?? 'N/A' }}</strong> kg | 
+                Talla: <strong>{{ $notaData['talla'] ?? 'N/A' }}</strong> cm
+            </p>
+        </div>
 
-    {{-- Sección Resumen Clínico --}}
-    <h2>Resumen Clínico</h2>
-    <div class="section-content">
-        <p>{{ $notaData->resumen_clinico ?? 'Sin datos.' }}</p>
-        <p><strong>Motivo de Traslado:</strong> {{ $notaData->motivo_translado ?? 'Sin datos.' }}</p>
-        <p><strong>Impresión Diagnóstica:</strong> {{ $notaData->impresion_diagnostica ?? 'Sin datos.' }}</p>
-        <p><strong>Terapéutica Empleada:</strong> {{ $notaData->terapeutica_empleada ?? 'Sin datos.' }}</p>
-    </div>
 
-    
-    <div class="signature-section">
+        <div class="section-content">
+            <p><strong>Motivo de la Atención:</strong> {{ $notaData['motivo_de_la_atencion_o_interconsulta'] ?? 'Sin datos.' }}</p>
+            <p><strong>Resumen del Interrogatorio:</strong> {{ $notaData['resumen_del_interrogatorio'] ?? 'Sin datos.' }}</p>
+            <p>{{ $notaData['exploracion_fisica'] ?? 'Sin datos.' }}</p>
+            <p><strong>Estado Mental:</strong> {{ $notaData['estado_mental'] ?? 'Sin datos.' }}</p>
+        </div>
+
+        <h3>Análisis y Diagnóstico</h3>
+        <div class="section-content">
+            <p><strong>Resultados Relevantes de Estudios:</strong> {{ $notaData['resultados_relevantes_del_estudio_diagnostico'] ?? 'Sin datos.' }}</p>
+            <p><strong>Diagnóstico o Problemas Clínicos:</strong> {{ $notaData['diagnostico_o_problemas_clinicos'] ?? 'Sin datos.' }}</p>
+        </div>
+
+        <h3>Plan y Pronóstico</h3>
+        <div class="section-content">
+            <p><strong>Tratamiento y Pronóstico:</strong> {{ $notaData['tratamiento_y_pronostico'] ?? 'Sin datos.' }}</p>
+        </div>
+
         @if(isset($medico))
-            <div class="signature-line"></div>
-            <p>{{ $medico->nombre . " " . $medico->apellido_paterno . " " . $medico->apellido_materno }}</p>
-            <p style="font-size: 9pt; color: #555;">Nombre y Firma del Médico</p>
+            <div class="signature-section">
+                <div class="signature-line"></div>
+                <p>{{ $medico->name ?? 'Médico no especificado' }}</p>  
+                <p style="font-size: 9pt; color: #555;">Nombre y Firma del Médico</p>
 
-            @if($medico->credenciales->isNotEmpty())
-                <div class="credentials-list">
-                    @foreach($medico->credenciales as $credencial)
-                        <p>
-                            <strong>Título:</strong> {{ $credencial->titulo }} | <strong>Cédula Profesional:</strong> {{ $credencial->cedula_profesional }}
-                        </p>
-                    @endforeach
-                </div>
-            @endif
-        @endif
-    </div>
-    <div class="signature-section">
-        @if(isset($familiar_responsable))
-            <div class="signature-line"></div>
-            <p>{{ $familiar_responsable->nombre . " " . $familiar_responsable->apellido_paterno . " " . $familiar_responsable->apellido_materno }}</p>
-            <p style="font-size: 9pt; color: #555;">Nombre y Firma del Familiar Responsable</p>
-        @endif
-    </div>
+                 
+                 @if($medico->credenciales->isNotEmpty()) 
+                     <div class="credentials-list"> 
+                         @foreach($medico->credenciales as $credencial) 
+                             <p> 
+                                 <strong>Título:</strong> {{ $credencial->titulo }} | <strong>Cédula Profesional:</strong> {{ $credencial->cedula_profesional }} 
+                             </p> 
+                         @endforeach
+                     </div>
+                 @endif 
+            </div>
+        @endif  
+       
+    </main>
 </body>
 </html>

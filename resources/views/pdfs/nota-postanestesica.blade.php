@@ -245,9 +245,8 @@
         @if(isset($medico))
             <div class="signature-section">
                 <div class="signature-line"></div>
+                <p style="font-size: 9pt; color: #555;">Nombre completo, cédula profesional y firma del médico</p>
                 <p>{{ $medico->nombre . " " . $medico->apellido_paterno . " " . $medico->apellido_materno}}</p>
-                <p style="font-size: 9pt; color: #555;">Nombre y Firma del Médico</p>
-
                 @if($medico->credenciales->isNotEmpty())
                     <div class="credentials-list">
                         @foreach($medico->credenciales as $credencial)

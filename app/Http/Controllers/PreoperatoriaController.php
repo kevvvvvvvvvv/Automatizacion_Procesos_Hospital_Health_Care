@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\PdfGeneratorService;
 use Illuminate\Http\Request;
 use App\Models\Preoperatoria;
 use App\Models\Paciente;
@@ -12,9 +13,19 @@ use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Spatie\LaravelPdf\Facades\Pdf;
 use App\Http\Requests\PreoperatoriaRequest;
+use App\Models\FormularioCatalogo;
+use Spatie\Browsershot\Browsershot;
 
 class PreoperatoriaController extends Controller
 {
+    protected $pdfGenerator;
+
+    public function __construct(PdfGeneratorService $pdfGenerator)
+    {
+        $this->pdfGenerator = $pdfGenerator;
+    }
+
+
     public function index()
     {
         //
@@ -35,14 +46,13 @@ class PreoperatoriaController extends Controller
             $formularioInstancia = FormularioInstancia::create([
                 'fecha_hora' => now(),  
                 'estancia_id' => $estancia->id,
-                'formulario_catalogo_id' => 6, 
+                'formulario_catalogo_id' => FormularioCatalogo::ID_NOTA_PREOPERATORIA, 
                 'user_id' => Auth::id(),
             ]);
             $preoperatoria = Preoperatoria::create([
                 'id' => $formularioInstancia->id,
                 ...$validatedData
             ]);
-            //dd($preoperatoria->toArray());
             DB::commit();
             return redirect()->route('estancias.show', [
                 'estancia' => $estancia->id,
@@ -89,19 +99,37 @@ class PreoperatoriaController extends Controller
     {
         //
     }
-    public function generarPDF(Paciente $paciente, Estancia $estancia, Preoperatoria $preoperatoria)
+
+    public function generarPDF(Preoperatoria $preoperatoria)
     {
         $preoperatoria->load([
             'formularioInstancia.estancia.paciente',
             'formularioInstancia.user',
         ]);
+        
+        $medico = $preoperatoria->formularioInstancia->user;
+        $estancia = $preoperatoria->formularioInstancia->estancia;
+        $paciente = $estancia->paciente;
 
-        $pdf = Pdf::loadView('pdfs.preoperatoria', [
+        $headerData = [
+            'historiaclinica' => $preoperatoria, 
+            'paciente' => $paciente,
+            'estancia' => $estancia
+        ];
+
+        $viewData = [
             'preoperatoria' => $preoperatoria,
-            'paciente' => $preoperatoria->formularioInstancia->estancia->paciente,
-            'estancia' => $preoperatoria->formularioInstancia->estancia,
-        ]);
-
-        return $pdf->download('preoperatoria_' . $paciente->nombre . '_' . now()->format('Ymd_His') . '.pdf');
+            'paciente' => $paciente,
+            'medico' => $medico,
+        ];
+        
+        return $this->pdfGenerator->generateStandardPdf(
+            'pdfs.nota-preoperatoria',
+            $viewData,
+            $headerData,
+            'nota-preoperatoria-',
+            $estancia->folio
+        );
+         
     }
 }
