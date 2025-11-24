@@ -32,66 +32,60 @@ class FormularioHojaFrontalController extends Controller
     }
 
     public function store(Paciente $paciente, Estancia $estancia, Request $request){
-
         DB::beginTransaction();
-            try{
+        try{
 
-                $producto = ProductoServicio::findOrFail(661);
-                $cantidad = 1;
-                $subtotal = $producto->importe * $cantidad;
-                $descuento = 0;
-                $total = ($subtotal)*ProductoServicio::IVA - $descuento;
+            $producto = ProductoServicio::findOrFail(661);
+            $cantidad = 1;
+            $subtotal = $producto->importe * $cantidad;
+            $descuento = 0;
+            $total = ($subtotal)*ProductoServicio::IVA - $descuento;
 
-                $venta = Venta::create([
-                    'fecha' => now(),
-                    'subtotal' =>$subtotal,
-                    'total' => $total,
-                    'descuento' => $descuento,
-                    'estado' => Venta::ESTADO_PENDIENTE,
-                    'estancia_id' => $estancia->id,
-                    'user_id' => Auth::id(),
-                ]);
+            $venta = Venta::create([
+                'fecha' => now(),
+                'subtotal' =>$subtotal,
+                'total' => $total,
+                'descuento' => $descuento,
+                'estado' => Venta::ESTADO_PENDIENTE,
+                'estancia_id' => $estancia->id,
+                'user_id' => Auth::id(),
+            ]);
 
-                DetalleVenta::create([
-                    'precio_unitario' => $producto->importe,
-                    'cantidad' => $cantidad,
-                    'subtotal' => $subtotal,
-                    'descuento' => $descuento,
-                    'estado' => DetalleVenta::ESTADO_PENDIENTE,
-                    'venta_id' => $venta->id,
-                    'producto_servicio_id' => $producto->id,
-                ]);
+            DetalleVenta::create([
+                'precio_unitario' => $producto->importe,
+                'cantidad' => $cantidad,
+                'subtotal' => $subtotal,
+                'descuento' => $descuento,
+                'estado' => DetalleVenta::ESTADO_PENDIENTE,
+                'venta_id' => $venta->id,
+                'producto_servicio_id' => $producto->id,
+            ]);
 
-                $estancia->load(['paciente', 'creator', 'updater','formularioInstancias.catalogo','formularioInstancias.user']);
+            $estancia->load(['paciente', 'creator', 'updater','formularioInstancias.catalogo','formularioInstancias.user']);
 
-                $formularioInstancia = FormularioInstancia::create([
-                    'fecha_hora' => now(),
-                    'estancia_id' => $estancia->id,
-                    'formulario_catalogo_id' => 1,
-                    'user_id' =>  Auth::id(),
-                ]);
+            $formularioInstancia = FormularioInstancia::create([
+                'fecha_hora' => now(),
+                'estancia_id' => $estancia->id,
+                'formulario_catalogo_id' => 1,
+                'user_id' =>  Auth::id(),
+            ]);
 
-                HojaFrontal::create([
-                    'id' => $formularioInstancia->id,
-                    'medico' =>  $request->medico,
-                    'medico_id' => $request->medico_id,
-                    'responsable' => $request->responsable,
-                    'notas' => $request->notas
-                ]);
+            HojaFrontal::create([
+                'id' => $formularioInstancia->id,
+                'medico' =>  $request->medico,
+                'medico_id' => $request->medico_id,
+                'responsable' => $request->responsable,
+                'notas' => $request->notas
+            ]);
 
-                DB::commit();
-
-                return Inertia::render('estancias/show', [
-                    'estancia' => $estancia,
-                ]);
-
-            }catch(\Exception $e){
-                DB::rollBack();
-
-                Log::error('Error al crear hoja frontal: ' . $e->getMessage());
-                return redirect()->route('pacientes.estancias.hojasfrontales.index')->with('error', 'No se pudo crear la hoja frontal: ' . $e->getMessage());
-            }
+            DB::commit();
+            return Redirect::route('estancias.show', $estancia->id)->with('success','Se ha creado la hoja frontal exitosamente.');
+        }catch(\Exception $e){
+            DB::rollBack();
+            Log::error('Error al crear hoja frontal: ' . $e->getMessage());
+            return Redirect::back()->with('error', 'No se pudo crear la hoja frontal.');
         }
+    }
 
 
     public function edit(Paciente $paciente, Estancia $estancia, HojaFrontal $hojaFrontal)
@@ -143,15 +137,17 @@ class FormularioHojaFrontalController extends Controller
             'familiar_responsable' => $familiar_responsable,
         ])
         ->withBrowsershot(function (Browsershot $browsershot) {
-            $browsershot->noSandbox();
-            $browsershot->setChromePath('/var/www/.puppeteer-cache/chrome/linux-142.0.7444.175/chrome-linux64/chrome');
-            $browsershot->addChromiumArguments([
-                'disable-dev-shm-usage', 
-                'disable-gpu',           
-                'disable-crash-reporter', 
-                'disable-software-rasterizer',
-                'disable-extensions'
-            ]);
+            $chromePath = config('services.browsershot.chrome_path');
+            if ($chromePath) {
+                $browsershot->setChromePath($chromePath);
+                $browsershot->noSandbox();
+                $browsershot->addChromiumArguments([
+                    'disable-dev-shm-usage',
+                    'disable-gpu',
+                ]);
+            } else {
+
+            }
         })
         ->inline('hoja-frontal-' . $paciente->id . '.pdf');
     }

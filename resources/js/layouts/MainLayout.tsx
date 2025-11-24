@@ -15,7 +15,7 @@ interface AlertProps {
 
 type MainLayoutProps = {
     children: React.ReactNode;
-    userName?: string;
+    link?: string;
     pageTitle?: string;
 };
 
@@ -103,7 +103,7 @@ const FlashAlert: React.FC<AlertProps> = ({ message, type, onClose }) => {
 };
 
 
-const MainLayout: React.FC<MainLayoutProps> = ({ children, userName, pageTitle }) => {
+const MainLayout: React.FC<MainLayoutProps> = ({ children, pageTitle, link }) => {
   
     const { props } = usePage<SharedProps>();
     const { flash, auth } = props;
@@ -195,9 +195,9 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, userName, pageTitle }
     }
 
     return (
-        <div className="min-h-screen bg-gray-100 flex flex-col md:flex-row">
+        <div className="h-dvh bg-gray-100 flex flex-col md:flex-row overflow-hidden">
         
-            <aside className="w-full md:w-20 bg-white flex flex-row md:flex-col items-center justify-center md:justify-start py-4 md:py-6 shadow order-2 md:order-1 gap-2 md:gap-4">
+            <aside className="w-full md:w-20 bg-white flex flex-row md:flex-col items-center justify-center md:justify-start py-4 md:py-6 shadow order-2 md:order-1 gap-2 md:gap-4 shrink-0 z-50">
                 
                 <Link
                 href="/dashboard"
@@ -289,18 +289,24 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, userName, pageTitle }
                 onClose={handleCloseAlert}
             />
 
-            <div className="flex-1 flex flex-col order-1 md:order-2">
-                <header className="flex items-center gap-4 p-4 bg-white shadow">
-                <img src="/images/flor.png" alt="Logo" className="h-10 w-auto" />
-                {userName && <h1 className="text-2xl font-bold">Hola {userName}</h1>}
-                <div>
-                
+            <div className="flex-1 flex flex-col order-1 md:order-2 h-full relative min-h-0 overflow-y-auto">
+                <div className='flex flex-row px-6 pt-6 shrink-0'>
+                    {link && (
+                    <Link className='pr-5' href={route(link)}>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="size-10 bg-[#1B1C38] text-white rounded-full p-2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+                        </svg>
+                    </Link>)}
+                    <div>
+                        <h1 className="text-2xl font-extrabold font-sans">
+                            Hola, {authUser?.nombre}
+                        </h1>
+                        <h3>{pageTitle}</h3>
+                    </div>
                 </div>
-                </header>
 
-                <main className="p-6 flex-1 overflow-auto">
-                {pageTitle && <h2 className="text-3xl mb-4 text-center font-extrabold">{pageTitle}</h2>}
-                {children}
+                <main className="px-6 pb-20 md:pb-10 pt-4">
+                    {children}
                 </main>
             </div>
         </div>
