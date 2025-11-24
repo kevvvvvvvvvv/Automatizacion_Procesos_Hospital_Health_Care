@@ -14,10 +14,11 @@ interface Props {
 
 const PlanLaboratorios: React.FC<Props> = ({ value, onChange, error, estudios }) => {
     
-    const optionsEstudios = useMemo(() => estudios.map(estudio => ({
+    const optionsEstudios = useMemo(() => 
+    estudios && Array.isArray(estudios) ? estudios.map(estudio => ({
         value: estudio.id.toString(),
         label: `${estudio.nombre} (${estudio.departamento || estudio.tipo_estudio})`
-    })), [estudios]);
+    })): [], [estudios]);
 
     const [localEstudio, setLocalEstudio] = useState({ id: '', nombre: '' });
 

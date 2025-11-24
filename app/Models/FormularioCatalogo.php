@@ -16,8 +16,8 @@ class FormularioCatalogo extends Model
     public const ID_NOTA_URGENCIAS = 8;
     public const ID_SOLICITUD_PATOLOGIA = 9;
     public const ID_NOTA_EGRESO = 10;
-    //public const ID_NOTA_EVOLUCION = 11;
-
+    public const ID_NOTA_EVOLUCION = 11;
+    public const ID_NOTA_PREANESTESICA = 12;
     public const ID_NOTA_POSTANESTESICA = 13;
 
     public $incrementing = false; 

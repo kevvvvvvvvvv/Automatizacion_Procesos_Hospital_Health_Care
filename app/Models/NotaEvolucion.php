@@ -20,9 +20,17 @@ class NotaEvolucion extends Model
         'resultados_relevantes',
         'diagnostico_problema_clinico',
         'pronostico',
-        'tratamimento_indicaciones_medicas',
+        'manejo_dieta',
+        'manejo_soluciones',
+        'manejo_medicamentos',
+        'manejo_laboratorios',
+        'manejo_medidas_generales',
         
     ];
+    public function formularioInstancia()
+    {
+        return $this->belongsTo(FormularioInstancia::class, 'id', 'id');
+    }
 }
 
 

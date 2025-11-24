@@ -541,7 +541,12 @@ export interface notasEvoluciones {
   resultados_relevantes: string;
   diagnostico_problema_clinico: string;
   pronostico: string;
-  tratamimento_indicaciones_medicas: string;  // Asumí que es 'tratamiento_indicaciones_medicas' (corrige si es diferente)
+   
+  manejo_dieta: string;
+  manejo_soluciones: string;
+  manejo_medicamentos: string;
+  manejo_medidas_generales: string;
+  manejo_laboratorios: string;
 }
   /*
 
