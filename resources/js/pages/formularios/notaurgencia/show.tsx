@@ -18,9 +18,9 @@ interface ShowNotaUrgenciaProps {
 }
 
 const Show = ({ notaUrgencia, paciente, estancia }: ShowNotaUrgenciaProps) => {
-  const { formularioInstancia } = notaUrgencia;
 
-  console.log('notaUrgencia desde Inertia:', notaUrgencia);
+
+
 
   const dateOptions: Intl.DateTimeFormatOptions = {
     year: 'numeric',
@@ -31,7 +31,7 @@ const Show = ({ notaUrgencia, paciente, estancia }: ShowNotaUrgenciaProps) => {
   };
 
   return (
-    <MainLayout>
+    <>
       <Head title={`Nota de Urgencia ${notaUrgencia.id}`} />
 
       <InfoCard
@@ -106,8 +106,22 @@ const Show = ({ notaUrgencia, paciente, estancia }: ShowNotaUrgenciaProps) => {
           />
         </div>
       </InfoCard>
-    </MainLayout>
+    </>
   );
 };
 
+
+Show.layout = (page: React.ReactElement) => {
+  const { estancia, paciente } = page.props as ShowNotaUrgenciaProps;
+
+  return (
+    <MainLayout
+      pageTitle={`Detalles de nota urgencias de ${paciente.nombre} ${paciente.apellido_paterno} ${paciente.apellido_materno}`}
+      link="estancias.show"
+      linkParams={estancia.id} 
+    >
+      {page}
+    </MainLayout>
+  );
+};
 export default Show;

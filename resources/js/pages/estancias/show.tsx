@@ -8,6 +8,7 @@ import MainLayout from '@/layouts/MainLayout';
 import { Estancia, Paciente, User, FormularioInstancia, Habitacion, FamiliarResponsable} from '@/types'; 
 import InfoCard from '@/components/ui/info-card';
 import InfoField from '@/components/ui/info-field';
+import pacientes from '@/routes/pacientes';
 
 interface ShowEstanciaProps {
     estancia: Estancia & {
@@ -284,8 +285,9 @@ const Show = ({ estancia }: ShowEstanciaProps) => {
 
 Show.layout = (page: React.ReactElement) => {                   
     const { estancia } = page.props as ShowEstanciaProps;
+    const paciente = estancia.paciente;
     return (
-        <MainLayout pageTitle={`Detalles de estancia de ${estancia.paciente.nombre}`} children={page} />
+        <MainLayout pageTitle={`Detalles de estancia de ${estancia.paciente.nombre}`} link="pacientes.show" linkParams={paciente.id} children={page} />
     );
 };
 

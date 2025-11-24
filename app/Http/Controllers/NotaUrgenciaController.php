@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\NotaUrgencia;
 use App\Models\Paciente;
 use App\Models\Estancia;
+use App\Models\FormularioCatalogo;
 use App\Models\FormularioInstancia;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -44,7 +45,7 @@ class NotaUrgenciaController extends Controller
         $formularioInstancia = FormularioInstancia::create([
             'fecha_hora' => now(),  
             'estancia_id' => $estancia->id,
-            'formulario_catalogo_id' => NotaUrgencia::CATALOGO_ID, 
+            'formulario_catalogo_id' => FormularioCatalogo::ID_NOTA_URGENCIAS, 
             'user_id' => Auth::id(),
         ]);
         

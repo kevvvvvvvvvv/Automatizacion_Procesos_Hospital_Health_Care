@@ -9,6 +9,7 @@ import AddButton from '@/components/ui/add-button';
 
 import InfoCard from '@/components/ui/info-card';
 import InfoField from '@/components/ui/info-field';
+import { ChildProcess } from 'node:child_process';
 
 type Doctor = {
   id: number;
@@ -60,14 +61,12 @@ const Show = ({ doctor }: ShowDoctorProps) => {
     (doctor.fecha_nacimiento ? new Date(doctor.fecha_nacimiento).toLocaleDateString('es-MX') : 'No especificada');
 
   return (
-    <MainLayout>
+    <>
       <Head title={`Doctor: ${nombreCompleto}`} />
       
-      <div className="p-4 md:p-8">
+      <div >
         <div className="flex justify-between items-center mb-6">
-          <div className="flex items-center space-x-4">
-            <BackButton href={route('doctores.index')} />
-          </div>
+          
           
           <h1 className="flex-1 text-center text-3xl font-bold text-black">
             Ficha del Doctor: {nombreCompleto}
@@ -158,9 +157,11 @@ const Show = ({ doctor }: ShowDoctorProps) => {
           </div>
         </InfoCard>
       </div>
-    </MainLayout>
+    </>
   );
 };
+Show.layout = (page: React.ReactElement) => <MainLayout pageTitle='Consulta de doctor' children={page} link = 'doctores.index'/>
+  
 
 
 export default Show;

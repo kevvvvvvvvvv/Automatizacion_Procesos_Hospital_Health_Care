@@ -153,7 +153,7 @@ export interface ProductoServicio {
     subtipo: string;
     codigo_prestacion: string;
     nombre_prestacion: string;
-    importe: number;
+    importe: number | null;
     cantidad: number | null;
 }
 
