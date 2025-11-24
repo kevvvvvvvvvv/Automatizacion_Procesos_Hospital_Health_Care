@@ -43,4 +43,9 @@ class HojaEnfermeria extends Model
     {
         return $this->hasMany(SolicitudDieta::class);
     }
+
+    public function hojaOxigenos(): HasMany
+    {
+        return $this->hasMany(HojaOxigeno::class);
+    }
 }
