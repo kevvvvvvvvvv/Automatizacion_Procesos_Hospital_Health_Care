@@ -1,5 +1,4 @@
 import { InertiaLinkProps, PageProps } from '@inertiajs/react';
-import { StringOrTemplateHeader } from '@tanstack/react-table';
 import { LucideIcon } from 'lucide-react';
 
 export interface Auth {
@@ -230,6 +229,7 @@ export interface HojaEnfermeria {
     hojas_terapia_i_v: HojaTerapiaIV[] | null; 
     hoja_medicamentos: HojaMedicamento[] | null;
     hoja_signos: HojaSignos[] | null;
+    hoja_oxigeno: HojaOxigeno[] | null;
     solicitud_dietas: SolicitudDieta[] | null;
 }
 
@@ -344,6 +344,13 @@ export interface HojaSondaCateter {
     observaciones: string;
     user: User;
     estancia: Estancia;
+}
+
+export interface HojaOxigeno {
+    id:number;
+    hora_inicio: string;
+    hora_fin: string;
+    litros_minuto: number;
 }
 
 export interface Honorarios{
@@ -547,6 +554,7 @@ export interface notasEvoluciones {
   manejo_medicamentos: string;
   manejo_medidas_generales: string;
   manejo_laboratorios: string;
+  
 }
   /*
 
@@ -641,6 +649,22 @@ export interface NotaPostanestesica {
     created_at?: string;
     updated_at?: string;
 }
+
+export interface SolicitudPatologia {
+    id: number; 
+    fecha_estudio: stirng;
+    estudio_solicitado: string;
+    pieza_remitida: string;
+    datos_clinicos: string;
+    biopsia_pieza_quirurgica: string;
+    revision_laminillas: string;
+    estudios_especiales: string;
+    datos_clinicos: string;
+    empresa_enviar:string;
+    resultados?: string;
+    pcr: string;
+}
+
 
 export type PageProps<T extends Record<string, unknown> = Record<string, unknown>> = T & {
     auth: {
