@@ -146,6 +146,15 @@ const Generalidades: React.FC<GeneralidadesProps> = ({ data, setData, errors }) 
         )}
       </div>
 
+      <InputText
+        id="resultado_estudios"
+        name="resultado_estudios"
+        label="Resultado de estudios de los servicios auxiliares de diagnóstico y tratamiento"
+        value={data.resultado_estudios ?? ''}
+        onChange={(value)=>(setData('resultado_estudios',value.target.value))}
+        error={errors.resultado_estudios}
+      />
+
       {/* Resultados de estudios auxiliares, diagnóstico y plan */}
       <div className="col-span-full">
         <label htmlFor="diagnostico_o_problemas_clinicos" className={labelClasses}>
