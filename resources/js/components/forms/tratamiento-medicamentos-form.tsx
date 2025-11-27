@@ -37,10 +37,11 @@ const opcionesViaMedicamento = [
 
 const PlanMedicamentos: React.FC<Props> = ({ value, onChange, error, medicamentos }) => {
     
-    const medicamentosOptions = useMemo(() => medicamentos.map(m => ({
+    const medicamentosOptions = useMemo(() => 
+    medicamentos && Array.isArray(medicamentos) ? medicamentos.map(m => ({
         value: m.id.toString(),
         label: m.nombre_prestacion
-    })), [medicamentos]);
+    })) : [], [medicamentos]);
 
     const [local, setLocal] = useState({
         id: '', nombre: '', dosis: '', gramaje: '', via: '', via_label: '', duracion: '', unidad: 'horas'

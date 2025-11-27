@@ -15,7 +15,6 @@ import {
   SortingState,
 } from '@tanstack/react-table';
 import AddButton from '@/components/ui/add-button';
-import BackButton from '@/components/ui/back-button';
 
 interface Doctor {
   id: number;
@@ -25,19 +24,20 @@ interface Doctor {
   cargo: string;
   responsable: string;
   created_at: string;
-  sexo?: string;  // Para mostrar más info
+  sexo?: string;  
 }
 
 interface Props {
   doctores: Doctor[];
-  flash?: {
-    success?: string;
+  
   };
-}
 
-const DoctorIndex: React.FC<Props> = ({ doctores, flash }) => {
+
+const DoctorIndex = ({doctores} : Props) => {
   const [globalFilter, setGlobalFilter] = useState('');
+
   const [sorting, setSorting] = useState<SortingState>([]);
+  
   const [deletingId, setDeletingId] = useState<number | null>(null);  // AGREGADO: Para loading en delete
 
   // Columnas: AGREGADO: Nueva columna 'actions' al final
@@ -96,7 +96,7 @@ const DoctorIndex: React.FC<Props> = ({ doctores, flash }) => {
               {/* Botón Eliminar */}
               <button
                 onClick={(e) => {
-                  e.stopPropagation();  // AGREGADO: Evita click en fila
+                  e.stopPropagation();  
                   handleDelete(doctorId);
                 }}
                 disabled={isDeleting}
@@ -104,7 +104,7 @@ const DoctorIndex: React.FC<Props> = ({ doctores, flash }) => {
                 title="Eliminar doctor"
               >
                 {isDeleting ? (
-                  <span className="text-xs">...</span>  // Loading simple
+                  <span className="text-xs">...</span>  
                 ) : (
                   <Trash2 size={16} />
                 )}
@@ -114,7 +114,7 @@ const DoctorIndex: React.FC<Props> = ({ doctores, flash }) => {
         },
       },
     ],
-    [deletingId]  // Dependencia para re-render si cambia deletingId
+    [deletingId] 
   );
 
   const data = useMemo(() => doctores, [doctores]);
@@ -148,13 +148,13 @@ const DoctorIndex: React.FC<Props> = ({ doctores, flash }) => {
       onSuccess: (page) => {
         // Recarga solo los doctores para actualizar la lista
         router.reload({ only: ['doctores'] });
-        setDeletingId(null);  // Limpia loading
-        // Opcional: Muestra flash success si el backend lo envía
+        setDeletingId(null);  
+       
       },
       onError: (errors) => {
         console.error('Error al eliminar:', errors);
         alert('Error al eliminar el doctor. Inténtalo de nuevo.');
-        setDeletingId(null);  // Limpia loading
+        setDeletingId(null);  
       },
     });
   };
@@ -166,37 +166,35 @@ const DoctorIndex: React.FC<Props> = ({ doctores, flash }) => {
   };
 
   return (
-    <MainLayout>
+    <>
       <Head title="Doctores" />
-      <div className="p-4 md:p-8">
+      <div >
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-3xl font-bold text-black">Listado de Doctores</h1>
         </div>
-
-        {flash?.success && (
-          <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-6">
-            {flash.success}
-          </div>
-        )}
-
         <div className="flex justify-between items-center mb-6">
-          <div className="flex items-center space-x-4">
-            <BackButton />
-          </div>
-          <AddButton href={route('doctores.create')}>
+            <div className="flex items-center space-x-4">
+                
+            
+
+            
+            </div>
+            <AddButton href={route('doctores.create')}>
             Agregar Doctor
           </AddButton>
-        </div>
+            </div>
+            <div className="mb-4">
+            <input
+                type="text"
+                value={globalFilter}
+                onChange={e => setGlobalFilter(e.target.value)}
+                placeholder="Buscar en toda la tabla..."
+                className="w-full max-w-sm p-2 border border-gray-300 rounded-lg text-black"
+            />
+            </div>
+          
 
-        <div className="mb-4">
-          <input
-            type="text"
-            value={globalFilter}
-            onChange={(e) => setGlobalFilter(e.target.value)}
-            placeholder="Buscar en toda la tabla..."
-            className="w-full max-w-sm p-2 border border-gray-300 rounded-lg text-gray-900"
-          />
-        </div>
+        
 
         <div className="overflow-x-auto bg-white rounded-lg shadow">
           <table className="w-full text-sm text-left text-gray-700">
@@ -264,9 +262,10 @@ const DoctorIndex: React.FC<Props> = ({ doctores, flash }) => {
           </button>
         </div>
       </div>
-    </MainLayout>
+    </>
   );
 };
+DoctorIndex.layout = (page: React.ReactNode) => <MainLayout pageTitle="Consulta de colaboladores" children={page} link="dashboard"/>;
 
 
 

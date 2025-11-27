@@ -60,6 +60,11 @@ const Index = ({ productoServicios }: IndexProps) => {
             cell: info => `$${Number(info.getValue()).toFixed(2)}`
         },
         {
+          accessorKey: 'cantidad',
+          header: 'Cantidad',
+          cell: info =>`${Number(info.getValue())}`
+        },
+        {
             id: 'actions',
             header: 'Acciones',
             cell: ({ row }) => (
@@ -114,7 +119,7 @@ const Index = ({ productoServicios }: IndexProps) => {
         </div>
              <div className="flex justify-between items-center mb-6">
                 <div className="flex items-center space-x-4">
-                  <BackButton />
+                
                 </div>
                 
                 <AddButton href={route('producto-servicios.create')}>
@@ -196,6 +201,6 @@ const Index = ({ productoServicios }: IndexProps) => {
   );
 };
 
-Index.layout = (page: React.ReactNode) => <MainLayout pageTitle="Consulta de productos y servicios" children={page} />;
+Index.layout = (page: React.ReactNode) => <MainLayout pageTitle="Consulta de productos y servicios" children={page} link="dashboard"/>;
 
 export default Index;

@@ -129,6 +129,8 @@ class UserSeeder extends Seeder
 
         $user->assignRole('admin');
 
+        
+
         $user = User::create([
             'curp' => 'HEAL000101HDFXXX01', 
             'nombre' => 'HealthCare',
@@ -143,6 +145,18 @@ class UserSeeder extends Seeder
 
         $user->assignRole('admin');
 
+         $user = User::create([
+            'curp' => 'HEGE040302HMSRMFA0',
+            'nombre' => 'Efrain',
+            'apellido_paterno' => 'Hernández',
+            'apellido_materno' => 'Gómez',
+            'sexo' => 'Masculino', 
+            'fecha_nacimiento' => '2004-03-02',
+            'email' => 'efrainhdz@gmail.com',
+            'password' => Hash::make('12345678'),
+            'cargo_id' => 3,
+        ]);
+         $user->assignRole('admin');
         CredencialEmpleado::create([
             'user_id' => $user->id,
             'titulo' => 'Médico Especialista en Pediatría',
@@ -151,13 +165,13 @@ class UserSeeder extends Seeder
 
         //Rol de cada usuario
         $user = User::create([
-            'curp' => 'HEGE040302HMRMFA0',
+            'curp' => 'HEGE040302HMRMFA2',
             'nombre' => 'Efrain ',
             'apellido_paterno' => 'Hernández',
             'apellido_materno' => 'Gómez',
             'sexo' => 'Masculino', 
             'fecha_nacimiento' => '2004-03-02',
-            'email' => 'EfraHdz@gmail.com',
+            'email' => 'gustav@gmail.com',
             'password' => Hash::make('12345678'),
             'cargo_id' => 9,
         ]);

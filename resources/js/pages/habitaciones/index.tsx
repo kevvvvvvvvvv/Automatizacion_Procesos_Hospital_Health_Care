@@ -104,13 +104,15 @@ const Index = ({ habitaciones }: IndexProps) => {
             </div>
             <div className="flex justify-between items-center mb-6">
             <div className="flex items-center space-x-4">
-                <BackButton />
+                
+            
+
+            
             </div>
             <AddButton href={route('habitaciones.create')}>
                 Agregar Habitación
             </AddButton>
             </div>
-
             <div className="mb-4">
             <input
                 type="text"
@@ -120,7 +122,6 @@ const Index = ({ habitaciones }: IndexProps) => {
                 className="w-full max-w-sm p-2 border border-gray-300 rounded-lg text-black"
             />
             </div>
-
             <div className="overflow-x-auto bg-white rounded-lg shadow">
             <table className="w-full text-sm text-left text-gray-700">
                 <thead className="text-xs text-gray-700 uppercase bg-gray-50">
@@ -187,6 +188,6 @@ const Index = ({ habitaciones }: IndexProps) => {
     );
 };
 
-Index.layout = (page: React.ReactNode) => <MainLayout pageTitle="Consulta de habitaciones" children={page} />;
+Index.layout = (page: React.ReactNode) => <MainLayout pageTitle="Consulta de habitaciones" children={page} link="dashboard"/>;
 
 export default Index;

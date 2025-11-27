@@ -153,7 +153,7 @@ export interface ProductoServicio {
     subtipo: string;
     codigo_prestacion: string;
     nombre_prestacion: string;
-    importe: number;
+    importe: number | null;
     cantidad: number | null;
 }
 
@@ -382,6 +382,17 @@ export interface Interconsulta{
 }
 export interface Traslado{
     id:number;
+     ta: string;
+    fc: number;
+    fr: number;
+    peso: number;
+    talla:number;
+    temp: number;
+    resumen_del_interrogatorio: string;
+    exploracion_fisica: string;
+    diagnostico_o_problemas_clinicos: string;
+    plan_de_estudio: string;
+    pronostico: string;
     unidad_medica_envia:string;
     unidad_medica_recibe:string;
     motivo_translado:string;
@@ -548,7 +559,13 @@ export interface notasEvoluciones {
   resultados_relevantes: string;
   diagnostico_problema_clinico: string;
   pronostico: string;
-  tratamimento_indicaciones_medicas: string;  
+   
+  manejo_dieta: string;
+  manejo_soluciones: string;
+  manejo_medicamentos: string;
+  manejo_medidas_generales: string;
+  manejo_laboratorios: string;
+  
 }
   /*
 
