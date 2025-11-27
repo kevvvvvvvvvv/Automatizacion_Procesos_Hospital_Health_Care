@@ -10,6 +10,18 @@ class Traslado extends Model
     protected $table = 'traslado';
     protected $fillable = [
         'id',
+         'id',
+        'ta',
+        'fc',
+        'fr',
+        'peso',
+        'talla',
+        'temp',
+        'resumen_del_interrogatorio',
+        'exploracion_fisica',
+        'diagnostico_o_problemas_clinicos',
+        'plan_de_estudio',
+        'pronostico',
         'unidad_medica_envia',
         'unidad_medica_recibe',
         'motivo_translado',

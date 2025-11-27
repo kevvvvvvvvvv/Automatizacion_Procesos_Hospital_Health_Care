@@ -93,7 +93,7 @@ class FormularioCatalogoSeeder extends Seeder
             'id' => 11,
             'nombre_formulario' => 'Nota evolucion',
             'nombre_tabla_fisica' => 'nota_evoluciones',
-            'route_prefix' => 'notaevolucion',
+            'route_prefix' => 'notasevoluciones',
         ]);
 
 

@@ -7,6 +7,7 @@ import { useForm, Head } from '@inertiajs/react';
 import { route } from 'ziggy-js';
 import { Estancia, Paciente } from '@/types';
 import PacienteCard from '@/components/paciente-card';
+import Generalidades from '@/components/forms/generalidades';
 
 type Props = {
   paciente: Paciente;
@@ -17,6 +18,17 @@ const CreateTranslado: React.FC<Props> = ({ paciente, estancia }) => {
   const { data, setData, post, processing, errors } = useForm({
     unidad_medica_envia: '',
     motivo_translado: '',
+      ta: '',
+      fc: '',
+      fr: '',
+      peso: '',
+      talla: '',
+      temp: '',
+      resumen_del_interrogatorio: '',
+      exploracion_fisica: '',
+      diagnostico_o_problemas_clinicos: '',
+      plan_de_estudio: '',
+      pronostico: '',
     unidad_medica_recibe: '',
     impresion_diagnostica: '',
     terapeutica_empleada: '',
@@ -34,7 +46,7 @@ const CreateTranslado: React.FC<Props> = ({ paciente, estancia }) => {
   const labelClasses = `block text-sm font-medium text-gray-700 mb-1`;
 
   return (
-    <>
+    <MainLayout>
       <PacienteCard
         paciente={paciente}
         estancia={estancia}
@@ -46,6 +58,7 @@ const CreateTranslado: React.FC<Props> = ({ paciente, estancia }) => {
         onSubmit={handleSubmit}
         actions={<PrimaryButton type="submit" disabled={processing}>{processing ? 'Creando...' : 'Crear Traslado'}</PrimaryButton>}
       >
+        <Generalidades data={data} setData={setData} errors={errors} />
         {/* Sección 1: Establecimiento de Salud */}
         <h2 className="text-xl font-semibold text-gray-800 mt-6 mb-4 col-span-full">Establecimiento de Salud</h2>
         <InputText
@@ -128,14 +141,10 @@ const CreateTranslado: React.FC<Props> = ({ paciente, estancia }) => {
           )}
         </div>
       </FormLayout>
-    </>
+    </MainLayout>
   );
 };
 
-CreateTranslado.layout = (page: React.ReactElement) => {
-  return (
-    <MainLayout pageTitle="Creación de Traslado" children={page} />
-  );
-};
+
 
 export default CreateTranslado;
