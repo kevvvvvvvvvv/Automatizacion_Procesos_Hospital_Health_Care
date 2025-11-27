@@ -18,10 +18,6 @@ interface ShowNotaUrgenciaProps {
 }
 
 const Show = ({ notaUrgencia, paciente, estancia }: ShowNotaUrgenciaProps) => {
-
-
-
-
   const dateOptions: Intl.DateTimeFormatOptions = {
     year: 'numeric',
     month: 'long',
@@ -116,12 +112,13 @@ Show.layout = (page: React.ReactElement) => {
 
   return (
     <MainLayout
-      pageTitle={`Detalles de nota urgencias de ${paciente.nombre} ${paciente.apellido_paterno} ${paciente.apellido_materno}`}
+      pageTitle={`Nota de Urgencia de ${paciente.nombre} ${paciente.apellido_paterno} ${paciente.apellido_materno}`}
       link="estancias.show"
-      linkParams={estancia.id} 
+      linkParams={{ estancia: estancia.id }} 
     >
       {page}
     </MainLayout>
   );
 };
+
 export default Show;

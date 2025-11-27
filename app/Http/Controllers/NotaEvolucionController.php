@@ -65,15 +65,17 @@ class NotaEvolucionController extends Controller
       public function show(Paciente $paciente, Estancia $estancia, NotaEvolucion $notaevolucion)
     {
         $notaevolucion->load('formularioInstancia.estancia.paciente', 'formularioInstancia.user');
-        $paciente = $notaevolucion->formularioInstancia->estancia->paciente ?? null;  
-        $estancia = $notaevolucion->formularioInstancia->estancia;
+        $paciente = $notaevolucion->formularioInstancia->estancia;  
+        $estancia = $estancia->paciente;
         return Inertia::render('formularios/notaevolucion/show', [
             'notaevolucion' => $notaevolucion,  
             'paciente' => $paciente,
             'estancia' => $estancia,
         ]);
     }
-
+    public function edit (){
+        //
+    }
     public function update(NotaEvolucionRequest $request, Paciente $paciente, Estancia $estancia, NotaEvolucion $notaEvolucion)
     {
         $validateData = $request->validated();

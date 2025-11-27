@@ -382,6 +382,17 @@ export interface Interconsulta{
 }
 export interface Traslado{
     id:number;
+     ta: string;
+    fc: number;
+    fr: number;
+    peso: number;
+    talla:number;
+    temp: number;
+    resumen_del_interrogatorio: string;
+    exploracion_fisica: string;
+    diagnostico_o_problemas_clinicos: string;
+    plan_de_estudio: string;
+    pronostico: string;
     unidad_medica_envia:string;
     unidad_medica_recibe:string;
     motivo_translado:string;

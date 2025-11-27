@@ -18,7 +18,19 @@ return new class extends Migration
                 ->references('id')
                 ->on('formulario_instancias')
                 ->onDelete('cascade');
-                
+             $table->string('ta')->nullable();
+            $table->integer('fc')->nullable();
+            $table->integer('fr')->nullable();
+            $table->decimal('peso', 8, 2)->nullable();
+            $table->decimal('talla', 4, 2)->nullable();
+            $table->decimal('temp', 4, 2)->nullable();
+
+            $table->text('resumen_del_interrogatorio')->nullable();
+            $table->text('exploracion_fisica')->nullable();
+            $table->text('diagnostico_o_problemas_clinicos')->nullable();
+            $table->text('plan_de_estudio')->nullable();
+            $table->text('pronostico')->nullable();
+   
             $table->string('unidad_medica_envia')->nullable();
             $table->string('unidad_medica_recibe')->nullable();
             $table->text('motivo_translado')->nullable();

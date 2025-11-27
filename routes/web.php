@@ -203,6 +203,9 @@ Route::get('/notaspreanestesicas/{notaspreanestesica}/pdf',[NotaPreAnestesicaCon
 Route::get('/notaspostanestesicas/{notaspostanestesica}/pdf', [NotaPostanestesicaController::class, 'generarPDF'])
     ->name('notaspostanestesicas.pdf')
     ->middleware('auth');
+Route::get('/notasevoluciones/{notasevolucione}/pdf', [NotaEvolucionController::class, 'generarPDf'])
+    ->name('notasevoluciones.pdf')
+    ->middleware('auth');
 
      // Farmacia
      Route::get('/farmacia/solicitudes/{hojaenfermeria}', [FarmaciaController::class, 'show'])
