@@ -104,7 +104,7 @@ class PreoperatoriaController extends Controller
     {
         $preoperatoria->load([
             'formularioInstancia.estancia.paciente',
-            'formularioInstancia.user',
+            'formularioInstancia.user.credenciales',
         ]);
         
         $medico = $preoperatoria->formularioInstancia->user;

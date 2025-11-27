@@ -126,7 +126,7 @@ class TrasladoController extends Controller
             'estancia' => $estancia
         ];
 
-        return Pdf::view('pdfs.traslado', [
+        return Pdf::view('pdfs.nota-traslado', [
             'notaData' => $traslado,
             'paciente' => $paciente,
             'medico' => $medico
