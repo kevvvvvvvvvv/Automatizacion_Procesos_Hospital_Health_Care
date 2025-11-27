@@ -15,7 +15,7 @@ use Spatie\LaravelPdf\Facades\Pdf;
 use App\Models\ProductoServicio;
 use App\Http\Requests\NotaEvolucionRequest;  
 use Redirect;
-
+use xs 
 class NotaEvolucionController extends Controller
 {
     public function create(Paciente $paciente, Estancia $estancia)
