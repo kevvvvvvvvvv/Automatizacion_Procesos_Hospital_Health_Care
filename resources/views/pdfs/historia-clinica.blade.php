@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Expediente clínico - Historia clínica</title>
+    <title>Historia clínica</title>
     <style>
         @page {
             size: A4;
@@ -299,9 +299,8 @@
         </section>
         <div class="signature-section">
             <div class="signature-line"></div>
+            <p style="font-size: 9pt; color: #555;">Nombre completo, cédula profesional y firma del médico</p>
             <p>{{ $medico->nombre . " " . $medico->apellido_materno . " " . $medico->apellido_materno}}</p>
-            <p style="font-size: 9pt; color: #555;">Nombre y Firma del Médico</p>
-
             @if(isset($medico) && $medico->credenciales->isNotEmpty())
                 <div class="credentials-list">
                     @foreach($medico->credenciales as $credencial)
