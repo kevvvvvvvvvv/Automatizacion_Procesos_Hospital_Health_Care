@@ -24,7 +24,6 @@ use App\Http\Controllers\FormularioHojaDietaController;
 use App\Http\Controllers\HojaMedicamentoController;
 use App\Http\Controllers\TrasladoController;
 use App\Http\Controllers\AplicacionMedicamentoController;
-use App\Http\Controllers\FormularioHojaOxigenoController;
 use App\Http\Controllers\FormularioNotaPostoperatorioController;
 use App\Http\Controllers\SolicitudEstudioController;
 use App\Http\Controllers\SolicitudEstudioPatologiaController;
@@ -47,21 +46,21 @@ use Illuminate\Support\Facades\Auth;
 use Spatie\LaravelPdf\Facades\Pdf;
 use Illuminate\Support\Facades\Log;
 
-Route::get('/', function () {
-    return Inertia::render('auth/login');
-})->name('home');
+     Route::get('/', function () {
+         return Inertia::render('auth/login');
+     })->name('home');
 
-Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('dashboard', function () {
-        return Inertia::render('dashboard-healthcare');
-    })->name('dashboard');
-});
+     Route::middleware(['auth', 'verified'])->group(function () {
+         Route::get('dashboard', function () {
+             return Inertia::render('dashboard-healthcare');
+         })->name('dashboard');
+     });
 
-Route::post('/cargos', [CargoController::class, 'store'])->name('cargos.store');
-Route::resource('habitaciones',HabitacionController::class)->middleware('auth');
-Route::resource('producto-servicios',ProductoServicioController::class)->middleware('auth');
-Route::resource('pacientes', PacienteController::class)->middleware('auth');
-Route::resource('doctores', DoctorController::class)->middleware('auth');  
+     Route::post('/cargos', [CargoController::class, 'store'])->name('cargos.store');
+     Route::resource('habitaciones', HabitacionController::class)->middleware('auth');
+     Route::resource('producto-servicios', ProductoServicioController::class)->middleware('auth');
+     Route::resource('pacientes', PacienteController::class)->middleware('auth');
+     Route::resource('doctores', DoctorController::class)->middleware('auth');  
 
 Route::resource('pacientes.responsable', FamiliarResponsableController::class);
 Route::resource('pacientes.estancias', EstanciaController::class)->shallow()->middleware('auth');
@@ -75,6 +74,19 @@ Route::resource('pacientes.estancias.traslados', TrasladoController::class)->sha
 Route::resource('pacientes.estancias.preoperatorias', PreoperatoriaController::class)->shallow()->middleware('auth');
 Route::resource('pacientes.estancias.notasurgencias', NotaUrgenciaController::class)->shallow()->middleware('auth');
 Route::resource('pacientes.estancias.notaspostanestesicas',NotaPostanestesicaController::class)->shallow()->middleware('auth');
+
+
+Route::post('hojasterapiasiv/{hojasenfermeria}',[FormularioHojaTerapiaIVController::class,'store'])->name('hojasterapiasiv.store');
+Route::patch('hojasterapiasiv/{hojasenfermeria}/{hojasterapiasiv}',[FormularioHojaTerapiaIVController::class,'update'])->name('hojasterapiasiv.update');
+Route::resource('pacientes.responsable', FamiliarResponsableController::class);
+Route::resource('pacientes.estancias', EstanciaController::class)->shallow()->middleware('auth');
+Route::resource('pacientes.estancias.hojasfrontales', FormularioHojaFrontalController::class)->shallow()->parameters(['hojasfrontales' => 'hojaFrontal'])->middleware('auth');
+Route::resource('pacientes.estancias.historiasclinicas', FormularioHistoriaClinicaController::class)->shallow()->middleware('auth');
+Route::resource('pacientes.estancias.hojasenfermerias',FormularioHojaEnfermeriaController::class)->shallow()-> middleware('auth');
+Route::resource('pacientes.estancias.ventas', VentaController::class)->shallow();
+Route::resource('pacientes.estancias.ventas.detallesventas',DetalleVentaController::class)->shallow()->middleware ('auth');
+Route::resource('pacientes.estancias.interconsultas.honorarios', HonorarioController::class)->shallow();
+Route::resource('pacientes.estancias.traslados', TrasladoController::class)->shallow()->middleware('auth');
 Route::resource('pacientes.estancias.notaspostoperatorias', FormularioNotaPostoperatorioController::class)->shallow()->middleware('auth');
 Route::resource('pacientes.estancias.notasegresos', NotasEgresoController::class)->shallow()->middleware('auth');
 Route::resource('pacientes.estancias.notasevoluciones', NotaEvolucionController::class)->shallow()->middleware('auth');
@@ -85,17 +97,12 @@ Route::prefix('pacientes/{paciente}/estancias/{estancia}')->group(function () {
     Route::post('notasegresos', [NotasEgresoController::class, 'store'])->name('pacientes.estancias.notasegresos.store');
     Route::get('notasegresos/{notaEgreso}', [NotaPreAnestesicaController::class, 'show'])->name('pacientes.estancias.notasegresos.show');
     // Agrega edit, update, etc. si los usas
-    Route::get('notasegresos/{notaEgreso}', [NotasEgresoController::class, 'show'])->name('pacientes.estancias.notasegresos.show');
 });
-
-
 Route::post('hojasterapiasiv/{hojasenfermeria}',[FormularioHojaTerapiaIVController::class,'store'])->name('hojasterapiasiv.store');
 Route::patch('hojasterapiasiv/{hojasenfermeria}/{hojasterapiasiv}',[FormularioHojaTerapiaIVController::class,'update'])->name('hojasterapiasiv.update');
 
 Route::post('hojasmedicamentos/{hojasenfermeria}',[FormularioHojaMedicamentoController::class, 'store'])->name('hojasmedicamentos.store');
 Route::patch('hojasmedicamentos/{hojasenfermeria}/{hojasmedicamento}',[FormularioHojaMedicamentoController::class, 'update'])->name('hojasmedicamentos.update');
-
-Route:: post('hojasoxigenos/{hojasenfermeria}',[FormularioHojaOxigenoController::class, 'store'])->name('hojasoxigenos.store')->middleware('auth');
 
 
 Route::get(
@@ -127,17 +134,12 @@ Route::resource('pacientes.estancias.interconsultas', InterconsultaController::c
 Route::post('hojassondascateters/{hojasenfermeria}',[FormularioHojaSondaCateterController::class, 'store'])->name('hojassondascateters.store');
 Route::patch('hojassondascateters/{hojasenfermeria}/{hojassondascateter}',[FormularioHojaSondaCateterController::class, 'update'])->name('hojassondascateters.update');
 
-Route::post('hoja-medicamentos/{hoja_medicamento}/aplicaciones', [AplicacionMedicamentoController::class, 'store'])
-    ->name('aplicaciones.store');
-
-// MANEJO DE ESTUDIOS
-
-Route::post('solicitudes-estudios/{estancia}',[SolicitudEstudioController::class, 'store'])->name('solicitudes-estudios.store');
-
-Route::post('solicitudes-patologias/{estancia}', [SolicitudEstudioPatologiaController::class, 'store'])->name('solicitudes-patologias.store')->middleware('auth');
-Route::post('solicitudes-patologias/{solicitud-patologia}/edit', [SolicitudEstudioPatologiaController::class, 'edit'])->name('solicitudes-patologias.edit')->middleware('auth');
-Route::put('solicitudes-patologias/{estancia}', [SolicitudEstudioPatologiaController::class, 'update'])->name('solicitudes-patologias.update')->middleware('auth');
-Route::post('solicitudes-patologias/{solicitud-patologia}/show', [SolicitudEstudioPatologiaController::class, 'show'])->name('solicitudes-patologias.show')->middleware('auth');
+     // Rutas para estudios y patologías
+     Route::post('solicitudes-estudios/{estancia}', [SolicitudEstudioController::class, 'store'])->name('solicitudes-estudios.store');
+     Route::post('solicitudes-patologias/{estancia}', [SolicitudEstudioPatologiaController::class, 'store'])->name('solicitudes-patologias.store')->middleware('auth');
+     Route::post('solicitudes-patologias/{solicitud-patologia}/edit', [SolicitudEstudioPatologiaController::class, 'edit'])->name('solicitudes-patologias.edit')->middleware('auth');
+     Route::put('solicitudes-patologias/{estancia}', [SolicitudEstudioPatologiaController::class, 'update'])->name('solicitudes-patologias.update')->middleware('auth');
+     Route::post('solicitudes-patologias/{solicitud-patologia}/show', [SolicitudEstudioPatologiaController::class, 'show'])->name('solicitudes-patologias.show')->middleware('auth');
 
 
 Route::resource('pacientes.estancias.interconsultas', InterconsultaController::class)
@@ -151,13 +153,15 @@ Route::get('pacientes/{paciente}/estancias/{estancia}/interconsultas/{interconsu
 ->name('pacientes.estancias.interconsultas.show')
 ->middleware('auth');
 
+Route::put('/doctores/{doctor}', [DoctorController::class, 'update'])->name('doctores.update');
+
 //PDFs
 Route::get('/hojasfrontales/{hojafrontal}/pdf', [FormularioHojaFrontalController::class, 'generarPDF'])
     ->name('hojasfrontales.pdf')
     ->middleware('auth');
 
 Route::get('/historiasclinicas/{historiaclinica}/pdf', [FormularioHistoriaClinicaController::class, 'generarPDF'])
-    ->name('historiasclinicas.pdf')
+    ->name('hojasfrontales.pdf')
     ->middleware('auth');
 
 Route::get('/interconsultas/{interconsulta}/pdf', [InterconsultaController::class, 'generarPDF'])
@@ -174,6 +178,10 @@ Route::get('/traslados/{traslado}/pdf', [TrasladoController::class, 'generarPDF'
 
 Route::get('/preoperatorias/{preoperatoria}/pdf', [PreoperatoriaController::class, 'generarPDF'])
     ->name('preoperatorias.pdf')
+    ->middleware('auth');
+
+Route::get('/hojasenfermerias/{hojasenfermerias}/pdf', [FormularioHojaEnfermeriaController::class, 'generarPDF'])
+    ->name('hojasenfermerias.pdf')
     ->middleware('auth');
 
 Route::get('/traslados/{traslado}/pdf', [TrasladoController::class, 'generarPDF'])
@@ -205,26 +213,22 @@ Route::get('/notaspostanestesicas/{notaspostanestesica}/pdf', [NotaPostanestesic
     ->name('notaspostanestesicas.pdf')
     ->middleware('auth');
 
-//Farmacia
-Route::get('/farmacia/solicitudes/{hojaenfermeria}', [FarmaciaController::class, 'show'])
-    ->name('farmacia.solicitud.show');
+     // Farmacia
+     Route::get('/farmacia/solicitudes/{hojaenfermeria}', [FarmaciaController::class, 'show'])
+         ->name('farmacia.solicitud.show');
+     Route::patch('/medicamentos/{medicamento}/actualizar-estado', [HojaMedicamentoController::class, 'actualizarEstado'])
+         ->name('medicamentos.actualizar-estado')
+         ->middleware('auth');
 
-Route::patch('/medicamentos/{medicamento}/actualizar-estado', [HojaMedicamentoController::class, 'actualizarEstado'])
-    ->name('medicamentos.actualizar-estado')
-    ->middleware('auth');
+     // Notificaciones
+     Route::post('/notifications/mark-all-as-read', function () {
+         Auth::user()->unreadNotifications->markAsRead();
+         return redirect()->back();
+     })->name('notifications.mark-all-as-read')->middleware('auth');
 
-//
+     // Historial
+     Route::get('/historial', [HistoryController::class, 'index'])->name('historiales.index')->middleware('auth');
 
-//Notification
-
-Route::post('/notifications/mark-all-as-read', function () {
-    Auth::user()->unreadNotifications->markAsRead();
-    return redirect()->back();
-})->name('notifications.mark-all-as-read')->middleware('auth');
-
-//Historial
-Route::get('/historial',[HistoryController::class,'index'])->name('historiales.index')->middleware('auth');
-
-require __DIR__.'/settings.php';
-require __DIR__.'/auth.php';
-
+     require __DIR__.'/settings.php';
+     require __DIR__.'/auth.php';
+      

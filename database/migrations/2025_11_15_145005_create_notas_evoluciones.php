@@ -18,7 +18,7 @@ return new class extends Migration
                 ->references('id')
                 ->on('formulario_instancias')
                 ->onDelete('cascade'); 
-            $table->string('evolucion_actualizacion');  // Texto para evolución/actualización
+            $table->string('evolucion_actualizacion');  
             $table->string('ta');
             $table->string('fc');  
             $table->string('fr'); 
@@ -28,7 +28,12 @@ return new class extends Migration
             $table->text('resultados_relevantes');  
             $table->text('diagnostico_problema_clinico');  
             $table->string('pronostico'); 
-            $table->text('tratammimento_indicaciones_medicas');  
+            $table->string('manejo_dieta')->nullable();
+            $table->string('manejo_soluciones')->nullable(); 
+            $table->string('manejo_medicamentos')->nullable(); 
+            $table->string('manejo_laboratorios')->nullable(); 
+            $table->string('manejo_medidas_generales')->nullable();
+
             $table->timestamps(); 
         });
     }
