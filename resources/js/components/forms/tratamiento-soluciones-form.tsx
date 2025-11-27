@@ -15,11 +15,13 @@ interface Props {
 
 const PlanSoluciones: React.FC<Props> = ({ value, onChange, error, soluciones }) => {
     
-    const solucionesOptions = useMemo(() => soluciones.map(s => ({
-        value: s.id.toString(),
-        label: s.nombre_prestacion 
-    })), [soluciones]);
-
+        const solucionesOptions = useMemo(() => 
+        soluciones && Array.isArray(soluciones) ? soluciones.map(s => ({
+            value: s.id.toString(),
+            label: s.nombre_prestacion 
+        })) : [], 
+    [soluciones]);
+        
     const [localSolucion, setLocalSolucion] = useState({
         solucion_id: '',
         solucion_nombre: '',
@@ -50,12 +52,12 @@ const PlanSoluciones: React.FC<Props> = ({ value, onChange, error, soluciones })
             
             <div className="p-4 border rounded-lg bg-gray-50 space-y-4 mb-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
-                    <SelectInput
+                     <SelectInput
                         label="Solución"
-                        options={solucionesOptions}
+                        options={solucionesOptions} // Ahora es [] si no hay datos
                         value={localSolucion.solucion_id}
                         onChange={(val) => {
-                            const sel = solucionesOptions.find(o => o.value === val);
+                            const sel = solucionesOptions.find(o => o.value === val); // Ahora solucionesOptions es array
                             setLocalSolucion(prev => ({ ...prev, solucion_id: val, solucion_nombre: sel?.label || '' }));
                         }}
                     />
