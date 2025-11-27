@@ -11,11 +11,21 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Spatie\LaravelPdf\Facades\Pdf;
-use App\Http\Requests\NotaEvolucionRequest;  
+use App\Http\Requests\NotaEvolucionRequest;
+use App\Models\FormularioCatalogo;
+use App\Services\PdfGeneratorService;
 use Redirect;
 
 class NotaEvolucionController extends Controller
 {
+
+    protected $pdfGenerator;
+
+    public function __construct(PdfGeneratorService $pdfGenerator)
+    {
+        return $this->pdfGenerator = $pdfGenerator;
+    }
+
     public function create(Paciente $paciente, Estancia $estancia)
     {
         return Inertia::render('formularios/notaevolucion/create', [
@@ -33,7 +43,7 @@ class NotaEvolucionController extends Controller
             $formularioInstancia = FormularioInstancia::create([
                 'fecha_hora' => now(),
                 'estancia_id' => $estancia->id,
-                'formulario_catalogo_id' => 11,  // Ajusta el ID del catálogo si es diferente
+                'formulario_catalogo_id' => FormularioCatalogo::ID_NOTA_EVOLUCION,  
                 'user_id' => Auth::id(),
             ]);
 
@@ -44,10 +54,8 @@ class NotaEvolucionController extends Controller
 
             DB::commit();
 
-            return redirect()->route('pacientes.estancias.notasevoluciones.show', [
-                'paciente' => $paciente->id,
+            return redirect()->route('estancias.show', [
                 'estancia' => $estancia->id,
-                'notaEvolucion' => $notaEvolucion->id,
             ])->with('success', 'Nota de Evolución creada exitosamente.');
         } catch (\Exception $e) {
             DB::rollBack();
@@ -90,16 +98,36 @@ class NotaEvolucionController extends Controller
         ])->with('success', 'Nota de Evolución actualizada exitosamente.');
     }
 
-    public function generarPDF(Paciente $paciente, Estancia $estancia, NotaEvolucion $notaEvolucion)
+    public function generarPDF(NotaEvolucion $notasevolucion)
     {
-        $notaEvolucion->load('formularioInstancia.estancia.paciente', 'formularioInstancia.user');
+        $notasevolucion->load(
+            'formularioInstancia.estancia.paciente', 
+            'formularioInstancia.user.credenciales',
+        );
 
-        $pdf = Pdf::loadView('pdf.notasEvoluciones', [
-            'notaEvolucion' => $notaEvolucion,
-            'paciente' => $notaEvolucion->formularioInstancia->estancia->paciente,
-            'estancia' => $notaEvolucion->formularioInstancia->estancia,
-        ]);
+        $medico = $notasevolucion->formularioInstancia->user;
+        $estancia = $notasevolucion->formularioInstancia->estancia;
+        $paciente = $estancia->paciente;
 
-        return $pdf->download('nota_evolucion.pdf');
+        $headerData = [
+            'historiaclinica' =>$notasevolucion,
+            'paciente' => $paciente,
+            'estancia' => $estancia,
+        ];
+
+        $viewData = [
+            'evolucion' => $notasevolucion,
+            'paciente' => $paciente,
+            'medico' => $medico,
+        ];
+
+        return $this->pdfGenerator->generateStandardPdf(
+            'pdfs.nota-evolucion',
+            $viewData,
+            $headerData,
+            'nota-evolucion-',
+            $estancia->folio,
+        );
+
     }
 }
