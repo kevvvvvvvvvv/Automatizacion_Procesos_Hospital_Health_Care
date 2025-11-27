@@ -187,7 +187,7 @@ Route::get('/notasurgencias/{notasurgencia}/pdf', [NotaUrgenciaController::class
 ->name('notasurgencias.pdf')
 ->middleware('auth');
 
-Route::get('/notasegresos/{notasegresos}/pdf', [NotasEgresoController::class, 'generarPDF'])
+Route::get('/notasegresos/{notasegreso}/pdf', [NotasEgresoController::class, 'generarPDF'])
     ->name('notasegresos.pdf')
     ->middleware('auth');
 
