@@ -17,6 +17,7 @@ type MainLayoutProps = {
     children: React.ReactNode;
     link?: string;
     pageTitle?: string;
+    linkParams?: any;    
 };
 
 const HomeIcon = () => (
@@ -103,7 +104,8 @@ const FlashAlert: React.FC<AlertProps> = ({ message, type, onClose }) => {
 };
 
 
-const MainLayout: React.FC<MainLayoutProps> = ({ children, pageTitle, link }) => {
+const MainLayout = ({ pageTitle, children, link, linkParams }: MainLayoutProps) => {
+    
   
     const { props } = usePage<SharedProps>();
     const { flash, auth } = props;
@@ -291,12 +293,25 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, pageTitle, link }) =>
 
             <div className="flex-1 flex flex-col order-1 md:order-2 h-full relative min-h-0 overflow-y-auto">
                 <div className='flex flex-row px-6 pt-6 shrink-0'>
+                                   
                     {link && (
-                    <Link className='pr-5' href={route(link)}>
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="size-10 bg-[#1B1C38] text-white rounded-full p-2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+                        <Link className="pr-5" href={route(link, linkParams)}>
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            strokeWidth="1.5"
+                            stroke="currentColor"
+                            className="size-10 bg-[#1B1C38] text-white rounded-full p-2"
+                        >
+                            <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M15.75 19.5 8.25 12l7.5-7.5"
+                            />
                         </svg>
-                    </Link>)}
+                        </Link>
+                    )}
                     <div>
                         <h1 className="text-2xl font-extrabold font-sans">
                             Hola, {authUser?.nombre}

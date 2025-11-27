@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\NotaUrgencia;
 use App\Models\Paciente;
 use App\Models\Estancia;
+use App\Models\FormularioCatalogo;
 use App\Models\FormularioInstancia;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -14,7 +15,7 @@ use Spatie\LaravelPdf\Facades\Pdf;
 use App\Services\PdfGeneratorService;
 
 use App\Http\Requests\NotaUrgenciaRequest;
-use App\Models\FormularioCatalogo;
+
 use Redirect;
 
 class NotaUrgenciaController extends Controller
@@ -78,6 +79,10 @@ class NotaUrgenciaController extends Controller
     public function show(Paciente $paciente, Estancia $estancia, NotaUrgencia $notasurgencia)  
    {
        $notasurgencia->load('formularioInstancia.user', 'formularioInstancia.estancia.paciente');
+
+        $estancia = $notasurgencia->formularioInstancia->estancia;
+        $paciente = $estancia->paciente;
+
        
        return Inertia::render('formularios/notaurgencia/show', [
            'notaUrgencia' => $notasurgencia,  

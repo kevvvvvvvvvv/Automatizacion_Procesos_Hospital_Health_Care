@@ -22,7 +22,8 @@ class ProductoServicioController extends Controller
 
     public function create()
     {
-        return Inertia::render('producto-servicios/create');
+        return Inertia::render('producto-servicios/create', ['productoServicio' => null,
+        ]);
     }
 
     public function store(ProductoServicioRequest $request)
@@ -35,8 +36,8 @@ class ProductoServicioController extends Controller
 
     public function edit(ProductoServicio $productoServicio) 
     {
-        return Inertia::render('producto-servicios/edit', [ 
-            'productoServicio' => $productoServicio
+        return Inertia::render('producto-servicios/create', [
+            'productoServicio' => $productoServicio,
         ]);
     }
 

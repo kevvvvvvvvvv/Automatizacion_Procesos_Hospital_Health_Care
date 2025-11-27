@@ -5,7 +5,7 @@ import FormLayout from '@/components/form-layout';
 import PrimaryButton from '@/components/ui/primary-button';
 import PacienteCard from '@/components/paciente-card';
 import Generalidades from '@/components/forms/generalidades';
-import { Paciente, Estancia } from '@/types';
+import { Paciente, Estancia, NotaPreAnestesica } from '@/types';
 import { route } from 'ziggy-js';
 
 interface Props {
@@ -13,28 +13,10 @@ interface Props {
   estancia: Estancia;
 }
 
-interface NotaPreAnestesicaFormData {
-  ta?: string;
-  fc?: number | string;
-  fr?: number | string;
-  peso?: number | string;
-  talla?: number | string;
-  temp?: number | string;
-  resumen_del_interrogatorio?: string;
-  exploracion_fisica?: string;
-  diagnostico_o_problemas_clinicos?: string;
-  plan_de_estudio?: string;
-  pronostico?: string;
-  plan_estudios_tratamiento?: string;
-  evaluacion_clinica?: string;
-  plan_anestesico?: string;
-  valoracion_riesgos?: string;
-  indicaciones_recomendaciones?: string;
-}
 
 const CreateNotaPreanestesica: React.FC<Props> = ({ paciente, estancia }) => {
   const { data, setData, errors, post, processing } =
-    useForm<NotaPreAnestesicaFormData>({
+    useForm({
       ta: '',
       fc: '',
       fr: '',

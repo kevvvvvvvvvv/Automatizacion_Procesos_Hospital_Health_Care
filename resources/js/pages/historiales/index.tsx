@@ -154,6 +154,6 @@ const Index = ({ histories }: IndexProps) => {
     );
 };
 
-Index.layout = (page: React.ReactNode) => <MainLayout pageTitle="Consulta del Historial" children={page} />;
+Index.layout = (page: React.ReactNode) => <MainLayout pageTitle="Consulta del Historial" children={page} link="dashboard"/>;
 
 export default Index;
