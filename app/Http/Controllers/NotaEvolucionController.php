@@ -14,10 +14,20 @@ use Inertia\Inertia;
 use Spatie\LaravelPdf\Facades\Pdf;
 use App\Models\ProductoServicio;
 use App\Http\Requests\NotaEvolucionRequest;  
+use App\Models\FormularioCatalogo;
+use App\Services\PdfGeneratorService;
 use Redirect;
 use xs ;
 class NotaEvolucionController extends Controller
 {
+
+    protected $pdfGenerator;
+
+    public function __construct(PdfGeneratorService $pdfGenerator)
+    {
+        return $this->pdfGenerator = $pdfGenerator;
+    }
+
     public function create(Paciente $paciente, Estancia $estancia)
     {
         $soluciones = ProductoServicio::where('tipo','INSUMOS')->get();
@@ -44,7 +54,7 @@ class NotaEvolucionController extends Controller
             $formularioInstancia = FormularioInstancia::create([
                 'fecha_hora' => now(),
                 'estancia_id' => $estancia->id,
-                'formulario_catalogo_id' => FormularioCatalogo::ID_NOTA_EVOLUCION,
+                'formulario_catalogo_id' => FormularioCatalogo::ID_NOTA_EVOLUCION,  
                 'user_id' => Auth::id(),
             ]);
 
@@ -86,14 +96,37 @@ class NotaEvolucionController extends Controller
             'notaevolucion' => $notaEvolucion->id, 
         ])->with('success', 'Nota de Evolución actualizada exitosamente.');
     }
-    public function generarPDF(Paciente $paciente, Estancia $estancia, NotaEvolucion $notaEvolucion)
+
+    public function generarPDF(NotaEvolucion $notasevolucion)
     {
-        $notaEvolucion->load('formularioInstancia.estancia.paciente', 'formularioInstancia.user');
-        $pdf = Pdf::loadView('pdf.notasEvoluciones', [
-            'notaevolucion' => $notaEvolucion,  
-            'paciente' => $notaEvolucion->formularioInstancia->estancia->paciente,
-            'estancia' => $notaEvolucion->formularioInstancia->estancia,
-        ]);
-        return $pdf->download('nota_evolucion.pdf');
+        $notasevolucion->load(
+            'formularioInstancia.estancia.paciente', 
+            'formularioInstancia.user.credenciales',
+        );
+
+        $medico = $notasevolucion->formularioInstancia->user;
+        $estancia = $notasevolucion->formularioInstancia->estancia;
+        $paciente = $estancia->paciente;
+
+        $headerData = [
+            'historiaclinica' =>$notasevolucion,
+            'paciente' => $paciente,
+            'estancia' => $estancia,
+        ];
+
+        $viewData = [
+            'evolucion' => $notasevolucion,
+            'paciente' => $paciente,
+            'medico' => $medico,
+        ];
+
+        return $this->pdfGenerator->generateStandardPdf(
+            'pdfs.nota-evolucion',
+            $viewData,
+            $headerData,
+            'nota-evolucion-',
+            $estancia->folio,
+        );
+
     }
 }
