@@ -160,11 +160,12 @@
         <p><strong>Cuidados y plan terapéutico preoperatorios:</strong> {{ $preoperatoria->cuidados_plan_preoperatorios ?? 'Sin datos.' }}</p>
         <p><strong>Pronóstico:</strong> {{ $preoperatoria->pronostico ?? 'Sin datos.' }}</p>
     </div>
-    <div class="signature-section">
-        @if(isset($medico))
+
+    @if(isset($medico))
+        <div class="signature-section">
             <div class="signature-line"></div>
             <p style="font-size: 9pt; color: #555;">Nombre completo, cédula profesional y firma del médico</p>
-            <p>{{ $medico->nombre . " " . $medico->apellido_paterno . " " . $medico->apellido_materno }}</p>
+            <p>{{ $medico->nombre . " " . $medico->apellido_paterno . " " . $medico->apellido_materno}}</p>
             @if($medico->credenciales->isNotEmpty())
                 <div class="credentials-list">
                     @foreach($medico->credenciales as $credencial)
@@ -174,7 +175,8 @@
                     @endforeach
                 </div>
             @endif
-        @endif
-    </div>
+        </div>
+    @endif  
+
 </body>
 </html>
