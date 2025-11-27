@@ -4,7 +4,6 @@ use App\Http\Controllers\EstanciaController;
 use App\Http\Controllers\HabitacionController;
 use App\Http\Controllers\FormularioHojaFrontalController;
 use App\Http\Controllers\FormularioHistoriaClinicaController;
-use App\Http\Controllers\FormularioInstanciaController;
 use App\Http\Controllers\DoctorController; 
 use App\Http\Controllers\ProductoServicioController;
 use App\Http\Controllers\InterconsultaController;
@@ -33,18 +32,10 @@ use App\Http\Controllers\NotasEgresoController;
 use App\Http\Controllers\NotaEvolucionController;
 use App\Http\Controllers\NotaPreAnestesicaController;
 use App\Http\Controllers\NotaPostanestesicaController;
-use App\Models\History;
-use App\Models\HojaTerapiaIV;
-use App\Models\Interconsulta;
-use App\Models\NotaPostanestesica;
-use App\Models\NotaPostoperatoria;
-use App\Models\Paciente;
-use App\Models\ProductoServicio;
+
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;
-use Spatie\LaravelPdf\Facades\Pdf;
-use Illuminate\Support\Facades\Log;
 
      Route::get('/', function () {
          return Inertia::render('auth/login');
@@ -192,7 +183,7 @@ Route::get('/notaspostoperatorias/{notaspostoperatoria}/pdf', [FormularioNotaPos
     ->name('notaspostoperatorias.pdf')
     ->middleware('auth');
 
-Route::get('/notasurgencias/{notasurgencias}/pdf', [NotaUrgenciaController::class, 'generarPDF'])
+Route::get('/notasurgencias/{notasurgencia}/pdf', [NotaUrgenciaController::class, 'generarPDF'])
 ->name('notasurgencias.pdf')
 ->middleware('auth');
 

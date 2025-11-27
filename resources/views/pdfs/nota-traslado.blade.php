@@ -2,9 +2,10 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Nota de Urgencia Inicial</title>
+    <title>Nota de traslado</title>
     <style>
-       @page {
+
+        @page {
             size: A4;
             margin-top: 5cm;
             margin-bottom: 1.5cm;
@@ -30,7 +31,7 @@
             color: #333;
             line-height: 1.4;
         }
-
+        
         .header {
             display: flex; 
             justify-content: space-between;
@@ -134,79 +135,69 @@
         .signature-section {
             text-align: center;
             margin-top: 60px;
+            page-break-inside: avoid;
         }
+
         .signature-line {
-            border-top: 1px solid #000;
-            width: 250px;
-            margin: 0 auto;
-            margin-bottom: 5px;
+            border-top: 1px solid #333;
+            width: 280px;
+            margin: 0 auto 5px auto;
         }
+
         .signature-section p {
             margin: 0;
             line-height: 1.4;
         }
+
+        .credentials-list {
+            font-size: 8pt;
+            color: #555;
+            margin-top: 8px;
+        }
     </style>
 </head>
 <body>
-    <main>
-        <h1>Nota de Urgencia Inicial</h1>
+    
 
-        {{-- SECCIÓN 1: RESUMEN CLÍNICO --}}
-        <h3>Resumen Clínico</h3>
-        <div class="section-content">
-            <p><strong>Motivo de la Atención:</strong> {{ $notaData['motivo_de_la_atencion_o_interconsulta'] ?? 'Sin datos.' }}</p>
-            <p><strong>Resumen del Interrogatorio:</strong> {{ $notaData['resumen_del_interrogatorio'] ?? 'Sin datos.' }}</p>
-        </div>
+    <h1>Nota de traslado</h1>
 
-        {{-- SECCIÓN 2: EXPLORACIÓN FÍSICA Y SIGNOS VITALES --}}
-        <h3>Exploración Física</h3>
-        <div class="section-content">
-            <p>{{ $notaData['exploracion_fisica'] ?? 'Sin datos.' }}</p>
-            <p>
-                <strong>Signos Vitales:</strong> 
-                Tensión arterial: <strong>{{ $notaData['ta'] ?? 'N/A' }}</strong> mm Hg | 
-                Frecuencia cardíaca: <strong>{{ $notaData['fc'] ?? 'N/A' }}</strong> x min | 
-                Frecuencia respiratoria: <strong>{{ $notaData['fr'] ?? 'N/A' }}</strong> x min | 
-                Temperatura: <strong>{{ $notaData['temp'] ?? 'N/A' }}</strong> °C | 
-                Peso: <strong>{{ $notaData['peso'] ?? 'N/A' }}</strong> kg | 
-                Talla: <strong>{{ $notaData['talla'] ?? 'N/A' }}</strong> cm
-            </p>
-            <p><strong>Estado Mental:</strong> {{ $notaData['estado_mental'] ?? 'Sin datos.' }}</p>
-        </div>
+    <h2>Establecimiento de salud</h2>
+    <div class="section-content">
+        <p><strong>Unidad médica que envía:</strong> {{ $notaData->unidad_medica_envia ?? 'Sin datos.' }}</p>
+        <p><strong>Unidad médica que recibe:</strong> {{ $notaData->unidad_medica_recibe ?? 'Sin datos.' }}</p>
+        
+    </div>
 
-        {{-- SECCIÓN 3: ANÁLISIS Y DIAGNÓSTICO --}}
-        <h3>Análisis y Diagnóstico</h3>
-        <div class="section-content">
-            <p><strong>Resultados Relevantes de Estudios:</strong> {{ $notaData['resultados_relevantes_del_estudio_diagnostico'] ?? 'Sin datos.' }}</p>
-            <p><strong>Diagnóstico o Problemas Clínicos:</strong> {{ $notaData['diagnostico_o_problemas_clinicos'] ?? 'Sin datos.' }}</p>
-        </div>
+    <h2>Resumen clínico</h2>
+    <div class="section-content">
+        <p><strong>Motivo de traslado:</strong> {{ $notaData->motivo_translado ?? 'Sin datos.' }}</p>
+        <p><strong>Impresión diagnóstica (incluido abuso y dependencia del tabaco, del alcohol y de otras sustancias psicoactivas):</strong> {{ $notaData->impresion_diagnostica ?? 'Sin datos.' }}</p>
+        <p><strong>Terapéutica empleada, si la hubo:</strong> {{ $notaData->terapeutica_empleada ?? 'Sin datos.' }}</p>
+    </div>
 
-        {{-- SECCIÓN 4: PLAN Y PRONÓSTICO --}}
-        <h3>Plan y Pronóstico</h3>
-        <div class="section-content">
-            <p><strong>Tratamiento y Pronóstico:</strong> {{ $notaData['tratamiento_y_pronostico'] ?? 'Sin datos.' }}</p>
-        </div>
-
-        {{-- SECCIÓN DE FIRMA --}}
+    
+    <div class="signature-section">
         @if(isset($medico))
-            <div class="signature-section">
-                <div class="signature-line"></div>
-                <p>{{ $medico->name ?? 'Médico no especificado' }}</p>  
-                <p style="font-size: 9pt; color: #555;">Nombre y Firma del Médico</p>
-
-                 
-                 @if($medico->credenciales->isNotEmpty()) 
-                     <div class="credentials-list"> 
-                         @foreach($medico->credenciales as $credencial) 
-                             <p> 
-                                 <strong>Título:</strong> {{ $credencial->titulo }} | <strong>Cédula Profesional:</strong> {{ $credencial->cedula_profesional }} 
-                             </p> 
-                         @endforeach
-                     </div>
-                 @endif 
-            </div>
-        @endif  
-       
-    </main>
+            <div class="signature-line"></div>
+            <p style="font-size: 9pt; color: #555;">Nombre completo, cédula profesional y firma del médico</p>
+            <p>{{ $medico->nombre . " " . $medico->apellido_paterno . " " . $medico->apellido_materno }}</p>
+            @if($medico->credenciales->isNotEmpty())
+                <div class="credentials-list">
+                    @foreach($medico->credenciales as $credencial)
+                        <p>
+                            <strong>Título:</strong> {{ $credencial->titulo }} | <strong>Cédula Profesional:</strong> {{ $credencial->cedula_profesional }}
+                        </p>
+                    @endforeach
+                </div>
+            @endif
+        @endif
+    </div>
+    <div class="signature-section">
+        @if(isset($familiar_responsable))
+            <div class="signature-line"></div>
+            <p>{{ $familiar_responsable->nombre . " " . $familiar_responsable->apellido_paterno . " " . $familiar_responsable->apellido_materno }}</p>
+            <p style="font-size: 9pt; color: #555;">Nombre y Firma del Familiar Responsable</p>
+        @endif
+    </div>
 </body>
 </html>

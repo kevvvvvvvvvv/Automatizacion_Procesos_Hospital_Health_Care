@@ -2,9 +2,8 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Nota de Traslado</title>
+    <title>Nota preoperatoria</title>
     <style>
-        /* Estilos copiados y adaptados */
         @page {
             size: A4;
             margin-top: 5cm;
@@ -151,26 +150,22 @@
 
 <body>
     <h1>Nota preoperatoria</h1>
-    {{-- Sección Detalles de la nota preoperatoria --}}
-    <h2>FECHA:</h2>
+
     <div class="section-content">
-        <p><strong>Fecha de la cirugía:</strong> {{ $nota->fecha ?? 'Sin datos.' }}</p>
-    </div>
-    <h2>Diagnóstico:</h2>
-    <div class="section-content">
-        <p><strong>Diagnóstico preoperatorio:</strong> {{ $preoperatoria->diagnostico ?? 'Sin datos.' }}</p>
+        <p><strong>Fecha de la cirugía:</strong> {{ $preoperatoria->fecha_cirugia ?? 'Sin datos.' }}</p>
+        <p><strong>Diagnóstico:</strong> {{ $preoperatoria->diagnostico_preoperatorio ?? 'Sin datos.' }}</p>
         <p><strong>Plan quirúrgico:</strong> {{ $preoperatoria->plan_quirurgico ?? 'Sin datos.' }}</p>
-        <p><strong>Tipo de intervención:</strong> {{ $preoperatoria->tipo_intervencion ?? 'Sin datos.' }}</p>
+        <p><strong>Tipo de intervención quirúrgica:</strong> {{ $preoperatoria->tipo_intervencion_quirurgica ?? 'Sin datos.' }}</p>
         <p><strong>Riesgo quirúrgico:</strong> {{ $preoperatoria->riesgo_quirurgico ?? 'Sin datos.' }}</p>
-        <p><strong>Cuidado y plan preoperatorio:</strong> {{ $preoperatoria->cuidado_plan_preoperatorio ?? 'Sin datos.' }}</p>
+        <p><strong>Cuidados y plan terapéutico preoperatorios:</strong> {{ $preoperatoria->cuidados_plan_preoperatorios ?? 'Sin datos.' }}</p>
         <p><strong>Pronóstico:</strong> {{ $preoperatoria->pronostico ?? 'Sin datos.' }}</p>
     </div>
-    <div class="signature-section">
-        @if(isset($medico))
-            <div class="signature-line"></div>
-            <p>{{ $medico->nombre . " " . $medico->apellido_paterno . " " . $medico->apellido_materno }}</p>
-            <p style="font-size: 9pt; color: #555;">Nombre y firma del médico que interviene al paciente </p>
 
+    @if(isset($medico))
+        <div class="signature-section">
+            <div class="signature-line"></div>
+            <p style="font-size: 9pt; color: #555;">Nombre completo, cédula profesional y firma del médico</p>
+            <p>{{ $medico->nombre . " " . $medico->apellido_paterno . " " . $medico->apellido_materno}}</p>
             @if($medico->credenciales->isNotEmpty())
                 <div class="credentials-list">
                     @foreach($medico->credenciales as $credencial)
@@ -180,7 +175,8 @@
                     @endforeach
                 </div>
             @endif
-        @endif
-    </div>
+        </div>
+    @endif  
+
 </body>
 </html>

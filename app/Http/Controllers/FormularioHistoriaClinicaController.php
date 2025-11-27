@@ -14,6 +14,7 @@ use App\Models\RespuestaFormulario;
 use App\Models\FormularioInstancia;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Spatie\Browsershot\Browsershot;
 use Spatie\LaravelPdf\Facades\Pdf;
 
 class FormularioHistoriaClinicaController extends Controller
@@ -39,75 +40,75 @@ class FormularioHistoriaClinicaController extends Controller
      * @param  \App\Models\Estancia  $estancia
      * @return \Illuminate\Http\RedirectResponse
      */
-public function store(HistoriaClinicaRequest $request, Paciente $paciente, Estancia $estancia)
-{
-    $validatedData = $request->validated();
+    public function store(HistoriaClinicaRequest $request, Paciente $paciente, Estancia $estancia)
+    {
+        $validatedData = $request->validated();
 
-    try {
-        DB::beginTransaction();
+        try {
+            DB::beginTransaction();
 
-        $formulario = FormularioInstancia::create([
-            'fecha_hora' => now(),
-            'estancia_id' => $estancia->id,
-            'formulario_catalogo_id' => 2,
-            'user_id' => Auth::id(),
-        ]);
+            $formulario = FormularioInstancia::create([
+                'fecha_hora' => now(),
+                'estancia_id' => $estancia->id,
+                'formulario_catalogo_id' => 2,
+                'user_id' => Auth::id(),
+            ]);
 
-        Log::info('FormularioInstancia creado con ID: ' . ($formulario ? $formulario->id : 'FALLÓ'));
-        if (!$formulario || !$formulario->id) {
-            DB::rollBack();
-            return redirect()->back()->with('error', 'Error crítico al crear la instancia del formulario.');
-        }
-
-        $historiaClinica = HistoriaClinica::firstOrCreate(
-            ['id' => $formulario->id], 
-            [ 
-                'padecimiento_actual'       => $validatedData['padecimiento_actual'],
-                'tension_arterial'          => $validatedData['tension_arterial'],
-                'frecuencia_cardiaca'       => $validatedData['frecuencia_cardiaca'],
-                'frecuencia_respiratoria'   => $validatedData['frecuencia_respiratoria'],
-                'temperatura'               => $validatedData['temperatura'],
-                'peso'                      => $validatedData['peso'],
-                'talla'                     => $validatedData['talla'],
-                'resultados_previos'        => $validatedData['resultados_previos'],
-                'diagnostico'               => $validatedData['diagnostico'],
-                'pronostico'                => $validatedData['pronostico'],
-                'indicacion_terapeutica'    => $validatedData['indicacion_terapeutica'],
-            ]
-        );
-        Log::info('HistoriaClinica obtenida/creada con ID: ' . ($historiaClinica ? $historiaClinica->id : 'FALLÓ'));
-        if (!$historiaClinica || !$historiaClinica->id) {
-            DB::rollBack();
-            Log::error('Fallo al crear/obtener HistoriaClinica para Formulario ID: ' . $formulario->id);
-            return redirect()->back()->with('error', 'Error crítico al crear/obtener la historia clínica.');
-        }
-
-        $hcId = $historiaClinica->id;
-        Log::info('ID a usar para RespuestaFormulario: ' . $hcId);
-
-
-        foreach ($validatedData['respuestas'] as $preguntaId => $detalles) {
-            if (!empty($detalles['respuesta']) || !empty($detalles['campos']) || !empty($detalles['items'])) {
-                Log::info("Intentando crear Respuesta para HC ID: {$hcId}, Pregunta ID: {$preguntaId}");
-                RespuestaFormulario::create([
-                    'historia_clinica_id'   => $hcId, 
-                    'catalogo_pregunta_id'  => $preguntaId,
-                    'detalles'              => $detalles,
-                ]);
+            Log::info('FormularioInstancia creado con ID: ' . ($formulario ? $formulario->id : 'FALLÓ'));
+            if (!$formulario || !$formulario->id) {
+                DB::rollBack();
+                return redirect()->back()->with('error', 'Error crítico al crear la instancia del formulario.');
             }
+
+            $historiaClinica = HistoriaClinica::firstOrCreate(
+                ['id' => $formulario->id], 
+                [ 
+                    'padecimiento_actual'       => $validatedData['padecimiento_actual'],
+                    'tension_arterial'          => $validatedData['tension_arterial'],
+                    'frecuencia_cardiaca'       => $validatedData['frecuencia_cardiaca'],
+                    'frecuencia_respiratoria'   => $validatedData['frecuencia_respiratoria'],
+                    'temperatura'               => $validatedData['temperatura'],
+                    'peso'                      => $validatedData['peso'],
+                    'talla'                     => $validatedData['talla'],
+                    'resultados_previos'        => $validatedData['resultados_previos'],
+                    'diagnostico'               => $validatedData['diagnostico'],
+                    'pronostico'                => $validatedData['pronostico'],
+                    'indicacion_terapeutica'    => $validatedData['indicacion_terapeutica'],
+                ]
+            );
+            Log::info('HistoriaClinica obtenida/creada con ID: ' . ($historiaClinica ? $historiaClinica->id : 'FALLÓ'));
+            if (!$historiaClinica || !$historiaClinica->id) {
+                DB::rollBack();
+                Log::error('Fallo al crear/obtener HistoriaClinica para Formulario ID: ' . $formulario->id);
+                return redirect()->back()->with('error', 'Error crítico al crear/obtener la historia clínica.');
+            }
+
+            $hcId = $historiaClinica->id;
+            Log::info('ID a usar para RespuestaFormulario: ' . $hcId);
+
+
+            foreach ($validatedData['respuestas'] as $preguntaId => $detalles) {
+                if (!empty($detalles['respuesta']) || !empty($detalles['campos']) || !empty($detalles['items'])) {
+                    Log::info("Intentando crear Respuesta para HC ID: {$hcId}, Pregunta ID: {$preguntaId}");
+                    RespuestaFormulario::create([
+                        'historia_clinica_id'   => $hcId, 
+                        'catalogo_pregunta_id'  => $preguntaId,
+                        'detalles'              => $detalles,
+                    ]);
+                }
+            }
+            
+            DB::commit();
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Error en store HistoriaClinica: ' . $e->getMessage() . ' en ' . $e->getFile() . ':' . $e->getLine()); // Log más detallado
+            return redirect()->back()->with('error', 'Error Detallado: ' . $e->getMessage());
         }
-        
-        DB::commit();
 
-    } catch (\Exception $e) {
-        DB::rollBack();
-        Log::error('Error en store HistoriaClinica: ' . $e->getMessage() . ' en ' . $e->getFile() . ':' . $e->getLine()); // Log más detallado
-        return redirect()->back()->with('error', 'Error Detallado: ' . $e->getMessage());
+        return redirect()->route('estancias.show', ['estancia' => $estancia->id])
+                        ->with('success', 'Historia Clínica registrada exitosamente.');
     }
-
-    return redirect()->route('estancias.show', ['estancia' => $estancia->id])
-                     ->with('success', 'Historia Clínica registrada exitosamente.');
-}
 
     public function edit(){
 
@@ -158,6 +159,19 @@ public function store(HistoriaClinicaRequest $request, Paciente $paciente, Estan
             'respuestasMap' => $respuestasMap,
             'medico' => $medico
         ])
+        ->withBrowsershot(function (Browsershot $browsershot){
+            $chromePath = config('services.browsershot.chrome_path');
+            if ($chromePath) {
+                $browsershot->setChromePath($chromePath);
+                $browsershot->noSandbox();
+                $browsershot->addChromiumArguments([
+                    'disable-dev-shm-usage',
+                    'disable-gpu',
+                ]);
+            } else {
+
+            }
+        })
         ->headerView('header', $headerData)
         ->inline('hoja-frontal.pdf');
     }

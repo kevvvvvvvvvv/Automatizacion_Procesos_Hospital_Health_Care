@@ -11,8 +11,10 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Spatie\LaravelPdf\Facades\Pdf;
+use Spatie\Browsershot\Browsershot;
 
 use App\Http\Requests\TrasladoRequest;
+use App\Models\FormularioCatalogo;
 
 // use Illuminate\Http\Request;
 
@@ -40,7 +42,7 @@ class TrasladoController extends Controller
         $formularioInstancia = FormularioInstancia::create([
             'fecha_hora' => now(),
             'estancia_id' => $estancia->id,
-            'formulario_catalogo_id' => 6,
+            'formulario_catalogo_id' => FormularioCatalogo::ID_TRASLADO,
             'user_id' => Auth::id(),
         ]);
         $traslado = Traslado::create([
@@ -83,52 +85,67 @@ class TrasladoController extends Controller
     {
         //
     }
-    public function destroy($id)
+
+    /*public function destroy($id)
     {
-         $traslado->delete();
+        $traslado->delete();
         return redirect()->route('pacientes.estancias.show', [
             'paciente' => $paciente->id,
             'estancia' => $estancia->id,
         ])->with('success', 'Traslado eliminado exitosamente.');
-    }
+    }*/
+
     public function generarPDF(Traslado $traslado)
-{
-    $traslado->load([
-        'formularioInstancia.estancia',
-        'formularioInstancia.user.credenciales',
-    ]);
+    {
+        $traslado->load([
+            'formularioInstancia.estancia',
+            'formularioInstancia.user.credenciales',
+        ]);
 
-    // Verificación para evitar null
-    if (!$traslado->formularioInstancia || !$traslado->formularioInstancia->estancia || !$traslado->formularioInstancia->estancia->paciente) {
-        abort(404, 'Datos del traslado no encontrados para generar PDF.');
+        // Verificación para evitar null
+        if (!$traslado->formularioInstancia || !$traslado->formularioInstancia->estancia || !$traslado->formularioInstancia->estancia->paciente) {
+            abort(404, 'Datos del traslado no encontrados para generar PDF.');
+        }
+
+        $paciente = $traslado->formularioInstancia->estancia->paciente;
+        $medico = $traslado->formularioInstancia->user;
+        $estancia = $traslado->formularioInstancia->estancia;
+
+        $logoDataUri = '';
+        $imagePath = public_path('images/Logo_HC_2.png');
+        if (file_exists($imagePath)) {
+            $imageData = base64_encode(file_get_contents($imagePath));
+            $imageMime = mime_content_type($imagePath);
+            $logoDataUri = 'data:' . $imageMime . ';base64,' . $imageData;
+        }
+
+        $headerData = [
+            'historiaclinica' => $traslado,
+            'paciente' => $paciente,
+            'logoDataUri' => $logoDataUri,
+            'estancia' => $estancia
+        ];
+
+        return Pdf::view('pdfs.nota-traslado', [
+            'notaData' => $traslado,
+            'paciente' => $paciente,
+            'medico' => $medico
+        ])
+        ->withBrowsershot(function (Browsershot $browsershot) {
+            $chromePath = config('services.browsershot.chrome_path');
+            if ($chromePath) {
+                $browsershot->setChromePath($chromePath);
+                $browsershot->noSandbox();
+                $browsershot->addChromiumArguments([
+                    'disable-dev-shm-usage',
+                    'disable-gpu',
+                ]);
+            } else {
+
+            }
+        })
+        ->headerView('header', $headerData)
+        ->inline('traslado.pdf');
     }
-
-    $paciente = $traslado->formularioInstancia->estancia->paciente;
-    $medico = $traslado->formularioInstancia->user;
-    $estancia = $traslado->formularioInstancia->estancia;
-
-    $logoDataUri = '';
-    $imagePath = public_path('images/Logo_HC_2.png');
-    if (file_exists($imagePath)) {
-        $imageData = base64_encode(file_get_contents($imagePath));
-        $imageMime = mime_content_type($imagePath);
-        $logoDataUri = 'data:' . $imageMime . ';base64,' . $imageData;
-    }
-
-    $headerData = [
-        'historiaclinica' => $traslado,
-        'paciente' => $paciente,
-        'logoDataUri' => $logoDataUri,
-        'estancia' => $estancia
-    ];
-
-    return Pdf::view('pdfs.traslado', [
-        'notaData' => $traslado,
-        'paciente' => $paciente,
-        'medico' => $medico
-    ])
-    ->headerView('header', $headerData)
-    ->inline('traslado.pdf');
-}
 
 }

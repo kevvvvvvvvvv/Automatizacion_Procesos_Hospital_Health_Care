@@ -145,7 +145,7 @@ const Show = ({ estancia }: ShowEstanciaProps) => {
                                                     active ? 'bg-blue-500 text-white' : 'text-gray-900'
                                                 } group flex rounded-md items-center w-full px-2 py-2 text-sm`}
                                             >
-                                                Añadir traslado
+                                                Añadir nota traslado
                                             </Link>
                                         )}
                                     </Menu.Item>
@@ -157,7 +157,7 @@ const Show = ({ estancia }: ShowEstanciaProps) => {
                                                     active ? 'bg-blue-500 text-white' : 'text-gray-900'
                                                 } group flex rounded-md items-center w-full px-2 py-2 text-sm`}
                                             >
-                                                Añadir preoperatoria
+                                                Añadir nota preoperatoria
                                             </Link>
                                         )}
                                     </Menu.Item>
@@ -206,7 +206,7 @@ const Show = ({ estancia }: ShowEstanciaProps) => {
                                                     active ? 'bg-blue-500 text-white' : 'text-gray-900'
                                                 } group flex rounded-md items-center w-full px-2 py-2 text-sm`}
                                             >
-                                                Añadir Nota de evoluciòn
+                                                Añadir nota de evoluciòn
                                              
                                             </Link>
                                         )}
@@ -219,7 +219,20 @@ const Show = ({ estancia }: ShowEstanciaProps) => {
                                                     active ? 'bg-blue-500 text-white' : 'text-gray-900'
                                                 } group flex rounded-md items-center w-full px-2 py-2 text-sm`}
                                             >
-                                                Añadir Nota pre-anestesica
+                                                Añadir nota preanestésica
+                                             
+                                            </Link>
+                                        )}
+                                    </Menu.Item>
+                                    <Menu.Item>
+                                        {({ active }) => (
+                                            <Link
+                                                href={route('pacientes.estancias.notaspostanestesicas.create', { paciente: paciente.id, estancia: estancia.id })}
+                                                 className={`${
+                                                    active ? 'bg-blue-500 text-white' : 'text-gray-900'
+                                                } group flex rounded-md items-center w-full px-2 py-2 text-sm`}
+                                            >
+                                                Añadir nota postanestésica
                                              
                                             </Link>
                                         )}
