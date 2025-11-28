@@ -40,8 +40,13 @@ return new class extends Migration
             $table->text('manejo_medidas_generales')->nullable();
             $table->text('manejo_laboratorios')->nullable();
             $table->text('pronostico');
-            $table->text('envio_piezas');
+            //$table->text('envio_piezas');
             $table->text('hallazgos_importancia');
+            
+            $table->foreignId('solicitud_patologia_id')
+                ->nullable()
+                ->constrained('solicitud_patologias')
+                ->onDelete('set null');
 
             $table->timestamps();
         });

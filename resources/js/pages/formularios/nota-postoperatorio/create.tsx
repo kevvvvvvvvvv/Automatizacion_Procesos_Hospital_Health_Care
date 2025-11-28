@@ -18,6 +18,7 @@ import TratamientoSolucionesForm from '@/components/forms/tratamiento-soluciones
 import TratamientoMedidasGeneralesForm from '@/components/forms/tratamiento-medidas-generales-form';
 import TratamientoMedicamentosForm from '@/components/forms/tratamiento-medicamentos-form';
 import TratamientoLaboratoriosForm from '@/components/forms/tratamiento-laboratorios-form';
+import EnvioPieza from '@/components/forms/envio-piezas';
 
 interface Props {
     paciente: Paciente;
@@ -177,61 +178,6 @@ const NotaPostoperatoriaForm: NotaPostoperatoriaComponent= ({ paciente, estancia
             });
         }
     }
-
-
-
-    // PIEZAS PATOLOGICAS
-    const [localPatologia, setLocalPatologia] = useState({
-        estudio_solicitado: '',
-        biopsia_pieza_quirurgica: '',
-        revision_laminillas: '',
-        estudios_especiales: '',
-        pcr: '',
-        pieza_remitida: '',
-        datos_clinicos: '',
-    });
-
-    const handleAddPatologiaAlPlan = (e: React.MouseEvent<HTMLButtonElement>) => {
-        e.preventDefault();
-        
-        const { estudio_solicitado, pieza_remitida } = localPatologia;
-
-        if (!estudio_solicitado || !pieza_remitida ) {
-            Swal.fire('Campos Incompletos', 'Debe especificar al menos "Estudio solicitado" y "Pieza remitida" .', 'error');
-            return;
-        }
-
-        let texto = `• Estudio: ${estudio_solicitado}.`;
-        texto += `\n  - Pieza Remitida: ${pieza_remitida}.`;
-
-        if (localPatologia.datos_clinicos) texto += `\n - Datos clinicos: ${localPatologia.datos_clinicos}`;
-        if (localPatologia.biopsia_pieza_quirurgica) texto += `\n  - Biopsia/Pieza: ${localPatologia.biopsia_pieza_quirurgica}.`;
-        if (localPatologia.revision_laminillas) texto += `\n  - Revisión de laminillas: ${localPatologia.revision_laminillas}.`;
-        if (localPatologia.estudios_especiales) texto += `\n  - Estudios especiales: ${localPatologia.estudios_especiales}.`;
-        if (localPatologia.pcr) texto += `\n  - PCR: ${localPatologia.pcr}.`;
-
-        setData(currentData => ({
-            ...currentData,
-            envio_piezas: currentData.envio_piezas 
-                ? `${currentData.envio_piezas}\n\n${texto}` 
-                : texto
-        }));
-
-        setLocalPatologia({
-            estudio_solicitado: '',
-            biopsia_pieza_quirurgica: '',
-            revision_laminillas: '',
-            estudios_especiales: '',
-            pcr: '',
-            pieza_remitida: '',
-            datos_clinicos: '',
-        });
-    };
-
-    const handleEnvioPiezasManualChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-        setData('envio_piezas', e.target.value);
-    };
-
 
     return (
         <>
@@ -535,93 +481,10 @@ const NotaPostoperatoriaForm: NotaPostoperatoriaComponent= ({ paciente, estancia
                     />
 
                     <div className="mt-6 pt-6 border-t mb-15">
-                        <h4 className="text-md font-semibold mb-3">Envío de piezas (patología)</h4>
-                        
-                        <div className="p-4 border rounded-lg bg-gray-50 space-y-4">                         
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                <InputText
-                                    label="Estudio solicitado"
-                                    id='estudio_solicitado_local'
-                                    name='estudio_solicitado_local'
-                                    value={localPatologia.estudio_solicitado}
-                                    onChange={e => setLocalPatologia(d => ({...d, estudio_solicitado: e.target.value}))}
-                                    error={errors.envio_piezas}
-                                />
-                                <InputText
-                                    label="Biopsia o pieza quirúrgica"
-                                    id='biopsia_pieza_local'
-                                    name='biopsia_pieza_local'
-                                    value={localPatologia.biopsia_pieza_quirurgica}
-                                    onChange={e => setLocalPatologia(d => ({...d, biopsia_pieza_quirurgica: e.target.value}))}
-                                />
-                                <InputText
-                                    label="Revisión de laminillas"
-                                    id='laminillas_local'
-                                    name='laminillas_local'
-                                    value={localPatologia.revision_laminillas}
-                                    onChange={e => setLocalPatologia(d => ({...d, revision_laminillas: e.target.value}))}
-                                />
-                            </div>
-
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                <InputText
-                                    label="Estudios especiales"
-                                    id='estudios_especiales_local'
-                                    name='estudios_especiales_local'
-                                    value={localPatologia.estudios_especiales}
-                                    onChange={e => setLocalPatologia(d => ({...d, estudios_especiales: e.target.value}))}
-                                />
-                                <InputText
-                                    label="PCR"
-                                    id='pcr_local'
-                                    name='pcr_local'
-                                    value={localPatologia.pcr}
-                                    onChange={e => setLocalPatologia(d => ({...d, pcr: e.target.value}))}
-                                />
-                                <InputText
-                                    label="Pieza remitida"
-                                    id='pieza_remitida_local'
-                                    name='pieza_remitida_local'
-                                    value={localPatologia.pieza_remitida}
-                                    onChange={e => setLocalPatologia(d => ({...d, pieza_remitida: e.target.value}))}
-                                    error={errors.envio_piezas}
-                                />
-
-                                {/*
-                                <InputText
-                                    label='Empresa a enviar la pieza patologica'
-                                    id='empresa_enviar'
-                                    name='empresa_enviar'
-                                    value={localPatologia.empresa_enviar}
-                                    onChange={e => setLocalPatologia}
-                                />
-                                */}
-                            </div>
-
-                            <InputTextArea
-                                label="Datos clínicos (anotar registro previo si existe)"
-                                id="datos_clinicos_local"
-                                name="datos_clinicos_local"
-                                value={localPatologia.datos_clinicos}
-                                onChange={e => setLocalPatologia(d => ({...d, datos_clinicos: e.target.value}))}
-                                error={errors.envio_piezas}
-                                rows={3}
-                            />
-
-                            <div className="flex justify-end">
-                                <PrimaryButton type="button" onClick={handleAddPatologiaAlPlan}>
-                                    + Agregar al plan de envío
-                                </PrimaryButton>
-                            </div>
-                        </div>
-
-                        <InputTextArea
-                            label="Plan de envío de piezas"
-                            value={data.envio_piezas}
-                            onChange={handleEnvioPiezasManualChange}
-                            error={errors.envio_piezas}
-                            rows={6}
-                            className="mt-2"
+                        <EnvioPieza
+                            data={data}
+                            setData={(field, value) => setData(field as any, value)}
+                            errors={errors}
                         />
                     </div>
 
