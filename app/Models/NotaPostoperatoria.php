@@ -35,8 +35,9 @@ class NotaPostoperatoria extends Model
         'manejo_laboratorios',
         
         'pronostico',
-        'envio_piezas',
+        //'envio_piezas',
         'hallazgos_importancia',
+        'solicitud_patologia_id',
     ];
 
 

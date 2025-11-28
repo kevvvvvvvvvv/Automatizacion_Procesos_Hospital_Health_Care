@@ -41,9 +41,6 @@ class NotaPostoperatoriaRequest extends FormRequest
             'incidentes_accidentes' => 'required|string',
             'cuantificacion_sangrado' => 'required|string',
             'estudios_transoperatorios' => 'required|string',
-            
-            // Equipo y Piezas (Opcionales)
-            'envio_piezas' => 'nullable|string',
 
             'manejo_dieta' => 'nullable|string',
             'manejo_soluciones' => 'nullable|string',
