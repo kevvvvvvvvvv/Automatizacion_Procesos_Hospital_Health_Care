@@ -63,6 +63,7 @@ const Show = ({ traslado, paciente, estancia }: ShowTrasladoProps) => {
                     label="Resumen del interrogatorio" value={traslado.resumen_del_interrogatorio}/>
                     <InfoField label="Exploración fisica" value={traslado.exploracion_fisica}/>
                     <InfoField label="Diagnostivo o problemas clinicos" value={traslado.diagnostico_o_problemas_clinicos}/>
+                    <InfoField label="Resultado de estudios de los servicios auxiliares de diagnóstico y tratamiento" value={traslado.resultado_estudios}/>
                     <InfoField label="Plan de estudios" value={traslado.plan_de_estudio}/>
                     <InfoField label="Pronostico" value={traslado.pronostico}/>
                 </div>

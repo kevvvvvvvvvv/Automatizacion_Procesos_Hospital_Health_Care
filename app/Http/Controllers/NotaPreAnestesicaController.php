@@ -14,6 +14,7 @@ use Spatie\Browsershot\Browsershot;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
+use App\Http\Requests\NotaPreanestesicaRequest;
 use App\Services\PdfGeneratorService;
 
 class NotaPreAnestesicaController extends Controller
@@ -42,28 +43,10 @@ class NotaPreAnestesicaController extends Controller
         ]);
     }
 
-    public function store(Request $request, Paciente $paciente, Estancia $estancia)
+    public function store(NotaPreanestesicaRequest $request, Paciente $paciente, Estancia $estancia)
     {
-        $validated = $request->validate([
-            'ta'  => ['nullable', 'string', 'max:50'],
-            'fc'  => ['nullable', 'numeric'],
-            'fr'  => ['nullable', 'numeric'],
-            'peso' => ['nullable', 'numeric'],
-            'talla' => ['nullable', 'numeric'],
-            'temp' => ['nullable', 'numeric'],
-
-            'resumen_del_interrogatorio' => ['nullable', 'string'],
-            'exploracion_fisica' => ['nullable', 'string'],
-            'diagnostico_o_problemas_clinicos' => ['nullable', 'string'],
-            'plan_de_estudio' => ['nullable', 'string'],
-            'pronostico' => ['nullable', 'string'],
-
-            'plan_estudios_tratamiento' => ['nullable', 'string'],
-            'evaluacion_clinica' => ['nullable', 'string'],
-            'plan_anestesico' => ['nullable', 'string'],
-            'valoracion_riesgos' => ['nullable', 'string'],
-            'indicaciones_recomendaciones' => ['nullable', 'string'],
-        ]);
+        $validated = $request->validated();
+            
 
         DB::beginTransaction();
 

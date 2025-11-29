@@ -17,9 +17,15 @@ class NotaEvolucion extends Model
         'temp',
         'peso',
         'talla',
-        'resultados_relevantes',
-        'diagnostico_problema_clinico',
+        'resultado_estudios',
+        'resumen_del_interrogatorio',
+        'exploracion_fisica',
+        'diagnostico_o_problemas_clinicos',
+        'plan_de_estudio',
+
+        // Pronóstico
         'pronostico',
+
         'manejo_dieta',
         'manejo_soluciones',
         'manejo_medicamentos',

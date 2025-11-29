@@ -388,6 +388,7 @@ export interface Traslado{
     peso: number;
     talla:number;
     temp: number;
+    resultado_estudios:string;
     resumen_del_interrogatorio: string;
     exploracion_fisica: string;
     diagnostico_o_problemas_clinicos: string;
@@ -465,7 +466,18 @@ export interface SolicitudDieta {
 
 export interface Preoperatoria {
     id: number;
-    
+    ta: string;
+    fc: number;
+    fr: number;
+    peso: number;
+    talla:number;
+    temp: number;
+    resultado_estudios:string;
+    resumen_del_interrogatorio: string;
+    exploracion_fisica: string;
+    diagnostico_o_problemas_clinicos: string;
+    plan_de_estudio: string;
+    pronostico: string;
     fecha_cirugia: string;
     diagnostico_preoperatorio: string;
     plan_quirurgico: string;
@@ -473,7 +485,7 @@ export interface Preoperatoria {
     riesgo_quirurgico: string | null;
     observaciones_riesgo: string|null;
     cuidados_plan_preoperatorios: string | null;
-    pronostico: string | null;
+    
     
     
 }
@@ -559,7 +571,7 @@ export interface notasEvoluciones {
   resultados_relevantes: string;
   diagnostico_problema_clinico: string;
   pronostico: string;
-   
+  resultado_estudios:string;
   manejo_dieta: string;
   manejo_soluciones: string;
   manejo_medicamentos: string;
