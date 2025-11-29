@@ -29,6 +29,7 @@ return new class extends Migration
             $table->text('resultado_estudios')->nullable();
             $table->text('resumen_del_interrogatorio')->nullable();
             $table->text('exploracion_fisica')->nullable();
+            $table->text('tratamiento')->nullable();
             $table->text('diagnostico_o_problemas_clinicos')->nullable();
             $table->text('plan_de_estudio')->nullable();
             $table->text('pronostico')->nullable();

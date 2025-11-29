@@ -571,6 +571,7 @@ export interface notasEvoluciones {
   resultados_relevantes: string;
   diagnostico_problema_clinico: string;
   pronostico: string;
+  tratamiento: string;
   resultado_estudios:string;
   manejo_dieta: string;
   manejo_soluciones: string;
