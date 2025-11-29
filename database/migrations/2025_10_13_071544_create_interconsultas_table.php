@@ -33,8 +33,8 @@ return new class extends Migration
             $table->text('estado_mental')->nullable();
             $table->text('resultados_relevantes_del_estudio_diagnostico')->nullable();
             $table->text('diagnostico_o_problemas_clinicos')->nullable();
-            $table->text('tratamiento_y_pronostico')->nullable();
-
+            $table->text('tratamiento')->nullable();
+            $table->text('pronostico')->nullable();
             $table->timestamps(); 
         });
     }

@@ -30,7 +30,8 @@ const CreateInterconsulta: React.FC<Props> = ({ paciente, estancia }) => {
     estado_mental: '',
     resultados_relevantes_del_estudio_diagnostico: '',
     diagnostico_o_problemas_clinicos: '',
-    tratamiento_y_pronostico: '',
+    tratamiento:'',
+    pronostico: '',
   });
 const handleSubmit = (e: React.FormEvent) => {
   e.preventDefault();
@@ -286,24 +287,41 @@ const handleSubmit = (e: React.FormEvent) => {
           )}
         </div>
         <div className="col-span-full">
-          <label htmlFor="tratamiento_y_pronostico" className={labelClasses}>
-            Tratamiento y Pronóstico
+          <label htmlFor="tratamiento" className={labelClasses}>
+            Tratamiento
           </label>
           <textarea
-            id="tratamiento_y_pronostico"
-            name="tratamiento_y_pronostico"
-            value={data.tratamiento_y_pronostico}
-            onChange={(e) => setData('tratamiento_y_pronostico', e.target.value)}
+            id="tratamiento"
+            name="tratamiento"
+            value={data.tratamiento}
+            onChange={(e) => setData('tratamiento', e.target.value)}
             placeholder="Tratamiento recomendado y pronóstico..."
             rows={4}
-            className={`${textAreaClasses} ${errors.tratamiento_y_pronostico ? 'border-red-500' : 'border-gray-600'}`}
+            className={`${textAreaClasses} ${errors.tratamiento ? 'border-red-500' : 'border-gray-600'}`}
             autoComplete="off"
           />
-          {errors.tratamiento_y_pronostico && (
-            <p className="mt-1 text-xs text-red-500">{errors.tratamiento_y_pronostico}</p>
+          {errors.tratamiento && (
+            <p className="mt-1 text-xs text-red-500">{errors.tratamiento}</p>
           )}
         </div>
-        
+         <div className="col-span-full">
+          <label htmlFor="pronostico" className={labelClasses}>
+            Pronóstico
+          </label>
+          <textarea
+            id="pronostico"
+            name="pronostico"
+            value={data.pronostico}
+            onChange={(e) => setData('pronostico', e.target.value)}
+            placeholder="Tratamiento recomendado y pronóstico..."
+            rows={4}
+            className={`${textAreaClasses} ${errors.pronostico ? 'border-red-500' : 'border-gray-600'}`}
+            autoComplete="off"
+          />
+          {errors.pronostico && (
+            <p className="mt-1 text-xs text-red-500">{errors.pronostico}</p>
+          )}
+        </div>
       </FormLayout>
       
     </MainLayout>
