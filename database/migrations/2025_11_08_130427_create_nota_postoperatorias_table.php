@@ -19,6 +19,20 @@ return new class extends Migration
                 ->on('formulario_instancias')
                 ->onDelete('cascade');
 
+            $table->string('ta');
+            $table->integer('fc');
+            $table->integer('fr');
+            $table->float('temp');
+            $table->float('peso');
+            $table->integer('talla');
+            $table->string('resumen_del_interrogatorio');
+            $table->string('exploracion_fisica');
+            $table->string('resultado_estudios');
+            $table->string('tratamiento');
+            $table->string('diagnostico_o_problemas_clinicos');
+            $table->string('plan_de_estudio');
+            $table->string('pronostico');
+
             $table->datetime('hora_inicio_operacion');
             $table->datetime('hora_termino_operacion');
 
@@ -31,7 +45,6 @@ return new class extends Migration
             $table->text('reporte_conteo');
             $table->text('incidentes_accidentes');
             $table->text('cuantificacion_sangrado');
-            $table->text('estudios_transoperatorios');
             
             $table->text('estado_postquirurgico');
             $table->text('manejo_dieta')->nullable();
@@ -39,9 +52,12 @@ return new class extends Migration
             $table->text('manejo_medicamentos')->nullable();
             $table->text('manejo_medidas_generales')->nullable();
             $table->text('manejo_laboratorios')->nullable();
-            $table->text('pronostico');
-            $table->text('envio_piezas');
             $table->text('hallazgos_importancia');
+            
+            $table->foreignId('solicitud_patologia_id')
+                ->nullable()
+                ->constrained('solicitud_patologias')
+                ->onDelete('set null');
 
             $table->timestamps();
         });

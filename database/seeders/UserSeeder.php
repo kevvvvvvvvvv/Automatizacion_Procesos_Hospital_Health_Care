@@ -129,8 +129,6 @@ class UserSeeder extends Seeder
 
         $user->assignRole('admin');
 
-        
-
         $user = User::create([
             'curp' => 'HEAL000101HDFXXX01', 
             'nombre' => 'HealthCare',
