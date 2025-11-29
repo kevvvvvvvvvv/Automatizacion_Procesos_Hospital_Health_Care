@@ -8,6 +8,7 @@ import PrimaryButton from '@/components/ui/primary-button';
 import FormLayout from '@/components/form-layout';
 import PacienteCard from '@/components/paciente-card';
 import MainLayout from '@/layouts/MainLayout';
+import Generalidades from '@/components/forms/generalidades';
 
 import TratamientoDietasForm from '@/components/forms/tratamiento-dietas-form';
 import TratamientoSolucionesForm from '@/components/forms/tratamiento-soluciones-form';
@@ -37,7 +38,7 @@ const CreateNotaEvolucion: React.FC<Props> = ({ paciente, estancia, soluciones, 
     resultados_relevantes: '',
     diagnostico_problema_clinico: '',
     pronostico: '',
-    
+    resultado_estudios:'',
     manejo_dieta:  '',
     manejo_soluciones:  '',
     manejo_medicamentos:  '',
@@ -91,124 +92,9 @@ const CreateNotaEvolucion: React.FC<Props> = ({ paciente, estancia, soluciones, 
           )}
         </div>
 
-        {/* Sección 2: Signos Vitales */}
-        <h2 className="text-xl font-semibold text-gray-800 mt-6 mb-4 col-span-full">
-          Signos Vitales
-        </h2>
-        <InputText
-          id="ta"
-          label="T.A. (Tensión Arterial)"
-          name="ta"
-          value={data.ta}
-          onChange={(e) => setData('ta', e.target.value)}
-          placeholder="Ej: 120/80"
-          error={errors.ta}
-        />
-        <InputText
-          id="fc"
-          label="FC (Frecuencia Cardíaca)"
-          name="fc"
-          type="number"
-          value={data.fc}
-          onChange={(e) => setData('fc', e.target.value)}
-          placeholder="Ej: 70"
-          error={errors.fc}
-        />
-        <InputText
-          id="fr"
-          label="FR (Frecuencia Respiratoria)"
-          name="fr"
-          type="number"
-          value={data.fr}
-          onChange={(e) => setData('fr', e.target.value)}
-          placeholder="Ej: 16"
-          error={errors.fr}
-        />
-        <InputText
-          id="temp"
-          label="TEMP (Temperatura)"
-          name="temp"
-          type="number"
-          value={data.temp}
-          onChange={(e) => setData('temp', e.target.value)}
-          placeholder="Ej: 36.50"
-          error={errors.temp}
-        />
-        <InputText
-          id="peso"
-          label="Peso (kg)"
-          name="peso"
-          type="number"
-          value={data.peso}
-          onChange={(e) => setData('peso', e.target.value)}
-          placeholder="Ej: 70.50"
-          error={errors.peso}
-        />
-        <InputText
-          id="talla"
-          label="Talla (m)"
-          name="talla"
-          type="number"
-          value={data.talla}
-          onChange={(e) => setData('talla', e.target.value)}
-          placeholder="Ej: 1.75"
-          error={errors.talla}
-        />
+        <Generalidades data={data} setData={setData} errors={errors} />
 
-        {/* Sección 3: Otros Campos */}
-        <div className="mb-4">
-          <label htmlFor="resultados_relevantes" className={labelClasses}>
-            Resultados Relevantes
-          </label>
-          <textarea
-            id="resultados_relevantes"
-            className={textAreaClasses}
-            value={data.resultados_relevantes}
-            onChange={(e) => setData('resultados_relevantes', e.target.value)}
-            placeholder="Ingrese los resultados relevantes de estudios de diagnóstico"
-            rows={4}
-            autoComplete="off"
-          />
-          {errors.resultados_relevantes && (
-            <div className="text-red-500 text-sm">{errors.resultados_relevantes}</div>
-          )}
-        </div>
-
-        <div className="mb-4">
-          <label htmlFor="diagnostico_problema_clinico" className={labelClasses}>
-            Diagnóstico y Problema Clínico
-          </label>
-          <textarea
-            id="diagnostico_problema_clinico"
-            className={textAreaClasses}
-            value={data.diagnostico_problema_clinico}
-            onChange={(e) => setData('diagnostico_problema_clinico', e.target.value)}
-            placeholder="Ingrese el diagnóstico y problema clínico"
-            rows={4}
-            autoComplete="off"
-          />
-          {errors.diagnostico_problema_clinico && (
-            <div className="text-red-500 text-sm">{errors.diagnostico_problema_clinico}</div>
-          )}
-        </div>
-
-        <div className="mb-4">
-          <label htmlFor="pronostico" className={labelClasses}>
-            Pronóstico
-          </label>
-          <textarea
-            id="pronostico"
-            className={textAreaClasses}
-            value={data.pronostico}
-            onChange={(e) => setData('pronostico', e.target.value)}
-            placeholder="Ingrese el pronóstico"
-            rows={4}
-            autoComplete="off"
-          />
-          {errors.pronostico && (
-            <div className="text-red-500 text-sm">{errors.pronostico}</div>
-          )}
-        </div>
+          
 
         {/* Sección 4: Tratamiento e Indicaciones Médicas */}
         <h2 className="text-xl font-semibold text-gray-800 mt-6 mb-4 col-span-full">

@@ -24,6 +24,7 @@ class TrasladoRequest extends FormRequest
             'talla'=> ['nullable', 'numeric'],
 
             // ---- Consulta / Exploración ----
+            'resultado_estudios'                 => ['nullable', 'string'],
             'resumen_del_interrogatorio'         => ['nullable', 'string'],
             'exploracion_fisica'                 => ['nullable', 'string'],
             'diagnostico_o_problemas_clinicos'   => ['nullable', 'string'],
@@ -67,6 +68,7 @@ class TrasladoRequest extends FormRequest
             'talla.numeric'=> 'La talla debe ser un número.',
 
             // ---- Consulta / Exploración ----
+            'resultado_estudios' => 'El resultados de estudios relevantes solicitados de auxiliares seben ser en cadena de texto',
             'resumen_del_interrogatorio.string' => 'El resumen del interrogatorio debe ser una cadena de texto.',
             'exploracion_fisica.string' => 'La exploración física debe ser una cadena de texto.',
             'diagnostico_o_problemas_clinicos.string' => 'El diagnóstico o problemas clínicos debe ser una cadena de texto.',

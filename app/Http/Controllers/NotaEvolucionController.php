@@ -14,9 +14,9 @@ use Inertia\Inertia;
 use Spatie\LaravelPdf\Facades\Pdf;
 use App\Models\ProductoServicio;
 use App\Http\Requests\NotaEvolucionRequest;  
+
 use App\Services\PdfGeneratorService;
 use Redirect;
-
 class NotaEvolucionController extends Controller
 {
 

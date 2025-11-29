@@ -17,6 +17,7 @@ class Traslado extends Model
         'peso',
         'talla',
         'temp',
+        'resultado_estudios',
         'resumen_del_interrogatorio',
         'exploracion_fisica',
         'diagnostico_o_problemas_clinicos',

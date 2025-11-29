@@ -7,6 +7,7 @@ import { useForm, Head } from '@inertiajs/react';
 import { route } from 'ziggy-js';
 import { Estancia, Paciente } from '@/types';
 import PacienteCard from '@/components/paciente-card';
+import Generalidades from '@/components/forms/generalidades';
 
 type Props = {
   paciente: Paciente;
@@ -15,13 +16,25 @@ type Props = {
 
 const CreateValoracionPreoperatoria: React.FC<Props> = ({ paciente, estancia }) => {
   const { data, setData, post, processing, errors } = useForm({
+    ta: '',
+    fc: '',
+    fr: '' ,
+    peso: '',
+    talla:'',
+    temp: '',
+    resultado_estudios:'',
+    resumen_del_interrogatorio: '',
+    exploracion_fisica: '',
+    diagnostico_o_problemas_clinicos: '',
+    plan_de_estudio: '',
+    pronostico: '',
+    
     diagnostico_preoperatorio: '',
     fecha_cirugia: '',
     plan_quirurgico: '',
     tipo_intervencion_quirurgica: '',
     riesgo_quirurgico: '',
     cuidados_plan_preoperatorios: '',
-    pronostico: '',
   });
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -121,6 +134,7 @@ const CreateValoracionPreoperatoria: React.FC<Props> = ({ paciente, estancia }) 
           placeholder="Ej: Electiva / Urgente / Programada"
           error={errors.tipo_intervencion_quirurgica}
         />
+        <Generalidades data={data} setData={setData} errors={errors} />
 
        {/* Riesgo quirúrgico */}
         <h2 className="text-xl font-semibold text-gray-800 mt-6 mb-4 col-span-full">
@@ -169,7 +183,7 @@ const CreateValoracionPreoperatoria: React.FC<Props> = ({ paciente, estancia }) 
           {errors.riesgo_quirurgico && (
             <p className="mt-2 text-xs text-red-500">{errors.riesgo_quirurgico}</p>
           )}
-
+          
           {/* Campo de observaciones */}
           <div className="mt-4">
             <label htmlFor="observaciones_riesgo" className="block text-sm font-medium text-gray-700 mb-1">
@@ -224,27 +238,7 @@ const CreateValoracionPreoperatoria: React.FC<Props> = ({ paciente, estancia }) 
           )}
         </div>
 
-        {/* Pronóstico */}
-        <div className="col-span-full md:col-span-1">
-          <label htmlFor="pronostico" className={labelClasses}>
-            Pronóstico
-          </label>
-          <textarea
-            id="pronostico"
-            name="pronostico"
-            value={data.pronostico}
-            onChange={(e) => setData('pronostico', e.target.value)}
-            placeholder="Describa el pronóstico..."
-            rows={3}
-            className={`${textAreaClasses} ${
-              errors.pronostico ? 'border-red-500' : 'border-gray-600'
-            }`}
-            autoComplete="off"
-          />
-          {errors.pronostico && (
-            <p className="mt-1 text-xs text-red-500">{errors.pronostico}</p>
-          )}
-        </div>
+        
       </FormLayout>
     </>
   );

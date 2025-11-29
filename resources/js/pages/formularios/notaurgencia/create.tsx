@@ -173,13 +173,13 @@ const CreateNotaUrgencia: React.FC<Props> = ({ paciente, estancia }) => {
         </div>
         
         <div className="mb-4">
-            <label htmlFor="resultados_relevantes" className={labelClasses}>Resultados relevantes de estudios de diagnostico</label>
+            <label htmlFor="resultados_relevantes" className={labelClasses}>Resultado de estudios de los servicios auxiliares de diagnóstico y tratamiento</label>
             <textarea
               id="resultados_relevantes"
               className={textAreaClasses}
               value={data.resultados_relevantes}
               onChange={e => setData('resultados_relevantes', e.target.value)}
-              placeholder="Ingrese los resultados relevantes"
+              placeholder="Resultado de estudios de los servicios auxiliares de diagnóstico y tratamiento"
               rows={4}
             autoComplete="off"
             />
