@@ -35,6 +35,7 @@ class NotaPreanestesicaRequest extends FormRequest
             'diagnostico_o_problemas_clinicos' => ['nullable', 'string'],
             'plan_de_estudio'                => ['nullable', 'string'],
             'pronostico'                     => ['nullable', 'string'],
+            'tratamiento'                    => ['nullable', "string"],
 
             // ---- Sección Preanestésica ----
             'plan_estudios_tratamiento'      => ['nullable', 'string'],
@@ -68,7 +69,7 @@ class NotaPreanestesicaRequest extends FormRequest
             'diagnostico_o_problemas_clinicos.string' => 'El diagnóstico debe ser una cadena de texto.',
             'plan_de_estudio.string' => 'El plan de estudio debe ser una cadena de texto.',
             'pronostico.string' => 'El pronóstico debe ser una cadena de texto.',
-
+            'tratamiento' => 'El tratamiento debe ser texto.',
             // ---- Nota Preanestésica ----
             'plan_estudios_tratamiento.string' => 'El plan de estudios y tratamiento debe ser una cadena de texto.',
             'evaluacion_clinica.string' => 'La evaluación clínica debe ser una cadena de texto.',

@@ -174,6 +174,24 @@
         <p><strong>Impresión diagnóstica (incluido abuso y dependencia del tabaco, del alcohol y de otras sustancias psicoactivas):</strong> {{ $notaData->impresion_diagnostica ?? 'Sin datos.' }}</p>
         <p><strong>Terapéutica empleada, si la hubo:</strong> {{ $notaData->terapeutica_empleada ?? 'Sin datos.' }}</p>
     </div>
+    <br>
+    <p style="line-height: 1.4; margin: 0; margin-bottom: 10px;">
+            <strong>Tensión arterial:</strong> {{$notaData['ta']}} mm Hg | 
+            <strong>Frecuencia cardiaca:</strong> {{$notaData['fc']}} por minuto | 
+            <strong>Frecuencia respiratoria:</strong> {{$notaData['fr']}} por minuto | 
+            <strong>Temperatura:</strong> {{$notaData['temp']}} Celsius (°C) | 
+            <strong>Peso:</strong> {{$notaData['peso']}} kilogramos | 
+            <strong>Talla:</strong> {{$notaData['talla']}} centímetros
+        </p>
+
+        <p><strong>Resumen del interrogatorio: </strong>{{$notaData['resumen_del_interrogatorio']}}</p>
+        <p><strong>Exploración física: </strong>{{$notaData['exploracion_fisica']}}</p>   
+        <p><strong>Resultado de estudios de los servicios auxiliares de diagnóstico y tratamiento: </strong>{{$notaData['resultado_estudios']}}</p>
+        <p><strong>Diagnóstico(s) o problemas clínicos: </strong>{{$notaData['diagnostico_o_problemas_clinicos']}}</p>
+        <p><strong>Plan de estudio y/o Tratamiento (indicaciones médicas, vía, dosis, periodicidad): </strong>{{$notaData['plan_de_estudio']}}</p>
+        <p><strong>Tratamiento: </strong>{{$notaData['tratamiento']}}</p>
+        <p><strong>Pronóstico: </strong>{{$notaData['pronostico']}}</p>
+
 
     
     <div class="signature-section">

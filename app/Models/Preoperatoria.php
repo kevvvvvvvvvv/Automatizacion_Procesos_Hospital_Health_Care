@@ -30,6 +30,7 @@ class Preoperatoria extends Model
 
         // Pronóstico
         'pronostico',
+        'tratamiento',
 
         // Datos preoperatorios
         'fecha_cirugia',

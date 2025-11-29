@@ -28,7 +28,7 @@ const CreateValoracionPreoperatoria: React.FC<Props> = ({ paciente, estancia }) 
     diagnostico_o_problemas_clinicos: '',
     plan_de_estudio: '',
     pronostico: '',
-    
+    tratamiento:'',
     diagnostico_preoperatorio: '',
     fecha_cirugia: '',
     plan_quirurgico: '',

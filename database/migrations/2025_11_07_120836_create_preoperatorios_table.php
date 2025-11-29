@@ -36,6 +36,7 @@ return new class extends Migration
             $table->text('diagnostico_o_problemas_clinicos')->nullable();
             $table->text('plan_de_estudio')->nullable();
             $table->text('pronostico')->nullable();
+            $table->text('tratamiento')->nullable();
    
             $table->string('riesgo_quirurgico')->nullable();
             $table->string('cuidados_plan_preoperatorios')->nullable();
