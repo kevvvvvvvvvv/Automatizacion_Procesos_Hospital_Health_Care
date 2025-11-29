@@ -30,7 +30,7 @@ class TrasladoRequest extends FormRequest
             'diagnostico_o_problemas_clinicos'   => ['nullable', 'string'],
             'plan_de_estudio'                    => ['nullable', 'string'],
             'pronostico'                         => ['nullable', 'string'],
-
+            'tratamiento'                        => ['nullable', 'string'],
             // ---- Datos del traslado ----
             'unidad_medica_envia'  => ['required', 'string', 'max:255'],
             'unidad_medica_recibe' => ['required', 'string', 'max:255'],
@@ -68,13 +68,13 @@ class TrasladoRequest extends FormRequest
             'talla.numeric'=> 'La talla debe ser un número.',
 
             // ---- Consulta / Exploración ----
-            'resultado_estudios' => 'El resultados de estudios relevantes solicitados de auxiliares seben ser en cadena de texto',
+            'resultado_estudios.string' => 'El resultados de estudios relevantes solicitados de auxiliares seben ser en cadena de texto',
             'resumen_del_interrogatorio.string' => 'El resumen del interrogatorio debe ser una cadena de texto.',
             'exploracion_fisica.string' => 'La exploración física debe ser una cadena de texto.',
             'diagnostico_o_problemas_clinicos.string' => 'El diagnóstico o problemas clínicos debe ser una cadena de texto.',
             'plan_de_estudio.string' => 'El plan de estudio debe ser una cadena de texto.',
             'pronostico.string' => 'El pronóstico debe ser una cadena de texto.',
-
+            'tratamiento.string' => 'El tratamiento debe ser texto.',
             // ---- Traslado extra ----
             'impresion_diagnostica.string' => 'La impresión diagnóstica debe ser una cadena de texto.',
             'terapeutica_empleada.string'  => 'La terapéutica empleada debe ser una cadena de texto.',
