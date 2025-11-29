@@ -14,11 +14,20 @@ use Log;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Auth;
 use Spatie\LaravelPdf\Facades\Pdf;
+use App\Services\PdfGeneratorService;
 
 use Inertia\Inertia;
 
 class NotaPostanestesicaController extends Controller
 {
+
+    protected $pdfGenerator;
+
+    public function __construct(PdfGeneratorService $pdfGenerator)
+    {
+        $this->pdfGenerator = $pdfGenerator;
+    }
+
     public function create(Paciente $paciente, Estancia $estancia)
     {
         return Inertia::render('formularios/nota-postanestesica/create', [
@@ -64,26 +73,24 @@ class NotaPostanestesicaController extends Controller
         $medico = $notaspostanestesica->formularioInstancia->user;
         $estancia = $notaspostanestesica->formularioInstancia->estancia;
 
-        $logoDataUri = '';
-        $imagePath = public_path('images/Logo_HC_2.png');
-        if (file_exists($imagePath)) {
-            $imageData = base64_encode(file_get_contents($imagePath));
-            $imageMime = mime_content_type($imagePath);
-            $logoDataUri = 'data:' . $imageMime . ';base64,' . $imageData;
-        }
-
         $headerData = [
             'historiaclinica' => $notaspostanestesica,
             'paciente' => $paciente,
-            'logoDataUri' => $logoDataUri,
-            'estancia' => $estancia
+            'estancia' => $estancia, 
         ];
 
-        return Pdf::view('pdfs.nota-postanestesica',[
+        $viewData = [
             'notaData' => $notaspostanestesica,
-            'medico' => $medico
-        ])
-        ->headerView('header', $headerData)
-        ->inline('notas-postanestesicas');
+            'paciente' => $paciente,
+            'medico' => $medico,
+        ];
+
+        return $this->pdfGenerator->generateStandardPdf(
+            'pdfs.nota-postanestesica',
+            $viewData,
+            $headerData,
+            'nota-postanestesica-',
+            $estancia->folio
+        );
     }
 }

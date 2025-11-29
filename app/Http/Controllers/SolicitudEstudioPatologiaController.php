@@ -14,6 +14,7 @@ use App\Models\Estancia;
 use App\Models\FormularioCatalogo;
 use App\Models\FormularioInstancia;
 use App\Models\SolicitudPatologia;
+use App\Services\VentaService;
 
 class SolicitudEstudioPatologiaController extends Controller
 {

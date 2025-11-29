@@ -18,6 +18,8 @@ import TratamientoSolucionesForm from '@/components/forms/tratamiento-soluciones
 import TratamientoMedidasGeneralesForm from '@/components/forms/tratamiento-medidas-generales-form';
 import TratamientoMedicamentosForm from '@/components/forms/tratamiento-medicamentos-form';
 import TratamientoLaboratoriosForm from '@/components/forms/tratamiento-laboratorios-form';
+import EnvioPieza from '@/components/forms/envio-piezas';
+import Generalidades from '@/components/forms/generalidades';
 
 interface Props {
     paciente: Paciente;
@@ -67,6 +69,21 @@ const NotaPostoperatoriaForm: NotaPostoperatoriaComponent= ({ paciente, estancia
     }));
 
     const { data, setData, post, patch, processing, errors } = useForm({
+
+        ta: nota?.ta || '',
+        fc: nota?.fc || '',
+        fr: nota?.fr || '',
+        temp: nota?.temp || '',
+        peso: nota?.peso || '', 
+        talla: nota?.talla || '', 
+        resumen_del_interrogatorio: nota?.resumen_del_interrogatorio || '',
+        exploracion_fisica: nota?.exploracion_fisica || '',
+        resultado_estudios: nota?.resultado_estudios || '', 
+        tratamiento: nota?.tratamiento || '', 
+        diagnostico_o_problemas_clinicos: nota?.diagnostico_o_problemas_clinicos || '',
+        plan_de_estudio: nota?.plan_de_estudio || '', 
+        pronostico: nota?.pronostico || '', 
+
         hora_inicio_operacion: nota?.hora_inicio_operacion || '',
         hora_termino_operacion: nota?.hora_termino_operacion || '',
         diagnostico_preoperatorio: nota?.diagnostico_preoperatorio || '',
@@ -78,9 +95,7 @@ const NotaPostoperatoriaForm: NotaPostoperatoriaComponent= ({ paciente, estancia
         reporte_conteo: nota?.reporte_conteo || '',
         cuantificacion_sangrado: nota?.cuantificacion_sangrado || '',
         incidentes_accidentes: nota?.incidentes_accidentes || '',
-        estudios_transoperatorios: nota?.estudios_transoperatorios || '',
         ayudantes_agregados: [] as AyudanteAgregado[],
-        envio_piezas: nota?.envio_piezas || '',
         estado_postquirurgico: nota?.estado_postquirurgico || '',
 
         manejo_dieta: nota?.manejo_dieta || '',
@@ -89,9 +104,17 @@ const NotaPostoperatoriaForm: NotaPostoperatoriaComponent= ({ paciente, estancia
         manejo_medidas_generales: nota?.manejo_medidas_generales || '',
         manejo_laboratorios: nota?.manejo_laboratorios || '',
 
-        pronostico: nota?.pronostico || '',
         hallazgos_importancia: nota?.hallazgos_importancia || '',
         transfusiones_agregadas: [] as TransfusionAgregada[],
+
+        estudio_solicitado: nota?.solicitud_patologia?.estudio_solicitado || '',
+        biopsia_pieza_quirurgica: nota?.solicitud_patologia?.biopsia_pieza_quirurgica || '',
+        revision_laminillas: nota?.solicitud_patologia?.revision_laminillas || '',
+        estudios_especiales: nota?.solicitud_patologia?.estudios_especiales || '',
+        pcr: nota?.solicitud_patologia?.pcr || '',
+        pieza_remitida: nota?.solicitud_patologia?.pieza_remitida || '',
+        datos_clinicos: nota?.solicitud_patologia?.datos_clinicos || '',
+        empresa_enviar: nota?.solicitud_patologia?.empresa_enviar || '',
     });
 
     const [localTransfusion, setLocalTransfusion] = useState({
@@ -178,61 +201,6 @@ const NotaPostoperatoriaForm: NotaPostoperatoriaComponent= ({ paciente, estancia
         }
     }
 
-
-
-    // PIEZAS PATOLOGICAS
-    const [localPatologia, setLocalPatologia] = useState({
-        estudio_solicitado: '',
-        biopsia_pieza_quirurgica: '',
-        revision_laminillas: '',
-        estudios_especiales: '',
-        pcr: '',
-        pieza_remitida: '',
-        datos_clinicos: '',
-    });
-
-    const handleAddPatologiaAlPlan = (e: React.MouseEvent<HTMLButtonElement>) => {
-        e.preventDefault();
-        
-        const { estudio_solicitado, pieza_remitida } = localPatologia;
-
-        if (!estudio_solicitado || !pieza_remitida ) {
-            Swal.fire('Campos Incompletos', 'Debe especificar al menos "Estudio solicitado" y "Pieza remitida" .', 'error');
-            return;
-        }
-
-        let texto = `• Estudio: ${estudio_solicitado}.`;
-        texto += `\n  - Pieza Remitida: ${pieza_remitida}.`;
-
-        if (localPatologia.datos_clinicos) texto += `\n - Datos clinicos: ${localPatologia.datos_clinicos}`;
-        if (localPatologia.biopsia_pieza_quirurgica) texto += `\n  - Biopsia/Pieza: ${localPatologia.biopsia_pieza_quirurgica}.`;
-        if (localPatologia.revision_laminillas) texto += `\n  - Revisión de laminillas: ${localPatologia.revision_laminillas}.`;
-        if (localPatologia.estudios_especiales) texto += `\n  - Estudios especiales: ${localPatologia.estudios_especiales}.`;
-        if (localPatologia.pcr) texto += `\n  - PCR: ${localPatologia.pcr}.`;
-
-        setData(currentData => ({
-            ...currentData,
-            envio_piezas: currentData.envio_piezas 
-                ? `${currentData.envio_piezas}\n\n${texto}` 
-                : texto
-        }));
-
-        setLocalPatologia({
-            estudio_solicitado: '',
-            biopsia_pieza_quirurgica: '',
-            revision_laminillas: '',
-            estudios_especiales: '',
-            pcr: '',
-            pieza_remitida: '',
-            datos_clinicos: '',
-        });
-    };
-
-    const handleEnvioPiezasManualChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-        setData('envio_piezas', e.target.value);
-    };
-
-
     return (
         <>
             <PacienteCard
@@ -246,7 +214,39 @@ const NotaPostoperatoriaForm: NotaPostoperatoriaComponent= ({ paciente, estancia
                 onSubmit={handleSubmit}
                 actions={<PrimaryButton type="submit" disabled={processing}>{processing ? 'Creando...' : 'Crear nota postoperatoria'}</PrimaryButton>}>
 
+                               {Object.keys(errors).length > 0 && (
+                    <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-md">
+                        <div className="flex">
+                            <div className="flex-shrink-0">
+                                <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                                </svg>
+                            </div>
+                            <div className="ml-3">
+                                <h3 className="text-sm font-medium text-red-800">
+                                    Hay {Object.keys(errors).length} errores en el formulario:
+                                </h3>
+                                <div className="mt-2 text-sm text-red-700">
+                                    <ul className="list-disc pl-5 space-y-1">
+                                        {Object.entries(errors).map(([key, message]) => (
+                                            <li key={key}>{message}</li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                <Generalidades
+                    data={data}
+                    setData={setData}
+                    errors={errors}
+                />
+
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+
                     <InputDateTime
                         id='hora_inicio'
                         name='hora_inicio'
@@ -401,16 +401,6 @@ const NotaPostoperatoriaForm: NotaPostoperatoriaComponent= ({ paciente, estancia
                         </table>
                     </div>
                 </div>
-
-                <div className="grid grid-cols-1 gap-6 mb-15 mt-15">
-                    <InputTextArea
-                        label="Estudios de servicios auxiliares de diagnóstico y tratamiento transoperatorios"
-                        value={data.estudios_transoperatorios}
-                        onChange={e => setData('estudios_transoperatorios', e.target.value)}
-                        error={errors.estudios_transoperatorios}
-                        rows={2}
-                    />
-                </div>
                 
                 {/* PERSONAL EMPLEADO */}
                 <div className="mt-6 pt-6 border-t mb-15">
@@ -524,104 +514,13 @@ const NotaPostoperatoriaForm: NotaPostoperatoriaComponent= ({ paciente, estancia
                                 onChange={value=>setData('manejo_medidas_generales',value)}
                             />
                         </div>
-
-                    <InputTextArea
-                        label="Pronóstico"
-                        value={data.pronostico}
-                        onChange={e => setData('pronostico', e.target.value)}
-                        error={errors.pronostico}
-                        rows={2}
-                        className='mb-15'
-                    />
+                    
 
                     <div className="mt-6 pt-6 border-t mb-15">
-                        <h4 className="text-md font-semibold mb-3">Envío de piezas (patología)</h4>
-                        
-                        <div className="p-4 border rounded-lg bg-gray-50 space-y-4">                         
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                <InputText
-                                    label="Estudio solicitado"
-                                    id='estudio_solicitado_local'
-                                    name='estudio_solicitado_local'
-                                    value={localPatologia.estudio_solicitado}
-                                    onChange={e => setLocalPatologia(d => ({...d, estudio_solicitado: e.target.value}))}
-                                    error={errors.envio_piezas}
-                                />
-                                <InputText
-                                    label="Biopsia o pieza quirúrgica"
-                                    id='biopsia_pieza_local'
-                                    name='biopsia_pieza_local'
-                                    value={localPatologia.biopsia_pieza_quirurgica}
-                                    onChange={e => setLocalPatologia(d => ({...d, biopsia_pieza_quirurgica: e.target.value}))}
-                                />
-                                <InputText
-                                    label="Revisión de laminillas"
-                                    id='laminillas_local'
-                                    name='laminillas_local'
-                                    value={localPatologia.revision_laminillas}
-                                    onChange={e => setLocalPatologia(d => ({...d, revision_laminillas: e.target.value}))}
-                                />
-                            </div>
-
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                <InputText
-                                    label="Estudios especiales"
-                                    id='estudios_especiales_local'
-                                    name='estudios_especiales_local'
-                                    value={localPatologia.estudios_especiales}
-                                    onChange={e => setLocalPatologia(d => ({...d, estudios_especiales: e.target.value}))}
-                                />
-                                <InputText
-                                    label="PCR"
-                                    id='pcr_local'
-                                    name='pcr_local'
-                                    value={localPatologia.pcr}
-                                    onChange={e => setLocalPatologia(d => ({...d, pcr: e.target.value}))}
-                                />
-                                <InputText
-                                    label="Pieza remitida"
-                                    id='pieza_remitida_local'
-                                    name='pieza_remitida_local'
-                                    value={localPatologia.pieza_remitida}
-                                    onChange={e => setLocalPatologia(d => ({...d, pieza_remitida: e.target.value}))}
-                                    error={errors.envio_piezas}
-                                />
-
-                                {/*
-                                <InputText
-                                    label='Empresa a enviar la pieza patologica'
-                                    id='empresa_enviar'
-                                    name='empresa_enviar'
-                                    value={localPatologia.empresa_enviar}
-                                    onChange={e => setLocalPatologia}
-                                />
-                                */}
-                            </div>
-
-                            <InputTextArea
-                                label="Datos clínicos (anotar registro previo si existe)"
-                                id="datos_clinicos_local"
-                                name="datos_clinicos_local"
-                                value={localPatologia.datos_clinicos}
-                                onChange={e => setLocalPatologia(d => ({...d, datos_clinicos: e.target.value}))}
-                                error={errors.envio_piezas}
-                                rows={3}
-                            />
-
-                            <div className="flex justify-end">
-                                <PrimaryButton type="button" onClick={handleAddPatologiaAlPlan}>
-                                    + Agregar al plan de envío
-                                </PrimaryButton>
-                            </div>
-                        </div>
-
-                        <InputTextArea
-                            label="Plan de envío de piezas"
-                            value={data.envio_piezas}
-                            onChange={handleEnvioPiezasManualChange}
-                            error={errors.envio_piezas}
-                            rows={6}
-                            className="mt-2"
+                        <EnvioPieza
+                            data={data}
+                            setData={setData}
+                            errors={errors}
                         />
                     </div>
 
