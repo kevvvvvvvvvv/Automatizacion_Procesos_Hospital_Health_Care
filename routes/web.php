@@ -24,6 +24,7 @@ use App\Http\Controllers\HojaMedicamentoController;
 use App\Http\Controllers\TrasladoController;
 use App\Http\Controllers\AplicacionMedicamentoController;
 use App\Http\Controllers\FormularioNotaPostoperatorioController;
+use App\Http\Controllers\HojaEnfemeriaQuirofanoController;
 use App\Http\Controllers\SolicitudEstudioController;
 use App\Http\Controllers\SolicitudEstudioPatologiaController;
 use App\Http\Controllers\PreoperatoriaController;
@@ -37,21 +38,21 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;
 
-     Route::get('/', function () {
-         return Inertia::render('auth/login');
-     })->name('home');
+Route::get('/', function () {
+    return Inertia::render('auth/login');
+})->name('home');
 
-     Route::middleware(['auth', 'verified'])->group(function () {
-         Route::get('dashboard', function () {
-             return Inertia::render('dashboard-healthcare');
-         })->name('dashboard');
-     });
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('dashboard', function () {
+        return Inertia::render('dashboard-healthcare');
+    })->name('dashboard');
+});
 
-     Route::post('/cargos', [CargoController::class, 'store'])->name('cargos.store');
-     Route::resource('habitaciones', HabitacionController::class)->middleware('auth');
-     Route::resource('producto-servicios', ProductoServicioController::class)->middleware('auth');
-     Route::resource('pacientes', PacienteController::class)->middleware('auth');
-     Route::resource('doctores', DoctorController::class)->middleware('auth');  
+Route::post('/cargos', [CargoController::class, 'store'])->name('cargos.store');
+Route::resource('habitaciones', HabitacionController::class)->middleware('auth');
+Route::resource('producto-servicios', ProductoServicioController::class)->middleware('auth');
+Route::resource('pacientes', PacienteController::class)->middleware('auth');
+Route::resource('doctores', DoctorController::class)->middleware('auth');  
 
 Route::resource('pacientes.responsable', FamiliarResponsableController::class);
 Route::resource('pacientes.estancias', EstanciaController::class)->shallow()->middleware('auth');
@@ -65,23 +66,14 @@ Route::resource('pacientes.estancias.traslados', TrasladoController::class)->sha
 Route::resource('pacientes.estancias.preoperatorias', PreoperatoriaController::class)->shallow()->middleware('auth');
 Route::resource('pacientes.estancias.notasurgencias', NotaUrgenciaController::class)->shallow()->middleware('auth');
 Route::resource('pacientes.estancias.notaspostanestesicas',NotaPostanestesicaController::class)->shallow()->middleware('auth');
-
-
-Route::post('hojasterapiasiv/{hojasenfermeria}',[FormularioHojaTerapiaIVController::class,'store'])->name('hojasterapiasiv.store');
-Route::patch('hojasterapiasiv/{hojasenfermeria}/{hojasterapiasiv}',[FormularioHojaTerapiaIVController::class,'update'])->name('hojasterapiasiv.update');
-Route::resource('pacientes.responsable', FamiliarResponsableController::class);
-Route::resource('pacientes.estancias', EstanciaController::class)->shallow()->middleware('auth');
-Route::resource('pacientes.estancias.hojasfrontales', FormularioHojaFrontalController::class)->shallow()->parameters(['hojasfrontales' => 'hojaFrontal'])->middleware('auth');
-Route::resource('pacientes.estancias.historiasclinicas', FormularioHistoriaClinicaController::class)->shallow()->middleware('auth');
-Route::resource('pacientes.estancias.hojasenfermerias',FormularioHojaEnfermeriaController::class)->shallow()-> middleware('auth');
-Route::resource('pacientes.estancias.ventas', VentaController::class)->shallow();
-Route::resource('pacientes.estancias.ventas.detallesventas',DetalleVentaController::class)->shallow()->middleware ('auth');
-Route::resource('pacientes.estancias.interconsultas.honorarios', HonorarioController::class)->shallow();
-Route::resource('pacientes.estancias.traslados', TrasladoController::class)->shallow()->middleware('auth');
 Route::resource('pacientes.estancias.notaspostoperatorias', FormularioNotaPostoperatorioController::class)->shallow()->middleware('auth');
 Route::resource('pacientes.estancias.notasegresos', NotasEgresoController::class)->shallow()->middleware('auth');
 Route::resource('pacientes.estancias.notasevoluciones', NotaEvolucionController::class)->shallow()->middleware('auth');
 Route::resource('pacientes.estancias.notaspreanestesicas', NotaPreAnestesicaController::class)->shallow()->middleware('auth');
+Route::resource('pacientes.estancias.hojasenfermeriasquirofanos',HojaEnfemeriaQuirofanoController::class)->shallow()->middleware('auth');
+
+Route::post('hojasterapiasiv/{hojasenfermeria}',[FormularioHojaTerapiaIVController::class,'store'])->name('hojasterapiasiv.store');
+Route::patch('hojasterapiasiv/{hojasenfermeria}/{hojasterapiasiv}',[FormularioHojaTerapiaIVController::class,'update'])->name('hojasterapiasiv.update');
 
 Route::prefix('pacientes/{paciente}/estancias/{estancia}')->group(function () {
     Route::get('notasegresos/create', [NotasEgresoController::class, 'create'])->name('pacientes.estancias.notasegresos.create');
@@ -144,15 +136,13 @@ Route::get('pacientes/{paciente}/estancias/{estancia}/interconsultas/{interconsu
 ->name('pacientes.estancias.interconsultas.show')
 ->middleware('auth');
 
-Route::put('/doctores/{doctor}', [DoctorController::class, 'update'])->name('doctores.update');
-
 //PDFs
 Route::get('/hojasfrontales/{hojafrontal}/pdf', [FormularioHojaFrontalController::class, 'generarPDF'])
     ->name('hojasfrontales.pdf')
     ->middleware('auth');
 
 Route::get('/historiasclinicas/{historiaclinica}/pdf', [FormularioHistoriaClinicaController::class, 'generarPDF'])
-    ->name('hojasfrontales.pdf')
+    ->name('historiasclinicas.pdf')
     ->middleware('auth');
 
 Route::get('/interconsultas/{interconsulta}/pdf', [InterconsultaController::class, 'generarPDF'])
@@ -203,26 +193,31 @@ Route::get('/notaspreanestesicas/{notaspreanestesica}/pdf',[NotaPreAnestesicaCon
 Route::get('/notaspostanestesicas/{notaspostanestesica}/pdf', [NotaPostanestesicaController::class, 'generarPDF'])
     ->name('notaspostanestesicas.pdf')
     ->middleware('auth');
+
 Route::get('/notasevoluciones/{notasevolucione}/pdf', [NotaEvolucionController::class, 'generarPDf'])
     ->name('notasevoluciones.pdf')
     ->middleware('auth');
 
-     // Farmacia
-     Route::get('/farmacia/solicitudes/{hojaenfermeria}', [FarmaciaController::class, 'show'])
-         ->name('farmacia.solicitud.show');
-     Route::patch('/medicamentos/{medicamento}/actualizar-estado', [HojaMedicamentoController::class, 'actualizarEstado'])
-         ->name('medicamentos.actualizar-estado')
-         ->middleware('auth');
+Route::get('/hojasenfermeriasquirofanos/{hojasenfermeriasquirofano}/pdf', [HojaEnfemeriaQuirofanoController::class, 'generarPDF'])
+    ->name('hojasenfermeriasquirofanos.pdf')
+    ->middleware('auth');
 
-     // Notificaciones
-     Route::post('/notifications/mark-all-as-read', function () {
-         Auth::user()->unreadNotifications->markAsRead();
-         return redirect()->back();
-     })->name('notifications.mark-all-as-read')->middleware('auth');
+// Farmacia
+Route::get('/farmacia/solicitudes/{hojaenfermeria}', [FarmaciaController::class, 'show'])
+    ->name('farmacia.solicitud.show');
+Route::patch('/medicamentos/{medicamento}/actualizar-estado', [HojaMedicamentoController::class, 'actualizarEstado'])
+    ->name('medicamentos.actualizar-estado')
+    ->middleware('auth');
 
-     // Historial
-     Route::get('/historial', [HistoryController::class, 'index'])->name('historiales.index')->middleware('auth');
+// Notificaciones
+Route::post('/notifications/mark-all-as-read', function () {
+    Auth::user()->unreadNotifications->markAsRead();
+    return redirect()->back();
+})->name('notifications.mark-all-as-read')->middleware('auth');
 
-     require __DIR__.'/settings.php';
-     require __DIR__.'/auth.php';
+// Historial
+Route::get('/historial', [HistoryController::class, 'index'])->name('historiales.index')->middleware('auth');
+
+require __DIR__.'/settings.php';
+require __DIR__.'/auth.php';
       
