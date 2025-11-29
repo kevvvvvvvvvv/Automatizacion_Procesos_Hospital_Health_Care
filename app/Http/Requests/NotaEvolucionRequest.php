@@ -34,10 +34,12 @@ class NotaEvolucionRequest extends FormRequest
             'talla' => 'required|numeric|min:0|max:3', // Talla en m
 
             // Otros campos
-            'resultados_relevantes' => 'nullable|string|max:1000',
-            'diagnostico_problema_clinico' => 'required|string|max:1000',
-            'pronostico' => 'required|string|max:500',
-
+             'resultado_estudios' => ['nullable', 'string'],
+            'resumen_del_interrogatorio' => ['nullable', 'string'],
+            'exploracion_fisica' => ['nullable', 'string'],
+            'diagnostico_o_problemas_clinicos' => ['nullable', 'string'],
+            'plan_de_estudio' => ['nullable', 'string'],
+             'pronostico' => ['nullable', 'string'],
             // Tratamiento e indicaciones médicas (como strings concatenados)
             'manejo_dieta' => 'nullable|string|max:2000',
             'manejo_soluciones' => 'nullable|string|max:2000',
@@ -55,6 +57,22 @@ class NotaEvolucionRequest extends FormRequest
     public function messages(): array
     {
         return [
+             // Signos vitales
+            'ta.string' => 'La tensión arterial debe ser texto.',
+            'fc.numeric' => 'La frecuencia cardíaca debe ser número.',
+            'fr.numeric' => 'La frecuencia respiratoria debe ser número.',
+            'peso.numeric' => 'El peso debe ser número.',
+            'talla.numeric'=> 'La talla debe ser número.',
+            'temp.numeric' => 'La temperatura debe ser número.',
+
+            // Estudios
+            'resultado_estudios.string' => 'El resultado de estudios debe ser texto.',
+            'resumen_del_interrogatorio.string' => 'El resumen debe ser texto.',
+            'exploracion_fisica.string' => 'La exploración física debe ser texto.',
+            'diagnostico_o_problemas_clinicos.string' => 'El diagnóstico debe ser texto.',
+            'plan_de_estudio.string' => 'El plan de estudio debe ser texto.',
+            'pronostico' => 'El pronostico debe ser texto',
+
             'evolucion_actualizacion.required' => 'La evolución y actualización es obligatoria.',
             'ta.required' => 'La tensión arterial es obligatoria.',
             'fc.required' => 'La frecuencia cardíaca es obligatoria.',
