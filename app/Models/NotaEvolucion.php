@@ -22,6 +22,7 @@ class NotaEvolucion extends Model
         'exploracion_fisica',
         'diagnostico_o_problemas_clinicos',
         'plan_de_estudio',
+        'tratamiento',
 
         // Pronóstico
         'pronostico',

@@ -25,6 +25,7 @@ return new class extends Migration
             $table->decimal('talla', 4, 2)->nullable();
             $table->decimal('temp', 4, 2)->nullable();
 
+            $table->text('tratamiento')->nullable();
             $table->text('resultado_estudios')->nullable();
             $table->text('resumen_del_interrogatorio')->nullable();
             $table->text('exploracion_fisica')->nullable();

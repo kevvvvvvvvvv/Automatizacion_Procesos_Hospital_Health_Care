@@ -32,7 +32,7 @@ class PreoperatoriaRequest extends FormRequest
 
             // --- Pronóstico ---
             'pronostico' => ['nullable', 'string'],
-
+            'tratamiento' => ['nullable', 'string'],
             // --- Información Preoperatoria ---
             'fecha_cirugia' => ['required', 'date'],
             'diagnostico_preoperatorio' => ['required', 'string', 'max:255'],
@@ -61,8 +61,9 @@ class PreoperatoriaRequest extends FormRequest
             'exploracion_fisica.string' => 'La exploración física debe ser texto.',
             'diagnostico_o_problemas_clinicos.string' => 'El diagnóstico debe ser texto.',
             'plan_de_estudio.string' => 'El plan de estudio debe ser texto.',
-            'pronostico' => 'El pronostico debe ser texto',
-
+            'pronostico.string' => 'El pronostico debe ser texto',
+            'tratamiento.string' => 'El tratmiento debe ser texto.',
+            
             // Preoperatoria
             'fecha_cirugia.required' => 'La fecha de cirugía es obligatoria.',
             'fecha_cirugia.date' => 'La fecha de cirugía debe tener un formato válido.',

@@ -15,7 +15,7 @@ class Interconsulta extends Model
        'criterio_diagnostico', 'plan_de_estudio', 'sugerencia_diagnostica',
        'motivo_de_la_atencion_o_interconsulta', 'resumen_del_interrogatorio',
        'exploracion_fisica', 'estado_mental', 'resultados_relevantes_del_estudio_diagnostico',
-       'diagnostico_o_problemas_clinicos', 'tratamiento_y_pronostico',
+       'diagnostico_o_problemas_clinicos', 'tratamiento','pronostico',
    ];
 
 

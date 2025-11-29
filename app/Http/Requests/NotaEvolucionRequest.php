@@ -36,6 +36,7 @@ class NotaEvolucionRequest extends FormRequest
             // Otros campos
              'resultado_estudios' => ['nullable', 'string'],
             'resumen_del_interrogatorio' => ['nullable', 'string'],
+            'tratamiento' => ['nullable', 'string'],
             'exploracion_fisica' => ['nullable', 'string'],
             'diagnostico_o_problemas_clinicos' => ['nullable', 'string'],
             'plan_de_estudio' => ['nullable', 'string'],
@@ -68,6 +69,7 @@ class NotaEvolucionRequest extends FormRequest
             // Estudios
             'resultado_estudios.string' => 'El resultado de estudios debe ser texto.',
             'resumen_del_interrogatorio.string' => 'El resumen debe ser texto.',
+            'tratamiento.string' => 'El tratamiento debe ser texto',
             'exploracion_fisica.string' => 'La exploración física debe ser texto.',
             'diagnostico_o_problemas_clinicos.string' => 'El diagnóstico debe ser texto.',
             'plan_de_estudio.string' => 'El plan de estudio debe ser texto.',
@@ -83,7 +85,7 @@ class NotaEvolucionRequest extends FormRequest
             'talla.required' => 'La talla es obligatoria.',
             'diagnostico_problema_clinico.required' => 'El diagnóstico y problema clínico es obligatorio.',
             'pronostico.required' => 'El pronóstico es obligatorio.',
-            // Agrega más si necesitas para campos específicos
+            'tratamiento' => 'El tratamiento es obligatorio',
         ];
     }
 
