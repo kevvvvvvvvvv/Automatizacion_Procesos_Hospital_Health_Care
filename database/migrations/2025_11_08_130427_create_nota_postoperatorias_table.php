@@ -19,12 +19,6 @@ return new class extends Migration
                 ->on('formulario_instancias')
                 ->onDelete('cascade');
 
-            $table->unsignedBigInteger('id');
-            $table->primary('id');
-            $table->foreign('id')
-                ->references('id')
-                ->on('formulario_instancias')
-                ->onDelete('cascade'); 
             $table->string('ta');
             $table->integer('fc');
             $table->integer('fr');
@@ -51,7 +45,6 @@ return new class extends Migration
             $table->text('reporte_conteo');
             $table->text('incidentes_accidentes');
             $table->text('cuantificacion_sangrado');
-            $table->text('estudios_transoperatorios');
             
             $table->text('estado_postquirurgico');
             $table->text('manejo_dieta')->nullable();
@@ -59,7 +52,6 @@ return new class extends Migration
             $table->text('manejo_medicamentos')->nullable();
             $table->text('manejo_medidas_generales')->nullable();
             $table->text('manejo_laboratorios')->nullable();
-            $table->text('pronostico');
             $table->text('hallazgos_importancia');
             
             $table->foreignId('solicitud_patologia_id')

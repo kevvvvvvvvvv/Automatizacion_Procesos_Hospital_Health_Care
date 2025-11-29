@@ -22,6 +22,21 @@ class NotaPostoperatoriaRequest extends FormRequest
     public function rules(): array
     {
         return [
+            //Generalidades
+            'ta'    => 'required|string|max:20',    // Tensión Arterial
+            'fc'    => 'required|integer|min:0',    // Frecuencia Cardíaca
+            'fr'    => 'required|integer|min:0',    // Frecuencia Respiratoria
+            'temp'  => 'required|numeric|between:30,45', // Temperatura
+            'peso'  => 'required|numeric|min:0',    // Peso
+            'talla' => 'required|integer|min:0',    // Talla 
+            'resumen_del_interrogatorio' => 'required|string',
+            'exploracion_fisica'         => 'required|string',
+            'resultado_estudios'               => 'nullable|string',
+            'tratamiento'                      => 'nullable|string',
+            'diagnostico_o_problemas_clinicos' => 'required|string',
+            'plan_de_estudio'                  => 'required|string',
+            'pronostico'                       => 'required|string',
+
             // Tiempos
             'hora_inicio_operacion' => 'required|date',
             'hora_termino_operacion' => 'required|date|after_or_equal:hora_inicio_operacion',
@@ -40,7 +55,6 @@ class NotaPostoperatoriaRequest extends FormRequest
             'reporte_conteo' => 'required|string',
             'incidentes_accidentes' => 'required|string',
             'cuantificacion_sangrado' => 'required|string',
-            'estudios_transoperatorios' => 'required|string',
 
             'manejo_dieta' => 'nullable|string',
             'manejo_soluciones' => 'nullable|string',
@@ -61,6 +75,16 @@ class NotaPostoperatoriaRequest extends FormRequest
             'transfusiones_agregadas' => 'nullable|array',
             'transfusiones_agregadas.*.tipo_transfusion' => 'required|string|max:255',
             'transfusiones_agregadas.*.cantidad' => 'required|string|max:255',
+
+            //Pieza patologica
+            'estudio_solicitado'       => 'nullable|string|max:255',
+            'biopsia_pieza_quirurgica' => 'nullable|string|max:255',
+            'revision_laminillas'      => 'nullable|string|max:255',
+            'estudios_especiales'      => 'nullable|string|max:255',
+            'pcr'                      => 'nullable|string|max:255',
+            'pieza_remitida'           => 'nullable|string|max:255',
+            'datos_clinicos'           => 'nullable|string',
+            'empresa_enviar'           => 'nullable|string|max:255',
         ];
     }
 

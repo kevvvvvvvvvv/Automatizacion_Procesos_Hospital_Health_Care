@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class SolicitudPatologia extends Model
 {
     protected $table = 'solicitud_patologias';
+    public $incrementing = false;
 
     protected $fillable = [
         'id',
@@ -20,6 +21,7 @@ class SolicitudPatologia extends Model
         'pcr',
         'pieza_remitida',
         'datos_clinicos',
+        'empresa_enviar',
         'resultados',
     ];
 
