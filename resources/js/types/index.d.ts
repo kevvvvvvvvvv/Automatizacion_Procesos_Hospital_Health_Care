@@ -599,6 +599,20 @@ export interface notasEgresos{
 export interface NotaPostoperatoria {
     id: number;
 
+    ta: string;
+    fc: number ;
+    fr: number ;
+    temp: number ;
+    peso: number ;
+    talla: number ;
+    resumen_del_interrogatorio: string;
+    exploracion_fisica: string;
+    resultado_estudios: string;
+    tratamiento: string;
+    diagnostico_o_problemas_clinicos: string;
+    plan_de_estudio: string;
+    pronostico: string
+
     hora_inicio_operacion: string; 
     hora_termino_operacion: string; 
 
@@ -621,9 +635,9 @@ export interface NotaPostoperatoria {
     manejo_medidas_generales: string;
     manejo_laboratorios: string;
 
-    pronostico: string;
-    envio_piezas: string;
     hallazgos_importancia: string;
+
+    solicitud_patologia: SolicitudPatologia;
 
     created_at: string; 
     updated_at: string; 
