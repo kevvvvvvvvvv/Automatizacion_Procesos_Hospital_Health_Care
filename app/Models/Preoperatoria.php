@@ -10,6 +10,10 @@ class Preoperatoria extends Model
 
     protected $table = 'preoperatorios';
 
+    protected $primaryKey = 'id';
+    public $incrementing = false;
+    protected $keyType = 'int';
+
     protected $fillable = [
         'id',
 
@@ -38,7 +42,6 @@ class Preoperatoria extends Model
         'plan_quirurgico',
         'tipo_intervencion_quirurgica',
         'riesgo_quirurgico',
-        'observaciones_riesgo',
         'cuidados_plan_preoperatorios',
     ];
 
@@ -47,3 +50,4 @@ class Preoperatoria extends Model
         return $this->belongsTo(FormularioInstancia::class, 'id', 'id');
     }
 }
+
