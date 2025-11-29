@@ -14,17 +14,28 @@ use App\Models\FormularioInstancia;
 use App\Models\NotaPostoperatoria;
 use App\Models\PersonalEmpleado;
 use App\Models\ProductoServicio;
+use App\Models\SolicitudPatologia;
 use App\Models\TransfusionRealizada;
 use App\Models\User;
+use App\Models\Venta;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Arr;
 use Auth;
 use Spatie\LaravelPdf\Facades\Pdf;
+use App\Services\PdfGeneratorService;
+use App\Services\VentaService; 
 
 class FormularioNotaPostoperatorioController extends Controller
 {
+    protected $pdfGenerator;
+
+    public function __construct(PdfGeneratorService $pdfGenerator)
+    {
+        return $this->pdfGenerator = $pdfGenerator;
+    }
+
     public function show()
     {
 
@@ -47,47 +58,96 @@ class FormularioNotaPostoperatorioController extends Controller
         ]);
     }
 
-    public function store(NotaPostoperatoriaRequest $request, Paciente $paciente, Estancia $estancia)
+    public function store(NotaPostoperatoriaRequest $request, Paciente $paciente, Estancia $estancia, VentaService $ventaService)
     {
         $validatedData = $request->validated();
+
+        $camposPatologia = [
+            'estudio_solicitado', 'biopsia_pieza_quirurgica', 'revision_laminillas',
+            'estudios_especiales', 'pcr', 'pieza_remitida', 'datos_clinicos', 'empresa_enviar'
+        ];
+
         DB::beginTransaction();
         try{
-            $formulario = FormularioInstancia::create([
+
+            $solicitudPatologiaId = null;
+            $datosPatologia = Arr::only($validatedData, $camposPatologia);
+            
+            if (!empty(array_filter($datosPatologia))) {
+                
+                $formPatologia = FormularioInstancia::create([
+                    'fecha_hora' => now(),
+                    'estancia_id' => $estancia->id,
+                    'formulario_catalogo_id' => FormularioCatalogo::ID_SOLICITUD_PATOLOGIA,
+                    'user_id' => Auth::id(),
+                ]);
+
+                $solicitud = SolicitudPatologia::create([
+                    'id' => $formPatologia->id,
+                    'user_solicita_id' => Auth::id(),
+                    'fecha_estudio' => now(), 
+                    ...$datosPatologia
+                ]);
+
+                $idPatologia = ProductoServicio::select('id')
+                                                ->where('codigo_prestacion','85121801_01');
+
+                $itemParaVenta = [
+                    'id' => $idPatologia,
+                    'cantidad' => 1,
+                ]; 
+
+                $solicitudPatologiaId = $solicitud->id;
+
+                $ventaExistente = Venta::where('estancia_id', $estancia->id)
+                                        ->where('estado', Venta::ESTADO_PENDIENTE)
+                                        ->first();
+                
+                if ($ventaExistente) {
+                    $ventaService->addItemToVenta($ventaExistente, $itemParaVenta);
+                } else {
+                    $ventaService->crearVenta([$itemParaVenta], $estancia->id, Auth::id());
+                }                                        
+            }
+
+            $formNota = FormularioInstancia::create([
                 'fecha_hora' => now(),
                 'estancia_id' => $estancia->id,
-                'formulario_catalogo_id' => FormularioCatalogo::ID_NOTA_POSTOPERATOIRA,
+                'formulario_catalogo_id' => FormularioCatalogo::ID_NOTA_POSTOPERATOIRA, 
                 'user_id' => Auth::id(),
             ]);
 
+            $datosNota = Arr::except($validatedData, array_merge(
+                $camposPatologia, 
+                ['ayudantes_agregados', 'transfusiones_agregadas']
+            ));
+
             $nota = NotaPostoperatoria::create([
-                'id' => $formulario->id,
-                'user_id' => Auth::id(), 
-                ...Arr::except($validatedData, [
-                    'ayudantes_agregados', 
-                    'transfusiones_agregadas'
-                ])
+                'id' => $formNota->id,
+                'user_id' => Auth::id(),
+                'solicitud_patologia_id' => $solicitudPatologiaId,
+                ...$datosNota
             ]);
 
             if (!empty($validatedData['ayudantes_agregados'])) {
-                foreach ($validatedData['ayudantes_agregados'] as $ayudante) {
-                    $nota->personalEmpleados()->create([ 
-                        'user_id' => $ayudante['ayudante_id'],
-                        'cargo' => $ayudante['cargo'],
-                    ]);
-                }
+                $ayudantes = array_map(function ($item) {
+                    return [
+                        'user_id' => $item['ayudante_id'],
+                        'cargo' => $item['cargo'],
+                    ];
+                }, $validatedData['ayudantes_agregados']);
+                
+                $nota->personalEmpleados()->createMany($ayudantes);
             }
 
             if (!empty($validatedData['transfusiones_agregadas'])) {
-                foreach ($validatedData['transfusiones_agregadas'] as $transfusion) {
-                    $nota->transfusiones()->create([
-                        'tipo_transfusion' => $transfusion['tipo_transfusion'], 
-                        'cantidad' => $transfusion['cantidad'],
-                    ]);
-                }
+                $nota->transfusiones()->createMany($validatedData['transfusiones_agregadas']);
             }
 
             DB::commit();
-            return Redirect::route('estancias.show', $estancia->id)->with('success','Se ha creado la nota postoperatoria exitosamente.');
+            
+            return Redirect::route('estancias.show', $estancia->id)
+                ->with('success', 'Se ha creado la nota postoperatoria exitosamente.');
         } catch(\Exception $e) {
             DB::rollBack();
             Log::error('Error al crear nota postoperatoria: ' . $e->getMessage());
@@ -113,26 +173,24 @@ class FormularioNotaPostoperatorioController extends Controller
         $medico = $notaspostoperatoria->formularioInstancia->user;
         $estancia = $notaspostoperatoria->formularioInstancia->estancia;
 
-        $logoDataUri = '';
-        $imagePath = public_path('images/Logo_HC_2.png');
-        if (file_exists($imagePath)) {
-            $imageData = base64_encode(file_get_contents($imagePath));
-            $imageMime = mime_content_type($imagePath);
-            $logoDataUri = 'data:' . $imageMime . ';base64,' . $imageData;
-        }
-
         $headerData = [
             'historiaclinica' => $notaspostoperatoria,
-            'paciente' => $paciente,
-            'logoDataUri' => $logoDataUri,
-            'estancia' => $estancia
+            'estancia' => $estancia,
+            'paciente' => $paciente
         ];
 
-        return Pdf::view('pdfs.nota-postoperatoria',[
+        $viewData = [
             'notaData' => $notaspostoperatoria,
-            'medico' => $medico
-        ])
-        ->headerView('header', $headerData)
-        ->inline('notas-postoperatorias');
+            'paciente' => $paciente,
+            'medico'   => $medico,
+        ];
+
+        return $this->pdfGenerator->generateStandardPdf(
+            'pdfs.nota-postoperatoria',
+            $viewData,
+            $headerData,
+            'nota-postoperatoria-',
+            $estancia->folio,
+        );
     }
 }

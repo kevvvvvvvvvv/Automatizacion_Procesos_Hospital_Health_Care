@@ -70,8 +70,13 @@ class ProductoServicioSeeder extends Seeder
             'cantidad' => null,
         ]);
 
-
-
-
+        ProductoServicio::create([
+            'tipo' => 'SERVICIOS',
+            'subtipo' => 'ESTUDIOS',
+            'codigo_prestacion' => '85121801_01',
+            'nombre_prestacion' => 'SOLICITUD PATOLOGÍA',
+            'importe' => 0.1,
+            'cantidad' => null,
+        ]);
     }
 }

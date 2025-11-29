@@ -14,6 +14,21 @@ class NotaPostoperatoria extends Model
 
     protected $fillable = [
         'id',
+
+        'ta',   
+        'fc',   
+        'fr',    
+        'temp', 
+        'peso',   
+        'talla',  
+        'resumen_del_interrogatorio',
+        'exploracion_fisica',
+        'resultado_estudios',
+        'tratamiento',
+        'diagnostico_o_problemas_clinicos',
+        'plan_de_estudio',
+        'pronostico',
+
         'hora_inicio_operacion',
         'hora_termino_operacion',
         'diagnostico_preoperatorio', 
@@ -25,7 +40,6 @@ class NotaPostoperatoria extends Model
         'reporte_conteo',
         'incidentes_accidentes',
         'cuantificacion_sangrado',
-        'estudios_transoperatorios',
         'estado_postquirurgico',
 
         'manejo_dieta',
