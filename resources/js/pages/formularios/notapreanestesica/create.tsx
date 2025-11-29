@@ -5,7 +5,7 @@ import FormLayout from '@/components/form-layout';
 import PrimaryButton from '@/components/ui/primary-button';
 import PacienteCard from '@/components/paciente-card';
 import Generalidades from '@/components/forms/generalidades';
-import { Paciente, Estancia, NotaPreAnestesica } from '@/types';
+import { Paciente, Estancia } from '@/types';
 import { route } from 'ziggy-js';
 
 interface Props {
@@ -13,27 +13,62 @@ interface Props {
   estancia: Estancia;
 }
 
+interface NotaPreanestesicaFormData {
+  ta: string;
+  fc: string;
+  fr: string;
+  peso: string;
+  talla: string;
+  temp: string;
+  resumen_del_interrogatorio: string;
+  exploracion_fisica: string;
+  diagnostico_o_problemas_clinicos: string;
+  plan_de_estudio: string;
+  pronostico: string;
+  plan_estudios_tratamiento: string;
+  evaluacion_clinica: string;
+  plan_anestesico: string;
+  valoracion_riesgos: string;
+  indicaciones_recomendaciones: string;
+}
 
 const CreateNotaPreanestesica: React.FC<Props> = ({ paciente, estancia }) => {
-  const { data, setData, errors, post, processing } =
-    useForm({
-      ta: '',
-      fc: '',
-      fr: '',
-      peso: '',
-      talla: '',
-      temp: '',
-      resumen_del_interrogatorio: '',
-      exploracion_fisica: '',
-      diagnostico_o_problemas_clinicos: '',
-      plan_de_estudio: '',
-      pronostico: '',
-      plan_estudios_tratamiento: '',
-      evaluacion_clinica: '',
-      plan_anestesico: '',
-      valoracion_riesgos: '',
-      indicaciones_recomendaciones: '',
-    });
+  const {
+    data,
+    setData,
+    errors,
+    post,
+    processing,
+  } = useForm<NotaPreanestesicaFormData>({
+    ta: '',
+    fc: '',
+    fr: '',
+    peso: '',
+    talla: '',
+    temp: '',
+    resumen_del_interrogatorio: '',
+    exploracion_fisica: '',
+    diagnostico_o_problemas_clinicos: '',
+    plan_de_estudio: '',
+    pronostico: '',
+    plan_estudios_tratamiento: '',
+    evaluacion_clinica: '',
+    plan_anestesico: '',
+    valoracion_riesgos: '',
+    indicaciones_recomendaciones: '',
+  });
+  {Object.keys(errors).length > 0 && (
+  <div className="mb-4 rounded-md bg-red-50 p-4">
+    <h3 className="text-sm font-semibold text-red-800">
+      Corrige los siguientes campos:
+    </h3>
+    <ul className="mt-2 list-disc pl-5 text-sm text-red-700">
+      {Object.entries(errors).map(([field, message]) => (
+        <li key={field}>{message as string}</li>
+      ))}
+    </ul>
+  </div>
+  )}
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -46,36 +81,51 @@ const CreateNotaPreanestesica: React.FC<Props> = ({ paciente, estancia }) => {
     );
   };
 
-  const labelClasses =
-    'block text-sm font-medium text-gray-700 mb-1';
+  const labelClasses = 'block text-sm font-medium text-gray-700 mb-1';
   const textAreaClasses =
     'w-full rounded-md shadow-sm border px-3 py-2 focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500';
 
   return (
-    <><MainLayout>
-        
-          <PacienteCard paciente={paciente} estancia={estancia} />
-       
+    <>
       <Head title="Nota Preanestésica" />
-    
-      <FormLayout
-        title="Nota Preanestésica"
-        onSubmit={handleSubmit}
-        actions={<PrimaryButton type="submit" disabled={processing}>{processing ? 'Creando...': 'Crear nota pre-anestesica'}</PrimaryButton>} 
-        >
-        
 
-        
-          
+      <MainLayout>
+        <PacienteCard paciente={paciente} estancia={estancia} />
+
+        <FormLayout
+          title="Nota Preanestésica"
+          onSubmit={handleSubmit}
+          actions={
+            <PrimaryButton type="submit" disabled={processing}>
+              {processing ? 'Creando...' : 'Crear nota pre-anestésica'}
+            </PrimaryButton>
+          }
+        >
+          {/* Bloque general de errores */}
+          {Object.keys(errors).length > 0 && (
+            <div className="col-span-full mb-4 rounded-md bg-red-50 p-4">
+              <h3 className="text-sm font-semibold text-red-800">
+                Por favor corrige los siguientes campos:
+              </h3>
+              <ul className="mt-2 list-disc pl-5 text-sm text-red-700">
+                {Object.entries(errors).map(([field, message]) => (
+                  <li key={field}>{message as string}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {/* Generalidades (signos vitales, resumen, etc.) */}
           <Generalidades data={data} setData={setData} errors={errors} />
 
-          
+          {/* Plan de estudios / tratamiento */}
           <div className="col-span-full">
             <label
               htmlFor="plan_estudios_tratamiento"
               className={labelClasses}
             >
-             Plan de estudio y/o Tratamiento (indicaciones médicas, vía, dosis, periodicidad) 
+              Plan de estudio y/o Tratamiento (indicaciones médicas, vía,
+              dosis, periodicidad)
             </label>
             <textarea
               id="plan_estudios_tratamiento"
@@ -99,6 +149,7 @@ const CreateNotaPreanestesica: React.FC<Props> = ({ paciente, estancia }) => {
             )}
           </div>
 
+          {/* Evaluación clínica */}
           <div className="col-span-full">
             <label htmlFor="evaluacion_clinica" className={labelClasses}>
               Evaluación clínica del paciente
@@ -125,9 +176,11 @@ const CreateNotaPreanestesica: React.FC<Props> = ({ paciente, estancia }) => {
             )}
           </div>
 
+          {/* Plan anestésico */}
           <div className="col-span-full">
             <label htmlFor="plan_anestesico" className={labelClasses}>
-              Plan anestésico, de acuerdo con las condiciones del paciente y la intervención quirúrgica planeada
+              Plan anestésico, de acuerdo con las condiciones del paciente y la
+              intervención quirúrgica planeada
             </label>
             <textarea
               id="plan_anestesico"
@@ -151,6 +204,7 @@ const CreateNotaPreanestesica: React.FC<Props> = ({ paciente, estancia }) => {
             )}
           </div>
 
+          {/* Valoración de riesgos */}
           <div className="col-span-full">
             <label htmlFor="valoracion_riesgos" className={labelClasses}>
               Valoración de riesgos
@@ -177,12 +231,13 @@ const CreateNotaPreanestesica: React.FC<Props> = ({ paciente, estancia }) => {
             )}
           </div>
 
+          {/* Indicaciones y recomendaciones */}
           <div className="col-span-full">
             <label
               htmlFor="indicaciones_recomendaciones"
               className={labelClasses}
             >
-              Indicaciones y recomendaciones del servicio de anestesiología.
+              Indicaciones y recomendaciones del servicio de anestesiología
             </label>
             <textarea
               id="indicaciones_recomendaciones"
@@ -205,11 +260,8 @@ const CreateNotaPreanestesica: React.FC<Props> = ({ paciente, estancia }) => {
               </p>
             )}
           </div>
-
-          
-        
-      </FormLayout>
-     </MainLayout>
+        </FormLayout>
+      </MainLayout>
     </>
   );
 };
