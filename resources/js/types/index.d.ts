@@ -656,6 +656,8 @@ export interface NotaPreAnestesica{
     temp: number;
     resumen_del_interrogatorio: string;
     exploracion_fisica: string;
+    resultado_estudios: string;
+    tratamiento: string;
     diagnostico_o_problemas_clinicos: string;
     plan_de_estudio: string;
     pronostico: string;
