@@ -66,6 +66,7 @@ const Show = ({ traslado, paciente, estancia }: ShowTrasladoProps) => {
                     <InfoField label="Resultado de estudios de los servicios auxiliares de diagnóstico y tratamiento" value={traslado.resultado_estudios}/>
                     <InfoField label="Plan de estudios" value={traslado.plan_de_estudio}/>
                     <InfoField label="Pronostico" value={traslado.pronostico}/>
+                    <InfoField label="Tratamiento" value={traslado.tratamiento}/>
                 </div>
                 <div className="grid grid-cols-1  gap-4 mb-6">
                     <h1 className="text-2xl font-bold mb-4">{`Organizaciones de traslado `}</h1>

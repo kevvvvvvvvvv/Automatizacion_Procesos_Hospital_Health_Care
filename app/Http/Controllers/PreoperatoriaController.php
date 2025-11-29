@@ -16,6 +16,7 @@ use App\Http\Requests\PreoperatoriaRequest;
 use App\Models\FormularioCatalogo;
 use Spatie\Browsershot\Browsershot;
 
+
 class PreoperatoriaController extends Controller
 {
     protected $pdfGenerator;
@@ -38,9 +39,9 @@ class PreoperatoriaController extends Controller
         ]);
     }
     public function store(PreoperatoriaRequest $request, Paciente $paciente, Estancia $estancia)
-    {
+    {   //dd($request->toArray());
         $validatedData = $request->validated();
-
+        //dd($validatedData);
         DB::beginTransaction();
         try {
             $formularioInstancia = FormularioInstancia::create([
@@ -69,7 +70,7 @@ class PreoperatoriaController extends Controller
             'formularioInstancia.user',
         ]);
         return Inertia::render('formularios/preoperatoria/show', [
-            'preoperatoria' => $preoperatoria,  // Aquí es 'preoperatoria' (con "a")
+            'preoperatoria' => $preoperatoria,  
             'paciente'      => $preoperatoria->formularioInstancia->estancia->paciente,
             'estancia'      => $preoperatoria->formularioInstancia->estancia,
         ]);

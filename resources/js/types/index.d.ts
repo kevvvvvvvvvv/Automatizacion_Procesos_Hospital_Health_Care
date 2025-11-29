@@ -375,7 +375,8 @@ export interface Interconsulta{
     exploracion_fisica:string;
     estado_mental:string;
     resultados_relevantes_del_estudio_diagnostico:string;
-    tratamiento_y_pronostico:string;
+    tratamiento:string;
+    pronostico:string;
     motivo_de_la_atencion_o_interconsulta:string;
     diagnostico_o_problemas_clinicos:StringIterator;
     fc:number;
@@ -394,6 +395,7 @@ export interface Traslado{
     talla:number;
     temp: number;
     resultado_estudios:string;
+    tratamiento:string;
     resumen_del_interrogatorio: string;
     exploracion_fisica: string;
     diagnostico_o_problemas_clinicos: string;
@@ -478,6 +480,7 @@ export interface Preoperatoria {
     talla:number;
     temp: number;
     resultado_estudios:string;
+    tratamiento:string;
     resumen_del_interrogatorio: string;
     exploracion_fisica: string;
     diagnostico_o_problemas_clinicos: string;
@@ -576,6 +579,7 @@ export interface notasEvoluciones {
   resultados_relevantes: string;
   diagnostico_problema_clinico: string;
   pronostico: string;
+  tratamiento: string;
   resultado_estudios:string;
   manejo_dieta: string;
   manejo_soluciones: string;
@@ -657,6 +661,8 @@ export interface NotaPreAnestesica{
     temp: number;
     resumen_del_interrogatorio: string;
     exploracion_fisica: string;
+    resultado_estudios: string;
+    tratamiento: string;
     diagnostico_o_problemas_clinicos: string;
     plan_de_estudio: string;
     pronostico: string;

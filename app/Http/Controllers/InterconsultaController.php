@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Spatie\LaravelPdf\Facades\Pdf;
 use Illuminate\Support\Facades\Log;
-use Spatie\Browsershot\Browsershot;
+use App\Services\PdfGeneratorService;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
@@ -26,9 +26,10 @@ class InterconsultaController extends Controller
         //
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
+     public function __construct(PdfGeneratorService $pdfGenerator)
+    {
+        $this->pdfGenerator = $pdfGenerator;
+    }
     public function create(Paciente $paciente, Estancia $estancia)
      {
         return Inertia::render('formularios/interconsulta/create',[
@@ -151,40 +152,23 @@ class InterconsultaController extends Controller
         $medico = $interconsulta->formularioInstancia->user;
         $estancia = $interconsulta->formularioInstancia->estancia;
 
-        $logoDataUri = '';
-        $imagePath = public_path('images/Logo_HC_2.png');
-        if (file_exists($imagePath)) {
-            $imageData = base64_encode(file_get_contents($imagePath));
-            $imageMime = mime_content_type($imagePath);
-            $logoDataUri = 'data:' . $imageMime . ';base64,' . $imageData;
-        }
-
         $headerData = [
             'historiaclinica' => $interconsulta,
             'paciente' => $paciente,
-            'logoDataUri' => $logoDataUri,
             'estancia' => $estancia
         ];
 
-        return Pdf::view('pdfs.interconsultas', [
-            'notaData' => $interconsulta,
-            'paciente' => $paciente,
-            'medico' => $medico
-        ])
-        ->withBrowsershot(function (Browsershot $browsershot) {
-            $chromePath = config('services.browsershot.chrome_path');
-            if ($chromePath) {
-                $browsershot->setChromePath($chromePath);
-                $browsershot->noSandbox();
-                $browsershot->addChromiumArguments([
-                    'disable-dev-shm-usage',
-                    'disable-gpu',
-                ]);
-            } else {
-
-            }
-        })
-        ->headerView('header', $headerData)
-        ->inline('interconsultas.pdf');
+       $viewData = [
+        'notData' => $interconsulta,
+        'paciente' => $paciente,
+        'medico' => $medico,
+       ];
+        return $this->pdfGenerator->generateStandardPdf(
+            'pdfs.interconsultas',
+            $viewData,
+            $headerData,
+            'interconsultas-',
+            $estancia->folio
+        );
     }
 }

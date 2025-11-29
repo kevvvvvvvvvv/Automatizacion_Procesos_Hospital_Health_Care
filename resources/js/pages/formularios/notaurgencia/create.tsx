@@ -120,7 +120,7 @@ const CreateNotaUrgencia: React.FC<Props> = ({ paciente, estancia }) => {
                 />
             {/* Sección 1: Motivo de Consulta */}
         <div className="mb-4">
-          <label htmlFor="motivo_consulta" className={labelClasses}>Motivo de Consulta</label>
+          <label htmlFor="motivo_consulta" className={labelClasses}>Motivo de la atención</label>
           <textarea
             id="motivo_consulta"
             className={textAreaClasses}
@@ -146,7 +146,7 @@ const CreateNotaUrgencia: React.FC<Props> = ({ paciente, estancia }) => {
             {errors.estado_mental && <div className="text-red-500 text-sm">{errors.estado_mental}</div>}
         </div>
         <div className="mb-4">
-            <label htmlFor="resumen_interrogatorio" className={labelClasses}>Resumen del interrogatorio</label>
+            <label htmlFor="resumen_interrogatorio" className={labelClasses}> Resumen del interrogatorio</label>
             <textarea
               id="resumen_interrogatorio"
               className={textAreaClasses}
@@ -173,20 +173,20 @@ const CreateNotaUrgencia: React.FC<Props> = ({ paciente, estancia }) => {
         </div>
         
         <div className="mb-4">
-            <label htmlFor="resultados_relevantes" className={labelClasses}>Resultado de estudios de los servicios auxiliares de diagnóstico y tratamiento</label>
+            <label htmlFor="resultados_relevantes" className={labelClasses}>Resultado de estudios de los servicios auxiliares de diagnóstico </label>
             <textarea
               id="resultados_relevantes"
               className={textAreaClasses}
               value={data.resultados_relevantes}
               onChange={e => setData('resultados_relevantes', e.target.value)}
-              placeholder="Resultado de estudios de los servicios auxiliares de diagnóstico y tratamiento"
+              placeholder="Resultado de estudios de los servicios auxiliares de diagnóstico "
               rows={4}
             autoComplete="off"
             />
             {errors.resultados_relevantes && <div className="text-red-500 text-sm">{errors.resultados_relevantes}</div>}
         </div>
         <div className="mb-4">
-            <label htmlFor="diagnostico_problemas_clinicos" className={labelClasses}>Diagnóstico y problemas clínicos</label>
+            <label htmlFor="diagnostico_problemas_clinicos" className={labelClasses}>Diagnóstico o problemas clínicos</label>
             <textarea
                 id="diagnostico_problemas_clinicos"
                 className={textAreaClasses}
