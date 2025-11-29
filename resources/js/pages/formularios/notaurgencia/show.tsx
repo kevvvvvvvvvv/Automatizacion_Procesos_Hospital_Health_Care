@@ -85,7 +85,7 @@ const Show = ({ notaUrgencia, paciente, estancia }: ShowNotaUrgenciaProps) => {
             value={notaUrgencia.exploracion_fisica ?? 'N/A'}
           />
           <InfoField
-            label="Resultados Relevantes de Estudios de Diagnóstico"
+            label="Resultado de estudios de los servicios auxiliares de diagnóstico y tratamiento"
             value={notaUrgencia.resultados_relevantes ?? 'N/A'}
           />
           <InfoField

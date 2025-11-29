@@ -116,7 +116,7 @@ const Show = ({
             value={interconsulta.estado_mental || 'N/A'}
           />
           <InfoField
-            label="Resultados Relevantes del Estudio Diagnóstico"
+            label="Resultado de estudios de los servicios auxiliares de diagnóstico y tratamiento"
             value={
               interconsulta
                 .resultados_relevantes_del_estudio_diagnostico ||

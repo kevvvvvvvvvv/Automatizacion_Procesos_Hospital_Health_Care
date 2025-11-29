@@ -21,6 +21,7 @@ class NotaPreAnestesica extends Model
         'resumen_del_interrogatorio',
         'exploracion_fisica',
         'diagnostico_o_problemas_clinicos',
+        'resultado_estudios',
         'plan_de_estudio',
         'pronostico',
         'plan_estudios_tratamiento',

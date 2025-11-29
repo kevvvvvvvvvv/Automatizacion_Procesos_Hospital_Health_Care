@@ -23,11 +23,23 @@ return new class extends Migration
             $table->string('diagnostico_preoperatorio')->nullable();
             $table->string('plan_quirurgico')->nullable();
             $table->string('tipo_intervencion_quirurgica')->nullable();
+             $table->string('ta')->nullable();
+            $table->integer('fc')->nullable();
+            $table->integer('fr')->nullable();
+            $table->decimal('peso', 8, 2)->nullable();
+            $table->decimal('talla', 4, 2)->nullable();
+            $table->decimal('temp', 4, 2)->nullable();
             
+            $table->text('resultado_estudios')->nullable();
+            $table->text('resumen_del_interrogatorio')->nullable();
+            $table->text('exploracion_fisica')->nullable();
+            $table->text('diagnostico_o_problemas_clinicos')->nullable();
+            $table->text('plan_de_estudio')->nullable();
+            $table->text('pronostico')->nullable();
+   
             $table->string('riesgo_quirurgico')->nullable();
             $table->string('cuidados_plan_preoperatorios')->nullable();
 
-            $table->string('pronostico')->nullable();
             $table->timestamps();
        
         });

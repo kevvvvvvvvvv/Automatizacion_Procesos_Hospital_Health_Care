@@ -34,7 +34,6 @@ const CreateInterconsulta: React.FC<Props> = ({ paciente, estancia }) => {
   });
 const handleSubmit = (e: React.FormEvent) => {
   e.preventDefault();
-  console.log('Enviando a:', route('pacientes.estancias.interconsultas.store', { paciente: paciente.id, estancia: estancia.id }));
   post(route('pacientes.estancias.interconsultas.store', { paciente: paciente.id, estancia: estancia.id }));
 };
   
@@ -42,7 +41,9 @@ const handleSubmit = (e: React.FormEvent) => {
   const labelClasses = `block text-sm font-medium text-gray-700 mb-1`;
 
   return (
-    <>
+    <MainLayout pageTitle={`Creación de Interconsulta de ${paciente.nombre} ${paciente.apellido_paterno} ${paciente.apellido_materno}`}
+      link="estancias.show"
+      linkParams={estancia.id}>
       <PacienteCard
         paciente={paciente}
         estancia={estancia}
@@ -185,11 +186,9 @@ const handleSubmit = (e: React.FormEvent) => {
           label="Talla (m)"
           name="talla"
           type="number"
-          step="0.01"
           value={data.talla}
           onChange={(e) => setData('talla', e.target.value)}
           placeholder="Ej: 1.75"
-          min={0}
           error={errors.talla}
         />
 
@@ -252,7 +251,7 @@ const handleSubmit = (e: React.FormEvent) => {
         </div>
         <div className="col-span-full">
           <label htmlFor="resultados_relevantes_del_estudio_diagnostico" className={labelClasses}>
-            Resultados Relevantes del Estudio Diagnóstico
+            Resultado de estudios de los servicios auxiliares de diagnóstico y tratamiento
           </label>
           <textarea
             id="resultados_relevantes_del_estudio_diagnostico"
@@ -306,14 +305,10 @@ const handleSubmit = (e: React.FormEvent) => {
         </div>
         
       </FormLayout>
-    </>
+      
+    </MainLayout>
   );
 };
 
-CreateInterconsulta.layout = (page: React.ReactElement) => {
-  return (
-    <MainLayout pageTitle="Creación de Interconsulta" children={page} />
-  );
-};
 
 export default CreateInterconsulta;
