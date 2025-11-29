@@ -19,7 +19,6 @@ import TratamientoMedidasGeneralesForm from '@/components/forms/tratamiento-medi
 import TratamientoMedicamentosForm from '@/components/forms/tratamiento-medicamentos-form';
 import TratamientoLaboratoriosForm from '@/components/forms/tratamiento-laboratorios-form';
 import EnvioPieza from '@/components/forms/envio-piezas';
-import Generalidades from '@/components/forms/generalidades';
 
 interface Props {
     paciente: Paciente;
@@ -69,21 +68,6 @@ const NotaPostoperatoriaForm: NotaPostoperatoriaComponent= ({ paciente, estancia
     }));
 
     const { data, setData, post, patch, processing, errors } = useForm({
-
-        ta: nota?.ta || '',
-        fc: nota?.fc || '',
-        fr: nota?.fr || '',
-        temp: nota?.temp || '',
-        peso: nota?.peso || '', 
-        talla: nota?.talla || '', 
-        resumen_del_interrogatorio: nota?.resumen_del_interrogatorio || '',
-        exploracion_fisica: nota?.exploracion_fisica || '',
-        resultado_estudios: nota?.resultado_estudios || '', 
-        tratamiento: nota?.tratamiento || '', 
-        diagnostico_o_problemas_clinicos: nota?.diagnostico_o_problemas_clinicos || '',
-        plan_de_estudio: nota?.plan_de_estudio || '', 
-        pronostico: nota?.pronostico || '', 
-
         hora_inicio_operacion: nota?.hora_inicio_operacion || '',
         hora_termino_operacion: nota?.hora_termino_operacion || '',
         diagnostico_preoperatorio: nota?.diagnostico_preoperatorio || '',
@@ -95,7 +79,9 @@ const NotaPostoperatoriaForm: NotaPostoperatoriaComponent= ({ paciente, estancia
         reporte_conteo: nota?.reporte_conteo || '',
         cuantificacion_sangrado: nota?.cuantificacion_sangrado || '',
         incidentes_accidentes: nota?.incidentes_accidentes || '',
+        estudios_transoperatorios: nota?.estudios_transoperatorios || '',
         ayudantes_agregados: [] as AyudanteAgregado[],
+        envio_piezas: nota?.envio_piezas || '',
         estado_postquirurgico: nota?.estado_postquirurgico || '',
 
         manejo_dieta: nota?.manejo_dieta || '',
@@ -104,17 +90,9 @@ const NotaPostoperatoriaForm: NotaPostoperatoriaComponent= ({ paciente, estancia
         manejo_medidas_generales: nota?.manejo_medidas_generales || '',
         manejo_laboratorios: nota?.manejo_laboratorios || '',
 
+        pronostico: nota?.pronostico || '',
         hallazgos_importancia: nota?.hallazgos_importancia || '',
         transfusiones_agregadas: [] as TransfusionAgregada[],
-
-        estudio_solicitado: nota?.solicitud_patologia?.estudio_solicitado || '',
-        biopsia_pieza_quirurgica: nota?.solicitud_patologia?.biopsia_pieza_quirurgica || '',
-        revision_laminillas: nota?.solicitud_patologia?.revision_laminillas || '',
-        estudios_especiales: nota?.solicitud_patologia?.estudios_especiales || '',
-        pcr: nota?.solicitud_patologia?.pcr || '',
-        pieza_remitida: nota?.solicitud_patologia?.pieza_remitida || '',
-        datos_clinicos: nota?.solicitud_patologia?.datos_clinicos || '',
-        empresa_enviar: nota?.solicitud_patologia?.empresa_enviar || '',
     });
 
     const [localTransfusion, setLocalTransfusion] = useState({
@@ -214,39 +192,7 @@ const NotaPostoperatoriaForm: NotaPostoperatoriaComponent= ({ paciente, estancia
                 onSubmit={handleSubmit}
                 actions={<PrimaryButton type="submit" disabled={processing}>{processing ? 'Creando...' : 'Crear nota postoperatoria'}</PrimaryButton>}>
 
-                               {Object.keys(errors).length > 0 && (
-                    <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-md">
-                        <div className="flex">
-                            <div className="flex-shrink-0">
-                                <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-                                </svg>
-                            </div>
-                            <div className="ml-3">
-                                <h3 className="text-sm font-medium text-red-800">
-                                    Hay {Object.keys(errors).length} errores en el formulario:
-                                </h3>
-                                <div className="mt-2 text-sm text-red-700">
-                                    <ul className="list-disc pl-5 space-y-1">
-                                        {Object.entries(errors).map(([key, message]) => (
-                                            <li key={key}>{message}</li>
-                                        ))}
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                )}
-
-                <Generalidades
-                    data={data}
-                    setData={setData}
-                    errors={errors}
-                />
-
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-
-
                     <InputDateTime
                         id='hora_inicio'
                         name='hora_inicio'
@@ -401,6 +347,16 @@ const NotaPostoperatoriaForm: NotaPostoperatoriaComponent= ({ paciente, estancia
                         </table>
                     </div>
                 </div>
+
+                <div className="grid grid-cols-1 gap-6 mb-15 mt-15">
+                    <InputTextArea
+                        label="Estudios de servicios auxiliares de diagnóstico y tratamiento transoperatorios"
+                        value={data.estudios_transoperatorios}
+                        onChange={e => setData('estudios_transoperatorios', e.target.value)}
+                        error={errors.estudios_transoperatorios}
+                        rows={2}
+                    />
+                </div>
                 
                 {/* PERSONAL EMPLEADO */}
                 <div className="mt-6 pt-6 border-t mb-15">
@@ -514,12 +470,20 @@ const NotaPostoperatoriaForm: NotaPostoperatoriaComponent= ({ paciente, estancia
                                 onChange={value=>setData('manejo_medidas_generales',value)}
                             />
                         </div>
-                    
+
+                    <InputTextArea
+                        label="Pronóstico"
+                        value={data.pronostico}
+                        onChange={e => setData('pronostico', e.target.value)}
+                        error={errors.pronostico}
+                        rows={2}
+                        className='mb-15'
+                    />
 
                     <div className="mt-6 pt-6 border-t mb-15">
                         <EnvioPieza
                             data={data}
-                            setData={setData}
+                            setData={(field, value) => setData(field as any, value)}
                             errors={errors}
                         />
                     </div>
