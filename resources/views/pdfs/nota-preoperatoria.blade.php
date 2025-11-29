@@ -158,8 +158,25 @@
         <p><strong>Tipo de intervención quirúrgica:</strong> {{ $preoperatoria->tipo_intervencion_quirurgica ?? 'Sin datos.' }}</p>
         <p><strong>Riesgo quirúrgico:</strong> {{ $preoperatoria->riesgo_quirurgico ?? 'Sin datos.' }}</p>
         <p><strong>Cuidados y plan terapéutico preoperatorios:</strong> {{ $preoperatoria->cuidados_plan_preoperatorios ?? 'Sin datos.' }}</p>
-        <p><strong>Pronóstico:</strong> {{ $preoperatoria->pronostico ?? 'Sin datos.' }}</p>
     </div>
+    <p style="line-height: 1.4; margin: 0; margin-bottom: 10px;">
+            <strong>Tensión arterial:</strong> {{$notaData['ta']}} mm Hg | 
+            <strong>Frecuencia cardiaca:</strong> {{$notaData['fc']}} por minuto | 
+            <strong>Frecuencia respiratoria:</strong> {{$notaData['fr']}} por minuto | 
+            <strong>Temperatura:</strong> {{$notaData['temp']}} Celsius (°C) | 
+            <strong>Peso:</strong> {{$notaData['peso']}} kilogramos | 
+            <strong>Talla:</strong> {{$notaData['talla']}} centímetros
+        </p>
+
+        <p><strong>Resumen del interrogatorio: </strong>{{$notaData['resumen_del_interrogatorio']}}</p>
+        <p><strong>Exploración física: </strong>{{$notaData['exploracion_fisica']}}</p>   
+        <p><strong>Resultado de estudios de los servicios auxiliares de diagnóstico y tratamiento: </strong>{{$notaData['resultado_estudios']}}</p>
+        <p><strong>Diagnóstico(s) o problemas clínicos: </strong>{{$notaData['diagnostico_o_problemas_clinicos']}}</p>
+        <p><strong>Plan de estudio y/o Tratamiento (indicaciones médicas, vía, dosis, periodicidad): </strong>{{$notaData['plan_de_estudio']}}</p>
+        <p><strong> Tratamiento: </strong>{{$notaData['tratamiento']}}</p>
+        <p><strong>Pronóstico: </strong>{{$notaData['pronostico']}}</p>
+
+
 
     @if(isset($medico))
         <div class="signature-section">
