@@ -35,7 +35,8 @@ class InterconsultasRequest extends FormRequest
             'exploracion_fisica' => ['string'],
             'estado_mental' => ['string'],
             'resultados_relevantes_del_estudio_diagnostico' => ['string'],
-            'tratamiento_y_pronostico' => ['string'],
+            'tratamiento' => ['string'],
+            'pronostico' =>['string'],
             'motivo_de_la_atencion_o_interconsulta' => ['required', 'string'],
             'diagnostico_o_problemas_clinicos' => ['required', 'string'],
         ];
@@ -94,8 +95,8 @@ class InterconsultasRequest extends FormRequest
             'resultados_relevantes_del_estudio_diagnostico.string' => 'Los resultados relevantes del estudio diagnóstico deben ser un texto.',
 
             // --- Tratamiento y Pronóstico ---
-            'tratamiento_y_pronostico.string' => 'El tratamiento y pronóstico deben ser un texto.',
-
+            'tratamiento.string' => 'El tratamiento deben ser un texto.',
+            'pronostico.string' => 'EL pronóstico deben ser un texto',
             // --- Motivo de la Atención o Interconsulta ---
             'motivo_de_la_atencion_o_interconsulta.required' => 'El motivo de la atención o interconsulta es obligatorio.',
             'motivo_de_la_atencion_o_interconsulta.string' => 'El motivo de la atención o interconsulta debe ser un texto.',

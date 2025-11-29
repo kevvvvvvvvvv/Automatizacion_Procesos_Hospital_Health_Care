@@ -370,7 +370,8 @@ export interface Interconsulta{
     exploracion_fisica:string;
     estado_mental:string;
     resultados_relevantes_del_estudio_diagnostico:string;
-    tratamiento_y_pronostico:string;
+    tratamiento:string;
+    pronostico:string;
     motivo_de_la_atencion_o_interconsulta:string;
     diagnostico_o_problemas_clinicos:StringIterator;
     fc:number;
