@@ -16,7 +16,6 @@ use App\Http\Requests\PreoperatoriaRequest;
 use App\Models\FormularioCatalogo;
 use Spatie\Browsershot\Browsershot;
 
-
 class PreoperatoriaController extends Controller
 {
     protected $pdfGenerator;
