@@ -56,7 +56,54 @@ const Show = ({ preoperatoria, paciente, estancia }: ShowPreoperatorioProps) => 
             value={fechaCirugiaFormatted}
           />
         </div>
+        {/*Signos vitales */}
+        <h2 className="text-lg font-semibold text-gray-800 mb-2">
+          Signos vitales 
+        </h2>
+       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+          <InfoField
+          label = "Tensión arterial"
+          value = {preoperatoria.ta}/>
+          <InfoField
+          label = "Frecuencia cardiaca"
+          value = {preoperatoria.fc}/>
+          <InfoField
+          label = "Frecuencia respiratoria"
+          value = {preoperatoria.fr}/>
+          <InfoField 
+          label = "Temperatura"
+          value = {preoperatoria.temp}/>
+          <InfoField
+          label = "Peso"
+          value = {preoperatoria.peso}/>
+          <InfoField
+          label = "Talla"
+          value = {preoperatoria.talla}/>
+        </div>
+         <div className="space-y-2 mb-6">
+          <InfoField
+          label = "Resumen del interrogatorio"
+          value = {preoperatoria.resumen_del_interrogatorio ?? 'N/A'}/>
+          <InfoField
+          label = "Exploración fisica"
+          value = {preoperatoria.exploracion_fisica ?? 'N/A'} />
+          <InfoField
+          label = "Resultado de estudios de los servicios auxiliares de diagnóstico"
+          value = {preoperatoria.resultado_estudios ?? 'N/A'}/>
+          <InfoField 
+          label = "Tratamiento"
+          value = {preoperatoria.tratamiento ?? 'N/A'}/>
+          <InfoField
+          label = "Diagnostico o problemas clinicos"
+          value = {preoperatoria.diagnostico_o_problemas_clinicos ?? 'N/A'}/>
+          <InfoField 
+          label = "Plan de estudios"
+          value = {preoperatoria.plan_de_estudio ?? 'N/A'}/>
+          <InfoField
+          label = "Pronóstico"
+          value = {preoperatoria.pronostico ?? 'N/A'} />
 
+         </div>
         {/* Diagnóstico y plan */}
         <h2 className="text-lg font-semibold text-gray-800 mb-2">
           Diagnóstico y Plan Quirúrgico

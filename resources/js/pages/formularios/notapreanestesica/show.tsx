@@ -103,6 +103,12 @@ const Show = ({ notaPreanestesica, paciente, estancia }: ShowNotaPreanestesicaPr
             label="Pronóstico"
             value={notaPreanestesica.pronostico ?? 'N/A'}
           />
+          <InfoField
+            label = "Resultados relevantes de servicios auxiliares"
+            value = {notaPreanestesica.resultado_estudios ?? 'N/A'}/>
+          <InfoField
+            label = "Tratamiento"
+            value = {notaPreanestesica.tratamiento ?? 'N/A'}/>
         </div>
 
         {/* Plan terapéutico y anestésico */}

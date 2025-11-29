@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Spatie\LaravelPdf\Facades\Pdf;
-use Spatie\Browsershot\Browsershot;
+use App\Services\PdfGeneratorService;
 
 use App\Http\Requests\TrasladoRequest;
 use App\Models\FormularioCatalogo;
@@ -21,6 +21,13 @@ use App\Models\FormularioCatalogo;
 class TrasladoController extends Controller
 {
     //
+    protected $pdfGenerator;
+
+    public function __construct(PdfGeneratorService $pdfGenerator)
+    {
+        $this->pdfGenerator = $pdfGenerator;
+    }
+
     public function index()
     {
         //
@@ -97,55 +104,34 @@ class TrasladoController extends Controller
 
     public function generarPDF(Traslado $traslado)
     {
-        $traslado->load([
+        $traslado->load(
             'formularioInstancia.estancia',
             'formularioInstancia.user.credenciales',
-        ]);
-
-        // Verificación para evitar null
-        if (!$traslado->formularioInstancia || !$traslado->formularioInstancia->estancia || !$traslado->formularioInstancia->estancia->paciente) {
-            abort(404, 'Datos del traslado no encontrados para generar PDF.');
-        }
+        );
 
         $paciente = $traslado->formularioInstancia->estancia->paciente;
         $medico = $traslado->formularioInstancia->user;
         $estancia = $traslado->formularioInstancia->estancia;
 
-        $logoDataUri = '';
-        $imagePath = public_path('images/Logo_HC_2.png');
-        if (file_exists($imagePath)) {
-            $imageData = base64_encode(file_get_contents($imagePath));
-            $imageMime = mime_content_type($imagePath);
-            $logoDataUri = 'data:' . $imageMime . ';base64,' . $imageData;
-        }
-
         $headerData = [
             'historiaclinica' => $traslado,
             'paciente' => $paciente,
-            'logoDataUri' => $logoDataUri,
-            'estancia' => $estancia
+            'estancia' => $estancia, 
         ];
 
-        return Pdf::view('pdfs.nota-traslado', [
+        $viewData = [
             'notaData' => $traslado,
             'paciente' => $paciente,
-            'medico' => $medico
-        ])
-        ->withBrowsershot(function (Browsershot $browsershot) {
-            $chromePath = config('services.browsershot.chrome_path');
-            if ($chromePath) {
-                $browsershot->setChromePath($chromePath);
-                $browsershot->noSandbox();
-                $browsershot->addChromiumArguments([
-                    'disable-dev-shm-usage',
-                    'disable-gpu',
-                ]);
-            } else {
+            'medico' => $medico,
+        ];
 
-            }
-        })
-        ->headerView('header', $headerData)
-        ->inline('traslado.pdf');
+        return $this->pdfGenerator->generateStandardPdf(
+            'pdfs.nota-traslado',
+            $viewData,
+            $headerData,
+            'nota-traslado',
+            $estancia->folio
+        );
     }
 
 }
