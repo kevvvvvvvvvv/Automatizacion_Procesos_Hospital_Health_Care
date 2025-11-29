@@ -390,6 +390,7 @@ export interface Traslado{
     talla:number;
     temp: number;
     resultado_estudios:string;
+    tratamiento:string;
     resumen_del_interrogatorio: string;
     exploracion_fisica: string;
     diagnostico_o_problemas_clinicos: string;
