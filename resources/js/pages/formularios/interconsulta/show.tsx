@@ -124,8 +124,12 @@ const Show = ({
             }
           />
           <InfoField
-            label="Tratamiento y Pronóstico"
-            value={interconsulta.tratamiento_y_pronostico || 'N/A'}
+            label="Tratamiento "
+            value={interconsulta.tratamiento || 'N/A'}
+          />
+          <InfoField
+            label="Pronóstico"
+            value={interconsulta.pronostico || 'N/A'}
           />
           <InfoField
             label="Motivo de la Atención o Interconsulta"
