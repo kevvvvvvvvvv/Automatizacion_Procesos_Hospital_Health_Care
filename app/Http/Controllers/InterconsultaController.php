@@ -159,7 +159,7 @@ class InterconsultaController extends Controller
         ];
 
        $viewData = [
-        'notData' => $interconsulta,
+        'notaData' => $interconsulta,
         'paciente' => $paciente,
         'medico' => $medico,
        ];
