@@ -31,7 +31,7 @@ interface EstanciaFormData {
 
 const optionsTipoEstancia = [
     { value: 'Hospitalizacion', label: 'Hospitalización' },
-    { value: 'Interconsulta', label: 'Interconsulta' },
+    { value: 'Interconsulta', label: 'Consulta' },
 ];
 
 const optionsTipoIngreso = [

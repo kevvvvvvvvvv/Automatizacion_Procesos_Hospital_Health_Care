@@ -182,7 +182,7 @@ Route::get('/notasegresos/{notasegreso}/pdf', [NotasEgresoController::class, 'ge
     ->middleware('auth');
 
 
-Route::get('/solicitudes-patologias/{solicitud-patologia}/pdf', [SolicitudEstudioPatologiaController::class, 'generarPDF'])
+Route::get('/solicitudes-patologias/{solicitudespatologia}/pdf', [SolicitudEstudioPatologiaController::class, 'generarPDF'])
     ->name('solicitudes-patologias.pdf')
     ->middleware('auth');
 
