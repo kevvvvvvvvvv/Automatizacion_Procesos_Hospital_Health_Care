@@ -7,6 +7,7 @@ import InputText from '@/components/ui/input-text';
 import { Estancia, Paciente, Habitacion, FamiliarResponsable } from '@/types'; 
 import { route } from 'ziggy-js';
 import PrimaryButton from '@/components/ui/primary-button';
+import FormLayout from '@/components/form-layout';
 
 
 interface CreateEstanciaProps {
@@ -31,7 +32,7 @@ interface EstanciaFormData {
 
 const optionsTipoEstancia = [
     { value: 'Hospitalizacion', label: 'Hospitalización' },
-    { value: 'Interconsulta', label: 'Interconsulta' },
+    { value: 'Interconsulta', label: 'Consulta' },
 ];
 
 const optionsTipoIngreso = [
@@ -93,8 +94,14 @@ const Create = ({ paciente, habitaciones }: CreateEstanciaProps) => {
     };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
-        <Head title="Registro de Estancia" />
+    
+    <FormLayout onSubmit={handleSubmit} title='Registro de estancia'
+    actions={
+        <PrimaryButton disabled={processing}>
+            Guardar cambios
+        </PrimaryButton>
+    }>
+        <Head title="Registro de estancia" />
         
         {errors.folio && (
             <div className="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-100 dark:bg-gray-800 dark:text-red-400" role="alert">
@@ -202,12 +209,7 @@ const Create = ({ paciente, habitaciones }: CreateEstanciaProps) => {
                 <p className="text-sm text-red-600 mt-2">{errors.modalidad_ingreso}</p>
             )}
         </div>
-
-
-        <PrimaryButton type="submit" disabled={processing}>
-          {processing ? 'Guardando...' : 'Guardar Estancia'}
-        </PrimaryButton>
-    </form>
+    </FormLayout>
   );
 };
 
