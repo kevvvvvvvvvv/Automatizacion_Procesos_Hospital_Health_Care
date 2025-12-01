@@ -6,6 +6,7 @@ import PacienteCard from '@/components/paciente-card';
 import MainLayout from '@/layouts/MainLayout';
 import InsumosBasicosForm from '@/components/forms/insumos-basicos-form';
 import EnvioPieza from '@/components/forms/envio-piezas-form';
+import GeneralesForm from  '@/components/forms/generales-form';
 
 interface CreateProps {
     paciente: Paciente;
@@ -61,7 +62,8 @@ const CreateHojaEnfermeriaQuirofano:CreateComponent = ({paciente, estancia, hoja
     const renderActiveSection = () => {
         switch (activeSection) {
             case 'general':
-                return <p>Generales</p>
+                return <GeneralesForm
+                        hoja={hoja}/>
             case 'insumos':
                 return <InsumosBasicosForm
                         hoja={hoja}
