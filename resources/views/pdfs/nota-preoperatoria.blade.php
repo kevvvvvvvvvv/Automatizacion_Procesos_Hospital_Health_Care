@@ -152,12 +152,12 @@
     <h1>Nota preoperatoria</h1>
 
     <div class="section-content">
-        <p><strong>Fecha de la cirugía:</strong> {{ $preoperatoria->fecha_cirugia ?? 'Sin datos.' }}</p>
-        <p><strong>Diagnóstico:</strong> {{ $preoperatoria->diagnostico_preoperatorio ?? 'Sin datos.' }}</p>
-        <p><strong>Plan quirúrgico:</strong> {{ $preoperatoria->plan_quirurgico ?? 'Sin datos.' }}</p>
-        <p><strong>Tipo de intervención quirúrgica:</strong> {{ $preoperatoria->tipo_intervencion_quirurgica ?? 'Sin datos.' }}</p>
-        <p><strong>Riesgo quirúrgico:</strong> {{ $preoperatoria->riesgo_quirurgico ?? 'Sin datos.' }}</p>
-        <p><strong>Cuidados y plan terapéutico preoperatorios:</strong> {{ $preoperatoria->cuidados_plan_preoperatorios ?? 'Sin datos.' }}</p>
+        <p><strong>Fecha de la cirugía:</strong> {{ $notaData->fecha_cirugia ?? 'Sin datos.' }}</p>
+        <p><strong>Diagnóstico:</strong> {{ $notaData->diagnostico_preoperatorio ?? 'Sin datos.' }}</p>
+        <p><strong>Plan quirúrgico:</strong> {{ $notaData->plan_quirurgico ?? 'Sin datos.' }}</p>
+        <p><strong>Tipo de intervención quirúrgica:</strong> {{ $notaData->tipo_intervencion_quirurgica ?? 'Sin datos.' }}</p>
+        <p><strong>Riesgo quirúrgico:</strong> {{ $notaData->riesgo_quirurgico ?? 'Sin datos.' }}</p>
+        <p><strong>Cuidados y plan terapéutico preoperatorios:</strong> {{ $notaData->cuidados_plan_preoperatorios ?? 'Sin datos.' }}</p>
     </div>
     <p style="line-height: 1.4; margin: 0; margin-bottom: 10px;">
             <strong>Tensión arterial:</strong> {{$notaData['ta']}} mm Hg | 
