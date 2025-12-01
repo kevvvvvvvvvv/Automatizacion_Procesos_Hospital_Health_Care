@@ -23,6 +23,7 @@ use App\Http\Controllers\FormularioHojaDietaController;
 use App\Http\Controllers\HojaMedicamentoController;
 use App\Http\Controllers\TrasladoController;
 use App\Http\Controllers\AplicacionMedicamentoController;
+use App\Http\Controllers\FormularioHojaGeneralController;
 use App\Http\Controllers\FormularioNotaPostoperatorioController;
 use App\Http\Controllers\HojaEnfemeriaQuirofanoController;
 use App\Http\Controllers\SolicitudEstudioController;
@@ -114,15 +115,21 @@ Route::resource('pacientes.estancias.interconsultas', InterconsultaController::c
     ->parameters(['interconsultas' => 'interconsulta']);
 
 
-Route::post('hojassondascateters/{hojasenfermeria}',[FormularioHojaSondaCateterController::class, 'store'])->name('hojassondascateters.store');
-Route::patch('hojassondascateters/{hojasenfermeria}/{hojassondascateter}',[FormularioHojaSondaCateterController::class, 'update'])->name('hojassondascateters.update');
+Route::post('hojassondascateters/{hojasenfermeria}',[FormularioHojaSondaCateterController::class, 'store'])->name('hojassondascateters.store')->middleware('auth');
+Route::patch('hojassondascateters/{hojasenfermeria}/{hojassondascateter}',[FormularioHojaSondaCateterController::class, 'update'])->name('hojassondascateters.update')->middleware('auth');
 
-     // Rutas para estudios y patologías
-     Route::post('solicitudes-estudios/{estancia}', [SolicitudEstudioController::class, 'store'])->name('solicitudes-estudios.store');
-     Route::post('solicitudes-patologias/{estancia}', [SolicitudEstudioPatologiaController::class, 'store'])->name('solicitudes-patologias.store')->middleware('auth');
-     Route::post('solicitudes-patologias/{solicitud-patologia}/edit', [SolicitudEstudioPatologiaController::class, 'edit'])->name('solicitudes-patologias.edit')->middleware('auth');
-     Route::put('solicitudes-patologias/{estancia}', [SolicitudEstudioPatologiaController::class, 'update'])->name('solicitudes-patologias.update')->middleware('auth');
-     Route::post('solicitudes-patologias/{solicitud-patologia}/show', [SolicitudEstudioPatologiaController::class, 'show'])->name('solicitudes-patologias.show')->middleware('auth');
+// Rutas de lsa hoja de enfermería en quirofano
+
+Route::post('hojasgenerals/{hojasenfermeria}',[FormularioHojaGeneralController::class, 'store'])->name('hojasgenerals.store')->middleware('auth');
+Route::patch('hojasgenerals/{hojasenfermeria}/{hojasgeneral}',[FormularioHojaGeneralController::class, 'update'])->name('hojasgenerals.update')->middleware('auth');
+
+
+// Rutas para estudios y patologías
+Route::post('solicitudes-estudios/{estancia}', [SolicitudEstudioController::class, 'store'])->name('solicitudes-estudios.store');
+Route::post('solicitudes-patologias/{estancia}', [SolicitudEstudioPatologiaController::class, 'store'])->name('solicitudes-patologias.store')->middleware('auth');
+Route::post('solicitudes-patologias/{solicitud-patologia}/edit', [SolicitudEstudioPatologiaController::class, 'edit'])->name('solicitudes-patologias.edit')->middleware('auth');
+Route::put('solicitudes-patologias/{estancia}', [SolicitudEstudioPatologiaController::class, 'update'])->name('solicitudes-patologias.update')->middleware('auth');
+Route::post('solicitudes-patologias/{solicitud-patologia}/show', [SolicitudEstudioPatologiaController::class, 'show'])->name('solicitudes-patologias.show')->middleware('auth');
 
 
 Route::resource('pacientes.estancias.interconsultas', InterconsultaController::class)
