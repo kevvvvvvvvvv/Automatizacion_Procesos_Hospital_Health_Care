@@ -85,15 +85,27 @@ const Show = ({ paciente }: ShowProps) => {
                 paciente.estancias.map((estancia) => (
                     <div key={estancia.id} className="p-4 border rounded-md bg-gray-50 flex justify-between items-center">
                         <div>
+                            <div className="mb-2">
+                                <span className={`
+                                    inline-block px-3 py-1 text-xs font-medium text-white rounded-full
+                                    ${estancia.tipo_estancia === 'Hospitalizacion' ? 'bg-blue-500' : 'bg-green-500'}
+                                `}>
+                                    {estancia.tipo_estancia === 'Hospitalizacion' ? 
+                                    ("Hospitalizacion"):
+                                    ("Consulta")
+                                    }
+                                </span>
+                            </div>
                             <p className="text-sm font-semibold text-gray-700">
                                 Folio: {estancia.folio}
                             </p>
                             <p className="text-sm text-gray-600">
                             Fecha de ingreso: {estancia.fecha_ingreso}
                             </p>
+                            { estancia.tipo_estancia == 'Hospitalizacion' && (
                             <p className="text-sm text-gray-600">
                             Fecha de alta: {estancia.fecha_egreso || (estancia.tipo_estancia === "Hospitalizacion" ? 'Aún hospitalizado(a)' : '')}
-                            </p>
+                            </p>)}
                         </div>
 
                         <div className="flex items-center space-x-2">

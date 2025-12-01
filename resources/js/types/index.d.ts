@@ -233,6 +233,11 @@ export interface HojaEnfermeria {
     solicitud_dietas: SolicitudDieta[] | null;
 }
 
+export interface HojaEnfermeriaQuirofano {
+    id: number;
+    materiales_usados: ProductoServicio[];
+}
+
 export interface HojaTerapia {
     id: number;
     hoja_enfermeria_id: number;
