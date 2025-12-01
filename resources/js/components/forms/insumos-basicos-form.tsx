@@ -1,21 +1,13 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useForm, router } from '@inertiajs/react';
 import { HojaEnfermeriaQuirofano, ProductoServicio } from '@/types';
 import { route } from 'ziggy-js';
+import Swal from 'sweetalert2';
 
 // Componentes UI
 import InputText from '@/components/ui/input-text';
 import SelectInput from '@/components/ui/input-select'; 
 import PrimaryButton from '@/components/ui/primary-button';
-import Swal from 'sweetalert2';
-
-
-interface MaterialAgregado {
-    id: string;
-    nombre: string;
-    cantidad: string; 
-    temp_id: string; 
-}
 
 interface Props {
     hoja: HojaEnfermeriaQuirofano;
@@ -24,199 +16,148 @@ interface Props {
 
 const MaterialesForm: React.FC<Props> = ({ hoja, materiales }) => {
 
-
     const materialesOptions = materiales.map(m => ({
         value: m.id.toString(),
         label: m.nombre_prestacion
     }));
 
-    const [localData, setLocalData] = useState({
+    const { data, setData, post, processing, errors } = useForm({
         material_id: '',
-        material_nombre: '',
         cantidad: '',
     });
 
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
 
-    const { data, setData, post, processing, errors, reset, wasSuccessful } = useForm({
-        materiales_agregados: [] as MaterialAgregado[],
-    });
-
-    const handleAddToList = (e: React.MouseEvent<HTMLButtonElement>) => {
-        e.preventDefault(); 
-        
-        if (!localData.material_id || !localData.cantidad) {
-            Swal.fire({
-                icon: 'warning',
-                title: 'Campos incompletos',
-                text: 'Debes seleccionar un material y especificar la cantidad.',
-                timer: 3000
-            });
+        if (!data.material_id || !data.cantidad) {
+            Swal.fire('Error', 'Selecciona material y cantidad', 'warning');
             return;
         }
 
-        const newItem: MaterialAgregado = {
-            id: localData.material_id,
-            nombre: localData.material_nombre,
-            cantidad: localData.cantidad,
-            temp_id: crypto.randomUUID(),
-        };
-
-        setData('materiales_agregados', [...data.materiales_agregados, newItem]);
-
-        setLocalData({
-            material_id: '',
-            material_nombre: '',
-            cantidad: '',
+        post(route('hojasinsumosbasicos.store', { hojasenfermeriasquirofano: hoja.id }), {
+            preserveScroll: true,
         });
     }
 
-    const handleRemoveFromList = (temp_id: string) => {
-        setData('materiales_agregados',
-            data.materiales_agregados.filter((item) => item.temp_id !== temp_id)
-        );
-    }
+    
+    const handleUpdateCantidad = (materialId: number, nuevaCantidad: string, cantidadAnterior: string) => {
+        if (nuevaCantidad === cantidadAnterior) return;
 
-    const handleSubmitList = (e: React.FormEvent) => {
-        e.preventDefault();
-        post(route('hojasmateriales.store', { hojasenfermeria: hoja.id }), {
+        router.patch(route('hojasmateriales.update', { 
+            hojasenfermeria: hoja.id, 
+            material: materialId 
+        }), {
+            cantidad: nuevaCantidad
+        }, {
             preserveScroll: true,
-            onSuccess: () => reset(), 
         });
     }
 
     const handleRemoveSavedItem = (itemId: number) => {
-        if (confirm('¿Seguro que deseas eliminar este material?')) {
-            router.delete(route('hojasmateriales.destroy', { 
-                hojaenfermeria: hoja.id,
-                material: itemId
-            }), {
-                preserveScroll: true,
-            });
-        }
+        Swal.fire({
+            title: '¿Eliminar material?',
+            text: "Se quitará del registro de esta hoja.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Sí, eliminar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                router.delete(route('hojasmateriales.destroy', { 
+                    hojaenfermeria: hoja.id,
+                    material: itemId
+                }), {
+                    preserveScroll: true,
+                });
+            }
+        });
     }
 
+    console.log("Datos de la hoja recibidos:", hoja);
     return (
+
         <div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-end">
-                <SelectInput
-                    label="Material / Medicamento"
-                    options={materialesOptions} 
-                    value={localData.material_id}
-                    onChange={(value) => {
-                        const sel = materialesOptions.find(o => o.value === value);
-                        setLocalData(d => ({
-                            ...d,
-                            material_id: value as string,
-                            material_nombre: sel ? sel.label : ''
-                        }));
-                    }}
-                    // Asumiendo que validas el array en el backend
-                    error={errors['materiales_agregados.0.id']}
-                />
+            <form onSubmit={handleSubmit} className="bg-gray-50 p-4 rounded-lg border mb-8">
+                <h3 className="text-md font-bold mb-4 text-gray-700">Agregar insumos</h3>
                 
-                <div className="flex gap-4 items-end">
-                    <div className="flex-1">
+                <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
+                    <div className="md:col-span-7">
+                        <SelectInput
+                            label="Seleccionar insumo"
+                            options={materialesOptions} 
+                            value={data.material_id}
+                            onChange={(value) => setData('material_id', value as string)}
+                            error={errors.material_id}
+                        />
+                    </div>
+                    
+                    <div className="md:col-span-3">
                         <InputText 
-                            id="material_cantidad"
+                            id="cantidad_new"
                             name="cantidad"
                             label="Cantidad" 
                             type="number"
-                            value={localData.cantidad} 
-                            onChange={e => setLocalData(d => ({...d, cantidad: e.target.value}))} 
-                            error={errors['materiales_agregados.0.cantidad']}
+                            value={data.cantidad} 
+                            onChange={e => setData('cantidad', e.target.value)} 
+                            error={errors.cantidad}
                         />
                     </div>
-                    <div className="mb-1">
-                        <PrimaryButton type="button" onClick={handleAddToList}>
-                            Agregar
+                    
+                    <div className="md:col-span-2 mb-1">
+                        <PrimaryButton type="submit" disabled={processing} className="w-full justify-center">
+                            {processing ? '...' : 'Agregar +'}
                         </PrimaryButton>
                     </div>
                 </div>
-            </div>
-
-            {/* --- Tabla de Pendientes --- */}
-            <form onSubmit={handleSubmitList} className="mt-8">
-                <h3 className="text-lg font-semibold mb-2">Materiales Pendientes por Guardar</h3>
-                {wasSuccessful && <div className="mb-4 text-sm text-green-600">Materiales guardados correctamente.</div>}
-                
-                <div className="overflow-x-auto border rounded-lg">
-                    <table className="min-w-full divide-y divide-gray-200">
-                        <thead className="bg-gray-50">
-                            <tr className='text-left text-xs font-medium text-gray-500 uppercase'>
-                                <th className="px-4 py-3">Nombre</th>
-                                <th className="px-4 py-3">Cantidad</th>
-                                <th className="px-4 py-3">Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody className="bg-white divide-y divide-gray-200">
-                            {data.materiales_agregados.length === 0 ? (
-                                <tr>
-                                    <td colSpan={3} className="px-4 py-4 text-sm text-gray-500 text-center">
-                                        No hay materiales en la lista.
-                                    </td>
-                                </tr>
-                            ) : (
-                                data.materiales_agregados.map((item) => (
-                                    <tr key={item.temp_id}>
-                                        <td className="px-4 py-3 text-sm text-gray-900">{item.nombre}</td>
-                                        <td className="px-4 py-3 text-sm text-gray-500">{item.cantidad}</td>
-                                        <td className="px-4 py-3 text-sm">
-                                            <button
-                                                type="button"
-                                                onClick={() => handleRemoveFromList(item.temp_id)}
-                                                className="text-yellow-600 hover:text-yellow-900"
-                                            >
-                                                Quitar
-                                            </button>
-                                        </td>
-                                    </tr>
-                                ))
-                            )}
-                        </tbody>
-                    </table>
-                </div>
-                <div className="flex justify-end mt-4">
-                    <PrimaryButton type="submit" disabled={processing || data.materiales_agregados.length === 0}>
-                        {processing ? 'Guardando...' : 'Guardar Lista'}
-                    </PrimaryButton>
-                </div>
             </form>
 
-            {/* --- Tabla de Historial (Guardados) --- */}
-            <div className="mt-12">
-                <h3 className="text-lg font-semibold mb-2">Historial de Materiales Guardados</h3>
-                <div className="overflow-x-auto border rounded-lg">
+            <div>
+                <h3 className="text-lg font-semibold mb-2">Insumos registrados</h3>
+                <div className="overflow-x-auto border rounded-lg shadow-sm">
                     <table className="min-w-full divide-y divide-gray-200">
-                        <thead className="bg-gray-50">
-                            <tr className='text-left text-xs font-medium text-gray-500 uppercase'>
-                                <th className="px-4 py-3">Nombre</th>
-                                <th className="px-4 py-3">Cantidad</th>
-                                <th className="px-4 py-3">Acciones</th>
+                        <thead className="bg-white">
+                            <tr className='text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>
+                                <th className="px-6 py-3">Nombre del insumo</th>
+                                <th className="px-6 py-3 w-32">Cantidad</th>
+                                <th className="px-6 py-3 text-right">Acciones</th>
                             </tr>
                         </thead>
                         <tbody className="bg-white divide-y divide-gray-200">
-                            {/* Ajusta la propiedad 'hoja.materiales_usados' según tu relación en el modelo */}
-                            {(!hoja.materiales_usados || hoja.materiales_usados.length === 0) ? (
+                            {(!hoja.hoja_insumos_basicos || hoja.hoja_insumos_basicos.length === 0) ? (
                                 <tr>
-                                    <td colSpan={3} className="px-4 py-4 text-sm text-gray-500 text-center">
-                                        No hay materiales registrados.
+                                    <td colSpan={3} className="px-6 py-10 text-sm text-gray-400 text-center italic">
+                                        No se han registrado materiales aún.
                                     </td>
                                 </tr>
                             ) : (
-                                hoja.materiales_usados.map((item: any) => ( // Usa tu tipo correcto aquí
-                                    <tr key={item.id}>
-                                        <td className="px-4 py-4 text-sm text-gray-900">
-                                            {item.producto_servicio?.nombre_prestacion || '...'}
+                                hoja.hoja_insumos_basicos.map((item: any) => (
+                                    <tr key={item.id} className="hover:bg-gray-50 transition-colors">
+                                        <td className="px-6 py-4 text-sm font-medium text-gray-900">
+                                            {item.producto_servicio 
+                                                ? item.producto_servicio.nombre_prestacion 
+                                                : 'Cargando nombre...'}
                                         </td>
-                                        {/* Asumiendo que guardas la cantidad en 'dosis' o un campo 'cantidad' */}
-                                        <td className="px-4 py-4 text-sm text-gray-500">{item.cantidad || item.dosis}</td>
-                                        <td className="px-4 py-4 text-sm space-x-2 whitespace-nowrap">
+                                        
+                                        <td className="px-6 py-2">
+                                            <input 
+                                                type="number"
+                                                className="w-20 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm text-center"
+                                                defaultValue={item.cantidad} 
+                                                onBlur={(e) => handleUpdateCantidad(item.id, e.target.value, item.cantidad.toString())}
+                                                onKeyDown={(e) => {
+                                                    if (e.key === 'Enter') e.currentTarget.blur();
+                                                }}
+                                            />
+                                        </td>
+
+                                        <td className="px-6 py-4 text-sm text-right">
                                             <button
                                                 type="button"
                                                 onClick={() => handleRemoveSavedItem(item.id)}
-                                                className="text-red-600 hover:text-red-900"
+                                                className="text-red-500 hover:text-red-700 font-medium transition-colors p-2 hover:bg-red-50 rounded-full"
                                             >
-                                                Eliminar
+                                            Eliminar
                                             </button>
                                         </td>
                                     </tr>

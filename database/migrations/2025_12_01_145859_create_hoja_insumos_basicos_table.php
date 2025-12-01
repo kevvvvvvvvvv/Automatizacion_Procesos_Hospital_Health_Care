@@ -11,19 +11,19 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('hoja_generals', function (Blueprint $table) {
+        Schema::create('hoja_insumos_basicos', function (Blueprint $table) {
             $table->id();
+
+            $table->foreignId('producto_servicio_id')
+                ->constrained('producto_servicios')
+                ->onDelete('cascade');
 
             $table->foreignId('hoja_enfermeria_quirofano_id')
                 ->constrained('hoja_enfermeria_quirofanos')
                 ->onDelete('cascade');
 
-            $table->datetime('hora_inicio_cirugia');
-            $table->datetime('hora_inicio_anestesia');
-            $table->datetime('hora_inicio_paciente');
-            $table->datetime('hora_fin_cirugia');
-            $table->datetime('hora_fin_anestesia');
-            $table->datetime('hora_fin_paciente');
+            $table->integer('cantidad');
+            $table->timestamps();
         });
     }
 
@@ -32,6 +32,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('hoja_generals');
+        Schema::dropIfExists('hoja_insumos_basicos');
     }
 };

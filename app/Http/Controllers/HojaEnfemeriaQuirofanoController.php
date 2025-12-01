@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-
+use App\Http\Requests\HojaEnfermeriaQuirofanoRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
@@ -58,6 +58,7 @@ class HojaEnfemeriaQuirofanoController extends Controller
     {
         $hojasenfermeriasquirofano->load(
             'formularioInstancia.estancia.paciente',
+            'hojaInsumosBasicos.productoServicio'
         );
 
         $insumos = ProductoServicio::where('tipo','INSUMOS')->get();
@@ -70,8 +71,19 @@ class HojaEnfemeriaQuirofanoController extends Controller
         ]);
     }
 
-    public function update()
+    public function update(HojaEnfermeriaQuirofanoRequest $request,HojaEnfermeriaQuirofano $hojasenfermeriasquirofano)
     {
+        $validatedData = $request->validated();
+        try{
+            $hojasenfermeriasquirofano->update([
+                ...$validatedData
+            ]);
+
+            return Redirect::route('hojasenfermeriasquirofanos.edit', $hojasenfermeriasquirofano->id)->with('success','Se ha registrado la hora.');
+        }catch(\Exception $e){
+            Log::error('Error al registrar la hora: ' . $e->getMessage());
+            return Redirect::back()->with('error','Error al registrar la hora.');
+        }
 
     }
 
