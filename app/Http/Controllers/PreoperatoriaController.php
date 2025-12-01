@@ -118,7 +118,7 @@ class PreoperatoriaController extends Controller
         ];
 
         $viewData = [
-            'preoperatoria' => $preoperatoria,
+            'notaData' => $preoperatoria,
             'paciente' => $paciente,
             'medico' => $medico,
         ];
