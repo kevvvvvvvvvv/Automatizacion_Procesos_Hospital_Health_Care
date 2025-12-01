@@ -19,6 +19,7 @@ class FormularioCatalogo extends Model
     public const ID_NOTA_EVOLUCION = 11;
     public const ID_NOTA_PREANESTESICA = 12;
     public const ID_NOTA_POSTANESTESICA = 13;
+    public const ID_HOJA_ENFERMERIA_QUIROFANO = 14;
 
     public $incrementing = false; 
     protected $keyType = 'int';

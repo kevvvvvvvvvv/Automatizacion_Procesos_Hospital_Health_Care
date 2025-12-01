@@ -18,15 +18,13 @@ use Illuminate\Support\Facades\Redirect;
 
 class InterconsultaController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    protected $pdfGenerator;
     public function index()
     {
         //
     }
 
-     public function __construct(PdfGeneratorService $pdfGenerator)
+    public function __construct(PdfGeneratorService $pdfGenerator)
     {
         $this->pdfGenerator = $pdfGenerator;
     }
@@ -163,6 +161,7 @@ class InterconsultaController extends Controller
         'paciente' => $paciente,
         'medico' => $medico,
        ];
+
         return $this->pdfGenerator->generateStandardPdf(
             'pdfs.interconsultas',
             $viewData,

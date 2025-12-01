@@ -3,6 +3,7 @@ import { Head, router, Link } from '@inertiajs/react';
 import MainLayout from '@/layouts/MainLayout';
 import {route}  from 'ziggy-js';
 import { Edit, Trash2 } from 'lucide-react'; 
+import { Paciente } from '@/types';
 
 import { usePermission } from '@/hooks/use-permission';
 
@@ -18,16 +19,6 @@ import {
 } from '@tanstack/react-table';
 
 import AddButton from '@/components/ui/add-button';
-
-
-type Paciente = {
-    id: number;
-    curp: string;
-    nombre: string;
-    apellido_paterno: string;
-    apellido_materno: string;
-    telefono: string;
-};
 
 type IndexProps = {
     pacientes: Paciente[];

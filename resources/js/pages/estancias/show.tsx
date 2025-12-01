@@ -8,7 +8,6 @@ import MainLayout from '@/layouts/MainLayout';
 import { Estancia, Paciente, User, FormularioInstancia, Habitacion, FamiliarResponsable} from '@/types'; 
 import InfoCard from '@/components/ui/info-card';
 import InfoField from '@/components/ui/info-field';
-import pacientes from '@/routes/pacientes';
 
 interface ShowEstanciaProps {
     estancia: Estancia & {
@@ -42,6 +41,12 @@ const Show = ({ estancia }: ShowEstanciaProps) => {
             <Head title={`Detalles de estancia: ${estancia.folio}`} />
             <Link
                 href={route('pacientes.estancias.ventas.index', { paciente, estancia })}
+                className='inline-flex items-center justify-center gap-2 px-4 py-2 
+                    border border-transparent text-sm font-medium rounded-md shadow-sm 
+                    text-white 
+                    focus:outline-none focus:ring-2 focus:ring-offset-2
+                    transition'
+                style={{ backgroundColor: '#1B1C38' }}
             >
                 Ir a ventas
             </Link>
@@ -133,7 +138,7 @@ const Show = ({ estancia }: ShowEstanciaProps) => {
                                                     active ? 'bg-blue-500 text-white' : 'text-gray-900'
                                                 } group flex rounded-md items-center w-full px-2 py-2 text-sm`}
                                             >
-                                                Añadir hoja de enfermería
+                                                Añadir hoja de enfermería en hospitalizacion
                                             </Link>
                                         )}
                                     </Menu.Item>
@@ -234,6 +239,22 @@ const Show = ({ estancia }: ShowEstanciaProps) => {
                                             >
                                                 Añadir nota postanestésica
                                              
+                                            </Link>
+                                        )}
+                                    </Menu.Item>
+                                    <Menu.Item>
+                                        {({ active }) => (
+                                            <Link
+                                                href={route('pacientes.estancias.hojasenfermeriasquirofanos.store', { 
+                                                    paciente: paciente.id, 
+                                                    estancia: estancia.id 
+                                                })}
+                                                method="post" 
+                                                className={`${
+                                                    active ? 'bg-blue-500 text-white' : 'text-gray-900'
+                                                } group flex rounded-md w-full px-2 py-2 text-sm`}
+                                            >
+                                                Añadir hoja de enfermería en hospitalización
                                             </Link>
                                         )}
                                     </Menu.Item>

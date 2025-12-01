@@ -87,4 +87,9 @@ class FormularioInstancia extends Model
     {
         return $this->hasmany(notaEvolucion::class, 'id', 'id');
     }
+
+    public function hojaEnfermeriaQuirofano(): HasOne
+    {
+        return $this->hasOne(HojaEnfermeriaQuirofano::class, 'id', 'id');
+    }
 }

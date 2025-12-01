@@ -34,11 +34,9 @@ class FormularioCatalogoSeeder extends Seeder
             'route_prefix' => 'interconsultas',
         ]);
 
-        
-
         FormularioCatalogo::create([
             'id' => 4,
-            'nombre_formulario' => 'Hoja de enfermería',
+            'nombre_formulario' => 'Hoja de enfermería en hospitalización',
             'nombre_tabla_fisica' => 'hoja_enfermerias',
             'route_prefix' => 'hojasenfermerias',
         ]);
@@ -49,15 +47,13 @@ class FormularioCatalogoSeeder extends Seeder
             'nombre_tabla_fisica' => 'traslados',
             'route_prefix' => 'traslados',
         ]);
+
         FormularioCatalogo::create([
             'id' => 6,
             'nombre_formulario' => 'Preoperatoria',
             'nombre_tabla_fisica' => 'preoperatorias',
             'route_prefix' => 'preoperatorias',
         ]);
-
-    
-
         
         FormularioCatalogo::create([
             'id' => 7,
@@ -110,5 +106,15 @@ class FormularioCatalogoSeeder extends Seeder
             'nombre_tabla_fisica' => 'nota_postanestesicas',
             'route_prefix' => 'notaspostanestesicas',
         ]);
+
+        FormularioCatalogo::create([
+            'id' => 14,
+            'nombre_formulario' => 'Hoja de enfermeria en quirófano',
+            'nombre_tabla_fisica' => 'hoja_enfermeria_quirofanos',
+            'route_prefix' => 'hojasenfermeriasquirofanos',                                         
+        ]);
+
+
+        
     }
 }
