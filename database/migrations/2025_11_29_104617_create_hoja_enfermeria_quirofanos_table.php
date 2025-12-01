@@ -19,8 +19,13 @@ return new class extends Migration
                 ->on('formulario_instancias')
                 ->onDelete('cascade');
 
+            $table->datetime('hora_inicio_cirugia')->nullable();
+            $table->datetime('hora_inicio_anestesia')->nullable();
+            $table->datetime('hora_inicio_paciente')->nullable();
+            $table->datetime('hora_fin_cirugia')->nullable();
+            $table->datetime('hora_fin_anestesia')->nullable();
+            $table->datetime('hora_fin_paciente')->nullable();
             
-
             $table->timestamps();
         });
     }

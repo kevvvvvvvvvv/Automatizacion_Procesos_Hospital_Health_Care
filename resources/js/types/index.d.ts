@@ -235,7 +235,14 @@ export interface HojaEnfermeria {
 
 export interface HojaEnfermeriaQuirofano {
     id: number;
-    materiales_usados: ProductoServicio[];
+    hoja_insumos_basicos: HojaInsumosBasicos[] 
+}
+
+export interface HojaInsumosBasicos {
+    id: number;
+    cantidad:number;
+    producto_servicio_id: number;
+    producto_servicio: ProductoServicio;
 }
 
 export interface HojaTerapia {
