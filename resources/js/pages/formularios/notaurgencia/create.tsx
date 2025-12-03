@@ -41,7 +41,11 @@ const CreateNotaUrgencia: React.FC<Props> = ({ paciente, estancia }) => {
   const textAreaClasses = `w-full px-3 py-2 rounded-md shadow-sm border text-gray-900 bg-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#2a2b56] focus:border-[#2a2b56] transition`;
   const labelClasses = `block text-sm font-medium text-gray-700 mb-1`;
     return (
-    <><MainLayout>
+    <><MainLayout
+      pageTitle={`Creación de nota de urgencias`}
+      link="estancias.show"
+      
+      linkParams={estancia.id} >
       <PacienteCard
         paciente={paciente}
         estancia={estancia}
