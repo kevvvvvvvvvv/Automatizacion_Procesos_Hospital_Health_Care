@@ -46,7 +46,11 @@ const CreateTranslado: React.FC<Props> = ({ paciente, estancia }) => {
   const labelClasses = `block text-sm font-medium text-gray-700 mb-1`;
 
   return (
-    <MainLayout>
+    <MainLayout
+    pageTitle={`Creación de nota de traslado`}
+      link="estancias.show"
+      
+      linkParams={estancia.id} >
       <PacienteCard
         paciente={paciente}
         estancia={estancia}

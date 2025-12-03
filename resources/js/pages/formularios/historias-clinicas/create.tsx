@@ -314,9 +314,17 @@ const Create: CreateComponent = ({ preguntas, paciente, estancia }) => {
 };
 
 Create.layout = (page: React.ReactElement) => {
-    return (
-        <MainLayout pageTitle="Creación de Historia Clínica" children={page} />
-    );
+    const { estancia, paciente } = page.props as CreateProps;
+
+  return (
+    <MainLayout
+      pageTitle={`Creación de Historia Clínica`}
+      link="estancias.show"
+      linkParams={estancia.id} 
+    >
+      {page}
+    </MainLayout>
+  );
 };
 
 export default Create;

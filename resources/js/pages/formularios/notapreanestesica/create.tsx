@@ -89,7 +89,11 @@ const CreateNotaPreanestesica: React.FC<Props> = ({ paciente, estancia }) => {
     <>
       <Head title="Nota Preanestésica" />
 
-      <MainLayout>
+      <MainLayout
+      pageTitle={`Creación de nota preanestesica`}
+      link="estancias.show"
+      
+      linkParams={estancia.id} >
         <PacienteCard paciente={paciente} estancia={estancia} />
 
         <FormLayout

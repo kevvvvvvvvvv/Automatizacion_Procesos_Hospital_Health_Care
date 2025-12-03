@@ -148,9 +148,18 @@ const NotaPostanestesicaForm: NotaPostanestesicaComponent = ({ paciente, estanci
 }
 
 NotaPostanestesicaForm.layout = (page: React.ReactElement) => {
-    return (
-        <MainLayout pageTitle="Nota Post-Anestésica" children={page}/>
-    )
+    const { estancia, paciente } = page.props as Props;
+
+  return (
+    <MainLayout
+      pageTitle={`Creación de nota postanestesica`}
+      link="estancias.show"
+      linkParams={estancia.id} 
+    >
+      {page}
+    </MainLayout>
+  );
 }
+
 
 export default NotaPostanestesicaForm;
