@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { Head, router } from '@inertiajs/react';
+import { Head, router, Link} from '@inertiajs/react';
 import { route } from 'ziggy-js';
 import {
     useReactTable,
@@ -11,9 +11,11 @@ import {
     flexRender,
     SortingState,
 } from '@tanstack/react-table';
+
 import MainLayout from '@/layouts/MainLayout';
 import PacienteCard from '@/components/paciente-card';
 import { Paciente, Estancia, Venta } from '@/types'; 
+import { Pencil } from 'lucide-react';
 
 
 interface IndexProps {
@@ -75,20 +77,18 @@ const Index: IndexComponent = ({ paciente, estancia, ventas }) => {
                 id: 'actions',
                 header: 'Acciones',
                 cell: ({ row }) => (
-                    <div className="flex space-x-2">
-                        <button
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                router.get(route('pacientes.estancias.ventas.edit', { 
-                                    paciente: paciente.id, 
-                                    estancia: estancia.id, 
-                                    venta: row.original.id 
-                                }));
-                            }}
-                            className="px-3 py-1 bg-blue-500 text-white rounded text-sm hover:bg-blue-600"
-                        >
-                            Editar
-                        </button>
+                    <div className="flex items-center space-x-2">
+                         
+                        <Link
+                                href={route('ventas.edit', {venta: row.original.id })}
+                                onClick={(e) => {
+                                    // evita que el click burbujee al <tr> padre
+                                    e.stopPropagation();
+                                }}
+                                className="p-2 text-blue-500 hover:bg-blue-100 hover:text-blue-700 rounded-full transition"
+                                        >
+                            <Pencil size={18}/>
+                        </Link>
                     </div>
                 ),
             },
@@ -205,9 +205,17 @@ const Index: IndexComponent = ({ paciente, estancia, ventas }) => {
 };
 
 Index.layout = (page: React.ReactElement) => {
-    return (
-        <MainLayout pageTitle="Consulta de ventas" children={page} />
-    );
+  const { estancia, paciente } = page.props as IndexProps;
+
+  return (
+    <MainLayout
+      pageTitle={`Detalles de Interconsulta de ${paciente.nombre} ${paciente.apellido_paterno} ${paciente.apellido_materno}`}
+      link="estancias.show"
+      linkParams={estancia.id} 
+    >
+      {page}
+    </MainLayout>
+  );
 };
 
 export default Index;

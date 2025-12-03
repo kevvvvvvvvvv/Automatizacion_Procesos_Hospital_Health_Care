@@ -284,7 +284,7 @@ const Show = ({ estancia }: ShowEstanciaProps) => {
                                         href={route(`${formulario.catalogo.route_prefix}.edit`, formulario.id)}
                                         className="p-2 text-blue-500 hover:bg-blue-100 hover:text-blue-700 rounded-full transition"
                                         title="Editar Hoja Frontal"
-                                    >
+                                    > 
                                         <Pencil size={18} />
                                     </Link>
 

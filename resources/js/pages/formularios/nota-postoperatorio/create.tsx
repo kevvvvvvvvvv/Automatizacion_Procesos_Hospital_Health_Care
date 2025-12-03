@@ -538,9 +538,17 @@ const NotaPostoperatoriaForm: NotaPostoperatoriaComponent= ({ paciente, estancia
 }
 
 NotaPostoperatoriaForm.layout = (page: React.ReactElement) =>{
-    return (
-        <MainLayout pageTitle="Creación nota postoperatoria" children={page}/>
-    )
+    const { estancia, paciente } = page.props as Props;
+
+  return (
+    <MainLayout
+      pageTitle={`Creación de nota postoperatoria`}
+      link="estancias.show"
+      linkParams={estancia.id} 
+    >
+      {page}
+    </MainLayout>
+  );
 }
 
 export default NotaPostoperatoriaForm;

@@ -245,7 +245,16 @@ const CreateValoracionPreoperatoria: React.FC<Props> = ({ paciente, estancia }) 
 };
 
 CreateValoracionPreoperatoria.layout = (page: React.ReactElement) => {
-  return <MainLayout pageTitle="Creación de Valoración Preoperatoria" children={page} />;
-};
+const { estancia, paciente } = page.props as Props;
+
+  return (
+    <MainLayout
+      pageTitle={`Creación de nota preoperatoria`}
+      link="estancias.show"
+      linkParams={estancia.id} 
+    >
+      {page}
+    </MainLayout>
+  );};
 
 export default CreateValoracionPreoperatoria;
