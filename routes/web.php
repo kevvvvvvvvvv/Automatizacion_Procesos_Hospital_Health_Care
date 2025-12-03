@@ -61,7 +61,7 @@ Route::resource('pacientes.estancias', EstanciaController::class)->shallow()->mi
 Route::resource('pacientes.estancias.hojasfrontales', FormularioHojaFrontalController::class)->shallow()->parameters(['hojasfrontales' => 'hojaFrontal'])->middleware('auth');
 Route::resource('pacientes.estancias.historiasclinicas', FormularioHistoriaClinicaController::class)->shallow()->middleware('auth');
 Route::resource('pacientes.estancias.hojasenfermerias',FormularioHojaEnfermeriaController::class)->shallow()-> middleware('auth');
-Route::resource('pacientes.estancias.ventas', VentaController::class)->shallow();
+Route::resource('pacientes.estancias.ventas', VentaController::class)->shallow()->middleware('auth');
 Route::resource('pacientes.estancias.ventas.detallesventas',DetalleVentaController::class)->shallow()->middleware ('auth');
 Route::resource('pacientes.estancias.interconsultas.honorarios', HonorarioController::class)->shallow();
 Route::resource('pacientes.estancias.traslados', TrasladoController::class)->shallow()->middleware('auth');
@@ -76,6 +76,10 @@ Route::resource('pacientes.estancias.hojasenfermeriasquirofanos',HojaEnfemeriaQu
 
 Route::post('hojasterapiasiv/{hojasenfermeria}',[FormularioHojaTerapiaIVController::class,'store'])->name('hojasterapiasiv.store');
 Route::patch('hojasterapiasiv/{hojasenfermeria}/{hojasterapiasiv}',[FormularioHojaTerapiaIVController::class,'update'])->name('hojasterapiasiv.update');
+
+Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
+    ->name('logout');
+
 
 Route::prefix('pacientes/{paciente}/estancias/{estancia}')->group(function () {
     Route::get('notasegresos/create', [NotasEgresoController::class, 'create'])->name('pacientes.estancias.notasegresos.create');

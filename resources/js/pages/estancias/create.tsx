@@ -8,6 +8,7 @@ import { Estancia, Paciente, Habitacion, FamiliarResponsable } from '@/types';
 import { route } from 'ziggy-js';
 import PrimaryButton from '@/components/ui/primary-button';
 import FormLayout from '@/components/form-layout';
+import { Props } from 'react-select';
 
 
 interface CreateEstanciaProps {
@@ -214,10 +215,17 @@ const Create = ({ paciente, habitaciones }: CreateEstanciaProps) => {
 };
 
 Create.layout = (page: React.ReactElement) => {
-    const { paciente } = page.props as CreateEstanciaProps;
-    return (
-        <MainLayout pageTitle={`Registrar Estancia para: ${paciente.nombre}`} children={page} />
-    );
+     const {  paciente } = page.props as CreateEstanciaProps;
+
+  return (
+    <MainLayout
+      pageTitle={`Registrar de estancia`}
+      link="pacientes.show"
+      linkParams={paciente.id} 
+    >
+      {page}
+    </MainLayout>
+  );
 };
 
 export default Create;

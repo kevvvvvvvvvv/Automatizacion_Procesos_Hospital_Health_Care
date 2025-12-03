@@ -57,7 +57,11 @@ const CreateNotaEvolucion: React.FC<Props> = ({ paciente, estancia, soluciones, 
   const labelClasses = `block text-sm font-medium text-gray-700 mb-1`;
 
   return (
-    <MainLayout>
+    <MainLayout
+    pageTitle={`Creación de nota postanestesica`}
+      link="estancias.show"
+      
+      linkParams={estancia.id} >
       <PacienteCard
         paciente={paciente}
         estancia={estancia}

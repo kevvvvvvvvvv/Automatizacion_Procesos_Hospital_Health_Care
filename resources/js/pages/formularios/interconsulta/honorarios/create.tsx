@@ -44,11 +44,9 @@ const CreateHonorario: React.FC<Props> = ({ paciente, estancia, interconsulta })
           label="Monto"
           name="monto"
           type="number"
-          step="0.01"
           value={data.monto}
           onChange={(e) => setData('monto', e.target.value)}
           placeholder="Ej: 1500.00"
-          min={0}
           error={errors.monto}
         />
         <div className="col-span-full">
