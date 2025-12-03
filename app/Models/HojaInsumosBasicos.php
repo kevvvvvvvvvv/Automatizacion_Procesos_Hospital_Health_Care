@@ -5,24 +5,24 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class HojaGeneral extends Model
+class HojaInsumosBasicos extends Model
 {
-    protected $timestamp = false;
-
     protected $fillable = [
         'id',
+        'producto_servicio_id',
         'hoja_enfermeria_quirofano_id',
-        'hora_inicio_cirugia',
-        'hora_inicio_anestesia',
-        'hora_inicio_paciente',
-        'hora_fin_cirugia',
-        'hora_fin_anestesia',
-        'hora_fin_paciente'
+        'cantidad',
     ];
+
+    public function productoServicio(): BelongsTo
+    {
+        return $this->belongsTo(ProductoServicio::class);
+    }
 
     public function hojaEnfermeriaQuirofano(): BelongsTo
     {
         return $this->belongsTo(HojaEnfermeriaQuirofano::class);
     }
 
+    
 }
