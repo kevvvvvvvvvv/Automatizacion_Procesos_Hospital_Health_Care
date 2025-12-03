@@ -3,17 +3,52 @@ import { router } from '@inertiajs/react';
 import { route } from 'ziggy-js';
 import Swal from 'sweetalert2';
 
-// Componentes UI
 import PrimaryButton from '@/components/ui/primary-button';
-// IMPORTAMOS TU COMPONENTE EXISTENTE
 import ContadorTiempo from '@/components/counter-time'; 
 
-// Define la interfaz de la hoja para estos campos
 interface HojaQuirofano {
     id: number;
-    hora_ingreso_quirofano?: string | null;
+
+    hora_inicio_paciente?: string | null;
     hora_inicio_anestesia?: string | null;
     hora_inicio_cirugia?: string | null;
+
+    hora_fin_paciente?: string | null;
+    hora_fin_anestesia?: string | null;
+    hora_fin_cirugia?: string | null;
+}
+
+interface Props {
+    hoja: HojaQuirofano;
+}
+
+const parseFechaMySQL = (fecha: string | null | undefined) => {
+    if (!fecha) return null;
+    return fecha.replace(' ', 'T');
+};
+
+const getLocalISOString = () => {
+    const fecha = new Date();
+    const fechaLocal = new Date(fecha.getTime() - (fecha.getTimezoneOffset() * 60000));
+    return fechaLocal.toISOString().slice(0, 19).replace('T', ' ');
+};
+
+const formatTimeStatic = (isoString: string | null) => {
+    const fecha = parseFechaMySQL(isoString);
+    if (!fecha) return '--:--';
+    return new Date(fecha).toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' });
+};
+
+interface HojaQuirofano {
+    id: number;
+    hora_inicio_paciente?: string | null;
+    hora_fin_paciente?: string | null;
+    
+    hora_inicio_anestesia?: string | null;
+    hora_fin_anestesia?: string | null;
+
+    hora_inicio_cirugia?: string | null;
+    hora_fin_cirugia?: string | null;
 }
 
 interface Props {
@@ -22,179 +57,155 @@ interface Props {
 
 const TiemposQuirofanoForm: React.FC<Props> = ({ hoja }) => {
 
-    // Función para registrar el tiempo actual (PATCH inmediato)
-    const handleRegistrarTiempo = (campo: string, etiqueta: string) => {
+const handleRegistrarTiempo = (campo: string, esInicio: boolean = true, tituloEtapa: string) => {    
+    const accion = esInicio ? 'Iniciar' : 'Finalizar';
         
-        const now_iso = new Date().toISOString();
+        Swal.fire({
+            title: `¿${accion} ${tituloEtapa}?`,
+            text: `Se registrará la hora exacta de ${accion.toLowerCase()}.`,
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: esInicio ? '#16a34a' : '#1f2937',
+            cancelButtonColor: '#d33',
+            confirmButtonText: `Sí, ${accion.toLowerCase()}`,
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                const now_mysql = getLocalISOString();
 
-        router.patch(route('hojasquirofano.update', { hoja: hoja.id }), {
-            [campo]: now_iso
-        }, {
-            preserveScroll: true,
-            onSuccess: () => {
-                // Opcional: Feedback visual sutil
-            },
-            onError: (errors) => {
-                Swal.fire('Error', `No se pudo registrar ${etiqueta}: ` + JSON.stringify(errors), 'error');
+                if (esInicio) {
+                    router.patch(route('hojasenfermeriasquirofanos.update', { hojasenfermeriasquirofano: hoja.id }), {
+                        [campo]: now_mysql
+                    }, { preserveScroll: true });
+                } else {
+                    router.patch(route('hojasenfermeriasquirofanos.update', { 
+                        hojasenfermeriasquirofano: hoja.id, 
+                    }), {
+                        [campo]: now_mysql
+                    }, { preserveScroll: true });
+                }
             }
         });
     };
 
-    // Función para reiniciar/borrar el tiempo (en caso de error)
-    const handleResetTiempo = (campo: string) => {
-        Swal.fire({
-            title: '¿Reiniciar tiempo?',
-            text: "Se borrará la hora registrada y el cronómetro se detendrá.",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#d33',
-            cancelButtonColor: '#3085d6',
-            confirmButtonText: 'Sí, borrar',
-            cancelButtonText: 'Cancelar'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                router.patch(route('hojasquirofano.update', { hoja: hoja.id }), {
-                    [campo]: null // Enviamos null para borrar
-                }, { preserveScroll: true });
-            }
-        });
-    }
+    const TarjetaTiempo = ({ 
+        titulo, 
+        color, 
+        inicio, 
+        fin, 
+        campoInicio, 
+        campoFin, 
+        habilitado = true,
+        mensajeBloqueo = ''
+    }: any) => {
+        
+        const estilos = {
+            blue: 'bg-blue-50 border-blue-200 text-blue-800',
+            green: 'bg-green-50 border-green-200 text-green-800',
+            red: 'bg-red-50 border-red-200 text-red-800',
+            gray: 'bg-gray-50 border-gray-200 text-gray-800'
+        };
 
-    // Función auxiliar para mostrar la hora estática (ej: 14:30)
-    const formatTimeStatic = (isoString: string) => {
-        return new Date(isoString).toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' });
+        const colorActual = inicio ? estilos[color as keyof typeof estilos] : estilos.gray;
+
+        return (
+            <div className={`flex flex-col items-center p-4 border rounded-lg transition-colors ${colorActual}`}>
+                <h4 className="font-bold mb-3 text-center">{titulo}</h4>
+
+                {!habilitado ? (
+                     <div className="text-center py-4">
+                        <p className="text-sm text-gray-400 mb-2">Esperando etapa anterior...</p>
+                        <span className="text-xs text-red-400">{mensajeBloqueo}</span>
+                     </div>
+                ) : (
+                    <>
+                        {!inicio && (
+                            <PrimaryButton 
+                                type="button"
+                                // Aquí SÍ usamos campoInicio
+                                onClick={() => handleRegistrarTiempo(campoInicio, true, titulo)}
+                                className={`w-full justify-center py-4 text-lg ${color === 'red' ? 'bg-red-600 hover:bg-red-700' : color === 'green' ? 'bg-green-600 hover:bg-green-700' : ''}`}
+                            >
+                                Iniciar
+                            </PrimaryButton>
+                        )}
+
+                        {inicio && (
+                            <div className="flex flex-col items-center gap-2 w-full animate-fade-in">
+                                <div className="text-sm opacity-80">
+                                    Inicio: <strong>{formatTimeStatic(inicio)}</strong>
+                                </div>
+
+                                <div className="text-3xl my-2 font-mono font-bold">
+                                    <ContadorTiempo 
+                                        fechaInicioISO={parseFechaMySQL(inicio)} 
+                                        fechaFinISO={parseFechaMySQL(fin)} 
+                                    />
+                                </div>
+
+                                {!fin && (
+                                    <PrimaryButton 
+                                        type="button"
+                                        onClick={() => handleRegistrarTiempo(campoFin, false, titulo)}
+                                        className="w-full justify-center py-2 bg-gray-800 hover:bg-gray-900 text-white mt-2"
+                                    >
+                                        Finalizar / Detener
+                                    </PrimaryButton>
+                                )}
+
+                                {fin && (
+                                    <div className="text-sm opacity-80 text-center">
+                                        Fin: <strong>{formatTimeStatic(fin)}</strong>
+                                        <div className="text-xs text-green-600 font-bold mt-1">¡Registro Completado!</div>
+                                    </div>
+                                )}
+
+                            </div>
+                        )}
+                    </>
+                )}
+            </div>
+        );
     };
 
     return (
         <div className="bg-white p-6 rounded-lg shadow-sm border mb-6">
             <h3 className="text-lg font-semibold mb-4 text-gray-800 border-b pb-2">
-                Control de Tiempos Quirúrgicos
+                Control de tiempos quirúrgicos
             </h3>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 
-                {/* --- 1. TARJETA: INGRESO A QUIRÓFANO --- */}
-                <div className={`flex flex-col items-center p-4 border rounded-lg transition-colors ${hoja.hora_ingreso_quirofano ? 'bg-blue-50 border-blue-200' : 'bg-gray-50'}`}>
-                    <h4 className="font-bold text-gray-700 mb-3">Ingreso a Quirófano</h4>
-                    
-                    {hoja.hora_ingreso_quirofano ? (
-                        <div className="flex flex-col items-center gap-2 w-full animate-fade-in">
-                            {/* Hora estática */}
-                            <div className="text-sm text-gray-600">
-                                Hora registro: <strong>{formatTimeStatic(hoja.hora_ingreso_quirofano)}</strong>
-                            </div>
-                            
-                            {/* TU COMPONENTE DE CONTADOR */}
-                            <div className="text-2xl my-2">
-                                <ContadorTiempo 
-                                    fechaInicioISO={hoja.hora_ingreso_quirofano} 
-                                    fechaFinISO={null} // Null para que siga contando "en vivo"
-                                />
-                            </div>
+                <TarjetaTiempo 
+                    titulo="Paciente en quirófano"
+                    color="blue"
+                    inicio={hoja.hora_inicio_paciente}
+                    fin={hoja.hora_fin_paciente}
+                    campoInicio="hora_inicio_paciente"
+                    campoFin="hora_fin_paciente"
+                />
 
-                             <button 
-                                type="button"
-                                onClick={() => handleResetTiempo('hora_ingreso_quirofano')}
-                                className="text-xs text-red-400 hover:text-red-600 underline mt-1"
-                            >
-                                Corregir / Reiniciar
-                            </button>
-                        </div>
-                    ) : (
-                        <PrimaryButton 
-                            type="button"
-                            onClick={() => handleRegistrarTiempo('hora_ingreso_quirofano', 'Ingreso a Quirófano')}
-                            className="w-full justify-center py-4 text-lg"
-                        >
-                            Registrar Ingreso
-                        </PrimaryButton>
-                    )}
-                </div>
+                <TarjetaTiempo 
+                    titulo="Anestesia"
+                    color="green"
+                    inicio={hoja.hora_inicio_anestesia}
+                    fin={hoja.hora_fin_anestesia}
+                    campoInicio="hora_inicio_anestesia"
+                    campoFin="hora_fin_anestesia"
+                    habilitado={!!hoja.hora_inicio_paciente}
+                    mensajeBloqueo="Requiere ingreso de paciente"
+                />
 
-                {/* --- 2. TARJETA: INICIO DE ANESTESIA --- */}
-                <div className={`flex flex-col items-center p-4 border rounded-lg transition-colors ${hoja.hora_inicio_anestesia ? 'bg-green-50 border-green-200' : 'bg-gray-50'}`}>
-                    <h4 className="font-bold text-gray-700 mb-3">Inicio de Anestesia</h4>
-                    
-                    {hoja.hora_inicio_anestesia ? (
-                        <div className="flex flex-col items-center gap-2 w-full animate-fade-in">
-                            <div className="text-sm text-gray-600">
-                                Hora registro: <strong>{formatTimeStatic(hoja.hora_inicio_anestesia)}</strong>
-                            </div>
-                            
-                            <div className="text-2xl my-2">
-                                <ContadorTiempo 
-                                    fechaInicioISO={hoja.hora_inicio_anestesia} 
-                                    fechaFinISO={null} 
-                                />
-                            </div>
-
-                            <button 
-                                type="button"
-                                onClick={() => handleResetTiempo('hora_inicio_anestesia')}
-                                className="text-xs text-red-400 hover:text-red-600 underline mt-1"
-                            >
-                                Corregir / Reiniciar
-                            </button>
-                        </div>
-                    ) : (
-                        <div className="w-full">
-                            <PrimaryButton 
-                                type="button"
-                                onClick={() => handleRegistrarTiempo('hora_inicio_anestesia', 'Inicio de Anestesia')}
-                                // Opcional: Deshabilitar si no hay ingreso previo
-                                disabled={!hoja.hora_ingreso_quirofano} 
-                                className="w-full justify-center py-4 text-lg bg-green-600 hover:bg-green-700 disabled:bg-gray-300"
-                            >
-                                Iniciar Anestesia
-                            </PrimaryButton>
-                            {!hoja.hora_ingreso_quirofano && (
-                                <p className="text-xs text-center text-gray-400 mt-2">Requiere ingreso previo</p>
-                            )}
-                        </div>
-                    )}
-                </div>
-
-                {/* --- 3. TARJETA: INICIO DE CIRUGÍA --- */}
-                <div className={`flex flex-col items-center p-4 border rounded-lg transition-colors ${hoja.hora_inicio_cirugia ? 'bg-red-50 border-red-200' : 'bg-gray-50'}`}>
-                    <h4 className="font-bold text-gray-700 mb-3">Inicio de Cirugía</h4>
-                    
-                    {hoja.hora_inicio_cirugia ? (
-                        <div className="flex flex-col items-center gap-2 w-full animate-fade-in">
-                            <div className="text-sm text-gray-600">
-                                Hora registro: <strong>{formatTimeStatic(hoja.hora_inicio_cirugia)}</strong>
-                            </div>
-                            
-                            <div className="text-2xl my-2">
-                                <ContadorTiempo 
-                                    fechaInicioISO={hoja.hora_inicio_cirugia} 
-                                    fechaFinISO={null} 
-                                />
-                            </div>
-
-                            <button 
-                                type="button"
-                                onClick={() => handleResetTiempo('hora_inicio_cirugia')}
-                                className="text-xs text-red-400 hover:text-red-600 underline mt-1"
-                            >
-                                Corregir / Reiniciar
-                            </button>
-                        </div>
-                    ) : (
-                        <div className="w-full">
-                            <PrimaryButton 
-                                type="button"
-                                onClick={() => handleRegistrarTiempo('hora_inicio_cirugia', 'Inicio de Cirugía')}
-                                disabled={!hoja.hora_inicio_anestesia}
-                                className="w-full justify-center py-4 text-lg bg-red-600 hover:bg-red-700 disabled:bg-gray-300"
-                            >
-                                Iniciar Cirugía
-                            </PrimaryButton>
-                            {!hoja.hora_inicio_anestesia && (
-                                <p className="text-xs text-center text-gray-400 mt-2">Requiere anestesia previa</p>
-                            )}
-                        </div>
-                    )}
-                </div>
+                <TarjetaTiempo 
+                    titulo="Cirugía"
+                    color="red"
+                    inicio={hoja.hora_inicio_cirugia}
+                    fin={hoja.hora_fin_cirugia}
+                    campoInicio="hora_inicio_cirugia"
+                    campoFin="hora_fin_cirugia"
+                    habilitado={!!hoja.hora_inicio_anestesia}
+                    mensajeBloqueo="Requiere inicio de anestesia"
+                />
 
             </div>
         </div>
