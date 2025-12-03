@@ -28,7 +28,6 @@ const MaterialesForm: React.FC<Props> = ({ hoja, materiales }) => {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-
         if (!data.material_id || !data.cantidad) {
             Swal.fire('Error', 'Selecciona material y cantidad', 'warning');
             return;
@@ -43,9 +42,8 @@ const MaterialesForm: React.FC<Props> = ({ hoja, materiales }) => {
     const handleUpdateCantidad = (materialId: number, nuevaCantidad: string, cantidadAnterior: string) => {
         if (nuevaCantidad === cantidadAnterior) return;
 
-        router.patch(route('hojasmateriales.update', { 
-            hojasenfermeria: hoja.id, 
-            material: materialId 
+        router.patch(route('hojasinsumosbasicos.update', { 
+            hojasinsumosbasico: materialId 
         }), {
             cantidad: nuevaCantidad
         }, {
@@ -64,17 +62,14 @@ const MaterialesForm: React.FC<Props> = ({ hoja, materiales }) => {
             confirmButtonText: 'Sí, eliminar'
         }).then((result) => {
             if (result.isConfirmed) {
-                router.delete(route('hojasmateriales.destroy', { 
-                    hojaenfermeria: hoja.id,
-                    material: itemId
+                router.delete(route('hojasinsumosbasicos.destroy', { 
+                    hojasinsumosbasico: itemId
                 }), {
                     preserveScroll: true,
                 });
             }
         });
     }
-
-    console.log("Datos de la hoja recibidos:", hoja);
     return (
 
         <div>

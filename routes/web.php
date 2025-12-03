@@ -92,7 +92,8 @@ Route::patch('hojasmedicamentos/{hojasenfermeria}/{hojasmedicamento}',[Formulari
 
 //Rutas Hoja de enfermeria en quirofano
 Route::post('hojasinsumosbasicos/{hojasenfermeriasquirofano}', [FormularioHojaInsumosBasicosController::class, 'store'])->name('hojasinsumosbasicos.store')->middleware('auth');
-Route::post('hojasinsumosbasicos/{hojasinsumosbasicos}', [FormularioHojaInsumosBasicosController::class, 'update'])->name('hojasinsumosbasicos.update')->middleware('auth');
+Route::patch('hojasinsumosbasicos/{hojasinsumosbasico}', [FormularioHojaInsumosBasicosController::class, 'update'])->name('hojasinsumosbasicos.update')->middleware('auth');
+Route::delete('hojasinsumosbasicos/{hojasinsumosbasico}', [FormularioHojaInsumosBasicosController::class, 'delete'])->name('hojasinsumosbasicos.destroy')->middleware('auth');
 
 Route::get(
     '/pacientes/{paciente}/estancias/{estancia}/notas-urgencias/{notaUrgencia}',
