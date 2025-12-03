@@ -252,7 +252,7 @@ const Show = ({ estancia }: ShowEstanciaProps) => {
                                                 method="post" 
                                                 className={`${
                                                     active ? 'bg-blue-500 text-white' : 'text-gray-900'
-                                                } group flex rounded-md w-full px-2 py-2 text-sm`}
+                                                } group flex rounded-md text-left w-full px-2 py-2 text-sm`}
                                             >
                                                 Añadir hoja de enfermería en hospitalización
                                             </Link>

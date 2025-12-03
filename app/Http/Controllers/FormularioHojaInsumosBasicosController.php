@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\HojaInsumosBasicosRequest;
 use App\Models\HojaEnfermeriaQuirofano;
 use App\Models\HojaInsumosBasicos;
 use Exception;
@@ -11,7 +12,7 @@ use Log;
 
 class FormularioHojaInsumosBasicosController extends Controller
 {
-    public function store(Request $request, HojaEnfermeriaQuirofano $hojasenfermeriasquirofano)
+    public function store(HojaInsumosBasicosRequest $request, HojaEnfermeriaQuirofano $hojasenfermeriasquirofano)
     {
         try{
             HojaInsumosBasicos::create([
@@ -27,8 +28,25 @@ class FormularioHojaInsumosBasicosController extends Controller
         }
     }
 
-    public function update()
+    public function update(HojaInsumosBasicosRequest $request, HojaInsumosBasicos $hojasinsumosbasico)
     {
+        try{
+            $hojasinsumosbasico->update($request->validated());
+            return Redirect::back()->with('success','Se ha actualizado la hoja de insumos en quirófano.');
+        }catch(\Exception $e){
+            Log::error('Error al actualizar la hoja de insumos en quirófano: '. $e->getMessage());
+            return Redirect::back()->with('error','Error al actualizar la hoja de insumos en quirófano.');
+        } 
+    }
 
+    public function delete(HojaInsumosBasicos $hojasinsumosbasico)
+    {
+        try{
+            $hojasinsumosbasico->delete();
+            return Redirect::back()->with('success','Se ha eliminado el registro.');
+        }catch(\Exception $e){
+            Log::error('Error al eliminar el registro: '. $e->getMessage());
+            return Redirect::back()->with('error','Error al eliminar el registro.');
+        } 
     }
 }

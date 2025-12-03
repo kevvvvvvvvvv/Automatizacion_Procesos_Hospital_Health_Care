@@ -235,6 +235,12 @@ export interface HojaEnfermeria {
 
 export interface HojaEnfermeriaQuirofano {
     id: number;
+    hora_inicio_cirugia: string;
+    hora_inicio_anestesia: string;
+    hora_inicio_paciente: string;
+    hora_fin_cirugia: string;
+    hora_fin_anestesia: string;
+    hora_fin_paciente: string;
     hoja_insumos_basicos: HojaInsumosBasicos[] 
 }
 
