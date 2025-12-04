@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('nombre_prestacion',200);
             $table->decimal('importe', 8, 2);
             $table->integer('cantidad')->nullable();
+            $table->decimal('iva',8,2)->default(16);
         });
     }
 

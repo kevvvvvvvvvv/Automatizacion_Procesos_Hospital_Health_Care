@@ -44,6 +44,9 @@ class ProductoServicioSeeder extends Seeder
                     'nombre_prestacion' => trim($record['nombre_prestacion'] ?? ''),
                     'importe'           => isset($record['importe']) ? floatval(str_replace(',', '', $record['importe'])) : 0,
                     'cantidad'          => empty($record['cantidad']) ? null : (int)$record['cantidad'],
+                    'iva' => empty($record['iva']) 
+                                ? null 
+                                : (float)str_replace('%', '', $record['iva']),
                 ];
 
                 if (count($dataToInsert) >= $chunkSize) {

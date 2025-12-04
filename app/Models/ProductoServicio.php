@@ -19,6 +19,7 @@ class ProductoServicio extends Model
         'nombre_prestacion',
         'importe',
         'cantidad',
+        'iva'
     ];
 
     public $timestamps = false;
