@@ -22,12 +22,12 @@ class VentaService
             'user_id' => $userId,
         ]);
 
+        $subtotal = 0; 
         $total = 0;
 
         foreach ($items as $item) {
             $producto = ProductoServicio::findOrFail($item['id']);
             $cantidad = $item['cantidad'];
-
 
             if ($producto->tipo !== 'SERVICIO' && $producto->cantidad >= $cantidad) {
                 $producto->decrement('cantidad', $cantidad);
@@ -41,13 +41,13 @@ class VentaService
                 'venta_id' => $venta->id,
                 'producto_servicio_id' => $producto->id,
             ]);
-
-            $total += $detalleVenta->subtotal;
+            $subtotal += $detalleVenta->subtotal;
+            $total += ($detalleVenta->subtotal * (1 + $producto->iva/100));
         }
 
         $venta->update([
-            'subtotal' => $total,
-            'total' => $total * (ProductoServicio::IVA),
+            'subtotal' => $subtotal,
+            'total' => $total,
         ]);
 
         return $venta;
@@ -72,10 +72,12 @@ class VentaService
         ]);
 
         $nuevoSubtotal = $venta->detalles()->sum('subtotal');
-        
+        $totalNuevoItem = $detalleVenta->subtotal * (1 + $producto->iva/100);
+        $nuevoTotalVenta = $venta->total + $totalNuevoItem;
+
         $venta->update([
             'subtotal' => $nuevoSubtotal,
-            'total' => $nuevoSubtotal * (ProductoServicio::IVA),
+            'total' => $nuevoTotalVenta,
         ]);
 
         return $venta;
