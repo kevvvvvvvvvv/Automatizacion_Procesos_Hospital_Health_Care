@@ -90,7 +90,7 @@ const Show = ({ estancia }: ShowEstanciaProps) => {
             </InfoCard>
             
             <div className="mt-8">
-                { (hasRole('enfermera(o)') || hasRole('medico') || hasRole('medico especialista') || hasRole('administrador')) &&
+                {(hasRole('enfermera(o)') || hasRole('medico') || hasRole('medico especialista') || hasRole('administrador')) && (
                 <div className="flex justify-between items-center mb-4">
                     <h2 className="text-xl font-semibold">Formularios registrados</h2>
                     <div className="relative inline-block text-left">
@@ -287,10 +287,8 @@ const Show = ({ estancia }: ShowEstanciaProps) => {
                             </Menu.Items>
                         </Menu>
                     </div>
-                </div>
+                </div>)}
             </div>
-
-
 
 
             <div className="mt-8">
@@ -352,8 +350,8 @@ const Show = ({ estancia }: ShowEstanciaProps) => {
                         </div>
                     </div>
                     <div className="space-y-4">
-                                {consentimiento && consentimiento.length > 0 ? (
-                                    consentimiento.map((c) => {
+                                {estancia.consentimiento && estancia.consentimiento.length > 0 ? (
+                                    estancia.consentimiento.map((c) => {
                                         const raw = c.route_pdf; // 'pdfs/consentimiento/Consentimiento_informado_hospitalizacion.blade.php'
                                         const normalized = raw
                                         .replace('consentimiento/', '')
@@ -386,7 +384,7 @@ const Show = ({ estancia }: ShowEstanciaProps) => {
                                                         rel="noreferrer"
                                                         className="p-2 text-red-500 hover:bg-red-100 hover:text-red-700 rounded-full transition"
                                                         title="Ver PDF"
-                                                        >|
+                                                        >
                                                         <Printer size={18} />
                                                     </a>
                                                 </div>
