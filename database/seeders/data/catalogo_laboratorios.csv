@@ -1,0 +1,97 @@
+,,,,,
+,BIOMETRIA HEMATICA,Laboratorio,Hematología,1,$110.00
+,VELOCIDAD DE SEDIMENTACIÓN GLOBULAR,Laboratorio,Hematología,1,$80.00
+,GRUPO SANGUINEO Y RH,Laboratorio,Hematología,1,$80.00
+,PRUEBA INMUNOLOGICA DE EMBARAZO (SANGRE U ORINA),Laboratorio,Hematología,1,$100.00
+,COOMBS DIRECTO,Laboratorio,Hematología,1,
+,COPROLOGICO,Laboratorio,Parasitología,1,$400.00
+,COPROPARASITOSCÓPICO,Laboratorio,Parasitología,1,
+,CITOLOGÍA DE MOCO FECAL,Laboratorio,Parasitología,1,$180.00
+,SANGRE OCULTA EN HECES,Laboratorio,Parasitología,1,$200.00
+,CALPROCTECTINA,Laboratorio,Parasitología,1,
+,PERFIL TIROIDEO BASICO,Laboratorio,Hormonas,1,$650.00
+,PERFIL TIROIDEO I,Laboratorio,Hormonas,1,$790.00
+,PERFIL GINECOLOGICO,Laboratorio,Hormonas,1,$900.00
+,PERFIL HORMONAL,Laboratorio,Hormonas,1,"$1,390.00"
+,TESTOSTERONA,Laboratorio,Hormonas,1,
+,PROGESTERONA,Laboratorio,Hormonas,1,
+,PSA TOTAL,Laboratorio,Hormonas,1,$320.00
+,PSA LIBRE,Laboratorio,Hormonas,1,$320.00
+,ANTIGENO CARCINOEMBRIONARIO,Laboratorio,Hormonas,1,$500.00
+,CEA 15.3,Laboratorio,Hormonas,1,$600.00
+,CEA 19.9,Laboratorio,Hormonas,1,$600.00
+,CEA 125,Laboratorio,Hormonas,1,$600.00
+,ALFAFETOPROTEINAS,Laboratorio,Hormonas,1,$504.00
+,HGC HUMANA,Laboratorio,Hormonas,1,$500.00
+,INSULINA ,Laboratorio,Hormonas,1,$480.00
+,"PERFIL DE MARCADORES TUMORALES BASICO (HGC, AFP, CEA)",Laboratorio,Hormonas,1,$890.00
+,HEMOGLOBINA GLICOSILADA,Laboratorio,Química clínica,1,$422.00
+,GLUCOSA,Laboratorio,Química clínica,1,$70
+,UREA ,Laboratorio,Química clínica,1,$90.00
+,CREATININA,Laboratorio,Química clínica,1,$140.00
+,ACIDO URICO,Laboratorio,Química clínica,1,$160.00
+,COLESTEROL,Laboratorio,Química clínica,1,$120.00
+,TRIGLICERIDOS,Laboratorio,Química clínica,1,$120.00
+,COLESTEROL HDL,Laboratorio,Química clínica,1,$190.00
+,QUIMICA SANGUINEA DE 6 ELEMENTOS,Laboratorio,Química clínica,1,$300.00
+,QUIMICA SANGUINEA DE 12 ELEMENTOS,Laboratorio,Química clínica,1,$420.00
+,QUIMICA SANGUINEA DE 28 ELEMENTOS,Laboratorio,Química clínica,1,$750.00
+,QUIMICA SANGUINEA DE 30 ELEMENTOS,Laboratorio,Química clínica,1,$850.00
+,QUIMICA SANGUINEA DE 35 ELEMENTOS,Laboratorio,Química clínica,1,$900.00
+,QUIMICA SANGUINEA DE 50 ELEMENTOS,Laboratorio,Química clínica,1,"$1,580.00"
+,PRUEBAS DE FUNCIONAMIENTO HEPATICO,Laboratorio,Química clínica,2,$450.00
+,BILIRRUBINAS,Laboratorio,Química clínica,1,$300.00
+,ASPARTATO AMINOTRANSFERASA AST,Laboratorio,Química clínica,1,$130.00
+,ALANINAMINONSTRANSFERASA ALT,Laboratorio,Química clínica,1,$130.00
+,PROTEINAS TOTALES,Laboratorio,Química clínica,1,$150.00
+,ALBUMINA,Laboratorio,Química clínica,1,$185.00
+,LACTATO DESHIDROGENASA LDH,Laboratorio,Química clínica,1,$190.00
+,FOSFATASA ALCALINA ALP,Laboratorio,Química clínica,1,$190.00
+,GAMMA GLUTAMILTRANSPEPTIDASA GGT,Laboratorio,Química clínica,1,$220.00
+,CLORO,Laboratorio,Química clínica,1,$350.00
+,SODIO ,Laboratorio,Química clínica,1,$350.00
+,POTASIO ,Laboratorio,Química clínica,1,$350.00
+,CALCIO,Laboratorio,Química clínica,1,$120.00
+,FOSFORO,Laboratorio,Química clínica,1,$120.00
+,MAGNESIO ,Laboratorio,Química clínica,1,$120.00
+,DIMERO D,Laboratorio,Química clínica,1,$803.00
+,FERRITINA,Laboratorio,Química clínica,1,$420.00
+,CREATINFOSFOQUINASA,Laboratorio,Química clínica,1,
+,FRACCIÓN MB,Laboratorio,Química clínica,1,
+,AMILASA,Laboratorio,Química clínica,1,$150.00
+,LIPASA,Laboratorio,Química clínica,1,$180.00
+,ELECTROLITOS SERICOS 3,Laboratorio,Química clínica,1,$350.00
+,ELECTROLITOS SERICOS 6,Laboratorio,Química clínica,1,$450.00
+,CULTIVO DE EXUDADO FARINGEO,Laboratorio,Bacterología,3,$400.00
+,CULTIVO DE EXUDADO NASAL,Laboratorio,Bacterología,3,$400.00
+,CULTIVO DE EXUDADO VAGINAL,Laboratorio,Bacterología,3,$400.00
+,UROCULTIVO,Laboratorio,Bacterología,3,$400.00
+,COPROCULTIVO,Laboratorio,Bacterología,3,$500.00
+,CITOLOGIA DE MOCO NASAL,Laboratorio,Bacterología,1,$220.00
+,EXAMEN GENERAL DE ORINA ,Laboratorio,Uroanálisis,1,$80.00
+,DEPURACION DE CREATININA 24 HRS,Laboratorio,Uroanálisis,1,$250.00
+,"PERFIL DE DROGAS 3 (MARIH, COC, AMPHET)",Laboratorio,Uroanálisis,1,$340.00
+,"PERFIL DE DROGAS 5 (OPI, COC, AMP, MET, THC)",Laboratorio,Uroanálisis,1,$560.00
+,CONCENTRACIÓN ESPERMATICA,Laboratorio,Seminograma,,
+,MOTILIDAD,Laboratorio,Seminograma,,
+,MORFOLOGIA,Laboratorio,Seminograma,,
+,VITALIDAD ESPERMATICA,Laboratorio,Seminograma,,
+,ESPERMATOBIOSCOPIA,Laboratorio,Seminograma,,
+,SEMINOGRAMA,Laboratorio,Seminograma,,
+,"PERFIL DE TIEMPOS DE COAGULACIÓN (TP, TTP, INR)",Laboratorio,Coagulación,1,$350.00
+,ANTIESTRPETOLISINAS ,Laboratorio,Otros estudios y/o perfiles,1,
+,FACTOR REUMATOIDE,Laboratorio,Otros estudios y/o perfiles,1,$230.00
+,PROTEINA C REACTIVA,Laboratorio,Otros estudios y/o perfiles,1,$500.00
+,REACCIONES FEBRILES ,Laboratorio,Otros estudios y/o perfiles,1,$210.00
+,VDRL,Laboratorio,Otros estudios y/o perfiles,1,$155.00
+,HIV,Laboratorio,Otros estudios y/o perfiles,1,$450.00
+,COVID 19 + INFLUENZA AB,Laboratorio,Otros estudios y/o perfiles,1,$450.00
+,PAPANICOLAOU,Laboratorio,Otros estudios y/o perfiles,3,$380.00
+,"PREOPERATORIOS DE RTU (QS6, BH, P. TIEMPOS)",Laboratorio,Otros estudios y/o perfiles,1,$700.00
+,"PERFIL DE MEDICINA INTERNA (BH, QS6, PFH, ES6, AMI, LIP, T. COAGULACIÓN, GPO SANGUINEO)",Laboratorio,Otros estudios y/o perfiles,1,"$1,340.00"
+,PERFIL DE HEPATITIS ABC RAPIDAS,Laboratorio,Otros estudios y/o perfiles,1,"$1,990.00"
+,INDICE HOMA,Laboratorio,Otros estudios y/o perfiles,1,$550.00
+,"PERFIL PRENATAL (BH, QS6, VDRL, HIV, EGO, GRUPO Y RH)",Laboratorio,Otros estudios y/o perfiles,1,$750.00
+,PERFIL DE LIPIDOS,Laboratorio,Otros estudios y/o perfiles,1,$400.00
+,CURVA DE TOLERANCIA A LA GLUCOSA,Laboratorio,Otros estudios y/o perfiles,1,$500.00
+,GASOMETRIA ARTERIAL,Laboratorio,Otros estudios y/o perfiles,1,"$1,550.00"
