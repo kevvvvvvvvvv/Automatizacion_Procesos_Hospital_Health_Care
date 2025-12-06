@@ -18,12 +18,13 @@ return new class extends Migration
             $table->decimal('subtotal',8,2);
             $table->decimal('descuento',8,2)->nullable();
             $table->string('estado');
+
             $table->foreignId('venta_id')
                 ->constrained('ventas')
                 ->onDelete('cascade');
-            $table->foreignId('producto_servicio_id')
-                ->constrained('producto_servicios')
-                ->onDelete('cascade');
+
+            $table->morphs('itemable');
+
             $table->timestamps();
         });
     }

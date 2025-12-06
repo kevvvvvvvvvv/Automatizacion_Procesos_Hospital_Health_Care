@@ -127,7 +127,7 @@ class UserSeeder extends Seeder
             'cargo_id' => 2,
         ]);
 
-        $user->assignRole('admin');
+        $user->assignRole('administrador');
 
         $user = User::create([
             'curp' => 'HEAL000101HDFXXX01', 
@@ -141,7 +141,7 @@ class UserSeeder extends Seeder
             'cargo_id' => 2, 
         ]);
 
-        $user->assignRole('admin');
+        $user->assignRole('administrador');
 
          $user = User::create([
             'curp' => 'HEGE040302HMSRMFA0',
@@ -154,7 +154,9 @@ class UserSeeder extends Seeder
             'password' => Hash::make('12345678'),
             'cargo_id' => 3,
         ]);
-         $user->assignRole('admin');
+
+        $user->assignRole('administrador');
+        
         CredencialEmpleado::create([
             'user_id' => $user->id,
             'titulo' => 'Médico Especialista en Pediatría',
@@ -169,7 +171,7 @@ class UserSeeder extends Seeder
             'apellido_materno' => 'Gómez',
             'sexo' => 'Masculino', 
             'fecha_nacimiento' => '2004-03-02',
-            'email' => 'gustav@gmail.com',
+            'email' => 'farmacia@test.com',
             'password' => Hash::make('12345678'),
             'cargo_id' => 9,
         ]);
@@ -183,10 +185,23 @@ class UserSeeder extends Seeder
             'apellido_materno' => 'Sánchez',
             'sexo' => 'Femenino',
             'fecha_nacimiento' => '1995-06-15',
-            'email' => 'recepcion@gmail.com',
+            'email' => 'recepcion@test.com',
             'password' => Hash::make('12345678'),
         ]);
 
         $userRecepcion->assignRole('recepcion');
+
+        $userCaja = User::create([
+            'curp' => 'GOLO900101HDFRNS05',
+            'nombre' => 'Carlos',
+            'apellido_paterno' => 'Gómez',
+            'apellido_materno' => 'López',
+            'sexo' => 'Masculino',
+            'fecha_nacimiento' => '1990-01-01',
+            'email' => 'caja@test.com',
+            'password' => Hash::make('12345678'),
+        ]);
+
+        $userCaja->assignRole('caja');                                                                                              
     }
 }

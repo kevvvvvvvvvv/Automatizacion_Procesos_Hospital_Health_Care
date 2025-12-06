@@ -32,7 +32,8 @@ class HojaMedicamentoController extends Controller
 
             $itemParaVenta = [
                 'id' => $medicamento->producto_servicio_id,
-                'cantidad' => 1 
+                'cantidad' => 1,
+                'tipo' => 'producto' 
             ];
 
             $ventaExistente = Venta::where('estancia_id', $estanciaId)

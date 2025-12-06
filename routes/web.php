@@ -38,6 +38,8 @@ use App\Http\Controllers\NotaPostanestesicaController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\FormularioHojaOxigenoController;
 use App\Http\Controllers\ConsentimientoController;
+
+
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;

@@ -8,7 +8,6 @@ import { Estancia, Paciente, Habitacion, FamiliarResponsable } from '@/types';
 import { route } from 'ziggy-js';
 import PrimaryButton from '@/components/ui/primary-button';
 import FormLayout from '@/components/form-layout';
-import { Props } from 'react-select';
 
 
 interface CreateEstanciaProps {
@@ -88,7 +87,6 @@ const Create = ({ paciente, habitaciones }: CreateEstanciaProps) => {
         }
     };
 
-
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         post(route('pacientes.estancias.store', { paciente: paciente.id }));
@@ -98,8 +96,8 @@ const Create = ({ paciente, habitaciones }: CreateEstanciaProps) => {
     
     <FormLayout onSubmit={handleSubmit} title='Registro de estancia'
     actions={
-        <PrimaryButton disabled={processing}>
-            Guardar cambios
+        <PrimaryButton type="submit" disabled={processing}>
+            Guardar estancia
         </PrimaryButton>
     }>
         <Head title="Registro de estancia" />
