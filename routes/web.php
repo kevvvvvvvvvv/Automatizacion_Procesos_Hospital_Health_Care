@@ -74,6 +74,12 @@ Route::resource('pacientes.estancias.notasegresos', NotasEgresoController::class
 Route::resource('pacientes.estancias.notasevoluciones', NotaEvolucionController::class)->shallow()->middleware('auth');
 Route::resource('pacientes.estancias.notaspreanestesicas', NotaPreAnestesicaController::class)->shallow()->middleware('auth');
 Route::resource('pacientes.estancias.hojasenfermeriasquirofanos',HojaEnfemeriaQuirofanoController::class)->shallow()->middleware('auth');
+Route::resource('pacientes.estancias.consentimientos', ConsentimientoController::class)->shallow()->middleware('auth');
+
+Route::post('/pacientes/{paciente}/estancias/{estancia}/consentimientos', 
+    [ConsentimientoController::class, 'store']
+)->name('consentimientos.store');
+
 
 Route::post('hojasterapiasiv/{hojasenfermeria}',[FormularioHojaTerapiaIVController::class,'store'])->name('hojasterapiasiv.store');
 Route::patch('hojasterapiasiv/{hojasenfermeria}/{hojasterapiasiv}',[FormularioHojaTerapiaIVController::class,'update'])->name('hojasterapiasiv.update');
@@ -215,6 +221,12 @@ Route::get('/notasevoluciones/{notasevolucione}/pdf', [NotaEvolucionController::
 Route::get('/hojasenfermeriasquirofanos/{hojasenfermeriasquirofano}/pdf', [HojaEnfemeriaQuirofanoController::class, 'generarPDF'])
     ->name('hojasenfermeriasquirofanos.pdf')
     ->middleware('auth');
+
+Route::get('/consentimientos/pdf/{file}', [ConsentimientoController::class, 'generarPDF'])
+    ->where('file', '.*')
+    ->name('consentimientos.pdf')
+    ->middleware('auth');
+
 
 // Farmacia
 Route::get('/farmacia/solicitudes/{hojaenfermeria}', [FarmaciaController::class, 'show'])

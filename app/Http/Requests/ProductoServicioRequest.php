@@ -29,7 +29,8 @@ class ProductoServicioRequest extends FormRequest
             'codigo_prestacion' => 'required|string',
             'nombre_prestacion' => 'required|string',
             'importe' => 'required|numeric',
-            'cantidad' => 'nullable|numeric'
+            'cantidad' => 'nullable|numeric',
+            'iva' => 'nullable|numeric'
         ];
     }
 
@@ -57,6 +58,8 @@ class ProductoServicioRequest extends FormRequest
             'importe.numeric' => 'El importe debe ser un valor numérico.',
 
             'cantidad.numeric' => 'La cantidad debe ser un valor numérico.',
+            
+            'iva.numeric' => 'EL IVA debe ser valor numerico', 
         ];
     }
 }
