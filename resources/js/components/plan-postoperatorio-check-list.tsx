@@ -101,7 +101,7 @@ const PlanPostoperatorioChecklist: React.FC<Props> = ({ nota }) => {
     return (
         <div className="space-y-6">
             <ChecklistSection
-                title="Plan de Dieta"
+                title="Plan de dieta"
                 sectionId="dieta"
                 tasks={dietaTasks}
                 completedTasks={completedTasks}
@@ -109,7 +109,7 @@ const PlanPostoperatorioChecklist: React.FC<Props> = ({ nota }) => {
             />
             
             <ChecklistSection
-                title="Plan de Soluciones"
+                title="Plan de soluciones"
                 sectionId="soluciones"
                 tasks={solucionesTasks}
                 completedTasks={completedTasks}
@@ -117,7 +117,7 @@ const PlanPostoperatorioChecklist: React.FC<Props> = ({ nota }) => {
             />
             
             <ChecklistSection
-                title="Plan de Medicamentos"
+                title="Plan de medicamentos"
                 sectionId="medicamentos"
                 tasks={medicamentosTasks}
                 completedTasks={completedTasks}
@@ -125,7 +125,7 @@ const PlanPostoperatorioChecklist: React.FC<Props> = ({ nota }) => {
             />
 
             <ChecklistSection
-                title="Medidas Generales"
+                title="Medidas generales"
                 sectionId="medidas"
                 tasks={medidasTasks}
                 completedTasks={completedTasks}
@@ -133,7 +133,7 @@ const PlanPostoperatorioChecklist: React.FC<Props> = ({ nota }) => {
             />
             
             <ChecklistSection
-                title="Laboratorios y Gabinetes"
+                title="Laboratorios y gabinetes"
                 sectionId="laboratorios"
                 tasks={laboratoriosTasks}
                 completedTasks={completedTasks}

@@ -128,6 +128,7 @@ export interface Estancia {
     estancia_anterior_id: number | null;
 
     hoja_sondas_cateters: HojaSondaCateter[];
+    hoja_oxigenos:HojaOxigeno[];
 
     paciente?: Paiente;
 
@@ -230,7 +231,6 @@ export interface HojaEnfermeria {
     hojas_terapia_i_v: HojaTerapiaIV[] | null; 
     hoja_medicamentos: HojaMedicamento[] | null;
     hoja_signos: HojaSignos[] | null;
-    hoja_oxigeno: HojaOxigeno[] | null;
     solicitud_dietas: SolicitudDieta[] | null;
 }
 
@@ -370,6 +370,11 @@ export interface HojaOxigeno {
     hora_inicio: string;
     hora_fin: string;
     litros_minuto: number;
+
+    user_inicio: User;
+    user_fin?: User;
+
+    total_consumido: number;
 }
 
 export interface Honorarios{

@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class HojaEnfermeria extends Model
 {
@@ -44,8 +45,4 @@ class HojaEnfermeria extends Model
         return $this->hasMany(SolicitudDieta::class);
     }
 
-    public function hojaOxigenos(): HasMany
-    {
-        return $this->hasMany(HojaOxigeno::class);
-    }
 }
