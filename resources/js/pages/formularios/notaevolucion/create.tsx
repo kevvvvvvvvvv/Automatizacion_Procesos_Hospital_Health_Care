@@ -58,7 +58,7 @@ const CreateNotaEvolucion: React.FC<Props> = ({ paciente, estancia, soluciones, 
 
   return (
     <MainLayout
-    pageTitle={`Creación de nota postanestesica`}
+    pageTitle={`Creación de nota de evolución`}
       link="estancias.show"
       
       linkParams={estancia.id} >

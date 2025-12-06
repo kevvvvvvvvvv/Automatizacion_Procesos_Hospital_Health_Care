@@ -57,7 +57,12 @@ const Index = ({ productoServicios }: IndexProps) => {
         {
             accessorKey: 'importe',
             header: 'Importe',
-            cell: info => `$${Number(info.getValue()).toFixed(2)}`
+            cell: info => `$${Number(info.getValue()).toFixed(2)} `
+        },
+        {
+          accessorKey: 'iva',
+          header: 'IVA',
+          cell: info =>`${Number(info.getValue())}%`
         },
         {
           accessorKey: 'cantidad',

@@ -149,6 +149,7 @@ class EstanciaController extends Controller
             'habitacion',
             'formularioInstancias.catalogo',
             'formularioInstancias.user',
+            'Consentimiento.user',
             // NUEVO: Carga interconsultas con relaciones
             //'interconsultas.creator',  // Carga el creador de cada interconsulta
             //'interconsultas.updater'   // Carga el actualizador de cada interconsulta

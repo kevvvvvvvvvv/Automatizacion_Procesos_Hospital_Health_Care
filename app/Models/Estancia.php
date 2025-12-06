@@ -98,4 +98,8 @@ class Estancia extends Model
             'id'                        
         );
     }
+    public function Consentimiento():hasMany
+    {
+        return $this->hasMany(Consentimiento::class);
+    } 
 }

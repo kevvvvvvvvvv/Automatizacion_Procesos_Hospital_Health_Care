@@ -155,6 +155,7 @@ export interface ProductoServicio {
     nombre_prestacion: string;
     importe: number | null;
     cantidad: number | null;
+    iva: number | null;
 }
 
 export interface HistoryEntry {
@@ -725,7 +726,16 @@ export interface SolicitudPatologia {
     resultados?: string;
     pcr: string;
 }
-
+export interface Consentimiento{
+    id:number;
+    estancia_id: number;
+    user_id: number;
+    diagnostico: string;
+    route_pdf: string;
+    user: User;
+    created_at?: string;
+    updated_at?: string;
+}
 
 export type PageProps<T extends Record<string, unknown> = Record<string, unknown>> = T & {
     auth: {
