@@ -16,10 +16,10 @@ class RoleAndPermissionSeeder extends Seeder
     public function run(): void
     {
         //Roles
-        $roleAdmin = Role::create(['name' => 'admin']);
+        $roleAdmin = Role::create(['name' => 'administrador']);
         $roleMedico = Role::create(['name' => 'medico']);
-        $roleMedicoEspecialista = Role::create(['name' => 'medico_especialista']);
-        $roleEnfermera = Role::create(['name' => 'enfermera']);
+        $roleMedicoEspecialista = Role::create(['name' => 'medico especialista']);
+        $roleEnfermera = Role::create(['name' => 'enfermera(o)']);
         $roleAdministrativos = Role::create(['name' => 'administrativos']);
         $roleCocina = Role::create(['name' => 'cocina']);
         $roleMantenimiento = Role::create(['name' => 'mantenimiento']);
@@ -28,6 +28,7 @@ class RoleAndPermissionSeeder extends Seeder
         $roleTecnicoLaboratorio = Role::create(['name' => 'tecnico_laboratorio']);
         $roleFisoterapeuta = Role::create(['name' => 'fisoterapeuta']);
         $roleRecepcion = Role::create(['name' => 'recepcion']);
+        $roleCaja = Role::create(['name'  => 'caja']);
 
         $permissions = [
             'pacientes' => ['crear', 'consultar', 'editar', 'eliminar'],
@@ -37,6 +38,8 @@ class RoleAndPermissionSeeder extends Seeder
             'colaboradores' => ['crear', 'consultar', 'editar', 'eliminar'],
             'productos y servivicios' => ['crear', 'consultar', 'editar', 'eliminar'],
             'historial' =>['consultar'],
+            'ventas' => ['consultar','eliminar','editar','crear'],
+            'detalles ventas' => ['consultar','eliminar','editar','crear'],
             'hojas' => ['crear', 'consultar', 'editar', 'eliminar',], 
             'hojas enfermerias' => ['crear', 'consultar', 'eliminar'], // Solo se puede editar el documento que una persona creó
         ];
@@ -55,11 +58,28 @@ class RoleAndPermissionSeeder extends Seeder
             'consultar pacientes',
             'crear pacientes',
             'editar pacientes',
+            'crear estancias'
         ]);
         
         $roleEnfermera->syncPermissions([
             'consultar hojas enfermerias',
             'crear hojas enfermerias',
+        ]);
+
+        $roleCaja->syncPermissions([
+            'consultar pacientes',
+            'consultar estancias',
+
+            
+            'consultar ventas',
+            'crear ventas',
+            'editar ventas',
+            'eliminar ventas',
+            
+            'consultar detalles ventas',
+            'crear detalles ventas',
+            'editar detalles ventas',
+            'eliminar detalles ventas',
         ]);
     }
 }

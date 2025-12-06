@@ -80,8 +80,10 @@ export interface User {
     email: string;
     created_at: string; 
     updated_at: string;
-    roles: string[];       
-    permissions: string[]; 
+    roles: string[];
+
+    roles?: string[];
+    permissions?: string[]; 
 };
 
 export interface FormularioCatalogo {
@@ -104,12 +106,7 @@ export interface Habitacion {
     piso: string,
     estado: 'Ocupado' | 'Libre',
     estancia_activa?: { 
-        paciente?: {
-        id: number;
-        nombre: string;
-        apellido_paterno: string;
-        apellido_materno: string;
-        };
+        paciente?: Paciente
     };
 }
 
@@ -136,6 +133,8 @@ export interface Estancia {
     updated_at: string | null;
     created_by: number;
     updated_by: number | null;
+
+    creator: User;
 }
 
 export interface FormularioInstancia {
