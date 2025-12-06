@@ -10,6 +10,7 @@ class DetalleVenta extends Model
     public const ESTADO_PENDIENTE = 'En espera de pago';
     public const ESTADO_PARCIAL = 'Pago parcial';
     public const ESTADO_PAGADO = 'Pagado';
+    public const ESTADO_CANCELADO = 'Cancelado';
     
     protected $table = 'detalle_ventas';
     public $incrementing = true;
@@ -20,7 +21,8 @@ class DetalleVenta extends Model
         'descuento',
         'estado',
         'venta_id',
-        'producto_servicio_id',
+        'itemable_id',
+        'itemable_type',
     ];
 
     public function venta(): BelongsTo
@@ -28,8 +30,8 @@ class DetalleVenta extends Model
         return $this->belongsTo(Venta::class);
     }
 
-    public function productoServicio(): BelongsTo
+    public function itemable()
     {
-        return $this->belongsTo(ProductoServicio::class);
+        return $this->morphTo();
     }
 }

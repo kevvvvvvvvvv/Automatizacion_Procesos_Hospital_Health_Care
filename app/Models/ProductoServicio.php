@@ -24,9 +24,9 @@ class ProductoServicio extends Model
 
     public $timestamps = false;
 
-    public function detalleVenta(): HasOne
+    public function detallesVenta()
     {
-        return $this->hasOne(DetalleVenta::class);
+        return $this->morphMany(DetalleVenta::class, 'itemable');
     }
 
 }

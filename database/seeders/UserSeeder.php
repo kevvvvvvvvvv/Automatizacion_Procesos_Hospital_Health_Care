@@ -171,7 +171,7 @@ class UserSeeder extends Seeder
             'apellido_materno' => 'Gómez',
             'sexo' => 'Masculino', 
             'fecha_nacimiento' => '2004-03-02',
-            'email' => 'gustav@gmail.com',
+            'email' => 'farmacia@test.com',
             'password' => Hash::make('12345678'),
             'cargo_id' => 9,
         ]);
