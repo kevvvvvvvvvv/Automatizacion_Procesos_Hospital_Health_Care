@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Paciente;
-use App\Models\FamiliarResponsable;  // Cambia a el modelo correcto
+use App\Models\FamiliarResponsable;  
 use App\Models\Estancia;
 use Inertia\Inertia;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests; 
@@ -40,7 +40,6 @@ class PacienteController extends Controller implements HasMiddleware
     public function store(Request $request)
     {
         try {
-            // Valida los campos anidados bajo 'paciente'
             $validatedData = $request->validate([
                 'paciente.curp' => 'required|string|max:18|unique:pacientes,curp',
                 'paciente.nombre' => 'required|string|max:100',
@@ -64,11 +63,9 @@ class PacienteController extends Controller implements HasMiddleware
                 'paciente.nombre_madre' => 'nullable|string|max:100',
             ]);
 
-            // Extrae los datos de 'paciente' y crea el registro
-            $pacienteData = $validatedData['paciente'];  // Esto obtiene el array de paciente
-            $paciente = Paciente::create($pacienteData);  // Crea el paciente con los datos validados
-            
-            // Maneja el responsable, que ya está anidado correctamente
+            $pacienteData = $validatedData['paciente'];  
+            $paciente = Paciente::create($pacienteData);  
+
             if ($request->has('responsable')) {
                 $validatedResponsable = $request->validate([
                     'responsable.nombre_completo' => 'required|string|max:100',
@@ -84,10 +81,9 @@ class PacienteController extends Controller implements HasMiddleware
             
             return redirect()->route('pacientes.index')->with('success', 'Paciente registrado correctamente.');
         } catch (\Illuminate\Validation\ValidationException $e) {
-            // Devuelve los errores al frontend para que Inertia los maneje
             return back()->withErrors($e->errors())->withInput();
         } catch (\Exception $e) {
-            \Log::error($e->getMessage());  // Graba el error en los logs
+            \Log::error($e->getMessage()); 
             return back()->with('error', 'Error interno: Intenta de nuevo. Revisa los logs para más detalles.');
         }
     }
@@ -97,7 +93,8 @@ class PacienteController extends Controller implements HasMiddleware
     {
         $paciente->load(['estancias' => function ($query) {
                 $query->orderBy('id', 'asc');
-            }]);
+            },
+            'estancias.creator']);
         return Inertia::render('pacientes/show', ['paciente' => $paciente]);
     }
 
