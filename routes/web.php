@@ -35,7 +35,8 @@ use App\Http\Controllers\NotasEgresoController;
 use App\Http\Controllers\NotaEvolucionController;
 use App\Http\Controllers\NotaPreAnestesicaController;
 use App\Http\Controllers\NotaPostanestesicaController;
-
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\FormularioHojaOxigenoController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;
@@ -93,6 +94,8 @@ Route::patch('hojasterapiasiv/{hojasenfermeria}/{hojasterapiasiv}',[FormularioHo
 Route::post('hojasmedicamentos/{hojasenfermeria}',[FormularioHojaMedicamentoController::class, 'store'])->name('hojasmedicamentos.store');
 Route::patch('hojasmedicamentos/{hojasenfermeria}/{hojasmedicamento}',[FormularioHojaMedicamentoController::class, 'update'])->name('hojasmedicamentos.update');
 
+Route::post('hojas-oxigenos/{estancia}', [FormularioHojaOxigenoController::class, 'store'])->name('hojasoxigenos.store')->middleware('auth');
+Route::patch('hojas-oxigenos/{hojasoxigeno}', [FormularioHojaOxigenoController::class, 'update'])->name('hojasoxigenos.update')->middleware('auth');
 
 //Rutas Hoja de enfermeria en quirofano
 Route::post('hojasinsumosbasicos/{hojasenfermeriasquirofano}', [FormularioHojaInsumosBasicosController::class, 'store'])->name('hojasinsumosbasicos.store')->middleware('auth');

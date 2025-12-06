@@ -1,42 +1,37 @@
-import { HojaEnfermeria, HojaOxigeno } from '@/types';
+import { Estancia, HojaOxigeno } from '@/types';
 import React from 'react';
 import { useForm, router } from '@inertiajs/react';
 import { route } from 'ziggy-js';
 
 import InputText from '../ui/input-text';
 import PrimaryButton from '@/components/ui/primary-button';
+import CounterTime from '@/components/counter-time';
 
 interface Props {
-    hoja:HojaEnfermeria
+    estancia: Estancia;
 }
 
-const ServiciosEspecialesForm:React.FC<Props> = ({hoja}) => {
+const ServiciosEspecialesForm: React.FC<Props> = ({ estancia }) => {
     
-    const {data, setData, post, reset, errors, processing} = useForm({
+    const { data, setData, post, reset, errors, processing } = useForm({
         litros_minuto: '',
         hora_inicio: '',
-        hora_fin: '',
+        hora_fin: '',    
     });
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        post(route('hojasoxigenos.store',{hojasenfermeria: hoja.id}),{
+        post(route('hojasoxigenos.store',{estancia: estancia.id }), {
             preserveScroll: true,
-            onSuccess:() => reset(),
+            onSuccess: () => reset(),
         });
     }
 
     const handleDateUpdate = (oxigenoId: number, newDate: string) => {
-        router.patch(route('hojasmedicamentos.update', { 
-            hojasenfermeria: hoja.id, 
-            hojasmedicamento: oxigenoId 
-        }), {
-            fecha_hora_inicio: newDate 
+        router.patch(route('hojasoxigenos.update', oxigenoId), {
+            hora_fin: newDate 
         }, {
             preserveScroll: true,
-            onError: (errors) => {
-                alert('Error al actualizar: \n' + JSON.stringify(errors));
-            }
         });
     };
     
@@ -44,20 +39,12 @@ const ServiciosEspecialesForm:React.FC<Props> = ({hoja}) => {
         <>
             <form onSubmit={handleSubmit}>
                 <div className='grid grid-cols-1 md:grid-cols-2 gap-5'>
-                    {/*<InputDateTime
-                        label='Hora de inicio'
-                        name="hora_inicio"
-                        id="hora_inicio"
-                        value={data.hora_inicio}
-                        onChange={(e)=>setData('hora_inicio',e)}
-                        error={errors.hora_inicio}
-                    />*/}
                     <InputText
                         id="litros_minuto"
                         name="litros_minuto"
                         label="Litros por minuto"
                         value={data.litros_minuto}
-                        onChange={(e)=>setData('litros_minuto',e.target.value)}
+                        onChange={(e) => setData('litros_minuto', e.target.value)}
                         error={errors.litros_minuto}
                         type="number"
                     />
@@ -68,6 +55,7 @@ const ServiciosEspecialesForm:React.FC<Props> = ({hoja}) => {
                     </PrimaryButton>
                 </div>
             </form>
+
             <div className='mt-12'>
                 <h3 className='text-lg font-semibold mb-2'>Historial del uso de oxígeno</h3>
                 <div className='overflow-x-auto border rounded-lg'>
@@ -75,41 +63,50 @@ const ServiciosEspecialesForm:React.FC<Props> = ({hoja}) => {
                         <thead>
                             <tr>
                                 <th className="px-4 py-4 text-sm text-gray-900">Hora de inicio</th>
+                                <th className="px-4 py-4 text-sm text-gray-900">Tiempo transcurrido</th>
                                 <th className="px-4 py-4 text-sm text-gray-900">Hora de fin</th>
                                 <th className="px-4 py-4 text-sm text-gray-900">Litros por minuto</th>
-                                <th className="px-4 py-4 text-sm text-gray-900">Total de litros usados</th>
+                                <th className="px-4 py-4 text-sm text-gray-900">Total litros consumidos</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {(hoja.hoja_oxigeno ?? []).length === 0 ?(
+                            {(estancia.hoja_oxigenos ?? []).length === 0 ? (
                                 <tr className='text-center'>
-                                    <td className='px-4 py-4 text-sm text-gray-500 text-center'>
+                                    <td colSpan={3} className='px-4 py-4 text-sm text-gray-500 text-center'>
                                         No hay aplicaciones de oxígeno registradas
                                     </td>
                                 </tr>
-                            ):
-                            ((hoja.hoja_oxigeno ?? []).map((oxi: HojaOxigeno)=>(
-                                <tr key={oxi.id}>
-                                    <td className="px-4 py-4 text-sm text-gray-900">{oxi.hora_inicio}</td>
-                                    <td className="px-4 py-4 text-sm text-gray-900">{oxi.hora_fin ? (
-                                        <span>{oxi.hora_fin}</span>
-                                    ):(
-                                        <PrimaryButton
-                                        onClick={()=>{
-                                            const now_iso = new Date().toISOString();
-                                            handleDateUpdate(oxi.id, now_iso);
-                                        }} 
-                                        >
-                                            Registrar fin
-                                        </PrimaryButton>
-                                    )}
-                                    </td>
-                                    <td className="px-4 py-4 text-sm text-gray-900">{oxi.litros_minuto}</td>
-                                </tr>
-                            )))}
-                    </tbody>
+                            ) : (
+                                (estancia.hoja_oxigenos ?? []).map((oxi: HojaOxigeno) => (
+                                    <tr key={oxi.id}>
+                                        <td className="px-4 py-4 text-sm text-gray-900">{oxi.hora_inicio}</td>
+                                        <td>
+                                            <CounterTime
+                                                fechaInicioISO={oxi.hora_inicio}
+                                                fechaFinISO={oxi.hora_fin}
+                                            />
+                                        </td>
+                                        <td className="px-4 py-4 text-sm text-gray-900">
+                                            {oxi.hora_fin ? (
+                                                <span>{oxi.hora_fin}</span>
+                                            ) : (
+                                                <PrimaryButton
+                                                    onClick={() => {
+                                                        const now_iso = new Date().toISOString(); 
+                                                        handleDateUpdate(oxi.id, now_iso);
+                                                    }}
+                                                >
+                                                    Registrar fin
+                                                </PrimaryButton>
+                                            )}
+                                        </td>
+                                        <td className="px-4 py-4 text-sm text-gray-900">{oxi.litros_minuto}</td>
+                                        <td className="px-4 py-4 text-sm text-gray-900">{oxi.total_consumido }</td>
+                                    </tr>
+                                ))
+                            )}
+                        </tbody>
                     </table>
-
                 </div>
             </div>
         </>

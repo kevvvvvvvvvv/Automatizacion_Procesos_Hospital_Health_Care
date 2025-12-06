@@ -1,4 +1,4 @@
-tipo;subtipo;codigo_prestacion;nombre_prestacion;importe;cantidad;porcentajeIva
+tipo;subtipo;codigo_prestacion;nombre_prestacion;importe;cantidad;iva
 SERVICIOS;ADMISION  ;	80161602-03;ENTREGA DE RESULTADO DE LABORATORIOS;174;500;16.00%
 SERVICIOS;ADMISION  ;	80161602-04;ENTREGA DE RESULTADOS DE PATOLOGIA;174;500;16.00%
 SERVICIOS;ADMISION  ;	80161602-02;LLENADO DE CONSENTIMIENTOS QUIRURJICOS;174;500;16.00%

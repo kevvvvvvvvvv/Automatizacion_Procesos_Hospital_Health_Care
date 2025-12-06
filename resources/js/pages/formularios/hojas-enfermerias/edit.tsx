@@ -235,8 +235,7 @@ const Create: CreateComponent = ({ paciente, estancia, hojaenfermeria ,medicamen
                         />
             case 'servicios_especiales':
                     return <ServiciosEspecialesForm
-                            hoja={hojaenfermeria}
-                            
+                            estancia={estancia}
                             />
             case 'observaciones':
                 return <Observaciones
