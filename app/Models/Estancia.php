@@ -98,4 +98,9 @@ class Estancia extends Model
             'id'                        
         );
     }
+
+    public function hojaOxigenos(): HasMany
+    {
+        return $this->hasMany(HojaOxigeno::class);
+    }
 }

@@ -22,7 +22,8 @@ class HojaOxigenoRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'litros_minuto' => 'required | numeric'
+            'litros_minuto' => 'nullable | numeric',
+            'hora_fin'     => 'nullable',
         ];
     }
 }
