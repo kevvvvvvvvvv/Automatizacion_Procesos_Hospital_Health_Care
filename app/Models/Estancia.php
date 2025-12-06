@@ -103,4 +103,8 @@ class Estancia extends Model
     {
         return $this->hasMany(HojaOxigeno::class);
     }
+    public function Consentimiento():hasMany
+    {
+        return $this->hasMany(Consentimiento::class);
+    } 
 }

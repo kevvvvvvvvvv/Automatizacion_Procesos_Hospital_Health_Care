@@ -21,6 +21,7 @@ interface FormularioFormData {
   nombre_prestacion: string;
   importe: number | string | null;
   cantidad: number | string | null;
+  iva: number | string | null;
 }
 
 const ProductoServicioForm = ({ productoServicio } : Props) => {
@@ -34,6 +35,7 @@ const ProductoServicioForm = ({ productoServicio } : Props) => {
       nombre_prestacion: productoServicio?.nombre_prestacion ?? '',
       importe: productoServicio?.importe ?? null,
       cantidad: productoServicio?.cantidad ?? null,
+      iva: productoServicio?.iva ?? null
     });
 
   const optionsTipo = [
@@ -130,6 +132,15 @@ const ProductoServicioForm = ({ productoServicio } : Props) => {
           onChange={(e) => setData('importe', e.target.value)}
           placeholder="Escriba la cantidad del importe"
           error={errors.importe}
+        />
+        <InputText
+          id="iva"
+          name="iva"
+          label="IVA en producto o servicio"
+          value={(data.iva ?? '').toString()}
+          onChange={(e) => setData('iva', e.target.value)}
+          placeholder="Escriba la cantidad del IVA"
+          error={errors.iva}
         />
 
         {data.tipo === 'INSUMOS' && (
