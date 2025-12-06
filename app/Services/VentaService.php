@@ -5,81 +5,135 @@ namespace App\Services;
 use App\Models\Venta;
 use App\Models\DetalleVenta;
 use App\Models\ProductoServicio;
+use App\Models\CatalogoEstudio;
 use Illuminate\Support\Facades\DB;
-use \Exception;
+use Exception;
 
 class VentaService
 {
+    /**
+     * Crea una venta completa desde cero
+     * @param array $items  Debe ser array de: ['id' => 1, 'cantidad' => 2, 'tipo' => 'producto'|'estudio']
+     */
     public function crearVenta(array $items, int $estanciaId, int $userId): Venta
     {
-        $venta = Venta::create([
-            'fecha' => now(),
-            'subtotal' => 0,
-            'total' => 0,
-            'descuento' => 0,
-            'estado' => Venta::ESTADO_PENDIENTE,
-            'estancia_id' => $estanciaId,
-            'user_id' => $userId,
-        ]);
+        return DB::transaction(function () use ($items, $estanciaId, $userId) {
+            
+            // 1. Crear la cabecera de la venta
+            $venta = Venta::create([
+                'fecha' => now(),
+                'subtotal' => 0,
+                'total' => 0,
+                'descuento' => 0,
+                'estado' => Venta::ESTADO_PENDIENTE,
+                'estancia_id' => $estanciaId,
+                'user_id' => $userId,
+            ]);
 
-        $subtotal = 0; 
-        $total = 0;
+            $subtotalAcumulado = 0;
+            $totalAcumulado = 0;
 
-        foreach ($items as $item) {
-            $producto = ProductoServicio::findOrFail($item['id']);
-            $cantidad = $item['cantidad'];
-
-            if ($producto->tipo !== 'SERVICIO' && $producto->cantidad >= $cantidad) {
-                $producto->decrement('cantidad', $cantidad);
+            
+            foreach ($items as $item) {
+                $detalle = $this->procesarItem($venta, $item);
+                $subtotalAcumulado += $detalle->subtotal;
+                $totalAcumulado += $this->calcularTotalConImpuestos($detalle);
             }
 
-            $detalleVenta = DetalleVenta::create([
-                'precio_unitario' => $producto->importe,
-                'cantidad' => $cantidad,
-                'subtotal' => $producto->importe * $cantidad,
-                'estado' => DetalleVenta::ESTADO_PENDIENTE,
-                'venta_id' => $venta->id,
-                'producto_servicio_id' => $producto->id,
+            $venta->update([
+                'subtotal' => $subtotalAcumulado,
+                'total' => $totalAcumulado,
             ]);
-            $subtotal += $detalleVenta->subtotal;
-            $total += ($detalleVenta->subtotal * (1 + $producto->iva/100));
-        }
 
-        $venta->update([
-            'subtotal' => $subtotal,
-            'total' => $total,
-        ]);
-
-        return $venta;
+            return $venta;
+        });
     }
 
     public function addItemToVenta(Venta $venta, array $item): Venta
     {
-        $producto = ProductoServicio::findOrFail($item['id']);
-        $cantidad = $item['cantidad'];
+        return DB::transaction(function () use ($venta, $item) {
+            
+            // 1. Procesamos y guardamos el nuevo detalle
+            $detalle = $this->procesarItem($venta, $item);
+
+            // 2. Recalculamos los totales de la venta sumando lo que ya había + lo nuevo
+            // Ojo: Es más seguro sumar desde la BD para evitar errores de desincronización
+            $nuevoSubtotal = $venta->detalles()->sum('subtotal');
+            
+            // Para el total con impuestos, es mejor iterar o guardar el total con impuestos en el detalle
+            // Aquí usaré una lógica simple sumando al total anterior:
+            $totalNuevoItem = $this->calcularTotalConImpuestos($detalle);
+            $nuevoTotalVenta = $venta->total + $totalNuevoItem;
+
+            $venta->update([
+                'subtotal' => $nuevoSubtotal,
+                'total' => $nuevoTotalVenta,
+            ]);
+
+            return $venta;
+        });
+    }
+
+    /**
+     * Lógica central para determinar si es Producto o Estudio y guardarlo
+     */
+    private function procesarItem(Venta $venta, array $itemData): DetalleVenta
+    {
+        $id = $itemData['id'];
+        $cantidad = $itemData['cantidad'];
+        $tipo = $itemData['tipo']; 
+
+        $modelo = null;
+        $precioUnitario = 0;
+        $iva = 0;
+
+        if ($tipo === 'producto') {
+            $modelo = ProductoServicio::findOrFail($id);
+            $precioUnitario = $modelo->importe;
+            $iva = $modelo->iva ?? 16;
+            if ($modelo->tipo !== 'SERVICIO') {
+                if ($modelo->cantidad < $cantidad) {
+                    throw new Exception("Stock insuficiente para el producto: {$modelo->nombre_prestacion}");
+                }
+                $modelo->decrement('cantidad', $cantidad);
+            }
+        } 
         
-        if ($producto->tipo !== 'SERVICIO' && $producto->cantidad >= $cantidad) {
-            $producto->decrement('cantidad', $cantidad);
+        elseif ($tipo === 'estudio') {
+            $modelo = CatalogoEstudio::findOrFail($id);
+            $precioUnitario = $modelo->costo; 
+            $iva = 0;
+        } 
+        
+        else {
+            throw new Exception("Tipo de item no válido: $tipo");
         }
 
-        $detalleVenta = DetalleVenta::create([
-            'precio_unitario' => $producto->importe,
-            'cantidad' => $cantidad,
-            'subtotal' => $producto->importe * $cantidad,
-            'estado' => DetalleVenta::ESTADO_PENDIENTE,
+        return DetalleVenta::create([
             'venta_id' => $venta->id,
-            'producto_servicio_id' => $producto->id,
+            'itemable_id' => $modelo->id,          
+            'itemable_type' => get_class($modelo),  
+            'precio_unitario' => $precioUnitario,
+            'cantidad' => $cantidad,
+            'subtotal' => $precioUnitario * $cantidad,
+            'estado' => 'completado', // O 'pendiente' según tu lógica
+            // Sugerencia: Guarda el IVA histórico en el detalle por si cambian los impuestos mañana
+            // 'iva_aplicado' => $iva 
         ]);
+    }
 
-        $nuevoSubtotal = $venta->detalles()->sum('subtotal');
-        $totalNuevoItem = $detalleVenta->subtotal * (1 + $producto->iva/100);
-        $nuevoTotalVenta = $venta->total + $totalNuevoItem;
+    /**
+     * Helper para calcular el precio final con IVA
+     */
+    private function calcularTotalConImpuestos(DetalleVenta $detalle)
+    {
+        $item = $detalle->itemable;
+        $iva = 0;
 
-        $venta->update([
-            'subtotal' => $nuevoSubtotal,
-            'total' => $nuevoTotalVenta,
-        ]);
-
-        return $venta;
+        if ($item instanceof ProductoServicio) {
+            $iva = $item->iva;
+        } 
+        
+        return $detalle->subtotal * (1 + ($iva / 100));
     }
 }

@@ -8,6 +8,7 @@ import MainLayout from '@/layouts/MainLayout';
 import { Estancia, Paciente, User, FormularioInstancia, Habitacion, FamiliarResponsable, Consentimiento} from '@/types'; 
 import InfoCard from '@/components/ui/info-card';
 import InfoField from '@/components/ui/info-field';
+import { usePermission } from '@/hooks/use-permission';
 
 interface ShowEstanciaProps {
     estancia: Estancia & {
@@ -31,7 +32,9 @@ interface ShowEstanciaProps {
 
 const Show = ({ estancia }: ShowEstanciaProps) => {
 
-    const { paciente, creator, updater, formulario_instancias, consentimiento} = estancia;
+    const { can, hasRole } = usePermission();
+
+    const { paciente, creator, updater, formulario_instancias } = estancia;
 
     const dateOptions: Intl.DateTimeFormatOptions = {
         year: 'numeric', month: 'long', day: 'numeric',
@@ -41,6 +44,8 @@ const Show = ({ estancia }: ShowEstanciaProps) => {
     return (
         <>
             <Head title={`Detalles de estancia: ${estancia.folio}`} />
+            
+            {can('consultar ventas') &&
             <Link
                 href={route('pacientes.estancias.ventas.index', { paciente, estancia })}
                 className='inline-flex items-center justify-center gap-2 px-4 py-2 
@@ -52,6 +57,7 @@ const Show = ({ estancia }: ShowEstanciaProps) => {
             >
                 Ir a ventas
             </Link>
+            }
 
             <InfoCard title={`Estancia para: ${paciente.nombre} ${paciente.apellido_paterno} ${paciente.apellido_materno}`}>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -82,8 +88,9 @@ const Show = ({ estancia }: ShowEstanciaProps) => {
                     />
                 </div>
             </InfoCard>
-
+            
             <div className="mt-8">
+                { (hasRole('enfermera(o)') || hasRole('medico') || hasRole('medico especialista') || hasRole('administrador')) &&
                 <div className="flex justify-between items-center mb-4">
                     <h2 className="text-xl font-semibold">Formularios registrados</h2>
                     <div className="relative inline-block text-left">
