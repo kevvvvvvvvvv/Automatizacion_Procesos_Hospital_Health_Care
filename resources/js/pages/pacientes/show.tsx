@@ -1,21 +1,22 @@
 import React from 'react';
-import { Head, Link } from '@inertiajs/react';
+import { Head, Link, usePage } from '@inertiajs/react';
 import { Eye, Pencil } from 'lucide-react';
 import MainLayout from '@/layouts/MainLayout';
 import {route} from 'ziggy-js';
+import { usePermission } from '@/hooks/use-permission';
+import { Paciente, PageProps } from '@/types';
 
 import AddButton from '@/components/ui/add-button';
-
 import InfoCard from '@/components/ui/info-card';
 import InfoField from '@/components/ui/info-field';
-import { Paciente } from '@/types';
-
 
 type ShowProps = {
     paciente: Paciente;
 };
 
 const Show = ({ paciente }: ShowProps) => {
+    const { can, hasRole } = usePermission(); 
+    const { auth } = usePage<PageProps>().props;
     
     return (
         <>
@@ -73,9 +74,11 @@ const Show = ({ paciente }: ShowProps) => {
                 </InfoCard>
 
                 <div className="flex justify-end w-full">
+                    {can('crear estancias') && (
                     <AddButton href={route('pacientes.estancias.create', { paciente: paciente.id })}>
-                        Añadir estancia
-                    </AddButton>
+                        Añadir estancia 
+                    </AddButton>)
+                    }
                 </div>
             </div>
 
@@ -117,14 +120,15 @@ const Show = ({ paciente }: ShowProps) => {
                             >
                             <Eye size={18} />
                             </Link>
-                            <Link 
-                            href={route('estancias.edit', estancia.id)}
-                            className="p-2 text-blue-500 hover:bg-blue-100 hover:text-blue-700 rounded-full transition"
-                            title="Editar estancia"
-                            >
-                            <Pencil size={18} />
-                            </Link>
-
+                            {(estancia.creator.id === auth.user.id || hasRole('administrador')) && (
+                                <Link 
+                                    href={route('estancias.edit', estancia.id)}
+                                    className="p-2 text-blue-500 hover:bg-blue-100 hover:text-blue-700 rounded-full transition"
+                                    title="Editar estancia"
+                                >
+                                    <Pencil size={18} />
+                                </Link>
+                            )}
                         </div>
                     </div>
                 ))

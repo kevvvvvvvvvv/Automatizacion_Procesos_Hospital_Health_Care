@@ -14,7 +14,7 @@ export const usePermission = () => {
         const userPermissions = user.permissions || [];
 
         // El rol 'admin' siempre tiene acceso total
-        if (userRoles.includes('admin')) {
+        if (userRoles.includes('administrador')) {
             return true;
         }
 
@@ -27,11 +27,16 @@ export const usePermission = () => {
      */
     const canAny = (permissionsArray: string[]): boolean => {
         const userRoles = user.roles || [];
-        if (userRoles.includes('admin')) return true;
+        if (userRoles.includes('administrador')) return true;
         
         const userPermissions = user.permissions || [];
         return permissionsArray.some(p => userPermissions.includes(p));
     };
 
-    return { can, canAny, user };
+    const userRoles = user.roles || [];
+    const hasRole = (roleName: string) => {
+        return userRoles.includes(roleName);
+    };
+
+    return { can, canAny, user, hasRole };
 };

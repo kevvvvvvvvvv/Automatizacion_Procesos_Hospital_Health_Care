@@ -8,9 +8,25 @@ use Inertia\Inertia;
 use App\Models\Paciente;
 use App\Models\Venta;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests; 
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 
-class VentaController extends Controller
+class VentaController extends Controller implements HasMiddleware
 {
+    use AuthorizesRequests;
+
+    public static function middleware(): array
+    {
+        $permission = \Spatie\Permission\Middleware\PermissionMiddleware::class;
+        return [
+            new Middleware($permission . ':consultar ventas', only: ['index', 'show']),
+            new Middleware($permission . ':crear ventas', only: ['create', 'store']),
+            new Middleware($permission . ':editar ventas', only: ['edit', 'update']),
+            new Middleware($permission . ':eliminar ventas', only: ['destroy']),
+        ];
+    }
+
     public function index(Paciente $paciente, Estancia $estancia)
     {
         $estancia->load('ventas.user');
