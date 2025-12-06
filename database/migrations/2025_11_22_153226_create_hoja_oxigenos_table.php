@@ -13,9 +13,18 @@ return new class extends Migration
     {
         Schema::create('hoja_oxigenos', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('hoja_enfermeria_id')
-                ->constrained('hoja_enfermerias')
+            $table->foreignId('estancia_id')
+                ->constrained('estancias')
+                ->onDelete('cascade'); 
+            
+            $table->foreignId('user_id_inicio')
+                ->constrained('users')
                 ->onDelete('cascade');
+
+            $table->foreignId('user_id_fin')
+                ->nullable()
+                ->constrained('users')
+                ->onDelete('set null');
 
             $table->datetime('hora_inicio');
             $table->datetime('hora_fin')->nullable();

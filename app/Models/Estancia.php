@@ -98,6 +98,11 @@ class Estancia extends Model
             'id'                        
         );
     }
+
+    public function hojaOxigenos(): HasMany
+    {
+        return $this->hasMany(HojaOxigeno::class);
+    }
     public function Consentimiento():hasMany
     {
         return $this->hasMany(Consentimiento::class);
