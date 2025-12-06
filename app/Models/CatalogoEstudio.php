@@ -21,4 +21,9 @@ class CatalogoEstudio extends Model
     {
         return $this->hasMany(SolicitudItem::class);
     }
+
+    public function detallesVenta()
+    {
+        return $this->morphMany(DetalleVenta::class, 'itemable');
+    }
 }
