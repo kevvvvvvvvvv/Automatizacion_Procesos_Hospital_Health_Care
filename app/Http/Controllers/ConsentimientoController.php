@@ -69,7 +69,7 @@ class ConsentimientoController extends Controller
 
             $bladeName = $map[$key];
 
-            $route = "pdfs/consentimientos/{$bladeName}.blade.php";
+            $route = "pdfs.consentimientos.{$bladeName}";
 
             Consentimiento::create([
                 'estancia_id' => $estancia->id,
