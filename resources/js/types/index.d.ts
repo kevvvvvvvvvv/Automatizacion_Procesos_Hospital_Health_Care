@@ -213,10 +213,13 @@ export interface DetalleVenta{
     descuento: number;
     estado: string;
     venta_id: number;
-    producto_servicio_id: number;
     created_at: string;
     updated_at: string;
-    producto_servicio?: ProductoServicio;
+    itemable_type: string;
+    itemable?: {
+        nombre_prestacion?: string; // Existe si es Producto
+        nombre?: string;            // Existe si es Estudio
+    };
 }
 
 export interface HojaEnfermeria {
