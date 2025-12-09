@@ -86,7 +86,8 @@ class FormularioHojaEnfermeriaController extends Controller
             'hojasTerapiaIV.solucion',
             'hojaMedicamentos.productoServicio',
             'hojaMedicamentos.aplicaciones',
-            'formularioInstancia.estancia.hojaOxigenos', 
+            'formularioInstancia.estancia.hojaOxigenos.userInicio',
+            'formularioInstancia.estancia.hojaOxigenos.userFIn',  
         );
         $estancia = $hojasenfermeria->formularioInstancia->estancia;
         $estancia->load('hojaSondasCateters');
