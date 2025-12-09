@@ -35,7 +35,11 @@ const ServiciosEspecialesForm: React.FC<Props> = ({ estancia }) => {
         });
     };
     
+    console.log(estancia);
     return (
+
+        
+
         <>
             <form onSubmit={handleSubmit}>
                 <div className='grid grid-cols-1 md:grid-cols-2 gap-5'>
@@ -67,6 +71,8 @@ const ServiciosEspecialesForm: React.FC<Props> = ({ estancia }) => {
                                 <th className="px-4 py-4 text-sm text-gray-900">Hora de fin</th>
                                 <th className="px-4 py-4 text-sm text-gray-900">Litros por minuto</th>
                                 <th className="px-4 py-4 text-sm text-gray-900">Total litros consumidos</th>
+                                <th className="px-4 py-4 text-sm text-gray-900">Personal que inició</th>
+                                <th className="px-4 py-4 text-sm text-gray-900">Personal que finalizó</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -102,6 +108,8 @@ const ServiciosEspecialesForm: React.FC<Props> = ({ estancia }) => {
                                         </td>
                                         <td className="px-4 py-4 text-sm text-gray-900">{oxi.litros_minuto}</td>
                                         <td className="px-4 py-4 text-sm text-gray-900">{oxi.total_consumido }</td>
+                                        <td className="px-4 py-4 text-sm text-gray-900">{oxi.user_inicio?.nombre} {oxi.user_inicio?.apellido_paterno} {oxi.user_inicio?.apellido_materno}</td>
+                                        <td className="px-4 py-4 text-sm text-gray-900">{}</td>
                                     </tr>
                                 ))
                             )}
