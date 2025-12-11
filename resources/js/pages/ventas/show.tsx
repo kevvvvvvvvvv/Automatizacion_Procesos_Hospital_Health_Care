@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { route } from 'ziggy-js';
-import { useForm } from '@inertiajs/react';
+import { useForm, Head } from '@inertiajs/react';
 import { CreditCard, Hash, X } from 'lucide-react'; 
 import { Venta } from '@/types';
 
@@ -77,6 +77,7 @@ const Show = ({ venta }: { venta: Venta }) => {
 
     return (
         <MainLayout pageTitle={`Consulta venta #${venta.id}`}  >
+            <Head title={`Consulta de venta #${venta.id}`}/>
             <div className="max-w-5xl mx-auto space-y-6 pb-10">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-6 rounded-xl shadow-sm border border-gray-200">
                     <div>

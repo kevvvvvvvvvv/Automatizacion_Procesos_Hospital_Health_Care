@@ -17,12 +17,11 @@
     }
 
     #printable-ticket, #printable-ticket * {
-        display: block !important; 
-        visibility: visible !important;
         visibility: visible;
     }
 
     #printable-ticket {
+        display: block !important; 
         position: fixed;
         left: 0;
         top: 0;
