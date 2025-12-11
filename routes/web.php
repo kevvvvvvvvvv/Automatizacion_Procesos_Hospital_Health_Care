@@ -66,6 +66,7 @@ Route::resource('pacientes.estancias.hojasfrontales', FormularioHojaFrontalContr
 Route::resource('pacientes.estancias.historiasclinicas', FormularioHistoriaClinicaController::class)->shallow()->middleware('auth');
 Route::resource('pacientes.estancias.hojasenfermerias',FormularioHojaEnfermeriaController::class)->shallow()-> middleware('auth');
 Route::resource('pacientes.estancias.ventas', VentaController::class)->shallow()->middleware('auth');
+Route::post('/ventas/{venta}/pagar', [VentaController::class, 'registrarPago'])->middleware('auth')->name('ventas.pagar');
 Route::resource('pacientes.estancias.ventas.detallesventas',DetalleVentaController::class)->shallow()->middleware ('auth');
 Route::resource('pacientes.estancias.interconsultas.honorarios', HonorarioController::class)->shallow();
 Route::resource('pacientes.estancias.traslados', TrasladoController::class)->shallow()->middleware('auth');

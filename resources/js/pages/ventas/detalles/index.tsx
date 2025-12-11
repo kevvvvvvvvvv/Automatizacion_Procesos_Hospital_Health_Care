@@ -4,12 +4,11 @@ import { Paciente, Estancia, Venta, DetalleVenta as DetalleVentaType } from '@/t
 
 import MainLayout from '@/layouts/MainLayout'; 
 import PacienteCard from '@/components/paciente-card';
-import AddButton from '@/components/ui/add-button';
 
 interface Props {
     paciente: Paciente;
     estancia: Estancia;
-    venta: Venta & { detalles: DetalleVentaType[] }; // Aseguramos que ventas traiga detalles
+    venta: Venta & { detalles: DetalleVentaType[] }; 
 }
 
 const DetallesVenta: React.FC<Props> & { layout: any } = ({ paciente, estancia, venta }) => {
@@ -41,8 +40,6 @@ const DetallesVenta: React.FC<Props> & { layout: any } = ({ paciente, estancia, 
                         </thead>
                         <tbody>
                             {detalles.map((detalle) => {
-                                // --- LÓGICA DE NOMBRE ---
-                                // Intentamos obtener el nombre de producto, si no existe, el de estudio, si no, un fallback.
                                 const nombreItem = detalle.itemable 
                                     ? (detalle.itemable.nombre_prestacion || detalle.itemable.nombre || 'Sin nombre')
                                     : 'Ítem eliminado o no encontrado';
@@ -50,10 +47,8 @@ const DetallesVenta: React.FC<Props> & { layout: any } = ({ paciente, estancia, 
                                 return (
                                     <tr key={detalle.id} className="border-b hover:bg-gray-50">
                                         <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
-                                            {/* Aquí mostramos la variable calculada */}
                                             {nombreItem}
-                                            
-                                            {/* Opcional: Mostrar una etiqueta pequeña del tipo */}
+
                                             <span className="ml-2 text-xs text-gray-500 bg-gray-100 px-2 py-0.5 rounded border">
                                                 {detalle.itemable_type.includes('ProductoServicio') ? 'Producto' : 'Estudio'}
                                             </span>
@@ -75,8 +70,7 @@ const DetallesVenta: React.FC<Props> & { layout: any } = ({ paciente, estancia, 
                                 </tr>
                             )}
                         </tbody>
-                        
-                        {/* Footer (Total) se queda igual, tu lógica ahí estaba perfecta */}
+
                         {detalles.length > 0 && (
                             <tfoot className="text-gray-900">
                                 <tr className="font-semibold border-t">
@@ -100,5 +94,12 @@ const DetallesVenta: React.FC<Props> & { layout: any } = ({ paciente, estancia, 
     );
 }
 
-DetallesVenta.layout = (page: React.ReactElement) => <MainLayout children={page} pageTitle="Detalles de Venta" />;
+DetallesVenta.layout = (page: React.ReactElement) => {
+
+    const {venta, paciente, estancia} = page.props as Props;
+
+    return (
+        <MainLayout children={page} pageTitle={`Detalles de venta ${venta.id}`} link='pacientes.estancias.ventas.index' linkParams={[paciente.id, estancia.id]}/>
+    );
+}
 export default DetallesVenta;

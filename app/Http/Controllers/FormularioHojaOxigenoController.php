@@ -36,6 +36,7 @@ class FormularioHojaOxigenoController extends Controller
     public function update(HojaOxigenoRequest $request,HojaOxigeno $hojasoxigeno){
         $validatedData=$request->validated();
         $validatedData['hora_fin'] = Carbon::parse($validatedData['hora_fin'])->setTimezone(config('app.timezone'));
+        $validatedData['user_id_fin'] = Auth::id();
         try{
             $hojasoxigeno->update($validatedData);
             return Redirect::back()->with('success','Se ha registrado la hora de fin del uso de oxígeno');

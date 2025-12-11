@@ -33,7 +33,7 @@ class HojaOxigeno extends Model
 
     public function userInicio():BelongsTo
     {
-        return $this->belongsTo(User::class, 'user_id_inciio', 'id');
+        return $this->belongsTo(User::class, 'user_id_inicio', 'id');
     }
 
     public function userFin(): BelongsTo

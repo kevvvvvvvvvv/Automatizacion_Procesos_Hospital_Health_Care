@@ -199,6 +199,9 @@ export interface Venta{
     total: number;
     descuento: number;
     estado: string;
+    total_pagado: number;
+    saldo_pendiente: number;
+    cambio: number;
     estancia_id: number;
     user_id: number;
     created_at: string;

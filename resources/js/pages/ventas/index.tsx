@@ -16,6 +16,7 @@ import MainLayout from '@/layouts/MainLayout';
 import PacienteCard from '@/components/paciente-card';
 import { Paciente, Estancia, Venta } from '@/types'; 
 import { Pencil } from 'lucide-react';
+import { usePermission } from '@/hooks/use-permission';
 
 
 interface IndexProps {
@@ -32,6 +33,7 @@ const Index: IndexComponent = ({ paciente, estancia, ventas }) => {
 
     const [globalFilter, setGlobalFilter] = useState('');
     const [sorting, setSorting] = useState<SortingState>([]);
+    const { can } = usePermission();
 
     const columns = useMemo<ColumnDef<Venta>[]>(
         () => [
@@ -64,6 +66,16 @@ const Index: IndexComponent = ({ paciente, estancia, ventas }) => {
                 header: 'Estado',
             },
             {
+                accessorKey: 'total_pagado',
+                header: 'Total pagado',
+                cell: ({ row }) => `$${row.original.total_pagado.toLocaleString('es-MX', { minimumFractionDigits: 2 })}`,
+            },
+            {
+                accessorKey:'saldo_pendiente',
+                header: 'Pendiente por pagar',
+                cell: ({ row }) => `$${row.original.saldo_pendiente.toLocaleString('es-MX', { minimumFractionDigits: 2 })}`,
+            },
+            {
                 id: 'nombreUsuario', 
                 header: 'Nombre del que realizó la venta', 
                 accessorFn: (row) => {
@@ -78,17 +90,17 @@ const Index: IndexComponent = ({ paciente, estancia, ventas }) => {
                 header: 'Acciones',
                 cell: ({ row }) => (
                     <div className="flex items-center space-x-2">
-                         
+                        {can('editar ventas') && (
                         <Link
                                 href={route('ventas.edit', {venta: row.original.id })}
                                 onClick={(e) => {
-                                    // evita que el click burbujee al <tr> padre
                                     e.stopPropagation();
                                 }}
                                 className="p-2 text-blue-500 hover:bg-blue-100 hover:text-blue-700 rounded-full transition"
                                         >
                             <Pencil size={18}/>
                         </Link>
+                        )}
                     </div>
                 ),
             },
@@ -205,17 +217,17 @@ const Index: IndexComponent = ({ paciente, estancia, ventas }) => {
 };
 
 Index.layout = (page: React.ReactElement) => {
-  const { estancia, paciente } = page.props as IndexProps;
+    const { estancia, paciente } = page.props as IndexProps;
 
-  return (
-    <MainLayout
-      pageTitle={`Detalles de Interconsulta de ${paciente.nombre} ${paciente.apellido_paterno} ${paciente.apellido_materno}`}
-      link="estancias.show"
-      linkParams={estancia.id} 
-    >
-      {page}
-    </MainLayout>
-  );
+    return (
+        <MainLayout
+        pageTitle={`Detalles de ventas de ${paciente.nombre} ${paciente.apellido_paterno} ${paciente.apellido_materno}`}
+        link="estancias.show"
+        linkParams={estancia.id} 
+        >
+        {page}
+        </MainLayout>
+    );
 };
 
 export default Index;
