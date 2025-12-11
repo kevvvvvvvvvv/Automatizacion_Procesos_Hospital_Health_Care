@@ -1,6 +1,5 @@
 import React from 'react';
 import '../../../public/css/ticket-styles.css';
-import '../../../public/images/Logo_HC_Negativo_2.png';
 import { Venta } from '@/types';
 
 export default function Ticket({ venta }:{ venta: Venta}) {
