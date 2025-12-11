@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Consentimiento Médico Informado Quirúrgico</title>
+    <title>Consentimiento Informado Donación de órganos, tejidos y trasplantes</title>
     <style>
         @page {
             size: A4;
@@ -104,34 +104,22 @@
 </head>
 <body>
     <main>
-        <h1>Consentimiento Médico Informado Quirúrgico</h1>
+        <h1>Consentimiento informado Donación de órganos, tejidos y trasplantes</h1> 
 
-      
-
-        {{-- CUERPO DEL CONSENTIMIENTO --}}
+        {{-- Sección del cuerpo del consentimiento--}}
+       {{-- CUERPO DEL CONSENTIMIENTO --}}
         <h3>Cuerpo del Consentimiento</h3>
         <div class="section-content">
-            <p>Yo, {{ $paciente->nombre ?? 'Sin datos.' }}, de {{ $paciente->edad ?? 'Sin datos.' }} años de edad, con domicilio en {{ $paciente->domicilio ?? 'Sin datos.' }}, de estado civil {{ $paciente->estado_civil ?? 'Sin datos.' }} (hijo de {{ $paciente->padre ?? 'Sin datos.' }} y {{ $paciente->madre ?? 'Sin datos.' }}), por medio del presente documento:</p>
-            <p>Hago constar:</p>
-            <p>Que el Dr. {{ $medico->nombre . " " . $medico->apellido_paterno . " " . $medico->apellido_materno ?? 'Sin datos.' }} especialista en {{ $medico->especialidad ?? 'Sin datos.' }} debidamente acreditado, con consulta en Hospitalidad Health Care Suites Reforma, de la Ciudad de Cuernavaca, Morelos, me ha informado personalmente, a mi completa satisfacción y de forma enteramente comprensible para mí, incluso con apoyo gráfico y contestando a mi satisfacción a las preguntas que le formulé, los motivos por los cuales ha indicado la realización de un procedimiento quirúrgico consistente en ___________________________________________________________, así como me ha informado de las alternativas, los riesgos siguientes: ____________________________________________________________ _______________________________________________________________________________________________ _______________________________________________________, y las posibles complicaciones, entre las cuales puede haber: _______________________________________________________________ _______________________________________________________________________________________, asi como las consecuencias y beneficios inherentes a la operación a realizar.</p>
-            <p>Atendiendo por tanto a la prescripción del Dr. {{ $medico->nombre . " " . $medico->apellido_paterno . " " . $medico->apellido_materno ?? 'Sin datos.' }} y en uso de mi libre voluntad, por medio de este documento, informada y expresamente autorizo, a que se me realice dicha intervención por el Dr. {{ $medico->nombre . " " . $medico->apellido_paterno . " " . $medico->apellido_materno ?? 'Sin datos.' }} y su equipo quirúrgico.</p>
-            <p>De igual manera consiento que a tal propósito y durante el tiempo necesario o conveniente se me interne en Hospitalidad Health Care suites Reforma, ubicado en Plan de Ayutla 13, Col. Reforma, C.P. 62260, Cuernavaca, Morelos.</p>
+            <p>Yo {{ $paciente->nombre ?? 'Sin datos.' }}, de {{ $paciente->edad ?? 'Sin datos.' }} años de edad, de sexo {{ $paciente->sexo ?? 'Sin datos.' }}, con fecha de nacimiento {{ $paciente->fecha_nacimiento ?? 'Sin datos.' }} con diagnóstico {{ $paciente->diagnostico ?? 'Sin datos.' }}, por medio de presente documento ACEPTO VOLUNTARIAMENTE Y AUTORIZÓ AL DR. o DRA. {{ $medico->nombre . " " . $medico->apellido_paterno . " " . $medico->apellido_materno ?? 'Sin datos.' }}, que se encuentra debidamente acreditado y presta sus servicios en Hospitalidad Health Care, en la ciudad de Cuernavaca, Morelos; quien me ha informado personalmente, a mi completa satisfacción y de forma enteramente comprensible para mi, incluso con apoyo gráfico e incluso se me ha permitido realizar preguntas y se me han aclarado mis dudas, por lo que manifiesto sentirme satisfecha(o) con la información recibida referente a la Transfusión Sanguínea Hospitalaria.</p>
+            <p>Este procedimiento consiste en suministrar por vía endovenosa sangre o cualquiera de sus componentes como glóbulos rojos, plaquetas, plasma fresco congelado y/o crioprecipitados a una persona. De esta forma, a través de la transfusión se busca reponer algún componente de la sangre que el organismo no produce como consecuencia de algún tratamiento o enfermedad o bien porque se está perdiendo, como en el caso de las hemorragias, por lo que se requiere evaluar la condición clínica en que me encuentro.</p>
+            <p>Se me explico que los componentes sanguíneos que voy a recibir provienen de donantes, que han sido sometidos a un riguroso proceso de selección. Que la sangre obtenida por el banco de sangre se le realiza una serie de estudios como lo exige la normatividad vigente para evitar la transmisión de enfermedades por vía sanguínea como la Hepatitis B y C, Sífilis, Brucelosis, Chagas y el VIH. Que previo a la transfusión se realizan las pruebas necesarias para que el hemocomponentes elegido para mi tratamiento sea compatible con mi grupo sanguíneo.</p>
+            <p>Se me ha informado sobre los beneficios, riesgos, posibles complicaciones, así como las consecuencias inherentes al procedimiento Como puede ser reacciones de tipo alérgico, fiebre, enrojecimiento de la piel, destrucción em los glóbulos rojos hasta la transmisión de enfermedades entre otros, las que son poco frecuentes casi siempre son leves sin representar en su gran mayoría un riesgo vital para la o el paciente Si se presentara algún evento adverso se me informa que se cuenta con personal necesario para atenderlo. De modo que autorizo al personal de Hospitalidad Health Care, para que se me apliquen los procedimientos o medidas terapéuticas adicionales, en caso de ocurrir una contingencia durante mi estancia dentro del hospital, estoy enterado que abre de requerir vigilancia y control médico hasta mi total recuperación. Este consentimiento informado puede ser revocado en cualquier momento antes de iniciar el proceso de Transfusión Sanguínea.</p>
             <p>Habiendo leído por mí mismo este documento, siendo su contenido perfectamente entendible para mí, y enterado de que los médicos antes mencionados se comprometen a la máxima diligencia en la prestación de los servicios profesionales al nivel tecnológico actual, sin que puedan por otra parte, garantizar absolutamente el resultado, firmo al calce en la ciudad de Cuernavaca, Morelos,a {{ $fecha['dia'] }} del mes {{ $fecha['mes'] }} del año {{ $fecha['anio'] }}.        </div>
 
-       
 
-        {{-- CONTINUACIÓN DEL CONSENTIMIENTO --}}
-        <h3>Continuación del Consentimiento</h3>
-        <div class="section-content">
-            <p>Con fines educativos o bien para contribuir al conocimiento científico, también acepto que se filme o se fotografíe el área anatómica tratada en el curso de este procedimiento, resguardando mi identidad.</p>
-            <p>Estoy enterado que habré de requerir vigilancia y control postoperatorios hasta mi total recuperación, debiendo para ello seguir de forma precisa las indicaciones de mi médico tratante.</p>
-            <p>Quedo en el entendido de que en todo momento habrá de mediar una comunicación expedita y una relación respetuosa con mi médico tratante a quien voluntariamente he acudido en busca de ayuda profesional. Autorizó al personal de salud para la atención de contingencias y urgencias derivadas del acto autorizado.</p>
-            <p>La anulación o cancelación de estos consentimientos prestados, deberá constar necesariamente por escrito, firmado personalmente por mí y deberá ser personalmente recibida por los facultativos afectados antes de producirse el acto médico quirúrgico.</p>
-            <p>De encontrarme en un momento dado incapacitado para consentir o modificar mi consentimiento, delego todas mis facultades en _________________________________________________________________________.</p>
-            <p>Habiendo leído por mí mismo este documento, siendo su contenido perfectamente entendible para mí, y enterado de que los médicos antes mencionados se comprometen a la máxima diligencia en la prestación de los servicios profesionales al nivel tecnológico actual, sin que puedan por otra parte, garantizar absolutamente el resultado, firmo al calce en la ciudad de Cuernavaca, Morelos, a _______ del mes _______ de del año _______.</p>
-        </div>
-        <style>
-               .table-signatures {
+        
+                <style>
+        .table-signatures {
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
@@ -151,7 +139,7 @@
             margin: 20px auto 5px auto;
         }
         </style>
-
+         
         {{-- TABLA DE FIRMAS (2 filas, 3 columnas) --}}
         <table class="table-signatures">
 
@@ -222,8 +210,6 @@
 
             </tr>
 
-        </table>
-
+        </table> 
     </main>
 </body>
-</html>

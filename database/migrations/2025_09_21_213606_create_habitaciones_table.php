@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('habitaciones', function (Blueprint $table) {
             $table->id();
             $table->string('identificador');
+            $table->string('tipo'); 
             $table->enum('estado',['Ocupado','Libre']);
             $table->string('piso');
         });
