@@ -12,6 +12,7 @@ class Habitacion extends Model
     
     protected $fillable = [
         'identificar',
+        'tipo',
         'estado',
         'piso',
     ];
