@@ -1,5 +1,5 @@
 .ticket-container {
-    width: 70mm; 
+    width: 68mm; 
     background: white;
     padding: 2mm;
     margin: 0 auto;
@@ -25,8 +25,8 @@
         position: fixed;
         left: 0;
         top: 0;
-        width: 70mm; 
-        margin-left: 5mm;
+        width: 68mm; 
+        margin-left: 6mm;
         margin-top: 25mm;
         padding: 0;
 
