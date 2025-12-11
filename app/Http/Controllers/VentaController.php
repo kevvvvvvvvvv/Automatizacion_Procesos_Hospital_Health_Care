@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\RegistroPagoVentaRequest;
 use App\Models\Estancia;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -11,6 +12,9 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests; 
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Log;
+use App\Services\VentaService;
 
 class VentaController extends Controller implements HasMiddleware
 {
@@ -37,6 +41,12 @@ class VentaController extends Controller implements HasMiddleware
             'paciente' => $paciente,
             'ventas' => $ventas,
         ]);
+    }
+
+    public function show(Venta $venta)
+    {
+        $venta->load('estancia.paciente');
+        return Inertia::render('ventas/show', ['venta' => $venta]);
     }
 
     public function edit(Venta $venta)
@@ -135,4 +145,21 @@ class VentaController extends Controller implements HasMiddleware
         ])->with('success', 'Descuento actualizado correctamente.');
     }
 
+
+    public function registrarPago(RegistroPagoVentaRequest $request, Venta $venta, VentaService $ventaService)
+    {
+        $validatedData = $request->validated();
+
+        try {
+            $montoAbonado = $validatedData['total_pagado'];
+
+            $ventaService->registrarPago($venta, $montoAbonado);
+
+            return Redirect::back()->with('success', 'Se ha registrado el pago correctamente.');
+
+        } catch (\Exception $e) {
+            Log::error('Error al registrar el pago: ' . $e->getMessage());
+            return Redirect::back()->with('error', 'Error al registrar el pago.');
+        }
+    }
 }

@@ -34,12 +34,8 @@ const ServiciosEspecialesForm: React.FC<Props> = ({ estancia }) => {
             preserveScroll: true,
         });
     };
-    
-    console.log(estancia);
+
     return (
-
-        
-
         <>
             <form onSubmit={handleSubmit}>
                 <div className='grid grid-cols-1 md:grid-cols-2 gap-5'>
@@ -109,7 +105,7 @@ const ServiciosEspecialesForm: React.FC<Props> = ({ estancia }) => {
                                         <td className="px-4 py-4 text-sm text-gray-900">{oxi.litros_minuto}</td>
                                         <td className="px-4 py-4 text-sm text-gray-900">{oxi.total_consumido }</td>
                                         <td className="px-4 py-4 text-sm text-gray-900">{oxi.user_inicio?.nombre} {oxi.user_inicio?.apellido_paterno} {oxi.user_inicio?.apellido_materno}</td>
-                                        <td className="px-4 py-4 text-sm text-gray-900">{}</td>
+                                        <td className="px-4 py-4 text-sm text-gray-900">{oxi.user_fin?.nombre} {oxi.user_fin?.apellido_paterno} {oxi.user_fin?.apellido_materno}</td>
                                     </tr>
                                 ))
                             )}

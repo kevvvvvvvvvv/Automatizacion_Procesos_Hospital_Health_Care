@@ -136,4 +136,25 @@ class VentaService
         
         return $detalle->subtotal * (1 + ($iva / 100));
     }
+
+
+    public function registrarPago(Venta $venta, float $montoPagado)
+    {
+        $nuevoTotalPagado = $venta->total_pagado + $montoPagado;
+        
+        $nuevoEstado = $venta->estado;
+
+        if ($nuevoTotalPagado >= $venta->total) {
+            $nuevoEstado = Venta::ESTADO_PAGADO; 
+        } elseif ($nuevoTotalPagado > 0) {
+            $nuevoEstado = Venta::ESTADO_PARCIAL;                   
+        }
+
+        $venta->update([
+            'total_pagado' => $nuevoTotalPagado,
+            'estado' => $nuevoEstado
+        ]);
+
+        return $venta;
+    }
 }
