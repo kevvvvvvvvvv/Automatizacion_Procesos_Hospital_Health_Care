@@ -21,9 +21,30 @@ class Venta extends Model
         'total',
         'descuento',
         'estado',
+        'total_pagado',
         'estancia_id',
         'user_id',
     ];
+
+    protected $appends = ['saldo_pendiente', 'pagado_completo'];
+
+    // Calcula cuánto falta por pagar
+    public function getSaldoPendienteAttribute()
+    {
+        return max(0, $this->total - $this->total_pagado);
+    }
+
+    // Calcula si hay cambio (si pagaron de más)
+    public function getCambioAttribute()
+    {
+        return max(0, $this->total_pagado - $this->total);
+    }
+
+    // Booleano simple para saber si ya se liquidó
+    public function getPagadoCompletoAttribute()
+    {
+        return $this->total_pagado >= $this->total;
+    }
 
     public function estancia(): BelongsTo
     {

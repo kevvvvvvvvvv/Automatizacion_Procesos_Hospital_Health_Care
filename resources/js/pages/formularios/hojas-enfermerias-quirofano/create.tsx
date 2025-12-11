@@ -32,16 +32,17 @@ const CreateHojaEnfermeriaQuirofano:CreateComponent = ({paciente, estancia}) => 
 }
 
 CreateHojaEnfermeriaQuirofano.layout = (page: React.ReactElement) => {
-const { estancia, paciente } = page.props as CreateProps;
+    const { estancia } = page.props as CreateProps;
 
-  return (
-    <MainLayout
-      pageTitle={`Inicio de hoja de enfermeria de quirofano`}
-      link="estancias.show"
-      linkParams={estancia.id} 
-    >
-      {page}
-    </MainLayout>
-  );}
+    return (
+        <MainLayout
+        pageTitle={`Inicio de hoja de enfermeria de quirofano`}
+        link="estancias.show"
+        linkParams={estancia.id} 
+        >
+        {page}
+        </MainLayout>
+    );
+}
 
 export default CreateHojaEnfermeriaQuirofano;

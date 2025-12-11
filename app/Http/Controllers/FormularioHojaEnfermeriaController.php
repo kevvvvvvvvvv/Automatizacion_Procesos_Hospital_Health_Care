@@ -87,10 +87,12 @@ class FormularioHojaEnfermeriaController extends Controller
             'hojaMedicamentos.productoServicio',
             'hojaMedicamentos.aplicaciones',
             'formularioInstancia.estancia.hojaOxigenos.userInicio',
-            'formularioInstancia.estancia.hojaOxigenos.userFIn',  
+            'formularioInstancia.estancia.hojaOxigenos.userFin',  
         );
         $estancia = $hojasenfermeria->formularioInstancia->estancia;
         $estancia->load('hojaSondasCateters');
+
+        //dd($hojasenfermeria->toArray());
 
         $paciente = $hojasenfermeria->formularioInstancia->estancia->paciente;
 
