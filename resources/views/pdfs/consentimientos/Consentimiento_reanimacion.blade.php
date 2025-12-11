@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Consentimiento Médico Informado Quirúrgico</title>
+    <title>Consentimiento Médico Informado para reanimación cardiopulmonar, intubación y maniobras de resucitación</title>
     <style>
         @page {
             size: A4;
@@ -17,10 +17,19 @@
                 font-size: 9pt;
                 color: #888;
             }
-        }
 
+     
+        }
         * {
             box-sizing: border-box;
+        }
+
+        body {
+            font-family: Calibri, Arial, sans-serif; 
+            margin: 0; 
+            font-size: 10.5pt; 
+            color: #333;
+            line-height: 1.4;
         }
         
         .headerConsentimiento {
@@ -48,14 +57,6 @@
         }
         .headerConsentimiento .hospital-info p {
              margin: 0;
-        }
-
-        body {
-            font-family: Calibri, Arial, sans-serif; 
-            margin: 0; 
-            font-size: 10.5pt; 
-            color: #333;
-            line-height: 1.4;
         }
 
         h1 {
@@ -104,10 +105,9 @@
 </head>
 <body>
     <main>
-        <h1>Consentimiento Médico Informado Quirúrgico</h1>
+        <h1>Consentimiento Médico Informado para reanimación cardiopulmonar, intubación y maniobras de resucitación</h1>
 
-      
-
+        
         {{-- CUERPO DEL CONSENTIMIENTO --}}
         <h3>Cuerpo del Consentimiento</h3>
         <div class="section-content">
@@ -116,7 +116,9 @@
             <p>Que el Dr. {{ $medico->nombre . " " . $medico->apellido_paterno . " " . $medico->apellido_materno ?? 'Sin datos.' }} especialista en {{ $medico->especialidad ?? 'Sin datos.' }} debidamente acreditado, con consulta en Hospitalidad Health Care Suites Reforma, de la Ciudad de Cuernavaca, Morelos, me ha informado personalmente, a mi completa satisfacción y de forma enteramente comprensible para mí, incluso con apoyo gráfico y contestando a mi satisfacción a las preguntas que le formulé, los motivos por los cuales ha indicado la realización de un procedimiento quirúrgico consistente en ___________________________________________________________, así como me ha informado de las alternativas, los riesgos siguientes: ____________________________________________________________ _______________________________________________________________________________________________ _______________________________________________________, y las posibles complicaciones, entre las cuales puede haber: _______________________________________________________________ _______________________________________________________________________________________, asi como las consecuencias y beneficios inherentes a la operación a realizar.</p>
             <p>Atendiendo por tanto a la prescripción del Dr. {{ $medico->nombre . " " . $medico->apellido_paterno . " " . $medico->apellido_materno ?? 'Sin datos.' }} y en uso de mi libre voluntad, por medio de este documento, informada y expresamente autorizo, a que se me realice dicha intervención por el Dr. {{ $medico->nombre . " " . $medico->apellido_paterno . " " . $medico->apellido_materno ?? 'Sin datos.' }} y su equipo quirúrgico.</p>
             <p>De igual manera consiento que a tal propósito y durante el tiempo necesario o conveniente se me interne en Hospitalidad Health Care suites Reforma, ubicado en Plan de Ayutla 13, Col. Reforma, C.P. 62260, Cuernavaca, Morelos.</p>
-            <p>Habiendo leído por mí mismo este documento, siendo su contenido perfectamente entendible para mí, y enterado de que los médicos antes mencionados se comprometen a la máxima diligencia en la prestación de los servicios profesionales al nivel tecnológico actual, sin que puedan por otra parte, garantizar absolutamente el resultado, firmo al calce en la ciudad de Cuernavaca, Morelos,a {{ $fecha['dia'] }} del mes {{ $fecha['mes'] }} del año {{ $fecha['anio'] }}.        </div>
+            <p>Si durante el curso de la intervención y por contingencias no previstas en el momento de esta, se considerase necesario o conveniente para mi salud y recuperación, aplicar procedimientos o medidas terapéuticas adicionales, realizar cualquier otra intervención o manipulación complementaria, incluyendo el uso de sangre y sus derivados, desde luego, expresamente autorizo y consiento que se haga, sin necesidad de revertirme del estado anestésico en que pudiera encontrarme.</p>
+            <p>El paciente tiene de diagnostico: {{ $notaData   ->diagnostico ?? 'sin datos' }}</p>
+        </div>
 
        
 
@@ -128,101 +130,109 @@
             <p>Quedo en el entendido de que en todo momento habrá de mediar una comunicación expedita y una relación respetuosa con mi médico tratante a quien voluntariamente he acudido en busca de ayuda profesional. Autorizó al personal de salud para la atención de contingencias y urgencias derivadas del acto autorizado.</p>
             <p>La anulación o cancelación de estos consentimientos prestados, deberá constar necesariamente por escrito, firmado personalmente por mí y deberá ser personalmente recibida por los facultativos afectados antes de producirse el acto médico quirúrgico.</p>
             <p>De encontrarme en un momento dado incapacitado para consentir o modificar mi consentimiento, delego todas mis facultades en _________________________________________________________________________.</p>
-            <p>Habiendo leído por mí mismo este documento, siendo su contenido perfectamente entendible para mí, y enterado de que los médicos antes mencionados se comprometen a la máxima diligencia en la prestación de los servicios profesionales al nivel tecnológico actual, sin que puedan por otra parte, garantizar absolutamente el resultado, firmo al calce en la ciudad de Cuernavaca, Morelos, a _______ del mes _______ de del año _______.</p>
+            <p>Habiendo leído por mí mismo este documento, siendo su contenido perfectamente entendible para mí, y enterado de que los médicos antes mencionados se comprometen a la máxima diligencia en la prestación de los servicios profesionales al nivel tecnológico actual, sin que puedan por otra parte, garantizar absolutamente el resultado, firmo al calce en la ciudad de Cuernavaca, Morelos,a {{ $fecha['dia'] }} del mes {{ $fecha['mes'] }} del año {{ $fecha['anio'] }}.
+</p>
         </div>
-        <style>
-               .table-signatures {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
 
-        .table-signatures td {
-            width: 33%;
-            vertical-align: top;
-            text-align: center;
-            padding: 10px;
-        }
+<style>
+.table-signatures {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
 
-        .signature-line {
-            width: 100%;
-            height: 1px;
-            background-color: #000;
-            margin: 20px auto 5px auto;
-        }
-        </style>
+.table-signatures td {
+    width: 33%;
+    vertical-align: top;
+    text-align: center;
+    padding: 10px;
+}
 
-        {{-- TABLA DE FIRMAS (2 filas, 3 columnas) --}}
-        <table class="table-signatures">
+.signature-line {
+    width: 100%;
+    height: 1px;
+    background-color: #000;
+    margin: 20px auto 5px auto;
+}
+</style>
 
-            {{-- FILA 1 --}}
-            <tr>
+{{-- TABLA DE FIRMAS (2 filas, 3 columnas) --}}
+<table class="table-signatures">
 
-                {{-- 1. Paciente --}}
-                <td>
-                    <div class="signature-line"></div>
-                    <p>{{ $paciente->nombre ?? 'Sin datos.' }}</p>
-                    <p style="font-size: 9pt; color: #555;">Nombre y firma del paciente</p>
-                </td>
+    {{-- FILA 1 --}}
+    <tr>
 
-                {{-- 2. Familiar responsable --}}
-                <td>
-                    <div class="signature-line"></div>
-                    <p>Nombre y firma del familiar responsable</p>
-                    <p style="font-size: 9pt; color: #555;">
-                        {{ $paciente->familiar_responsable ?? 'Sin datos.' }}
-                    </p>
-                </td>
+        {{-- 1. Paciente --}}
+        <td>
+            <div class="signature-line"></div>
+            <p>{{ $paciente->nombre ?? 'Sin datos.' }}</p>
+            <p style="font-size: 9pt; color: #555;">Nombre y firma del paciente</p>
+        </td>
 
-                {{-- 3. Testigo 1 --}}
-                <td>
-                    <div class="signature-line"></div>
-                    <p>Nombre y firma de testigo</p>
-                </td>
+        {{-- 2. Familiar responsable --}}
+        <td>
+            <div class="signature-line"></div>
+            <p>Nombre y firma del familiar responsable</p>
+            <p style="font-size: 9pt; color: #555;">
+                {{ $paciente->familiar_responsable ?? 'Sin datos.' }}
+            </p>
+        </td>
 
-            </tr>
+        {{-- 3. Testigo 1 --}}
+        <td>
+            <div class="signature-line"></div>
+            <p>Nombre y firma de testigo</p>
+        </td>
 
-            {{-- FILA 2 --}}
-            <tr>
+    </tr>
 
-                {{-- 4. Testigo 2 --}}
-                <td>
-                    <div class="signature-line"></div>
-                    <p>Nombre y firma de testigo</p>
-                </td>
+    {{-- FILA 2 --}}
+    <tr>
 
-                {{-- 5. Médico --}}
-                <td>
-                    @if(isset($medico))
-                        <div class="signature-line"></div>
+        {{-- 4. Testigo 2 --}}
+        <td>
+            <div class="signature-line"></div>
+            <p>Nombre y firma de testigo</p>
+        </td>
 
-                        <p>{{ $medico->nombre }} {{ $medico->apellido_paterno }} {{ $medico->apellido_materno }}</p>
-                        <p style="font-size: 9pt; color: #555;">Nombre y Firma del Médico</p>
+        {{-- 5. Médico --}}
+        <td>
+            @if(isset($medico))
+                <div class="signature-line"></div>
 
-                        @if($medico->credenciales->isNotEmpty())
-                            <div style="font-size: 10pt; margin-top: 10px;">
-                                @foreach($medico->credenciales as $credencial)
-                                    <p>
-                                        <strong>Título:</strong> {{ $credencial->titulo }}
-                                        |
-                                        <strong>Cédula:</strong> {{ $credencial->cedula_profesional }}
-                                    </p>
-                                @endforeach
-                            </div>
-                        @endif
-                    @else
-                        <p style="font-size: 9pt; color: #555;">Sin datos de médico</p>
-                    @endif
-                </td>
+                <p>{{ $medico->nombre }} {{ $medico->apellido_paterno }} {{ $medico->apellido_materno }}</p>
+                <p style="font-size: 9pt; color: #555;">Nombre y Firma del Médico</p>
 
-                {{-- 6. Vacío o espacio adicional --}}
-                <td>
-                    {{-- Aquí puedes poner algo o dejarlo vacío --}}
-                </td>
+                @if($medico->credenciales->isNotEmpty())
+                    <div style="font-size: 10pt; margin-top: 10px;">
+                        @foreach($medico->credenciales as $credencial)
+                            <p>
+                                <strong>Título:</strong> {{ $credencial->titulo }}
+                                |
+                                <strong>Cédula:</strong> {{ $credencial->cedula_profesional }}
+                            </p>
+                        @endforeach
+                    </div>
+                @endif
+            @else
+                <p style="font-size: 9pt; color: #555;">Sin datos de médico</p>
+            @endif
+        </td>
 
-            </tr>
+        {{-- 6. Vacío o espacio adicional --}}
+        <td>
+            {{-- Aquí puedes poner algo o dejarlo vacío --}}
+        </td>
 
-        </table>
+    </tr>
+
+</table>
+
+</div>
+
+
+</div>
+
 
     </main>
 </body>
