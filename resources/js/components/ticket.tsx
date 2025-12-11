@@ -34,35 +34,43 @@ export default function Ticket({ venta }:{ venta: Venta}) {
                     <p>Paciente: {venta.estancia.paciente.nombre} {venta.estancia.paciente.apellido_paterno} {venta.estancia.paciente.apellido_materno}</p>
                 </div>
 
-                <table className="w-full text-[10px] mb-2">
+                <table className="w-full text-[10px] mb-2 table-fixed leading-tight">
                     <thead>
                         <tr className="border-b border-dashed border-black">
-                            <th className="text-left">Cant.</th>
-                            <th className="text-left">Desc.</th>
-                            <th className="text-right">Importe</th>
+                            <th className="w-[15%] text-left align-top">Cant.</th>
+                            <th className="w-[55%] text-left align-top">Desc.</th>
+                            <th className="w-[30%] text-right align-top">Importe</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {venta.detalles.length === 0 ?
-                            (
-                                <tr>
-                                    <td className='text-gray'> Sin articulos registrados</td>
-                                </tr>
-                            ):(
-                                venta.detalles?.map((detalle) => {
-                                    const nombreItem = detalle.itemable 
-                                        ? (detalle.itemable.nombre_prestacion || detalle.itemable.nombre || 'Sin nombre')
-                                        : 'Ítem eliminado o no encontrado';
-                                        return (
-                                        <tr key={detalle.id}>
-                                            <td>{detalle.cantidad}</td>
-                                            <td>{nombreItem}</td>
-                                            <td className="text-right">{detalle.subtotal}</td>
-                                        </tr>
-                                    );
-                                }
-                            ))
-                        }                     
+                        {venta.detalles.length === 0 ? (
+                            <tr>
+                                <td colSpan={3} className='text-gray-500 text-center py-2'>
+                                    Sin artículos registrados
+                                </td>
+                            </tr>
+                        ) : (
+                            venta.detalles?.map((detalle) => {
+                                const nombreItem = detalle.itemable 
+                                    ? (detalle.itemable.nombre_prestacion || detalle.itemable.nombre || 'Sin nombre')
+                                    : 'Ítem eliminado o no encontrado';
+
+                                return (
+                                    <tr key={detalle.id}>
+                                        <td className="text-left align-top">
+                                            {detalle.cantidad}
+                                        </td>
+                                        <td className="text-left align-top break-words pr-1">
+                                            {nombreItem}
+                                        </td>
+                                        
+                                        <td className="text-right align-top">
+                                            ${Number(detalle.subtotal).toFixed(2)}
+                                        </td>
+                                    </tr>
+                                );
+                            })
+                        )}
                     </tbody>
                 </table>
 
