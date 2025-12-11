@@ -103,6 +103,7 @@ export interface FamiliarResponsable {
 export interface Habitacion {
     id: number;
     identificador: string;
+    tipo: string;
     piso: string,
     estado: 'Ocupado' | 'Libre',
     estancia_activa?: { 
