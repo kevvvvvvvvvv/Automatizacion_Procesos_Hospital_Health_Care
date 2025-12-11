@@ -22,6 +22,33 @@
         * {
             box-sizing: border-box;
         }
+        
+        .headerConsentimiento {
+            display: flex; 
+            justify-content: space-between;
+            align-items: center; 
+            padding-bottom: 8px;
+            margin-bottom: 15px; 
+        }
+
+        .headerConsentimiento .info-container {
+            flex-basis: 45%; 
+        }
+
+        .headerConsentimiento .logo {
+            width: 150px; 
+            display: block; 
+            margin-bottom: 5px;
+        }
+
+        .headerConsentimiento .hospital-info { 
+             text-align: left; 
+             font-size: 8pt; 
+             line-height: 1.2;
+        }
+        .headerConsentimiento .hospital-info p {
+             margin: 0;
+        }
 
         body {
             font-family: Calibri, Arial, sans-serif; 
@@ -79,56 +106,109 @@
     <main>
         <h1>Carta de Consentimiento Informado de Hospitalización</h1>
 
-        {{-- ENCABEZADO --}}
-        <h3>Encabezado</h3>
-        <div class="section-content">
-            <p>CUERNAVACA, MORELOS. C.P. 62260 TEL: 777 323 0371</p>
-            <p>Licencia sanitaria No. 23-AM-17-007-0002</p>
-            <p>Responsable Sanitario Dr. Juan Manuel Ahumada Trujillo.</p>
-        </div>
-
         {{-- CUERPO DEL CONSENTIMIENTO --}}
         <h3>Cuerpo del Consentimiento</h3>
         <div class="section-content">
             <p>Yo {{ $paciente->nombre ?? 'Sin datos.' }} expreso mi libre voluntad para el ingreso al servicio de Hospitalización después de haberme proporcionado información completa sobre mi estado actual de salud la cual fue realizada de forma amplia, siempre utilizando un lenguaje claro y preciso, complementando sobre los beneficios, posibles riesgos, complicaciones y secuelas, derivados de la terapéutica empleada.</p>
             <p>Hago constar que el médico me informo sobre la existencia de procedimientos alternativos, el derecho a cambiar mi decisión en cualquier momento y manifestarla con el propósito de que mi atención sea adecuada, me comprometo además a proporcionar información completa y veraz, así como seguir las indicaciones médicas empleadas.</p>
             <p>Acepto y autorizo a los profesionales de la salud de Hospitalidad Health Care (Comprehensive Medical Solutions de México SA de CV), para que me apliquen los procedimientos o medidas terapéuticas adicionales, incluyendo el uso de sangre y sus derivados que sean necesarios para el mantenimiento de mi salud, en caso de que ocurriera alguna contingencia durante el procedimiento. Estoy enterado que abre de requerir vigilancia y control médico hasta mi total recuperación.</p>
-            <p>Habiendo leído por mí mismo este documento, siendo su contenido perfectamente entendible para mí y enterado de que el personal de salud se compromete a la máxima diligencia en la prestación de los servicios profesionales a nivel tecnológico actual, sin que puedan por otra parte garantizar absolutamente el resultado, firmo en Cuernavaca, Morelos a ____ del mes _______ del año _________.</p>
-        </div>
+            <p>Habiendo leído por mí mismo este documento, siendo su contenido perfectamente entendible para mí, y enterado de que los médicos antes mencionados se comprometen a la máxima diligencia en la prestación de los servicios profesionales al nivel tecnológico actual, sin que puedan por otra parte, garantizar absolutamente el resultado, firmo al calce en la ciudad de Cuernavaca, Morelos,a {{ $fecha['dia'] }} del mes {{ $fecha['mes'] }} del año {{ $fecha['anio'] }}.        </div>
 
        
-        {{-- SECCIÓN DE FIRMAS --}}
-        <div class="signature-section">
-            <div class="signature-line"></div>
-            <p>{{ $paciente->nombre ?? 'Sin datos.' }}</p>
-            <p style="font-size: 9pt; color: #555;">Nombre y firma del paciente</p>
-            <div class="signature-line"></div>
-            <p>{{ $medico->nombre . " " . $medico->apellido_paterno . " " . $medico->apellido_materno ?? 'Sin datos.' }}</p>
-            <p style="font-size: 9pt; color: #555;">Nombre y firma del médico</p>
-            <div class="signature-line"></div>
-            <p>Nombre y firma del familiar o representante legal</p>
-            <div class="signature-line"></div>
-            <p>Nombre y firma de testigo</p>
-        </div>
+        <style>
+        .table-signatures {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
 
-        {{-- SECCIÓN DE FIRMA DEL MÉDICO (si aplica) --}}
-        @if(isset($medico))
-            <div class="signature-section">
-                <div class="signature-line"></div>
-                <p>{{ $medico->nombre . " " . $medico->apellido_paterno . " " . $medico->apellido_materno}}</p>
-                <p style="font-size: 9pt; color: #555;">Nombre y Firma del Médico</p>
+        .table-signatures td {
+            width: 33%;
+            vertical-align: top;
+            text-align: center;
+            padding: 10px;
+        }
 
-                @if($medico->credenciales->isNotEmpty())
-                    <div class="credentials-list">
-                        @foreach($medico->credenciales as $credencial)
-                            <p>
-                                <strong>Título:</strong> {{ $credencial->titulo }} | <strong>Cédula Profesional:</strong> {{ $credencial->cedula_profesional }}
-                            </p>
-                        @endforeach
-                    </div>
-                @endif
-            </div>
-        @endif  
+        .signature-line {
+            width: 100%;
+            height: 1px;
+            background-color: #000;
+            margin: 20px auto 5px auto;
+        }
+        </style>
+
+        {{-- TABLA DE FIRMAS (2 filas, 3 columnas) --}}
+        <table class="table-signatures">
+
+            {{-- FILA 1 --}}
+            <tr>
+
+                {{-- 1. Paciente --}}
+                <td>
+                    <div class="signature-line"></div>
+                    <p>{{ $paciente->nombre ?? 'Sin datos.' }}</p>
+                    <p style="font-size: 9pt; color: #555;">Nombre y firma del paciente</p>
+                </td>
+
+                {{-- 2. Familiar responsable --}}
+                <td>
+                    <div class="signature-line"></div>
+                    <p>Nombre y firma del familiar responsable</p>
+                    <p style="font-size: 9pt; color: #555;">
+                        {{ $paciente->familiar_responsable ?? 'Sin datos.' }}
+                    </p>
+                </td>
+
+                {{-- 3. Testigo 1 --}}
+                <td>
+                    <div class="signature-line"></div>
+                    <p>Nombre y firma de testigo</p>
+                </td>
+
+            </tr>
+
+            {{-- FILA 2 --}}
+            <tr>
+
+                {{-- 4. Testigo 2 --}}
+                <td>
+                    <div class="signature-line"></div>
+                    <p>Nombre y firma de testigo</p>
+                </td>
+
+                {{-- 5. Médico --}}
+                <td>
+                    @if(isset($medico))
+                        <div class="signature-line"></div>
+
+                        <p>{{ $medico->nombre }} {{ $medico->apellido_paterno }} {{ $medico->apellido_materno }}</p>
+                        <p style="font-size: 9pt; color: #555;">Nombre y Firma del Médico</p>
+
+                        @if($medico->credenciales->isNotEmpty())
+                            <div style="font-size: 10pt; margin-top: 10px;">
+                                @foreach($medico->credenciales as $credencial)
+                                    <p>
+                                        <strong>Título:</strong> {{ $credencial->titulo }}
+                                        |
+                                        <strong>Cédula:</strong> {{ $credencial->cedula_profesional }}
+                                    </p>
+                                @endforeach
+                            </div>
+                        @endif
+                    @else
+                        <p style="font-size: 9pt; color: #555;">Sin datos de médico</p>
+                    @endif
+                </td>
+
+                {{-- 6. Vacío o espacio adicional --}}
+                <td>
+                    {{-- Aquí puedes poner algo o dejarlo vacío --}}
+                </td>
+
+            </tr>
+
+        </table>
+
     </main>
 </body>
 </html>

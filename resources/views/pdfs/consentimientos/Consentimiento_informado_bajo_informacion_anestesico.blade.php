@@ -22,6 +22,33 @@
         * {
             box-sizing: border-box;
         }
+        
+        .headerConsentimiento {
+            display: flex; 
+            justify-content: space-between;
+            align-items: center; 
+            padding-bottom: 8px;
+            margin-bottom: 15px; 
+        }
+
+        .headerConsentimiento .info-container {
+            flex-basis: 45%; 
+        }
+
+        .headerConsentimiento .logo {
+            width: 150px; 
+            display: block; 
+            margin-bottom: 5px;
+        }
+
+        .headerConsentimiento .hospital-info { 
+             text-align: left; 
+             font-size: 8pt; 
+             line-height: 1.2;
+        }
+        .headerConsentimiento .hospital-info p {
+             margin: 0;
+        }
 
         body {
             font-family: Calibri, Arial, sans-serif; 
@@ -79,13 +106,6 @@
     <main>
         <h1>Declaración de Consentimiento Bajo Información por Anestesia</h1>
 
-        {{-- ENCABEZADO --}}
-        <h3>Encabezado</h3>
-        <div class="section-content">
-            <p>CUERNAVACA, MORELOS. C.P. 62260 TEL: 777 323 0371</p>
-            <p>Licencia sanitaria No. 23-AM-17-007-0002</p>
-            <p>Responsable Sanitario Dr. Juan Manuel Ahumada Trujillo.</p>
-        </div>
 
         {{-- CAMPOS ESPECÍFICOS --}}
         <h3>Campos Específicos</h3>
@@ -110,39 +130,100 @@
             <p>En virtud de lo anterior, doy mi consentimiento por escrito para que los médicos anestesiólogos de Clínica Borda SA de CV l leven los procedimientos que consideren necesarios para realizar la anestesia o procedimientos médicos al que he decidido someterme, en el entendimiento que si ocurren complicaciones en la aplicación de la técnica anestésica, no existe conducta dolosa.</p>
         </div>
 
-       
+       <style>
+        .table-signatures {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
 
-        {{-- SECCIÓN DE FIRMAS --}}
-        <div class="signature-section">
-            <div class="signature-line"></div>
-            <p>{{ $paciente->nombre ?? 'Sin datos.' }}</p>
-            <p style="font-size: 9pt; color: #555;">Nombre y firma Paciente y/o Familiar responsable</p>
-            <div class="signature-line"></div>
-            <p>{{ $medico->nombre . " " . $medico->apellido_paterno . " " . $medico->apellido_materno ?? 'Sin datos.' }}</p>
-            <p style="font-size: 9pt; color: #555;">Nombre, firma y cédula profesional Médico anestesiólogo</p>
-            <div class="signature-line"></div>
-            <p>{{ $medico_tratante->nombre . " " . $medico_tratante->apellido_paterno . " " . $medico_tratante->apellido_materno ?? 'Sin datos.' }}</p>
-            <p style="font-size: 9pt; color: #555;">Nombre, firma y cédula profesional Médico tratante</p>
-        </div>
+        .table-signatures td {
+            width: 33%;
+            vertical-align: top;
+            text-align: center;
+            padding: 10px;
+        }
 
-        {{-- SECCIÓN DE FIRMA DEL MÉDICO (si aplica) --}}
-        @if(isset($medico))
-            <div class="signature-section">
-                <div class="signature-line"></div>
-                <p>{{ $medico->nombre . " " . $medico->apellido_paterno . " " . $medico->apellido_materno}}</p>
-                <p style="font-size: 9pt; color: #555;">Nombre y Firma del Médico</p>
+        .signature-line {
+            width: 100%;
+            height: 1px;
+            background-color: #000;
+            margin: 20px auto 5px auto;
+        }
+        </style>
 
-                @if($medico->credenciales->isNotEmpty())
-                    <div class="credentials-list">
-                        @foreach($medico->credenciales as $credencial)
-                            <p>
-                                <strong>Título:</strong> {{ $credencial->titulo }} | <strong>Cédula Profesional:</strong> {{ $credencial->cedula_profesional }}
-                            </p>
-                        @endforeach
-                    </div>
-                @endif
-            </div>
-        @endif  
+        {{-- TABLA DE FIRMAS (2 filas, 3 columnas) --}}
+        <table class="table-signatures">
+
+            {{-- FILA 1 --}}
+            <tr>
+
+                {{-- 1. Paciente --}}
+                <td>
+                    <div class="signature-line"></div>
+                    <p>{{ $paciente->nombre ?? 'Sin datos.' }}</p>
+                    <p style="font-size: 9pt; color: #555;">Nombre y firma del paciente</p>
+                </td>
+
+                {{-- 2. Familiar responsable --}}
+                <td>
+                    <div class="signature-line"></div>
+                    <p>Nombre y firma del familiar responsable</p>
+                    <p style="font-size: 9pt; color: #555;">
+                        {{ $paciente->familiar_responsable ?? 'Sin datos.' }}
+                    </p>
+                </td>
+
+                {{-- 3. Testigo 1 --}}
+                <td>
+                    <div class="signature-line"></div>
+                    <p>Nombre y firma de testigo</p>
+                </td>
+
+            </tr>
+
+            {{-- FILA 2 --}}
+            <tr>
+
+                {{-- 4. Testigo 2 --}}
+                <td>
+                    <div class="signature-line"></div>
+                    <p>Nombre y firma de testigo</p>
+                </td>
+
+                {{-- 5. Médico --}}
+                <td>
+                    @if(isset($medico))
+                        <div class="signature-line"></div>
+
+                        <p>{{ $medico->nombre }} {{ $medico->apellido_paterno }} {{ $medico->apellido_materno }}</p>
+                        <p style="font-size: 9pt; color: #555;">Nombre y Firma del Médico</p>
+
+                        @if($medico->credenciales->isNotEmpty())
+                            <div style="font-size: 10pt; margin-top: 10px;">
+                                @foreach($medico->credenciales as $credencial)
+                                    <p>
+                                        <strong>Título:</strong> {{ $credencial->titulo }}
+                                        |
+                                        <strong>Cédula:</strong> {{ $credencial->cedula_profesional }}
+                                    </p>
+                                @endforeach
+                            </div>
+                        @endif
+                    @else
+                        <p style="font-size: 9pt; color: #555;">Sin datos de médico</p>
+                    @endif
+                </td>
+
+                {{-- 6. Vacío o espacio adicional --}}
+                <td>
+                    {{-- Aquí puedes poner algo o dejarlo vacío --}}
+                </td>
+
+            </tr>
+
+        </table>
+
     </main>
 </body>
 </html>

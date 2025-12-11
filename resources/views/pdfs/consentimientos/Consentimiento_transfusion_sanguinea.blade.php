@@ -18,9 +18,38 @@
                 color: #888;
             }
         }
+    
+
 
         * {
             box-sizing: border-box;
+        }
+        
+        .headerConsentimiento {
+            display: flex; 
+            justify-content: space-between;
+            align-items: center; 
+            padding-bottom: 8px;
+            margin-bottom: 15px; 
+        }
+
+        .headerConsentimiento .info-container {
+            flex-basis: 45%; 
+        }
+
+        .headerConsentimiento .logo {
+            width: 150px; 
+            display: block; 
+            margin-bottom: 5px;
+        }
+
+        .headerConsentimiento .hospital-info { 
+             text-align: left; 
+             font-size: 8pt; 
+             line-height: 1.2;
+        }
+        .headerConsentimiento .hospital-info p {
+             margin: 0;
         }
 
         body {
@@ -80,14 +109,7 @@
     <main>
         <h1>Consentimiento Informado de Transfusión Sanguínea</h1>
 
-        {{-- ENCABEZADO --}}
-        <h3>Encabezado</h3>
-        <div class="section-content">
-            <p>CUERNAVACA, MORELOS. C.P. 62260 TEL: 777 323 0371</p>
-            <p>Licencia sanitaria No. 23-AM-17-007-0002</p>
-            <p>Responsable Sanitario Dr. Juan Manuel Ahumada Trujillo.</p>
-        </div>
-
+      
         {{-- CUERPO DEL CONSENTIMIENTO --}}
         <h3>Cuerpo del Consentimiento</h3>
         <div class="section-content">
@@ -95,40 +117,104 @@
             <p>Este procedimiento consiste en suministrar por vía endovenosa sangre o cualquiera de sus componentes como glóbulos rojos, plaquetas, plasma fresco congelado y/o crioprecipitados a una persona. De esta forma, a través de la transfusión se busca reponer algún componente de la sangre que el organismo no produce como consecuencia de algún tratamiento o enfermedad o bien porque se está perdiendo, como en el caso de las hemorragias, por lo que se requiere evaluar la condición clínica en que me encuentro.</p>
             <p>Se me explico que los componentes sanguíneos que voy a recibir provienen de donantes, que han sido sometidos a un riguroso proceso de selección. Que la sangre obtenida por el banco de sangre se le realiza una serie de estudios como lo exige la normatividad vigente para evitar la transmisión de enfermedades por vía sanguínea como la Hepatitis B y C, Sífilis, Brucelosis, Chagas y el VIH. Que previo a la transfusión se realizan las pruebas necesarias para que el hemocomponentes elegido para mi tratamiento sea compatible con mi grupo sanguíneo.</p>
             <p>Se me ha informado sobre los beneficios, riesgos, posibles complicaciones, así como las consecuencias inherentes al procedimiento Como puede ser reacciones de tipo alérgico, fiebre, enrojecimiento de la piel, destrucción em los glóbulos rojos hasta la transmisión de enfermedades entre otros, las que son poco frecuentes casi siempre son leves sin representar en su gran mayoría un riesgo vital para la o el paciente Si se presentara algún evento adverso se me informa que se cuenta con personal necesario para atenderlo. De modo que autorizo al personal de Hospitalidad Health Care, para que se me apliquen los procedimientos o medidas terapéuticas adicionales, en caso de ocurrir una contingencia durante mi estancia dentro del hospital, estoy enterado que abre de requerir vigilancia y control médico hasta mi total recuperación. Este consentimiento informado puede ser revocado en cualquier momento antes de iniciar el proceso de Transfusión Sanguínea.</p>
-            <p>Declaro que he leído este consentimiento informado sobre la transfusión de sangre o hemocomponentes u que la he comprendido, así como la información que en forma verbal se me ha dado. Firmo al calce por propia voluntad y con pleno conocimiento de causa consiente la transfusión de sangre y/o componentes y autorizo al personal de salud para la atención de contingencias derivadas del acto consentido; en Cuernavaca, Morelos a ________ del mes de ________ del año ________.</p>
-        </div>
+            <p>Habiendo leído por mí mismo este documento, siendo su contenido perfectamente entendible para mí, y enterado de que los médicos antes mencionados se comprometen a la máxima diligencia en la prestación de los servicios profesionales al nivel tecnológico actual, sin que puedan por otra parte, garantizar absolutamente el resultado, firmo al calce en la ciudad de Cuernavaca, Morelos,a {{ $fecha['dia'] }} del mes {{ $fecha['mes'] }} del año {{ $fecha['anio'] }}.        </div>
 
         
 
-        {{-- SECCIÓN DE FIRMAS --}}
-        <div class="signature-section">
-            <div class="signature-line"></div>
-            <p>{{ $paciente->nombre ?? 'Sin datos.' }}</p>
-            <p style="font-size: 9pt; color: #555;">Nombre y firma del Paciente</p>
-            <div class="signature-line"></div>
-            <p>Nombre y firma del Familiar o Representante</p>
-            <div class="signature-line"></div>
-            <p>Nombre y firma del Testigo</p>
-        </div>
+        <style>
+        .table-signatures {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
 
-        {{-- SECCIÓN DE FIRMA DEL MÉDICO (si aplica) --}}
-        @if(isset($medico))
-            <div class="signature-section">
-                <div class="signature-line"></div>
-                <p>{{ $medico->nombre . " " . $medico->apellido_paterno . " " . $medico->apellido_materno}}</p>
-                <p style="font-size: 9pt; color: #555;">Nombre y Firma del Médico</p>
+        .table-signatures td {
+            width: 33%;
+            vertical-align: top;
+            text-align: center;
+            padding: 10px;
+        }
 
-                @if($medico->credenciales->isNotEmpty())
-                    <div class="credentials-list">
-                        @foreach($medico->credenciales as $credencial)
-                            <p>
-                                <strong>Título:</strong> {{ $credencial->titulo }} | <strong>Cédula Profesional:</strong> {{ $credencial->cedula_profesional }}
-                            </p>
-                        @endforeach
-                    </div>
-                @endif
-            </div>
-        @endif  
+        .signature-line {
+            width: 100%;
+            height: 1px;
+            background-color: #000;
+            margin: 20px auto 5px auto;
+        }
+        </style>
+
+        {{-- TABLA DE FIRMAS (2 filas, 3 columnas) --}}
+        <table class="table-signatures">
+
+            {{-- FILA 1 --}}
+            <tr>
+
+                {{-- 1. Paciente --}}
+                <td>
+                    <div class="signature-line"></div>
+                    <p>{{ $paciente->nombre ?? 'Sin datos.' }}</p>
+                    <p style="font-size: 9pt; color: #555;">Nombre y firma del paciente</p>
+                </td>
+
+                {{-- 2. Familiar responsable --}}
+                <td>
+                    <div class="signature-line"></div>
+                    <p>Nombre y firma del familiar responsable</p>
+                    <p style="font-size: 9pt; color: #555;">
+                        {{ $paciente->familiar_responsable ?? 'Sin datos.' }}
+                    </p>
+                </td>
+
+                {{-- 3. Testigo 1 --}}
+                <td>
+                    <div class="signature-line"></div>
+                    <p>Nombre y firma de testigo</p>
+                </td>
+
+            </tr>
+
+            {{-- FILA 2 --}}
+            <tr>
+
+                {{-- 4. Testigo 2 --}}
+                <td>
+                    <div class="signature-line"></div>
+                    <p>Nombre y firma de testigo</p>
+                </td>
+
+                {{-- 5. Médico --}}
+                <td>
+                    @if(isset($medico))
+                        <div class="signature-line"></div>
+
+                        <p>{{ $medico->nombre }} {{ $medico->apellido_paterno }} {{ $medico->apellido_materno }}</p>
+                        <p style="font-size: 9pt; color: #555;">Nombre y Firma del Médico</p>
+
+                        @if($medico->credenciales->isNotEmpty())
+                            <div style="font-size: 10pt; margin-top: 10px;">
+                                @foreach($medico->credenciales as $credencial)
+                                    <p>
+                                        <strong>Título:</strong> {{ $credencial->titulo }}
+                                        |
+                                        <strong>Cédula:</strong> {{ $credencial->cedula_profesional }}
+                                    </p>
+                                @endforeach
+                            </div>
+                        @endif
+                    @else
+                        <p style="font-size: 9pt; color: #555;">Sin datos de médico</p>
+                    @endif
+                </td>
+
+                {{-- 6. Vacío o espacio adicional --}}
+                <td>
+                    {{-- Aquí puedes poner algo o dejarlo vacío --}}
+                </td>
+
+            </tr>
+
+        </table>
+  
     </main>
 </body>
 </html>

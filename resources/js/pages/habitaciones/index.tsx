@@ -32,6 +32,10 @@ const Index = ({ habitaciones }: IndexProps) => {
             header: 'Identificador',
         },
         {
+            accessorKey: 'tipo',
+            header: 'Tipo',
+        },
+        {
             accessorKey: 'piso',
             header: 'Piso',
         },
