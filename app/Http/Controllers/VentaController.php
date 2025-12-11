@@ -45,7 +45,7 @@ class VentaController extends Controller implements HasMiddleware
 
     public function show(Venta $venta)
     {
-        $venta->load('estancia.paciente');
+        $venta->load('estancia.paciente','detalles.itemable');
         return Inertia::render('ventas/show', ['venta' => $venta]);
     }
 
