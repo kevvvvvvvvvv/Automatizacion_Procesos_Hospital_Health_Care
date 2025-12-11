@@ -14,6 +14,9 @@ use Spatie\LaravelPdf\Facades\Pdf;
 use App\Services\PdfGeneratorService;
 use App\Http\Requests\consentimientoRequest;
 use Spatie\Browsershot\Browsershot;
+use Carbon\Carbon;
+
+
 
 class ConsentimientoController extends Controller
 
@@ -27,7 +30,10 @@ class ConsentimientoController extends Controller
         }
 
     
-    
+        public function boot()
+        {
+            Carbon::setLocale('es');
+        }
     public function create(Paciente $paciente, Estancia $estancia, consentimientoRequest $request)
     {
 
@@ -45,7 +51,7 @@ class ConsentimientoController extends Controller
 
         $map = [
             '0' => 'Consentimiento_informado_hospitalizacion',
-            '1' => 'Consentimiento_cirugua_mayor',
+            '1' => 'Consentimiento_cirugia_mayor',
             '2' => 'Consentimiento_informado_bajo_informacion_anestesico',
             '3' => 'Consentimiento_Salpingoclasia_vasectomia',
             '4' => 'Consentimiento_organos_tejidos_trasplantes',
@@ -53,6 +59,7 @@ class ConsentimientoController extends Controller
             '6' => 'Consentimiento_necropsia_hospitalaria',
             '7' => 'Consentimiento_diagnostico_terapeutico',
             '8' => 'Consentimiento_mutilacion',
+            '9' => 'Consentimiento_transfusion_sanguinea',
             '10' => 'consentimiento_reanimacion',
         ];
 
@@ -75,7 +82,7 @@ class ConsentimientoController extends Controller
                 Consentimiento::create([
                     'estancia_id' => $estancia->id,
                     'user_id' => Auth::id(),
-                    'diagnostico' => $key === 'otro' ? $diagnostico : null,
+                    'diagnostico' => $key === '10' ? $diagnostico : null,
                     'route_pdf' => $route,
                 ]);
             }
@@ -102,37 +109,82 @@ public function generarPDF(string $file, Request $request, Paciente $paciente, E
         $consentimiento = Consentimiento::with('estancia.paciente', 'user.credenciales')->find($consentimientoId);
 
         if (! $consentimiento) abort(404, "Consentimiento no encontrado.");
-
-        $viewData = [
+           $fecha = $consentimiento->created_at;
+            // Extraer partes
+            $meses = [
+                1 => 'enero',
+                2 => 'febrero',
+                3 => 'marzo',
+                4 => 'abril',
+                5 => 'mayo',
+                6 => 'junio',
+                7 => 'julio',
+                8 => 'agosto',
+                9 => 'septiembre',
+                10 => 'octubre',
+                11 => 'noviembre',
+                12 => 'diciembre',
+            ];
+            
+            $dia = $fecha->day;
+            $mes = $meses[$fecha->month];
+            $anio = $fecha->year;
+            $viewData = [
             'notaData' => $consentimiento,
             'paciente' => $consentimiento->estancia?->paciente,
             'medico' => $consentimiento->user,
+
+            'fecha' => [
+                'dia' => $dia,
+                'mes' => $mes,
+                'anio' => $anio,
+            ],
         ];
     } else {
-        // Carga por defecto si no viene ID específico
+        
         $consentimiento->load('estancia', 'user.credenciales');
-        // Asegúrate de pasar los datos mínimos necesarios a la vista por defecto también
         $viewData = [
             'notaData' => $consentimiento, 
             'user' => Auth::user()
         ];
     }
 
-    // 2. Generación DIRECTA del PDF (Sin usar el servicio externo)
+$imagePath = public_path(' ');// images/Logo_HC_2.png
+$logo = null; // Inicializa por si no existe la imagen
+
+if (file_exists($imagePath)) {
+    $imageData = base64_encode(file_get_contents($imagePath));
+    $imageMime = mime_content_type($imagePath);
+
+    // Crear el Data URI correcto
+    $logo = 'data:' . $imageMime . ';base64,' . $imageData;
+}
+     
+
+        // Enviar al header
+        $headerData = [
+            'logoDataUri' => $logo,
+            'notaData' => $consentimiento,
+            'paciente' => $consentimiento->estancia?->paciente,
+            'medico' => $consentimiento->user,
+            'estancia'=> $consentimiento->estancia
+        ];
+
+
     return Pdf::view($consentimiento->route_pdf, $viewData)
+
         ->format('Letter') // Formato carta
         ->name('consentimiento-' . ($consentimiento->estancia->folio ?? 'SN') . '.pdf')
         ->withBrowsershot(function (Browsershot $browsershot) {
-            // Aquí llamamos a TU función protegida que ya tienes en la clase
-            $this->configureBrowsershot($browsershot);
             
-            // Opcional: Si el header molestaba por márgenes, aquí puedes forzar márgenes limpios
-            // $browsershot->margins(10, 10, 10, 10); 
+            $this->configureBrowsershot($browsershot);
+             
         })
-        ->download(); // O ->download() si prefieres que se descargue directo
-}
 
-// Asegúrate de tener esta función en tu controlador (o en un Trait que use el controlador)
+        ->headerView('headerConsentimiento', $headerData)
+
+        ->inline(); 
+}
 protected function configureBrowsershot(Browsershot $browsershot)
 {
     $chromePath = config('services.browsershot.chrome_path');
@@ -146,36 +198,5 @@ protected function configureBrowsershot(Browsershot $browsershot)
     }
 }
 
-/*
-    public function generarPDF(Paciente $paciente, Estancia $estancia, Consentimiento $consentimiento)
-    {
-        $consentimiento->load(
-            'estancia',
-            'user.credenciales',
-        );
-        $paciente = $consentimiento->estancia->paciente;
-        $medico = $consentimiento->user;
-        $estancia = $consentimiento->estancia;
-
-        $headerData = [
-            'consentimiento' => $consentimiento,
-            'paciente' => $paciente,
-            'estancia' => $estancia, 
-        ];
-
-        $viewData = [
-            'notaData' => $consentimiento,
-            'paciente' => $paciente,
-            'medico' => $medico,
-        ];
-
-        return $this->pdfGenerator->generateStandardPdf(
-            'pdfs.consentimiento',
-            $viewData,
-            $headerData,
-            'consentimiento',
-            $estancia->folio
-        );
-    } */
 
 }

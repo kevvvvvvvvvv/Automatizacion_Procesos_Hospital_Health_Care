@@ -23,7 +23,23 @@ class HabitacionController extends Controller implements HasMiddleware
             new Middleware($permission . ':eliminar habitaciones', only: ['destroy']),
         ];
     }
+    public function create(){
+        return Inertia::render('habitaciones/create', [
+            'habitacion' => null,
+        ]);
+    }
+    public function store(){
+        Habitacion::create($request->validated());
+        return Rendirect::route('habitaciones.index')
+        ->with('Succes', 'Habitación resgitrada');
 
+    }
+    public function update(){
+
+    }
+    public function edit(){
+
+    }
     public function index()
     {
         $habitaciones = Habitacion::with('estanciaActiva.paciente')->get();
