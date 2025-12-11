@@ -80,7 +80,7 @@ const CreateHojaEnfermeriaQuirofano:CreateComponent = ({paciente, estancia, hoja
 
     return (
         <>
-            <Head title='Edición de la hoja de enfermería en quirófano'/>
+            <Head title='Creación de la hoja de enfermería en quirófano'/>
             <PacienteCard
                 paciente={paciente}
                 estancia={estancia}
@@ -96,9 +96,9 @@ const CreateHojaEnfermeriaQuirofano:CreateComponent = ({paciente, estancia, hoja
     )
 }
 
-CreateHojaEnfermeriaQuirofano.layout = (page: any) => {
+CreateHojaEnfermeriaQuirofano.layout = (page: React.ReactElement) => {
 
-    const {estancia} = page.props;
+    const {estancia} = page.props as CreateProps;
 
     return <MainLayout 
     pageTitle='Edición de la hoja de enfermería en quirófano' 

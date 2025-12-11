@@ -272,8 +272,11 @@ const Create: CreateComponent = ({ paciente, estancia, hojaenfermeria ,medicamen
 }
 
 Create.layout = (page: React.ReactElement) => {
+
+    const {estancia} = page.props as CreateProps;
+
     return (
-        <MainLayout pageTitle='Creación de hoja de enfermería' children={page} />
+        <MainLayout pageTitle='Creación de hoja de enfermería' children={page} link="estancias.show" linkParams={estancia.id}/>
     );
 }
 
