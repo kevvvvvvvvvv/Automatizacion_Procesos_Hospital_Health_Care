@@ -32,7 +32,6 @@ const HabitacionCreate: React.FC<Props> = ({ habitacion }) => {
     e.preventDefault();
 
     if (isEdit && habitacion) {
-      // habitacion existe porque isEdit y comprobamos habitacion
       put(route("habitaciones.update", habitacion.id));
     } else {
       post(route("habitaciones.store"));
