@@ -19,8 +19,12 @@ return new class extends Migration
                   ->onDelete('cascade');
 
             $table->foreignId('catalogo_estudio_id') 
+                  ->nullable()
                   ->constrained('catalogo_estudios')
                   ->onDelete('cascade');
+            
+            $table->json('detalles')->nullable();
+            $table->string('otro_estudio')->nullable();
             
             $table->string('estado')->default('solicitado'); 
             

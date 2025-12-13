@@ -114,6 +114,12 @@ class FormularioCatalogoSeeder extends Seeder
             'route_prefix' => 'hojasenfermeriasquirofanos',                                         
         ]);
 
+        FormularioCatalogo::create([
+            'id' => 15,
+            'nombre_formulario' => 'Solicitud de exámenes',
+            'nombre_tabla_fisica' => 'solicitud_estudios',
+            'route_prefix' => 'solicitudes-estudios'
+        ]);
 
         
     }
