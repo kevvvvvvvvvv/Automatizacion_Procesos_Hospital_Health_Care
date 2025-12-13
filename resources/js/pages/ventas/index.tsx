@@ -15,7 +15,7 @@ import {
 import MainLayout from '@/layouts/MainLayout';
 import PacienteCard from '@/components/paciente-card';
 import { Paciente, Estancia, Venta } from '@/types'; 
-import { Pencil } from 'lucide-react';
+import { Pencil, Eye } from 'lucide-react';
 import { usePermission } from '@/hooks/use-permission';
 
 
@@ -100,6 +100,18 @@ const Index: IndexComponent = ({ paciente, estancia, ventas }) => {
                                         >
                             <Pencil size={18}/>
                         </Link>
+                        )}
+
+                        {can('consultar ventas') && (
+                        <Link
+                                href={route('ventas.show', {venta: row.original.id })}
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                }}
+                                className="p-2 text-gray-500 hover:bg-gray-200 hover:text-gray-800 rounded-full transition"
+                                        >
+                            <Eye size={18}/>
+                        </Link>                            
                         )}
                     </div>
                 ),

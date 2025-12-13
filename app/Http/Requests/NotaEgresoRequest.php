@@ -24,7 +24,7 @@ class NotaEgresoRequest extends FormRequest
         return [
             'motivo_egreso' => 'required|string',
             'motivo_egreso_otro' => 'nullable|string|required_if:motivo_egreso,otro',
-            'diagnosticos_finales' => 'required|string|max:1000',  // Asegúrate de que sea 'diagnosticos_finales' (con "s")
+            'diagnosticos_finales' => 'required|string|max:1000', 
             'resumen_evolucion_estado_actual' => 'required|string|max:1000',
             'manejo_durante_estancia' => 'required|string|max:1000',
             'problemas_pendientes' => 'required|string|max:1000',
@@ -32,7 +32,7 @@ class NotaEgresoRequest extends FormRequest
             'recomendaciones' => 'required|string|max:1000',
             'factores_riesgo' => 'required|string|max:1000',
             'pronostico' => 'required|string|max:1000',
-            'defuncion' => 'nullable|string|max:1000',  // Nullable si no siempre es requerido
+            'defuncion' => 'nullable|string|max:1000', 
         ];
     }
 
@@ -64,7 +64,7 @@ class NotaEgresoRequest extends FormRequest
             // Pronóstico
             'pronostico.required' => 'El pronóstico es obligatorio.',
 
-            // Defunción
+            //Defunción
             'defuncion.required_if' => 'Debe proporcionar información adicional en caso de defunción.',
         ];
     }

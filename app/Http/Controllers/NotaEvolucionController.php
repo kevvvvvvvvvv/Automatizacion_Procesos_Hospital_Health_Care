@@ -97,25 +97,26 @@ class NotaEvolucionController extends Controller
         ])->with('success', 'Nota de Evolución actualizada exitosamente.');
     }
 
-    public function generarPDF(NotaEvolucion $notasevolucion)
+    public function generarPDF(NotaEvolucion $notasevolucione)
     {
-        $notasevolucion->load(
+        $notasevolucione->load(
             'formularioInstancia.estancia.paciente', 
             'formularioInstancia.user.credenciales',
         );
 
-        $medico = $notasevolucion->formularioInstancia->user;
-        $estancia = $notasevolucion->formularioInstancia->estancia;
+        $medico = $notasevolucione->formularioInstancia->user;
+        
+        $estancia = $notasevolucione->formularioInstancia->estancia;
         $paciente = $estancia->paciente;
 
         $headerData = [
-            'historiaclinica' =>$notasevolucion,
+            'historiaclinica' =>$notasevolucione,
             'paciente' => $paciente,
             'estancia' => $estancia,
         ];
 
         $viewData = [
-            'evolucion' => $notasevolucion,
+            'notaData' => $notasevolucione,
             'paciente' => $paciente,
             'medico' => $medico,
         ];
