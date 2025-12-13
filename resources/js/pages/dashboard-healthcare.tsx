@@ -2,6 +2,7 @@ import React from 'react';
 import { FaUser } from "react-icons/fa";
 import { LuBedSingle } from "react-icons/lu";
 import { RiArchiveDrawerFill } from "react-icons/ri";
+import { MdCalendarMonth } from "react-icons/md"
 import { MdHistory, MdAdd } from "react-icons/md";
 import { FaUserDoctor } from "react-icons/fa6";
 import { route } from 'ziggy-js';
@@ -86,7 +87,15 @@ export default function Dashboard() {
                         text="Historial"
                         onClick={() => router.visit(route('historiales.index'))}
                     />)}
-                </div>        
+                </div>
+                <div>
+                    
+                     <CardButton
+                        icon={MdCalendarMonth}
+                        text="Reservar"
+                        onClick={() => router.visit(route('reservaciones.index'))}
+                    />
+                </div>                      
             </MainLayout>
         </>
     );

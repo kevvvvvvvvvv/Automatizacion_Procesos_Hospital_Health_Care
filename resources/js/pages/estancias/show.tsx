@@ -9,6 +9,7 @@ import { Estancia, Paciente, User, FormularioInstancia, Habitacion, FamiliarResp
 import InfoCard from '@/components/ui/info-card';
 import InfoField from '@/components/ui/info-field';
 import { usePermission } from '@/hooks/use-permission';
+import consentimientos from '@/routes/consentimientos';
 
 interface ShowEstanciaProps {
     estancia: Estancia & {
@@ -357,9 +358,16 @@ const Show = ({ estancia }: ShowEstanciaProps) => {
                                         .replace('consentimiento/', '')
                                         .replace('.blade.php', '')
                                         .replace('.php','');
+                                        
+                                        const displayName = normalized
+                                            .replace(/_/g, ' ')
+                                            .replace(/\b\w/g, l => l.toUpperCase())
+                                            .replace('Pdfs.Consentimientos.', ' ');
+
 
                                         const href = route('consentimientos.pdf', { file: normalized }) + `?consentimiento_id=${c.id}`;
 
+                                        
                                         return (
                                             <div
                                                 key={c.id}
@@ -367,13 +375,13 @@ const Show = ({ estancia }: ShowEstanciaProps) => {
                                             >
                                                 <div>
                                                     <p className="font-semibold text-indigo-600">
-                                                        Consentimiento solicitado
+                                                        {displayName}
                                                     </p>
                                                     <p className="text-sm text-gray-600">
                                                         Registrado por: {c.user?.nombre}
                                                     </p>
                                                     <p className="text-xs text-gray-500">
-                                                        {c.created_at}
+                                                        {new Date(c.created_at).toLocaleString('es-MX', dateOptions)}
                                                     </p>
                                                 </div>
 

@@ -8,6 +8,8 @@ use Inertia\Inertia;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests; 
+use Redirect;
+use App\Http\Requests\HabitacionRequest;
 
 class HabitacionController extends Controller implements HasMiddleware
 {
@@ -28,17 +30,22 @@ class HabitacionController extends Controller implements HasMiddleware
             'habitacion' => null,
         ]);
     }
-    public function store(){
+    public function store(HabitacionRequest $request){
         Habitacion::create($request->validated());
-        return Rendirect::route('habitaciones.index')
+        return Redirect::route('habitaciones.index')
         ->with('Succes', 'Habitación resgitrada');
 
     }
-    public function update(){
+    public function update(HabitacionRequest $request, Habitacion $habitacione){
+        $habitacione->update($request->validated());
 
+        return Redirect::route('habitaciones.index')
+        ->with('Success', 'Habitacion actualizada');
     }
-    public function edit(){
-
+    public function edit(Habitacion $habitacione){
+        return Inertia::render('habitaciones/create', [
+            'habitacion' => $habitacione,
+        ]);
     }
     public function index()
     {

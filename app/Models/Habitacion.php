@@ -11,7 +11,7 @@ class Habitacion extends Model
     public $incrementing = true;
     
     protected $fillable = [
-        'identificar',
+        'identificador',
         'tipo',
         'estado',
         'piso',

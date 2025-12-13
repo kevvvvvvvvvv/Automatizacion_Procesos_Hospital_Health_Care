@@ -748,6 +748,16 @@ export interface Consentimiento{
     created_at?: string;
     updated_at?: string;
 }
+export interface Reservacion{
+    id: number;
+    fecha_hora_inicio: string;
+    fecha_hora_fin:string;
+    accion: s
+    user_id: number;
+    habitacion_id: number;
+    created_at: string;
+    uopdate_at:string;
+}
 
 export type PageProps<T extends Record<string, unknown> = Record<string, unknown>> = T & {
     auth: {

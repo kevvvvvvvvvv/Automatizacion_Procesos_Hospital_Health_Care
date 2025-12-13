@@ -22,19 +22,22 @@ class HabitacionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
-            'indentificador' => ['required', 'string'],
+            //  
+            'identificador' => ['required', 'String'],
             'tipo' => ['required', 'string'],
-            'piso' => ['required', 'string,']
+            'piso' => ['required', 'string'],
         ];
     }
     public function messages(): array{
         return[
-            'indentificador.required' => 'Es obligatorio el indentificador de la habitación',
-            'indentificador.string' => 'El campo es un texto',
+            'identificador.required' => 'Es obligatorio el identificador de la habitación',
+            'identificador.string' => 'El campo es un texto',
             
-            'tipo.required',
-            '',
+            'tipo.required' => 'Es obligatorio el campo',
+            'tipo.string' => 'Debes seleccionar un tipo',
+
+            'piso.required' => 'Es obligatorio el campo',
+            'piso.string' => 'Debe ser texto el piso',
         ];
     }
 }

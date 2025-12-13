@@ -44,7 +44,7 @@ class NotaUrgenciaController extends Controller
     public function store(Paciente $paciente, Estancia $estancia, NotaUrgenciaRequest $request)
 {
     // Agrega esto para ver si llega aquí y qué datos recibe
-    \Log::info('Datos validados:', $request->validated());
+    //\Log::info('Datos validados:', $request->validated());
     
     $validatedData = $request->validated();
     
@@ -64,7 +64,7 @@ class NotaUrgenciaController extends Controller
             ...$validatedData
         ]);
        
-        \Log::info('NotaUrgencia creada:', $notaUrgencia->toArray());
+        //\Log::info('NotaUrgencia creada:', $notaUrgencia->toArray());
         
         DB::commit();
         return Redirect::route('estancias.show', $estancia->id)->with('success','Se ha creado la nota nota urgencia'); 
