@@ -36,7 +36,7 @@ class RoleAndPermissionSeeder extends Seeder
             'hojas frontales' => ['crear', 'consultar', 'editar', 'eliminar'],
             'habitaciones' => ['crear', 'consultar', 'editar', 'eliminar'],
             'colaboradores' => ['crear', 'consultar', 'editar', 'eliminar'],
-            'productos y servivicios' => ['crear', 'consultar', 'editar', 'eliminar'],
+            'productos y servicios' => ['crear', 'consultar', 'editar', 'eliminar'],
             'historial' =>['consultar'],
             'ventas' => ['consultar','eliminar','editar','crear'],
             'detalles ventas' => ['consultar','eliminar','editar','crear'],
@@ -80,6 +80,11 @@ class RoleAndPermissionSeeder extends Seeder
             'crear detalles ventas',
             'editar detalles ventas',
             'eliminar detalles ventas',
+
+            'consultar productos y servicios',
+            'crear productos y servicios',
+            'editar productos y servicios',
+            'eliminar productos y servicios',
         ]);
     }
 }

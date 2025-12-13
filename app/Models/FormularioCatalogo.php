@@ -6,6 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class FormularioCatalogo extends Model
 {
+    /**
+     * ID's registrados en la tabla formulario_catalogos
+     */
     public const ID_HOJA_FRONTAL = 1;
     public const ID_HISTORIA_CLINICA = 2;
     public const ID_INTERCONSULTA = 3;
@@ -20,6 +23,7 @@ class FormularioCatalogo extends Model
     public const ID_NOTA_PREANESTESICA = 12;
     public const ID_NOTA_POSTANESTESICA = 13;
     public const ID_HOJA_ENFERMERIA_QUIROFANO = 14;
+    public const ID_SOLICITUD_ESTUDIOS = 15;
 
     public $incrementing = false; 
     protected $keyType = 'int';
