@@ -142,12 +142,13 @@ Route::post('hojassondascateters/{hojasenfermeria}',[FormularioHojaSondaCateterC
 Route::patch('hojassondascateters/{hojasenfermeria}/{hojassondascateter}',[FormularioHojaSondaCateterController::class, 'update'])->name('hojassondascateters.update')->middleware('auth');
 
 // Rutas para estudios y patologías
-Route::post('solicitudes-estudios/{estancia}', [SolicitudEstudioController::class, 'store'])->name('solicitudes-estudios.store');
 Route::post('solicitudes-patologias/{estancia}', [SolicitudEstudioPatologiaController::class, 'store'])->name('solicitudes-patologias.store')->middleware('auth');
 Route::post('solicitudes-patologias/{solicitud-patologia}/edit', [SolicitudEstudioPatologiaController::class, 'edit'])->name('solicitudes-patologias.edit')->middleware('auth');
 Route::put('solicitudes-patologias/{estancia}', [SolicitudEstudioPatologiaController::class, 'update'])->name('solicitudes-patologias.update')->middleware('auth');
 Route::post('solicitudes-patologias/{solicitud-patologia}/show', [SolicitudEstudioPatologiaController::class, 'show'])->name('solicitudes-patologias.show')->middleware('auth');
 
+// Solicitud de estudios
+Route::post('solicitudes-estudios/{estancia}', [SolicitudEstudioController::class, 'store'])->name('solicitudes-estudios.store');
 
 Route::resource('pacientes.estancias.interconsultas', InterconsultaController::class)
     ->shallow()
