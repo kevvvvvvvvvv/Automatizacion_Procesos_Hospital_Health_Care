@@ -69,7 +69,29 @@ type CreateComponent = React.FC<CreateProps> & {
 
 const Create: CreateComponent = ({ preguntas, paciente, estancia }) => {
 
-    const { errors } = usePage().props;;
+    const { errors } = usePage().props;
+
+    const getCamposAsArray = (campos: any): CampoAdicional[] => {
+        if (Array.isArray(campos)) return campos;
+        if (typeof campos === 'string' && campos.startsWith('[')) {
+            try {
+                const parsed = JSON.parse(campos);
+                return Array.isArray(parsed) ? parsed : [];
+            } catch (e) { return []; }
+        }
+        return [];
+    };
+
+    const getOpcionesAsArray = (opciones: any): OpcionRespuesta[] => {
+        if (Array.isArray(opciones)) return opciones;
+        if (typeof opciones === 'string' && opciones.startsWith('[')) {
+            try {
+                const parsed = JSON.parse(opciones);
+                return Array.isArray(parsed) ? parsed : [];
+            } catch (e) { return []; }
+        }
+        return [];
+    };
 
     const { data, setData, post, processing } = useForm<FormData>({
         padecimiento_actual: '',
@@ -108,6 +130,8 @@ const Create: CreateComponent = ({ preguntas, paciente, estancia }) => {
     const handleRespuestaChange = (preguntaId: number, field: string, value: string | number | boolean, itemIndex: number | null = null) => {
         const pregunta = preguntas.find(p => p.id === preguntaId);
         if (!pregunta) return;
+
+        const opcionesRespuestaArray = getOpcionesAsArray(pregunta.opciones_respuesta);
         
         setData(prevData => {
             const newRespuestas = { ...prevData.respuestas };
@@ -156,28 +180,6 @@ const Create: CreateComponent = ({ preguntas, paciente, estancia }) => {
     const renderPregunta = (pregunta: Pregunta) => {
         const respuestaActual = data.respuestas[pregunta.id];
         if (!respuestaActual) return null;
-
-        const getCamposAsArray = (campos: any): CampoAdicional[] => {
-            if (Array.isArray(campos)) return campos;
-            if (typeof campos === 'string' && campos.startsWith('[')) {
-                try {
-                    const parsed = JSON.parse(campos);
-                    return Array.isArray(parsed) ? parsed : [];
-                } catch (e) { return []; }
-            }
-            return [];
-        };
-
-        const getOpcionesAsArray = (opciones: any): OpcionRespuesta[] => {
-            if (Array.isArray(opciones)) return opciones;
-            if (typeof opciones === 'string' && opciones.startsWith('[')) {
-                try {
-                    const parsed = JSON.parse(opciones);
-                    return Array.isArray(parsed) ? parsed : [];
-                } catch (e) { return []; }
-            }
-            return [];
-        };
 
         const camposAdicionalesArray = getCamposAsArray(pregunta.campos_adicionales);
         const opcionesRespuestaArray = getOpcionesAsArray(pregunta.opciones_respuesta);
@@ -314,7 +316,7 @@ const Create: CreateComponent = ({ preguntas, paciente, estancia }) => {
 };
 
 Create.layout = (page: React.ReactElement) => {
-    const { estancia, paciente } = page.props as CreateProps;
+    const { estancia } = page.props as CreateProps;
 
   return (
     <MainLayout

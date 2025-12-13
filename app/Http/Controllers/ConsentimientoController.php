@@ -99,69 +99,60 @@ class ConsentimientoController extends Controller
         }
     }
 
-public function generarPDF(string $file, Request $request, Paciente $paciente, Estancia $estancia, Consentimiento $consentimiento)
-{   
-    // 1. Lógica de datos (igual que tenías, pero limpia)
-    $viewData = ['user' => Auth::user()];
+    public function generarPDF(string $file, Request $request, Paciente $paciente, Estancia $estancia, Consentimiento $consentimiento)
+    {   
+        $viewData = ['user' => Auth::user()];
+        if ($request->has('consentimiento_id')) {
+            $consentimientoId = intval($request->query('consentimiento_id'));
+            $consentimiento = Consentimiento::with('estancia.paciente', 'user.credenciales')->find($consentimientoId);
+            if (! $consentimiento) abort(404, "Consentimiento no encontrado.");
+            $fecha = $consentimiento->created_at;
+                $meses = [
+                    1 => 'enero',
+                    2 => 'febrero',
+                    3 => 'marzo',
+                    4 => 'abril',
+                    5 => 'mayo',
+                    6 => 'junio',
+                    7 => 'julio',
+                    8 => 'agosto',
+                    9 => 'septiembre',
+                    10 => 'octubre',
+                    11 => 'noviembre',
+                    12 => 'diciembre',
+                ];
+                
+                $dia = $fecha->day;
+                $mes = $meses[$fecha->month];
+                $anio = $fecha->year;
+                $viewData = [
+                'notaData' => $consentimiento,
+                'paciente' => $consentimiento->estancia?->paciente,
+                'medico' => $consentimiento->user,
 
-    if ($request->has('consentimiento_id')) {
-        $consentimientoId = intval($request->query('consentimiento_id'));
-        $consentimiento = Consentimiento::with('estancia.paciente', 'user.credenciales')->find($consentimientoId);
-
-        if (! $consentimiento) abort(404, "Consentimiento no encontrado.");
-           $fecha = $consentimiento->created_at;
-            // Extraer partes
-            $meses = [
-                1 => 'enero',
-                2 => 'febrero',
-                3 => 'marzo',
-                4 => 'abril',
-                5 => 'mayo',
-                6 => 'junio',
-                7 => 'julio',
-                8 => 'agosto',
-                9 => 'septiembre',
-                10 => 'octubre',
-                11 => 'noviembre',
-                12 => 'diciembre',
+                'fecha' => [
+                    'dia' => $dia,
+                    'mes' => $mes,
+                    'anio' => $anio,
+                ],
             ];
-            
-            $dia = $fecha->day;
-            $mes = $meses[$fecha->month];
-            $anio = $fecha->year;
+        } else {
+            $consentimiento->load('estancia', 'user.credenciales');
             $viewData = [
-            'notaData' => $consentimiento,
-            'paciente' => $consentimiento->estancia?->paciente,
-            'medico' => $consentimiento->user,
+                'notaData' => $consentimiento, 
+                'user' => Auth::user()
+            ];
+        }
 
-            'fecha' => [
-                'dia' => $dia,
-                'mes' => $mes,
-                'anio' => $anio,
-            ],
-        ];
-    } else {
-        
-        $consentimiento->load('estancia', 'user.credenciales');
-        $viewData = [
-            'notaData' => $consentimiento, 
-            'user' => Auth::user()
-        ];
-    }
+        $imagePath = public_path('images/Logo_HC_2.png');
+        $logo = null; 
 
-$imagePath = public_path(' ');// images/Logo_HC_2.png
-$logo = null; // Inicializa por si no existe la imagen
+        if (file_exists($imagePath)) {
+            $imageData = base64_encode(file_get_contents($imagePath));
+            $imageMime = mime_content_type($imagePath);
+            $logo = 'data:' . $imageMime . ';base64,' . $imageData;
+        }
 
-if (file_exists($imagePath)) {
-    $imageData = base64_encode(file_get_contents($imagePath));
-    $imageMime = mime_content_type($imagePath);
-
-    // Crear el Data URI correcto
-    $logo = 'data:' . $imageMime . ';base64,' . $imageData;
-}
-     
-
-        // Enviar al header
         $headerData = [
             'logoDataUri' => $logo,
             'notaData' => $consentimiento,
@@ -171,32 +162,28 @@ if (file_exists($imagePath)) {
         ];
 
 
-    return Pdf::view($consentimiento->route_pdf, $viewData)
-
-        ->format('Letter') // Formato carta
-        ->name('consentimiento-' . ($consentimiento->estancia->folio ?? 'SN') . '.pdf')
-        ->withBrowsershot(function (Browsershot $browsershot) {
-            
-            $this->configureBrowsershot($browsershot);
-             
-        })
-
-        ->headerView('headerConsentimiento', $headerData)
-
-        ->inline(); 
-}
-protected function configureBrowsershot(Browsershot $browsershot)
-{
-    $chromePath = config('services.browsershot.chrome_path');
-    if ($chromePath) {
-        $browsershot->setChromePath($chromePath);
-        $browsershot->noSandbox();
-        $browsershot->addChromiumArguments([
-            'disable-dev-shm-usage',
-            'disable-gpu',
-        ]);
+        return Pdf::view($consentimiento->route_pdf, $viewData)
+            ->format('Letter')
+            ->name('consentimiento-' . ($consentimiento->estancia->folio ?? 'SN') . '.pdf')
+            ->withBrowsershot(function (Browsershot $browsershot) {
+                $this->configureBrowsershot($browsershot);
+            })
+            ->headerView('headerConsentimiento', $headerData)
+            ->inline(); 
     }
-}
+
+    protected function configureBrowsershot(Browsershot $browsershot)
+    {
+        $chromePath = config('services.browsershot.chrome_path');
+        if ($chromePath) {
+            $browsershot->setChromePath($chromePath);
+            $browsershot->noSandbox();
+            $browsershot->addChromiumArguments([
+                'disable-dev-shm-usage',
+                'disable-gpu',
+            ]);
+        }
+    }
 
 
 }
