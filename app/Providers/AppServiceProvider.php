@@ -28,7 +28,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-
+        /*
         DB::listen(function ($query) {
             Log::info(
                 $query->sql,
@@ -36,6 +36,7 @@ class AppServiceProvider extends ServiceProvider
                 $query->time
             );
         });
+        */
 
         Paciente::observe(HistoryObserver::class);
         Estancia::observe(HistoryObserver::class);
