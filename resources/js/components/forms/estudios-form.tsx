@@ -143,12 +143,19 @@ const SolicitudEstudiosForm: React.FC<Props> = ({
 }) => {
     
     const [activeTab, setActiveTab] = useState<'estudios' | 'patologia'>('estudios');
-
+    const [textoNuevoEstudio, setTextoNuevoEstudio] = useState('');
     const [filtro, setFiltro] = useState('');
+    const [detallesEstudios, setDetallesEstudios] = useState<Record<number, any>>({});
+
+    const optionsMedico = medicos.map(medico => ({
+        value: medico.id.toString(),
+        label: `${medico.nombre} ${medico.apellido_paterno} ${medico.apellido_materno}`
+    }))
+
     const { data, setData, post, processing, errors, reset } = useForm({
-        diagnostico_problemas: '',
-        incidentes_accidentes: '',
+        user_solicita_id: '',
         estudios_agregados_ids: [] as number[],
+        estudios_adicionales: [] as string[],
     });
 
     const estudiosFiltrados = useMemo(() => {
@@ -190,19 +197,69 @@ const SolicitudEstudiosForm: React.FC<Props> = ({
         );
     }, [data.estudios_agregados_ids, catalogoEstudios]);
 
-    const handleCheckboxChange = (estudioId: number, isChecked: boolean) => {
+    const handleCheckboxChange = (estudioId: number, isChecked: boolean, categoria: string) => {
         if (isChecked) {
             setData('estudios_agregados_ids', [...data.estudios_agregados_ids, estudioId]);
+            
+            if (categoria === 'Tomografía Computada' || categoria === 'Resonancia') {
+                setDetallesEstudios(prev => ({
+                    ...prev,
+                    [estudioId]: { modalidad: 'Simple', via: '' }
+                }));
+            }
         } else {
             setData('estudios_agregados_ids', 
                 data.estudios_agregados_ids.filter(id => id !== estudioId)
             );
+            const nuevosDetalles = { ...detallesEstudios };
+            delete nuevosDetalles[estudioId];
+            setDetallesEstudios(nuevosDetalles);
         }
     }
+    
+    const handleDetalleChange = (estudioId: number, campo: string, valor: string) => {
+        setDetallesEstudios(prev => ({
+            ...prev,
+            [estudioId]: {
+                ...prev[estudioId],
+                [campo]: valor
+            }
+        }));
+    };
+
+    const handleAddCustomEstudio = () => {
+        if (!textoNuevoEstudio.trim()) return;
+        if (!data.estudios_adicionales.includes(textoNuevoEstudio.trim())) {
+            setData('estudios_adicionales', [...data.estudios_adicionales, textoNuevoEstudio.trim()]);
+        }
+        setTextoNuevoEstudio('');
+    };
+
+    const handleRemoveCustomEstudio = (indexToRemove: number) => {
+        setData('estudios_adicionales', 
+            data.estudios_adicionales.filter((_, index) => index !== indexToRemove)
+        );
+    };
+
+    const handleKeyDownCustom = (e: React.KeyboardEvent) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            handleAddCustomEstudio();
+        }
+    };
 
     const handleSubmitEstudios = (e: React.FormEvent) => {
         e.preventDefault();
+        const estudiosConDetalles = data.estudios_agregados_ids.map(id => ({
+            id: id,
+            detalles: detallesEstudios[id] || null
+        }));
+
         post(route('solicitudes-estudios.store', { estancia: estancia.id }), {
+            data: {
+                ...data,
+                estudios_estructurados: estudiosConDetalles
+            },
             preserveScroll: true,
             onSuccess: () => reset(),
         });
@@ -221,7 +278,7 @@ const SolicitudEstudiosForm: React.FC<Props> = ({
                                 : 'border-transparent text-gray-500 hover:text-gray-700'
                         }`}
                     >
-                        Solicitar Estudios (Lab, Imagen, etc.)
+                        Solicitar estudios (Lab, Imagen, etc.)
                     </button>
                     <button
                         type="button"
@@ -232,7 +289,7 @@ const SolicitudEstudiosForm: React.FC<Props> = ({
                                 : 'border-transparent text-gray-500 hover:text-gray-700'
                         }`}
                     >
-                        Solicitar Pieza Patológica
+                        Solicitar pieza patológica
                     </button>
                 </nav>
             </div>
@@ -241,26 +298,17 @@ const SolicitudEstudiosForm: React.FC<Props> = ({
                 <form onSubmit={handleSubmitEstudios} className="space-y-6">
 
                     <div className="bg-white p-6 rounded-lg shadow-md">
-                        <InputTextArea
-                            id="diagnostico_problemas"
-                            label="Problemas Clínicos (Diagnóstico)"
-                            value={data.diagnostico_problemas}
-                            onChange={e => setData('diagnostico_problemas', e.target.value)}
-                            error={errors.diagnostico_problemas}
-                        />
-                        <InputTextArea
-                            id="incidentes_accidentes"
-                            label="Incidentes y Accidentes Médicos"
-                            value={data.incidentes_accidentes}
-                            onChange={e => setData('incidentes_accidentes', e.target.value)}
-                            error={errors.incidentes_accidentes}
+                        <SelectInput
+                            value = {data.user_solicita_id}
+                            label = "Médico"
+                            options = {optionsMedico}
+                            onChange= {e=>setData('user_solicita_id',e)}
                         />
                     </div>
 
                     <div className="bg-white p-6 rounded-lg shadow-md">
-                        <h3 className="text-lg font-semibold">Seleccionar Estudios</h3>
+                        <h3 className="text-lg font-semibold">Seleccionar estudios</h3>
                         
-
                         <InputText
                             id="filtro_estudios"
                             name="filtro_estudios"
@@ -277,13 +325,71 @@ const SolicitudEstudiosForm: React.FC<Props> = ({
                                 <div className="grid grid-cols-2 md:grid-cols-3 gap-2 mt-1 ml-4">
                                     {gruposEstudios[categoria.label]?.length > 0 ? (
                                         gruposEstudios[categoria.label].map(estudio => (
-                                            <Checkbox
-                                                key={estudio.id}
-                                                label={estudio.nombre}
-                                                id={`estudio_${estudio.id}`}
-                                                checked={data.estudios_agregados_ids.includes(estudio.id)}
-                                                onChange={e => handleCheckboxChange(estudio.id, e.target.checked)}
-                                            />
+                                            <div key={estudio.id} className="border p-2 rounded mb-2">
+                                                <Checkbox
+                                                    label={estudio.nombre}
+                                                    id={`estudio_${estudio.id}`}
+                                                    checked={data.estudios_agregados_ids.includes(estudio.id)}
+                                                    onChange={e => handleCheckboxChange(estudio.id, e.target.checked, categoria.label)}
+                                                />
+                                                {data.estudios_agregados_ids.includes(estudio.id) && 
+                                                (categoria.label === 'Tomografía' || categoria.label === 'Resonancia') && (
+                                                    <div className="ml-6 mt-2 p-2 bg-gray-50 text-sm rounded border-l-2 border-blue-400">
+                                                        <label className="block font-semibold text-gray-700">Modalidad:</label>
+                                                        <div className="flex gap-4 mt-1">
+                                                            <label className="flex items-center">
+                                                                <input 
+                                                                    type="radio" 
+                                                                    name={`mod_${estudio.id}`}
+                                                                    value="Simple"
+                                                                    checked={detallesEstudios[estudio.id]?.modalidad === 'Simple'}
+                                                                    onChange={() => handleDetalleChange(estudio.id, 'modalidad', 'Simple')}
+                                                                    className="mr-1"
+                                                                /> Simple
+                                                            </label>
+                                                            <label className="flex items-center">
+                                                                <input 
+                                                                    type="radio" 
+                                                                    name={`mod_${estudio.id}`}
+                                                                    value="Contrastada"
+                                                                    checked={detallesEstudios[estudio.id]?.modalidad === 'Contrastada'}
+                                                                    onChange={() => handleDetalleChange(estudio.id, 'modalidad', 'Contrastada')}
+                                                                    className="mr-1"
+                                                                /> Contrastada
+                                                            </label>
+                                                        </div>
+
+                                                        {detallesEstudios[estudio.id]?.modalidad === 'Contrastada' && (
+                                                            <div className="mt-2 animate-fadeIn">
+                                                                <label className="block text-xs font-semibold text-gray-600">Tipo de Contraste:</label>
+                                                                <select 
+                                                                    className="mt-1 block w-full text-xs border-gray-300 rounded-md shadow-sm"
+                                                                    value={detallesEstudios[estudio.id]?.via || ''}
+                                                                    onChange={(e) => handleDetalleChange(estudio.id, 'via', e.target.value)}
+                                                                >
+                                                                    <option value="">Seleccione </option>
+                                                                    <option value="Venosa">Venosa (IV)</option>
+                                                                    <option value="Oral">Oral (Tomada)</option>
+                                                                    <option value="Otra">Otra</option>
+                                                                </select>
+                                                                {detallesEstudios[estudio.id]?.via === 'Otra' && (
+                                                                <div className="mt-2">
+                                                                    <label className="block text-xs text-gray-500 mb-1">Especifique:</label>
+                                                                    <input
+                                                                        type="text"
+                                                                        className="block w-full text-xs border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                                                                        placeholder="Ej. Intratecal, Intraarticular..."
+                                                                        value={detallesEstudios[estudio.id]?.especificacion || ''}
+                                                                        onChange={(e) => handleDetalleChange(estudio.id, 'especificacion', e.target.value)}
+                                                                        autoFocus
+                                                                    />
+                                                                </div>
+                                                            )}
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                )}
+                                            </div>
                                         ))
                                     ) : (
                                         <p className="text-sm text-gray-400 col-span-full">
@@ -327,6 +433,88 @@ const SolicitudEstudiosForm: React.FC<Props> = ({
                         </table>
                     </div>
                 </div>
+                    <div className="bg-white p-6 rounded-lg shadow-md border-l-4 border-yellow-400">
+                        <h3 className="text-lg font-semibold mb-4">¿No encuentras el estudio?</h3>
+                        <p className="text-sm text-gray-600 mb-2">
+                            Ingresa el nombre del estudio manualmente si no aparece en el catálogo de arriba.
+                        </p>
+                        
+                        <div className="flex gap-2 items-end">
+                            <div className="flex-grow">
+                                <InputText
+                                    id="nuevo_estudio_manual"
+                                    name="nuevo_estudio_manual"
+                                    label="Nombre del estudio manual"
+                                    value={textoNuevoEstudio}
+                                    onChange={e => setTextoNuevoEstudio(e.target.value)}
+                                />
+                            </div>
+                            <button
+                                type="button"
+                                onClick={handleAddCustomEstudio}
+                                className="mb-1 px-4 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-700 text-sm font-medium h-10"
+                            >
+                                Agregar
+                            </button>
+                        </div>
+                    <div className="bg-white p-6 rounded-lg shadow-md">
+                        <h3 className="text-lg font-semibold mb-2">Resumen de la Solicitud</h3>
+                        
+                        <div className="overflow-x-auto border rounded-lg">
+                            <table className="min-w-full divide-y divide-gray-200">
+                                <thead>
+                                    <tr className='text-left text-xs font-medium text-gray-500 uppercase'>
+                                        <th className="px-4 py-3">Estudio</th>
+                                        <th className="px-4 py-3">Origen</th>
+                                    </tr>
+                                </thead>
+                                <tbody className="bg-white divide-y divide-gray-200">
+                                    {estudiosSeleccionados.map((estudio) => (
+                                        <tr key={`cat-${estudio.id}`}>
+                                            <td className="px-4 py-4 text-sm text-gray-900">{estudio.nombre}</td>
+                                            <td className="px-4 py-4 text-sm text-blue-600">Catálogo</td>
+                                        </tr>
+                                    ))}
+
+                                    {data.estudios_adicionales.map((nombre, idx) => (
+                                        <tr key={`manual-${idx}`}>
+                                            <td className="px-4 py-4 text-sm text-gray-900 font-medium">{nombre}</td>
+                                            <td className="px-4 py-4 text-sm text-yellow-600">Manual</td>
+                                        </tr>
+                                    ))}
+                                    
+                                    {estudiosSeleccionados.length === 0 && data.estudios_adicionales.length === 0 && (
+                                        <tr>
+                                            <td colSpan={2} className="px-4 py-4 text-sm text-gray-500 text-center">
+                                                No se han seleccionado estudios.
+                                            </td>
+                                        </tr>
+                                    )}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                        {data.estudios_adicionales.length > 0 && (
+                            <div className="mt-4">
+                                <h4 className="text-sm font-medium text-gray-700 mb-2">Estudios manuales por agregar:</h4>
+                                <ul className="space-y-2">
+                                    {data.estudios_adicionales.map((nombre, index) => (
+                                        <li key={index} className="flex items-center justify-between bg-yellow-50 p-2 rounded border border-yellow-200">
+                                            <span className="text-sm text-gray-800">{nombre}</span>
+                                            <button
+                                                type="button"
+                                                onClick={() => handleRemoveCustomEstudio(index)}
+                                                className="text-red-500 hover:text-red-700 text-xs font-bold px-2"
+                                            >
+                                                Eliminar
+                                            </button>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                        )}
+                    </div>
                     
                     <div className="flex justify-end mt-4">
                         <PrimaryButton type="submit" disabled={processing || data.estudios_agregados_ids.length === 0}>
@@ -344,7 +532,7 @@ const SolicitudEstudiosForm: React.FC<Props> = ({
                 </div>
             )}
             <div className="mt-12">
-                <h3 className="text-lg font-semibold mb-2">Historial de Solicitudes Anteriores</h3>
+                <h3 className="text-lg font-semibold mb-2">Historial de solicitudes anteriores</h3>
                 <div className="space-y-4">
                     {(solicitudesAnteriores ?? []).length === 0 ? (
                         <p className="text-sm text-gray-500">No hay solicitudes anteriores para esta estancia.</p>

@@ -13,6 +13,7 @@ class SolicitudItem extends Model
         'solicitud_estudio_id',
         'catalogo_estudio_id',
         'estado',
+        'otro_estudio',
         'user_realiza_id',
         'resultados,'
     ];

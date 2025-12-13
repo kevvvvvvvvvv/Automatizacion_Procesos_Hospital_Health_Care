@@ -2,8 +2,8 @@ import React from 'react';
 import { FaUser } from "react-icons/fa";
 import { LuBedSingle } from "react-icons/lu";
 import { RiArchiveDrawerFill } from "react-icons/ri";
-import { MdHistory } from "react-icons/md";
-import {  MdCalendarMonth } from "react-icons/md"
+import { MdCalendarMonth } from "react-icons/md"
+import { MdHistory, MdAdd } from "react-icons/md";
 import { FaUserDoctor } from "react-icons/fa6";
 import { route } from 'ziggy-js';
 import { Head, usePage, PageProps as InertiaPageProps, router } from '@inertiajs/react';
@@ -63,6 +63,14 @@ export default function Dashboard() {
                         onClick={() => router.visit(route('producto-servicios.index'))}
                     />)}
                 </div>
+                <div>
+                    {can('crear productos y servicios') && (
+                    <CardButton
+                        icon={MdAdd}
+                        text="Añadir nuevo producto o servicio"
+                        onClick={() => router.visit(route('producto-servicios.create'))}
+                    />)}
+                </div>      
                 
                 <div>
                     {can('consultar colaboradores') && (
