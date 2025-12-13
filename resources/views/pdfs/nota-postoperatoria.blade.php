@@ -103,6 +103,25 @@
             <p class="hora-fin"><strong>Hora término operación:</strong> {{ $notaData->hora_termino_operacion ? \Carbon\Carbon::parse($notaData->hora_termino_operacion)->format('H:i') : 'N/A' }}</p>
         </div>
 
+        <p style="line-height: 1.4; margin: 0; margin-bottom: 10px;">
+            <strong>Tensión arterial:</strong> {{$notaData['ta']}} mm Hg | 
+            <strong>Frecuencia cardiaca:</strong> {{$notaData['fc']}} por minuto | 
+            <strong>Frecuencia respiratoria:</strong> {{$notaData['fr']}} por minuto | 
+            <strong>Temperatura:</strong> {{$notaData['temp']}} Celsius (°C) | 
+            <strong>Peso:</strong> {{$notaData['peso']}} kilogramos | 
+            <strong>Talla:</strong> {{$notaData['talla']}} centímetros
+        </p>
+
+
+        <div class="section-content">
+            <p><strong>Evolución y actualización del cuadro clínico (en su caso, incluir abuso y dependencia del tabaco, del alcohol y de otras sustancias psicoactivas): </strong> {{ $notaData->evolucion_actualizacion ?? 'Sin datos.' }}</p>
+            <p><strong>Resumen del interrogatorio: </strong> {{ $notaData->resumen_del_interrogatorio ?? 'Sin datos.' }}</p>
+            <p><strong>Exploración física: </strong> {{ $notaData->exploracion_fisica ?? 'Sin datos.' }}</p>
+            <p><strong>Resultados relevantes de los estudios de los servicios auxiliares de diagnóstico y tratamiento que hayan sido solicitados previamente: </strong> {{ $notaData->resultado_estudios ?? 'Sin datos.' }}</p>
+            <p><strong>Plan de estudio y/o tratamiento (indicaciones médicas, vía, dosis, periodicidad): </strong> {{ $notaData->tratamiento ?? 'Sin datos.' }}</p>
+            <p><strong>Diagnóstico(s) o problemas clínicos: </strong> {{ $notaData->diagnostico_o_problemas_clinicos ?? 'Sin datos.' }}</p>
+        </div> 
+
         <div class="section-content">
             <p><strong>Diagnóstico preoperatorio:</strong> {{ $notaData->diagnostico_preoperatorio ?? 'Sin datos.' }}</p>
             <p><strong>Operación planeada:</strong> {{ $notaData->operacion_planeada ?? 'Sin datos.' }}</p>
@@ -124,9 +143,6 @@
                     @endif
                 @endforeach
             </p>
-
-            <p><strong>Estudios de servicios auxiliares de diagnóstico y tratamiento transoperatorios:</strong> {{ $notaData->estudios_transoperatorios ?? 'Sin datos.' }}</p>
-
         </div>
 
         @php
@@ -196,7 +212,7 @@
 
             <p><strong>Envío de piezas o biopsias quirúrgicas para examen macroscópico e histopatológico:</strong> </p>
             <div class="">
-                {{ $notaData->envio_piezas ?? 'Sin datos.' }}
+                
             </div>
 
 
