@@ -100,29 +100,15 @@
         <h1>Nota de egreso</h1>
 
         <div class="section-content">
-            <p><strong>Diagnóstico preoperatorio:</strong> {{ $notaData->diagnostico_preoperatorio ?? 'Sin datos.' }}</p>
-            <p><strong>Operación planeada:</strong> {{ $notaData->operacion_planeada ?? 'Sin datos.' }}</p>
-            <p><strong>Operación realizada:</strong> {{ $notaData->operacion_realizada ?? 'Sin datos.' }}</p>
-            <p><strong>Diagnóstico postoperatorio:</strong> {{ $notaData->diagnostico_postoperatorio ?? 'Sin datos.' }}</p>
-            <p><strong>Descripción de la técnica quirúrgica:</strong>{{ $notaData->descripcion_tecnica_quirurgica ?? 'Sin datos.' }}</p>
-            <p><strong>Hallazgos transoperatorios:</strong>{{ $notaData->hallazgos_transoperatorios ?? 'Sin datos.' }}</p>
-            <p><strong>Reporte del conteo de gasas, compresas y de instrumental quirúrgico:</strong> {{ $notaData->reporte_conteo ?? 'Sin datos.' }}</p>
-            <p><strong>Incidentes y accidentes:</strong> {{ $notaData->incidentes_accidentes ?? 'Sin datos.' }}</p>
-            <p><strong>Cuantificación de sangrado:</strong> {{ $notaData->cuantificacion_sangrado . ' mililitros.' ?? 'Sin datos.' }}</p>
-
-            <p><strong>Transfusiones:</strong> 
-                @foreach ($notaData->transfusiones ?? [] as $transfusion )
-                    {{ $transfusion->tipo_transfusion . ' '}} <strong> cantidad:  </strong>{{ $transfusion->cantidad}}
-                    @if (!$loop->last)
-                        ,
-                    @elseif ($loop->last)
-                        .
-                    @endif
-                @endforeach
-            </p>
-
-            <p><strong>Estudios de servicios auxiliares de diagnóstico y tratamiento transoperatorios:</strong> {{ $notaData->estudios_transoperatorios ?? 'Sin datos.' }}</p>
-
+            <p><strong>Motivo del egreso: </strong> {{ $notaData->motivo_egreso ?? 'Sin datos.' }}</p>
+            <p><strong>Diagnósticos finales: </strong> {{ $notaData->diagnosticos_finales ?? 'Sin datos.' }}</p>
+            <p><strong>Resumen de la evolución y el estado actual: </strong> {{ $notaData->resumen_evolucion_estado_actual ?? 'Sin datos.' }}</p>
+            <p><strong>Manejo durante la estancia hospitalaria: </strong> {{ $notaData->manejo_durante_estancia ?? 'Sin datos.' }}</p>
+            <p><strong>Problemas clínicos pendiente: </strong>{{ $notaData->problemas_pendientes ?? 'Sin datos.' }}</p>
+            <p><strong>Plan de manejo y tratamiento: </strong>{{ $notaData->plan_manejo_tratamiento  ?? 'Sin datos.' }}</p>
+            <p><strong>Recomendaciones para vigilancia ambulatoria: </strong> {{ $notaData->recomendaciones ?? 'Sin datos.' }}</p>
+            <p><strong>Pronóstico: </strong> {{ $notaData->pronostico ?? 'Sin datos.' }}</p>
+            <p><strong>En caso de defunción, señalar las causas de la muerte acorde a la información contenida en el certificado de defunción y en su caso, si se solicitó y se llevó a cabo estudio de necropsia hospitalaria: </strong> {{ $notaData->defuncion ?? 'Sin datos.' }}</p>
         </div>
 
         @if(isset($medico))
