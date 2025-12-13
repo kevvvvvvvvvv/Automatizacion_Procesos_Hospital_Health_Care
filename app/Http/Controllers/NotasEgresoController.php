@@ -97,7 +97,7 @@ class NotasEgresoController extends Controller
         } catch(\Exception $e) {
             DB::rollBack();
             Log::error('Error al crear la nota de egreso: ' . $e->getMessage());
-            return Redirect::back()->with('error', 'Error al crear nota de egreso.' . $e->getMessage()); 
+            return Redirect::back()->with('error', 'Error al crear nota de egreso.'); 
         }
     }
 
@@ -155,7 +155,7 @@ class NotasEgresoController extends Controller
         ];
 
         $viewData = [
-            'egreso' => $notasegreso,
+            'notaData' => $notasegreso,
             'pacientte' => $paciente,
             'medico' => $medico,
         ];
