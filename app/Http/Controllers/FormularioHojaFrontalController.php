@@ -10,9 +10,9 @@ use App\Models\Paciente;
 use App\Models\Estancia;
 use App\Models\FormularioInstancia;
 use App\Models\HojaFrontal;
-use App\Models\Venta;
-use App\Models\DetalleVenta;
 use App\Models\ProductoServicio;
+use App\Models\Venta;
+use App\Services\VentaService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Spatie\LaravelPdf\Facades\Pdf;
@@ -31,35 +31,25 @@ class FormularioHojaFrontalController extends Controller
                                 'medicos' => $medicos,]);
     }
 
-    public function store(Paciente $paciente, Estancia $estancia, Request $request){
+    public function store(Paciente $paciente, Estancia $estancia, Request $request, VentaService $ventaService){
         DB::beginTransaction();
         try{
 
-            $producto = ProductoServicio::findOrFail(661);
-            $cantidad = 1;
-            $subtotal = $producto->importe * $cantidad;
-            $descuento = 0;
-            $total = ($subtotal)*ProductoServicio::IVA - $descuento;
+            $itemParaVenta = [  
+                'id' => 661,
+                'cantidad' => 1,
+                'tipo' => 'producto'
+            ];
 
-            $venta = Venta::create([
-                'fecha' => now(),
-                'subtotal' =>$subtotal,
-                'total' => $total,
-                'descuento' => $descuento,
-                'estado' => Venta::ESTADO_PENDIENTE,
-                'estancia_id' => $estancia->id,
-                'user_id' => Auth::id(),
-            ]);
+            $ventaExistente = Venta::where('estancia_id', $estancia->id)
+                        ->where('estado', Venta::ESTADO_PENDIENTE)
+                        ->first();
 
-            DetalleVenta::create([
-                'precio_unitario' => $producto->importe,
-                'cantidad' => $cantidad,
-                'subtotal' => $subtotal,
-                'descuento' => $descuento,
-                'estado' => DetalleVenta::ESTADO_PENDIENTE,
-                'venta_id' => $venta->id,
-                'producto_servicio_id' => $producto->id,
-            ]);
+            if ($ventaExistente) {
+                $ventaService->addItemToVenta($ventaExistente, $itemParaVenta);
+            } else {
+                $ventaService->crearVenta([$itemParaVenta], $estancia->id, Auth::id());
+            }
 
             $estancia->load(['paciente', 'creator', 'updater','formularioInstancias.catalogo','formularioInstancias.user']);
 
