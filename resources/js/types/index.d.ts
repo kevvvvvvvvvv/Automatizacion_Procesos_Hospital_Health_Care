@@ -128,7 +128,7 @@ export interface Estancia {
     hoja_sondas_cateters: HojaSondaCateter[];
     hoja_oxigenos:HojaOxigeno[];
 
-    paciente?: Paiente;
+    paciente: Paciente;
 
     created_at: string;
     updated_at: string | null;
@@ -207,7 +207,8 @@ export interface Venta{
     created_at: string;
     updated_at: string;
     user: User | null;
-    detalles?: DetalleVenta[];
+    estancia: Estancia;
+    detalles: DetalleVenta[];
 }
 
 export interface DetalleVenta{
@@ -222,8 +223,8 @@ export interface DetalleVenta{
     updated_at: string;
     itemable_type: string;
     itemable?: {
-        nombre_prestacion?: string; // Existe si es Producto
-        nombre?: string;            // Existe si es Estudio
+        nombre_prestacion?: string; 
+        nombre?: string;
     };
 }
 

@@ -18,8 +18,7 @@ class VentaService
     public function crearVenta(array $items, int $estanciaId, int $userId): Venta
     {
         return DB::transaction(function () use ($items, $estanciaId, $userId) {
-            
-            // 1. Crear la cabecera de la venta
+
             $venta = Venta::create([
                 'fecha' => now(),
                 'subtotal' => 0,
@@ -91,7 +90,7 @@ class VentaService
             $modelo = ProductoServicio::findOrFail($id);
             $precioUnitario = $modelo->importe;
             $iva = $modelo->iva ?? 16;
-            if ($modelo->tipo !== 'SERVICIO') {
+            if ($modelo->tipo !== 'SERVICIOS') {
                 if ($modelo->cantidad < $cantidad) {
                     throw new Exception("Stock insuficiente para el producto: {$modelo->nombre_prestacion}");
                 }

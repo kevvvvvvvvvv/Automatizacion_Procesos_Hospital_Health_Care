@@ -27,7 +27,7 @@ return new class extends Migration
             $table->string('recomendaciones');
             $table->string('factores_riesgo');
             $table->string('pronostico');
-            $table->string('defuncion');
+            $table->string('defuncion')->nullable();
              $table->timestamps();
            });
 

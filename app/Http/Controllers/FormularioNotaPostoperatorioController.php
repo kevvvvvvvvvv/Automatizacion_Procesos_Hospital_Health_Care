@@ -95,6 +95,7 @@ class FormularioNotaPostoperatorioController extends Controller
                 $itemParaVenta = [
                     'id' => $idPatologia,
                     'cantidad' => 1,
+                    'tipo' => 'producto'
                 ]; 
 
                 $solicitudPatologiaId = $solicitud->id;
