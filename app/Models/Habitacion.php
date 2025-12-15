@@ -30,4 +30,8 @@ class Habitacion extends Model
                     ->where('tipo_estancia', 'Hospitalizacion') 
                     ->whereNull('fecha_egreso');              
     }
+       public function horarios()
+    {
+        return $this->hasMany(ReservacionHorario::class);
+    }
 }
