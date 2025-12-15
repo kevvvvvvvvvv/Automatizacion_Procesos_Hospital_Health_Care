@@ -18,14 +18,19 @@ return new class extends Migration
             ->constrained('reservaciones')
             ->cascadeOnDelete();
 
-        // hora exacta del bloque (ej: 2025-12-15 09:30:00)
+        $table->foreignId('habitacion_id')
+            ->constrained('habitaciones')
+            ->cascadeOnDelete();
+
+        // Bloque exacto (ej: 2025-12-15 09:30:00)
         $table->dateTime('fecha_hora');
 
         $table->timestamps();
 
-        // evita duplicar el mismo horario para la misma reservación
-        $table->unique(['reservacion_id', 'fecha_hora']);
+        // Un consultorio no puede repetir el mismo horario
+        $table->unique(['habitacion_id', 'fecha_hora']);
     });
+
 
     }
 

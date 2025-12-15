@@ -4,8 +4,22 @@ import SelectInput from "@/components/ui/input-select";
 import { useForm } from "@inertiajs/react";
 import FormLayout from "@/components/form-layout";
 import PrimaryButton from "@/components/ui/primary-button";
+import { Reservacion } from "@/types";
 import { route } from "ziggy-js";
 
+/* =========================
+   Types
+========================= */
+
+
+interface Props {
+  reservacion?: Reservacion | null;
+
+}
+
+/* =========================
+   Constantes
+========================= */
 const LIMITE_POR_LOCALIZACION: Record<string, number> = {
   plan_ayutla: 5,
   acapantzingo: 3,
@@ -13,12 +27,12 @@ const LIMITE_POR_LOCALIZACION: Record<string, number> = {
 
 const localizaciones = [
   { value: "plan_ayutla", label: "Plan de Ayutla" },
-  { value: "acapantzingo", label: "Diaz ordas" },
+  { value: "acapantzingo", label: "Díaz Ordaz" },
 ];
 
 const generarHorarios = () => {
   const horarios: string[] = [];
-  for (let h = 0; h < 24; h++) {
+  for (let h = 8; h < 22; h++) {
     for (let m = 0; m < 60; m += 30) {
       horarios.push(
         `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`
@@ -30,56 +44,74 @@ const generarHorarios = () => {
 
 const horarios = generarHorarios();
 
-const CreateReservacion: React.FC = () => {
-  const { data, setData, post, processing } = useForm({
-    localizacion: "",
-    fecha: "",
-    horarios: [] as string[],
-  });
+/* =========================
+   Componente
+========================= */
+const CreateReservacion: React.FC<Props> = ({
+  reservacion,
+}) => {
+  const isEdit = !!reservacion;
+  
+  const hoy = new Date().toISOString().split("T")[0];
 
+const { data, setData, post, processing } = useForm({
+  localizacion: reservacion?.localizacion ?? "",
+  fecha: reservacion?.fecha ?? hoy,
+  horarios: [] as string[],
+});
+
+
+  /* =========================
+     Horarios
+  ========================= */
   const contarHorario = (hora: string) =>
     data.horarios.filter((h) => h.endsWith(hora)).length;
 
   const toggleHorario = (hora: string) => {
-  if (!data.fecha || !data.localizacion) return;
+    if (!data.fecha || !data.localizacion) return;
 
-  const horarioCompleto = `${data.fecha} ${hora}`;
-  const limite = LIMITE_POR_LOCALIZACION[data.localizacion];
+    const horarioCompleto = `${data.fecha} ${hora}`;
+    const limite = LIMITE_POR_LOCALIZACION[data.localizacion];
+    const yaSeleccionado = data.horarios.includes(horarioCompleto);
+    const usados = contarHorario(hora);
 
-  const yaSeleccionado = data.horarios.includes(horarioCompleto);
-  const usados = contarHorario(hora);
-
-  // Si ya lo seleccionó → quitarlo
-  if (yaSeleccionado) {
-    setData(
-      "horarios",
-      data.horarios.filter((h) => h !== horarioCompleto)
-    );
-    return;
-  }
-
-  if (usados >= limite) return;
-
-  
-  setData("horarios", [...data.horarios, horarioCompleto]);
-};
-
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (data.horarios.length < 1) {
-      alert("Debes seleccionar al menos 1 horarios");
+    // Quitar
+    if (yaSeleccionado) {
+      setData(
+        "horarios",
+        data.horarios.filter((h) => h !== horarioCompleto)
+      );
       return;
     }
 
+    if (usados >= limite) return;
+
+    setData("horarios", [...data.horarios, horarioCompleto]);
+  };
+
+  /* =========================
+     Submit
+  ========================= */
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    
+
+    if (data.horarios.length < 1) {
+      alert("Debes seleccionar al menos un horario");
+      return;
+    }
+    
     post(route("reservaciones.store"));
   };
 
+  /* =========================
+     Render
+  ========================= */
   return (
     <MainLayout pageTitle="Reservación" link="reservaciones.index">
       <FormLayout
-        title="Registrar reservación"
+        title={isEdit ? "Editar reservación" : "Registrar reservación"}
         onSubmit={handleSubmit}
         actions={
           <PrimaryButton type="submit" disabled={processing}>
@@ -88,6 +120,8 @@ const CreateReservacion: React.FC = () => {
         }
       >
         <div className="space-y-6">
+
+         
 
           {/* Localización */}
           <SelectInput
@@ -117,10 +151,12 @@ const CreateReservacion: React.FC = () => {
               <ul className="grid grid-cols-3 md:grid-cols-6 gap-2">
                 {horarios.map((hora) => {
                   const usados = contarHorario(hora);
-                  const limite = LIMITE_POR_LOCALIZACION[data.localizacion];
-                  const seleccionado = data.horarios.includes(`${data.fecha} ${hora}`);
+                  const limite =
+                    LIMITE_POR_LOCALIZACION[data.localizacion];
+                  const seleccionado = data.horarios.includes(
+                    `${data.fecha} ${hora}`
+                  );
                   const bloqueado = usados >= limite && !seleccionado;
-
 
                   return (
                     <li key={hora}>
@@ -129,14 +165,13 @@ const CreateReservacion: React.FC = () => {
                         disabled={bloqueado}
                         onClick={() => toggleHorario(hora)}
                         className={`w-full px-3 py-2 rounded-md border text-sm transition
-                            ${
-                              seleccionado
-                                ? "bg-indigo-600 text-white border-indigo-600"
-                                : bloqueado
-                                ? "bg-gray-200 text-gray-400 cursor-not-allowed"
-                                : "bg-white hover:bg-indigo-50"
-                            }`}
-
+                          ${
+                            seleccionado
+                              ? "bg-indigo-600 text-white border-indigo-600"
+                              : bloqueado
+                              ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+                              : "bg-white hover:bg-indigo-50"
+                          }`}
                       >
                         {hora}
                         <div className="text-xs mt-1">
@@ -163,7 +198,6 @@ const CreateReservacion: React.FC = () => {
               </ul>
             </div>
           )}
-
         </div>
       </FormLayout>
     </MainLayout>

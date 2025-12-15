@@ -750,11 +750,12 @@ export interface Consentimiento{
 }
 export interface Reservacion{
     id: number;
-    fecha_hora_inicio: string;
-    fecha_hora_fin:string;
-    accion: s
+    localizacion: string;
+    fecha: string;
+    horarios: string;
+    horas: number;
+    habitaciones_id: number;
     user_id: number;
-    habitacion_id: number;
     created_at: string;
     uopdate_at:string;
 }
