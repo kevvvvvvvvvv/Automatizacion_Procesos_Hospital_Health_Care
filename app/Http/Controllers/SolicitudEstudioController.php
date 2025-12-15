@@ -13,30 +13,33 @@ use App\Models\FormularioCatalogo;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
+use Spatie\Browsershot\Browsershot;
+use Spatie\LaravelPdf\Facades\Pdf;
 
 class SolicitudEstudioController extends Controller
 {
-    public function store(Request $request)
+    public function store(Request $request, Estancia $estancia)
     {
-
-        dd($request->toArray());
-        $validated = $request->validate([
+        
+        $validatedData = $request->validate([
             'diagnostico_problemas' => 'nullable|string',
             'incidentes_accidentes' => 'nullable|string',
            
             'estudios_agregados_ids' => 'array', 
             'estudios_adicionales' => 'array',
             
-            'estudios_agregados_ids.*' => 'integer|exists:catalogo_estudios,id',
-            'estudios_adicionales.*' => 'string|max:255',
-        ]);
+            'estudios_agregados_ids.*' => 'nullable|integer|exists:catalogo_estudios,id',
+            'estudios_adicionales.*' => 'nullable|string|max:255',
 
-        DB::transaction();
+            'user_solicita_id' =>'required',
+            'detallesEstudios.*' => 'nullable' 
+        ]);
+        DB::beginTransaction();
         try{
             $formularioInstancia = FormularioInstancia::create([
                 'fecha_hora' => now(),  
                 'estancia_id' => $estancia->id,
-                'formulario_catalogo_id' => FormularioCatalogo::ID_NOTA_EGRESO, 
+                'formulario_catalogo_id' => FormularioCatalogo::ID_SOLICITUD_ESTUDIOS, 
                 'user_id' => Auth::id(),
             ]);
             
@@ -54,7 +57,7 @@ class SolicitudEstudioController extends Controller
                     SolicitudItem::create([
                         'solicitud_estudio_id' => $solicitud->id,
                         'catalogo_estudio_id' => $catalogoId,
-                        'detalles' => $detallesJson,
+                        'detalles' => $validatedData['detallesEstudios'],
                         'otro_estudio' => null, 
                         'estado' => 'solicitado'
                     ]);
@@ -66,7 +69,7 @@ class SolicitudEstudioController extends Controller
                     SolicitudItem::create([
                         'solicitud_estudio_id' => $solicitud->id,
                         'catalogo_estudio_id' => null, 
-                        'detalles' => $detallesJson,
+                        'detalles' => $validatedData['detallesEstudios'],
                         'otro_estudio' => $nombreEstudioManual, 
                         'estado' => 'solicitado'
                     ]);
@@ -81,5 +84,31 @@ class SolicitudEstudioController extends Controller
             Log::error('Error al crear la solicitud de estudios: '. $e->getMessage());
             return Redirect::back()->with('error','Error al crear la solicitud de estudios');
         }
+    }
+
+    public function generarPDF(SolicitudEstudio $solicitudes_estudio)
+    {
+        $solicitudes_estudio->load(
+            'userSolicita',
+            'userLlena',
+            'solicitudItems.catalogoEstudio',
+            'formularioInstancia.estancia.paciente'
+        ); 
+
+        //dd($solicitudes_estudio->toArray());
+        return Pdf::view('pdfs.solicitud-estudio',['solicitud' => $solicitudes_estudio])
+            ->withBrowsershot(function (Browsershot $browsershot){
+                $chromePath = config('services.browsershot.chrome_path');
+                if ($chromePath) {
+                    $browsershot->setChromePath($chromePath);
+                    $browsershot->noSandbox();
+                    $browsershot->addChromiumArguments([
+                        'disable-dev-shm-usage',
+                        'disable-gpu',
+                    ]);
+                }
+            })
+            ->inline('solicitud examen.pdf');
+            
     }
 }

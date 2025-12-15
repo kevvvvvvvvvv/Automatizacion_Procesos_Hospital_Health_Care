@@ -14,8 +14,13 @@ class SolicitudItem extends Model
         'catalogo_estudio_id',
         'estado',
         'otro_estudio',
+        'detalles',
         'user_realiza_id',
         'resultados,'
+    ];
+
+    protected $casts = [
+        'detalles' => 'array',
     ];
 
     public function solicitudEstudio(): BelongsTo
