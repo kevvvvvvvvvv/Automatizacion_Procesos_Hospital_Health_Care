@@ -1,21 +1,24 @@
-import { Estancia, HojaEnfermeriaQuirofano, Paciente, ProductoServicio } from '@/types';
+import { Estancia, HojaEnfermeriaQuirofano, Paciente, ProductoServicio, User } from '@/types';
 import React, { useState } from 'react';
 import { Head } from '@inertiajs/react';
 
 import PacienteCard from '@/components/paciente-card';
 import MainLayout from '@/layouts/MainLayout';
+
 import InsumosBasicosForm from '@/components/forms/insumos-basicos-form';
 import EnvioPieza from '@/components/forms/envio-piezas-form';
 import GeneralesForm from  '@/components/forms/generales-form';
+import PersonalQuirurgicoForm from '@/components/forms/personal-quirurgico-form';
 
 interface CreateProps {
     paciente: Paciente;
     estancia: Estancia;
     hoja: HojaEnfermeriaQuirofano,
     insumos: ProductoServicio[];
+    users: User[];
 }
 
-type SeccionHoja = 'insumos' | 'servicios_especiales' | 'pieza_patologica' | 'general';
+type SeccionHoja = 'insumos' | 'servicios_especiales' | 'pieza_patologica' | 'general' | 'personal';
 
 
 
@@ -24,15 +27,20 @@ type CreateComponent = React.FC<CreateProps> & {
 }
 
 const secciones: {id: SeccionHoja, label: string}[] = [
-    { id: 'general', label: 'General'},
+    { id: 'general', label: 'General' },
     { id: 'insumos', label : 'Insumos' },
-    { id: 'servicios_especiales', label: 'Servicios espciales'},
-    { id: 'pieza_patologica', label: 'Envio de pieza patológica'},
-
+    { id: 'servicios_especiales', label: 'Servicios espciales' },
+    { id: 'pieza_patologica', label: 'Envio de pieza patológica' },
+    { id: 'personal', label: 'Personal' }
 ];
 
-const CreateHojaEnfermeriaQuirofano:CreateComponent = ({paciente, estancia, hoja, insumos}) => {
+const CreateHojaEnfermeriaQuirofano:CreateComponent = ({paciente, estancia, hoja, insumos, users}) => {
     const [activeSection, setActiveSection] = useState<SeccionHoja>('general');
+
+    const optionsUser = users.map((u) => ({
+        label: `${u.nombre} ${u.apellido_paterno} ${u.apellido_materno}`, 
+        value: u.id.toString() 
+    }));
 
     const NavigationTabs = () => (
         <nav className="mb-6 mt-12">
@@ -73,6 +81,11 @@ const CreateHojaEnfermeriaQuirofano:CreateComponent = ({paciente, estancia, hoja
                         hoja={hoja}/>
             case 'servicios_especiales':
                 return <p>Servicios especiales</p>
+            case 'personal':
+                return <PersonalQuirurgicoForm
+                        
+                        />
+
             default:
                 return null;
         }

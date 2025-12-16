@@ -153,6 +153,9 @@ Route::put('solicitudes-patologias/{estancia}', [SolicitudEstudioPatologiaContro
 Route::post('solicitudes-patologias/{solicitud-patologia}/show', [SolicitudEstudioPatologiaController::class, 'show'])->name('solicitudes-patologias.show')->middleware('auth');
 
 // Solicitud de estudios
+
+//Route::post('solicitudes-estudios/{estancia}',[SolicitudEstudioController::class, 'store'])->name('solicitudes-estudios.store');
+
 Route::resource('estancia.solicitudes-estudios', SolicitudEstudioController::class)->shallow()->middleware('auth');
 
 
