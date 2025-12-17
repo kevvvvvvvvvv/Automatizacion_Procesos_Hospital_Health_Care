@@ -156,6 +156,7 @@ const SolicitudEstudiosForm: React.FC<Props> = ({
         user_solicita_id: '',
         estudios_agregados_ids: [] as number[],
         estudios_adicionales: [] as string[],
+        detallesEstudios: {} as Record<number, any>
     });
 
     const estudiosFiltrados = useMemo(() => {
@@ -198,33 +199,36 @@ const SolicitudEstudiosForm: React.FC<Props> = ({
     }, [data.estudios_agregados_ids, catalogoEstudios]);
 
     const handleCheckboxChange = (estudioId: number, isChecked: boolean, categoria: string) => {
+        const nuevosIds = isChecked
+            ? [...data.estudios_agregados_ids, estudioId]
+            : data.estudios_agregados_ids.filter(id => id !== estudioId);
+        const nuevosDetalles = { ...data.detallesEstudios };
+
         if (isChecked) {
-            setData('estudios_agregados_ids', [...data.estudios_agregados_ids, estudioId]);
-            
-            if (categoria === 'Tomografía Computada' || categoria === 'Resonancia') {
-                setDetallesEstudios(prev => ({
-                    ...prev,
-                    [estudioId]: { modalidad: 'Simple', via: '' }
-                }));
+            if (categoria === 'Tomografía Computada' || categoria === 'Tomografía' || categoria === 'Resonancia') {
+                nuevosDetalles[estudioId] = { modalidad: 'Simple', via: '' };
             }
         } else {
-            setData('estudios_agregados_ids', 
-                data.estudios_agregados_ids.filter(id => id !== estudioId)
-            );
-            const nuevosDetalles = { ...detallesEstudios };
             delete nuevosDetalles[estudioId];
-            setDetallesEstudios(nuevosDetalles);
         }
+
+        setData({
+            ...data,
+            estudios_agregados_ids: nuevosIds,
+            detallesEstudios: nuevosDetalles
+        });
     }
     
     const handleDetalleChange = (estudioId: number, campo: string, valor: string) => {
-        setDetallesEstudios(prev => ({
-            ...prev,
+        const nuevosDetalles = {
+            ...data.detallesEstudios, 
             [estudioId]: {
-                ...prev[estudioId],
-                [campo]: valor
+                ...data.detallesEstudios[estudioId], 
+                [campo]: valor 
             }
-        }));
+        };
+
+        setData('detallesEstudios', nuevosDetalles);
     };
 
     const handleAddCustomEstudio = () => {
@@ -303,6 +307,7 @@ const SolicitudEstudiosForm: React.FC<Props> = ({
                             label = "Médico"
                             options = {optionsMedico}
                             onChange= {e=>setData('user_solicita_id',e)}
+                            error = {errors.user_solicita_id}
                         />
                     </div>
 
@@ -342,29 +347,29 @@ const SolicitudEstudiosForm: React.FC<Props> = ({
                                                                     type="radio" 
                                                                     name={`mod_${estudio.id}`}
                                                                     value="Simple"
-                                                                    checked={detallesEstudios[estudio.id]?.modalidad === 'Simple'}
+                                                                    checked={data.detallesEstudios[estudio.id]?.modalidad === 'Simple'}
                                                                     onChange={() => handleDetalleChange(estudio.id, 'modalidad', 'Simple')}
                                                                     className="mr-1"
-                                                                /> Simple
+                                                                />Simple    
                                                             </label>
                                                             <label className="flex items-center">
                                                                 <input 
                                                                     type="radio" 
                                                                     name={`mod_${estudio.id}`}
                                                                     value="Contrastada"
-                                                                    checked={detallesEstudios[estudio.id]?.modalidad === 'Contrastada'}
+                                                                    checked={data.detallesEstudios[estudio.id]?.modalidad === 'Contrastada'}
                                                                     onChange={() => handleDetalleChange(estudio.id, 'modalidad', 'Contrastada')}
                                                                     className="mr-1"
-                                                                /> Contrastada
+                                                                />Contrastada
                                                             </label>
                                                         </div>
 
-                                                        {detallesEstudios[estudio.id]?.modalidad === 'Contrastada' && (
+                                                        {data.detallesEstudios[estudio.id]?.modalidad === 'Contrastada' && (
                                                             <div className="mt-2 animate-fadeIn">
                                                                 <label className="block text-xs font-semibold text-gray-600">Tipo de Contraste:</label>
                                                                 <select 
                                                                     className="mt-1 block w-full text-xs border-gray-300 rounded-md shadow-sm"
-                                                                    value={detallesEstudios[estudio.id]?.via || ''}
+                                                                    value={data.detallesEstudios[estudio.id]?.via || ''}
                                                                     onChange={(e) => handleDetalleChange(estudio.id, 'via', e.target.value)}
                                                                 >
                                                                     <option value="">Seleccione </option>
@@ -372,14 +377,14 @@ const SolicitudEstudiosForm: React.FC<Props> = ({
                                                                     <option value="Oral">Oral (Tomada)</option>
                                                                     <option value="Otra">Otra</option>
                                                                 </select>
-                                                                {detallesEstudios[estudio.id]?.via === 'Otra' && (
+                                                                {data.detallesEstudios[estudio.id]?.via === 'Otra' && (
                                                                 <div className="mt-2">
                                                                     <label className="block text-xs text-gray-500 mb-1">Especifique:</label>
                                                                     <input
                                                                         type="text"
                                                                         className="block w-full text-xs border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500"
                                                                         placeholder="Ej. Intratecal, Intraarticular..."
-                                                                        value={detallesEstudios[estudio.id]?.especificacion || ''}
+                                                                        value={data.detallesEstudios[estudio.id]?.especificacion || ''}
                                                                         onChange={(e) => handleDetalleChange(estudio.id, 'especificacion', e.target.value)}
                                                                         autoFocus
                                                                     />
@@ -515,10 +520,38 @@ const SolicitudEstudiosForm: React.FC<Props> = ({
                             </div>
                         )}
                     </div>
-                    
+                    {Object.keys(errors).length > 0 && (
+                        <div className="bg-red-50 border-l-4 border-red-500 p-4 mb-6 rounded-md shadow-sm">
+                            <div className="flex">
+                                <div className="flex-shrink-0">
+                                    <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                                    </svg>
+                                </div>
+                                <div className="ml-3">
+                                    <h3 className="text-sm font-medium text-red-800">
+                                        Hubo problemas con el envío ({Object.keys(errors).length} errores):
+                                    </h3>
+                                    <div className="mt-2 text-sm text-red-700">
+                                        <ul className="list-disc pl-5 space-y-1">
+                                            {Object.keys(errors).map((key) => (
+                                                <li key={key}>
+                                                    <span className="font-bold font-mono text-xs uppercase bg-red-100 px-1 rounded mr-2">
+                                                        {key}
+                                                    </span>
+                                                    {errors[key]}
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                                        
                     <div className="flex justify-end mt-4">
-                        <PrimaryButton type="submit" disabled={processing || data.estudios_agregados_ids.length === 0}>
-                            {processing ? 'Guardando...' : 'Guardar Solicitud de Estudios'}
+                        <PrimaryButton type="submit" disabled={processing || (data.estudios_agregados_ids.length === 0 && data.estudios_adicionales.length === 0)}>
+                            {processing ? 'Guardando...' : 'Guardar solicitud de estudios'}
                         </PrimaryButton>
                     </div>
                 </form>
