@@ -153,7 +153,11 @@ Route::put('solicitudes-patologias/{estancia}', [SolicitudEstudioPatologiaContro
 Route::post('solicitudes-patologias/{solicitud-patologia}/show', [SolicitudEstudioPatologiaController::class, 'show'])->name('solicitudes-patologias.show')->middleware('auth');
 
 // Solicitud de estudios
-Route::post('solicitudes-estudios/{estancia}', [SolicitudEstudioController::class, 'store'])->name('solicitudes-estudios.store');
+
+//Route::post('solicitudes-estudios/{estancia}',[SolicitudEstudioController::class, 'store'])->name('solicitudes-estudios.store');
+
+Route::resource('estancia.solicitudes-estudios', SolicitudEstudioController::class)->shallow()->middleware('auth');
+
 
 Route::resource('pacientes.estancias.interconsultas', InterconsultaController::class)
     ->shallow()
@@ -232,10 +236,15 @@ Route::get('/hojasenfermeriasquirofanos/{hojasenfermeriasquirofano}/pdf', [HojaE
     ->name('hojasenfermeriasquirofanos.pdf')
     ->middleware('auth');
 
+Route::get('/solicitudes-estudios/{solicitudes_estudio}/pdf', [SolicitudEstudioController::class, 'generarPDf'])
+    ->name('solicitudes-estudios.pdf')
+    ->middleware('auth');
+
 Route::get('/consentimientos/pdf/{file}', [ConsentimientoController::class, 'generarPDF'])
     ->where('file', '.*')
     ->name('consentimientos.pdf')
     ->middleware('auth');
+
 
 
 // Farmacia
