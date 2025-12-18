@@ -6,6 +6,8 @@ use App\Models\CatalogoEstudio;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
+use League\Csv\Reader;
 
 class CatalogoEstudioSeeder extends Seeder
 {
@@ -14,8 +16,56 @@ class CatalogoEstudioSeeder extends Seeder
      */
     public function run(): void
     {
-        CatalogoEstudio::insert([
+
+        DB::transaction(function () {
+            DB::table('catalogo_estudios')->delete();
+            $path = database_path('seeders/data/catalogo_laboratorios.csv');
+
+            $stream = fopen($path, 'r');
             
+            $csv = Reader::createFromStream($stream);
+            $csv->setDelimiter(','); 
+            $csv->setHeaderOffset(0);
+
+            $records = $csv->getRecords();
+            $dataToInsert = [];
+            $chunkSize = 500;
+
+            foreach ($records as $record) {
+                $codigoRaw = trim($record['codigo'] ?? '');
+                $tiempoRaw = trim($record['tiempo_entrega'] ?? '');
+                $costoRaw  = str_replace(['$', ',', ' '], '', $record['costo'] ?? '');
+
+                $dataToInsert[] = [
+                    'codigo'         => is_numeric($codigoRaw) ? (int)$codigoRaw : null,
+                    'nombre'         => trim($record['nombre'] ?? ''),
+                    'tipo_estudio'   => trim($record['tipo_estudio'] ?? ''),
+                    'departamento'   => trim($record['departamento'] ?? ''),
+                    
+                    'tiempo_entrega' => is_numeric($tiempoRaw) ? (int)$tiempoRaw : null,
+                    'costo'          => (is_numeric($costoRaw)) ? (float)$costoRaw : 0.00,
+
+                    'created_at'     => now(),
+                    'updated_at'     => now(),
+                ];
+
+                if (count($dataToInsert) >= $chunkSize) {
+                    DB::table('catalogo_estudios')->insert($dataToInsert);
+                    $dataToInsert = [];
+                }
+            }
+
+            if (!empty($dataToInsert)) {
+                DB::table('catalogo_estudios')->insert($dataToInsert);
+            }
+
+            if (is_resource($stream)) {
+                fclose($stream);
+            }            
+        });
+
+        /*
+        CatalogoEstudio::insert([
             [
                 'codigo' => 1,
                 'nombre' => 'Glucosa',
@@ -152,5 +202,6 @@ class CatalogoEstudioSeeder extends Seeder
             ],
             
         ]);
+        */
     }
 }

@@ -90,3 +90,16 @@ npm install react-chartjs-2 chart.js
 ```bash
 npm install sweetalert2
 ```
+
+<h2>Instalar cashier para pagos en linea</h2>
+
+```bash
+composer require laravel/cashier
+php artisan vendor:publish --tag="cashier-migrations"
+php artisan migrate
+php artisan vendor:publish --tag="cashier-config"
+```
+
+```bash
+php artisan install:api
+```
