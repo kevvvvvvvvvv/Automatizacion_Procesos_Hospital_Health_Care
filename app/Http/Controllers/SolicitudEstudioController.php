@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\SolicitudEstudioRequest;
 use Illuminate\Http\Request;
 
 use App\Models\Estancia;
@@ -18,22 +19,10 @@ use Spatie\LaravelPdf\Facades\Pdf;
 
 class SolicitudEstudioController extends Controller
 {
-    public function store(Request $request, Estancia $estancia)
+    public function store(SolicitudEstudioRequest $request, Estancia $estancia)
     {
+        $validatedData = $request->validated();
         
-        $validatedData = $request->validate([
-            'diagnostico_problemas' => 'nullable|string',
-            'incidentes_accidentes' => 'nullable|string',
-           
-            'estudios_agregados_ids' => 'array', 
-            'estudios_adicionales' => 'array',
-            
-            'estudios_agregados_ids.*' => 'nullable|integer|exists:catalogo_estudios,id',
-            'estudios_adicionales.*' => 'nullable|string|max:255',
-
-            'user_solicita_id' =>'required',
-            'detallesEstudios.*' => 'nullable' 
-        ]);
         DB::beginTransaction();
         try{
             $formularioInstancia = FormularioInstancia::create([

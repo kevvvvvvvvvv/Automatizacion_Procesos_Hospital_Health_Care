@@ -250,6 +250,7 @@ export interface HojaEnfermeriaQuirofano {
     hora_fin_anestesia: string;
     hora_fin_paciente: string;
     hoja_insumos_basicos: HojaInsumosBasicos[] 
+    personal_empleados: PersonalEmpleado[];
 }
 
 export interface HojaInsumosBasicos {

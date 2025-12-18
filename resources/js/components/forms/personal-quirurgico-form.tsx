@@ -2,27 +2,30 @@ import React from 'react';
 import { useForm, router } from '@inertiajs/react';
 import Swal from 'sweetalert2';
 import { PersonalEmpleado, User } from '@/types';
+import { route } from 'ziggy-js'; 
 
 import SelectInput from '@/components/ui/input-select';
 import PrimaryButton from '@/components/ui/primary-button';
 
 
-
 interface Props {
-    notaId: number; 
+    itemableId: number; 
+    itemableType: string;
     personalEmpleados: PersonalEmpleado[]; 
     users: User[];
 }
 
 const PersonalQuirurgicoManager: React.FC<Props> = ({
-    notaId,
-    personalEmpleados,
-    users,
+    itemableId,
+    itemableType,
+    personalEmpleados = [],
+    users = [],
 }) => {
-    // 1. FORMULARIO PARA CREAR (POST)
+
     const { data, setData, post, processing, errors, reset } = useForm({
-        nota_id: notaId,
-        ayudante_id: '',
+        itemable_id: itemableId,
+        itemable_type: itemableType,
+        user_id: '',
         cargo: ''
     });
 
@@ -42,39 +45,34 @@ const PersonalQuirurgicoManager: React.FC<Props> = ({
     const handleAgregar = (e: React.FormEvent) => {
         e.preventDefault();
 
-        if (!data.ayudante_id || !data.cargo) {
+        if (!data.user_id || !data.cargo) {
             Swal.fire('Error', 'Selecciona personal y cargo', 'error');
             return;
         }
 
-        post(route('notas.ayudantes.store'), {
+        post(route('personal-empleados.store'), {
             preserveScroll: true,
             onSuccess: () => {
-                reset('ayudante_id', 'cargo'); 
-                Swal.fire({
-                    toast: true,
-                    position: 'top-end',
-                    icon: 'success',
-                    title: 'Personal agregado correctamente',
-                    showConfirmButton: false,
-                    timer: 1500
-                });
+                reset('user_id', 'cargo');
             }
         });
     };
 
     const handleQuitar = (idRegistro: number) => {
-        router.delete(route('notas.ayudantes.destroy', idRegistro), {
-            preserveScroll: true,
-            onBefore: () => confirm('¿Estás seguro de quitar a este personal?'),
-            onSuccess: () => {
-                 Swal.fire({
-                    toast: true,
-                    position: 'top-end',
-                    icon: 'warning',
-                    title: 'Personal eliminado',
-                    showConfirmButton: false,
-                    timer: 1500
+        Swal.fire({
+            title: '¿Estás seguro?',
+            text: "Esta acción quitará al personal del registro actual.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Sí, eliminar',
+            cancelButtonText: 'Cancelar',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                router.delete(route('personal-empleados.destroy', idRegistro), {
+                    preserveScroll: true,
                 });
             }
         });
@@ -88,9 +86,9 @@ const PersonalQuirurgicoManager: React.FC<Props> = ({
                 <SelectInput
                     label="Personal encargado"
                     options={optionsUser}
-                    value={data.ayudante_id}
-                    onChange={(val) => setData('ayudante_id', val as string)}
-                    error={errors.ayudante_id}
+                    value={data.user_id}
+                    onChange={(val) => setData('user_id', val as string)}
+                    error={errors.user_id}
                 />
                 <SelectInput
                     label='Cargo'
