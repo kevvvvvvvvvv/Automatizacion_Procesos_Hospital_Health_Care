@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('reservaciones', function (Blueprint $table) {
         $table->id();
 
-        $table->enum('localizacion', ['plan_ayutla', 'acapantzingo']);
+        $table->enum('localizacion', ['plan de ayutla', 'diaz ordaz']);
         $table->date('fecha');
 
         // número total de bloques de 30 min

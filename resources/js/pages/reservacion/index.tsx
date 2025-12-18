@@ -29,7 +29,9 @@ type ReservacionHorario = {
 };
 
 type User = {
-  name: string;
+
+  name?: string; 
+  nombre?: string; 
 };
 
 type Reservacion = {
@@ -38,7 +40,7 @@ type Reservacion = {
   fecha: string;
   horas: number;
   horarios: ReservacionHorario[];
-  user: User | null;
+  user: User | null; 
 };
 
 interface Props {
@@ -81,18 +83,25 @@ const Index = ({ reservaciones }: Props) => {
       cell: ({ row }) =>
         row.original.horarios[0]?.habitacion?.identificador ?? "No asignado",
     },
-    
     {
       id: "usuario",
       header: "Reservado por",
-      cell: ({ row }) => row.original.user?.name ?? "N/A",
+      cell: ({ row }) => {
+        const user = row.original.user;
+        // Intentamos mostrar 'name', si no existe 'nombre', si no 'N/A'
+        return (
+          <span className="font-medium text-gray-700">
+            {user ? (user.name || user.nombre || "Sin nombre") : "N/A"}
+          </span>
+        );
+      },
     },
     {
       id: "acciones",
       header: "Acciones",
       cell: ({ row }) => (
         <Link
-          href={route("reservaciones.edit", row.original.id)}
+          href={route("reservaciones.edit", reservaciones)}
           onClick={(e) => e.stopPropagation()}
           className="p-2 text-blue-600 hover:bg-blue-100 rounded-full"
         >
@@ -140,17 +149,14 @@ const Index = ({ reservaciones }: Props) => {
           className="mb-4 w-full max-w-sm p-2 border rounded-lg text-black"
         />
 
-        <div className="overflow-x-auto bg-white rounded-lg shadow">
+       <div className="overflow-x-auto bg-white rounded-lg shadow">
           <table className="w-full text-sm">
             <thead className="bg-gray-50 uppercase text-xs">
               {table.getHeaderGroups().map((hg) => (
                 <tr key={hg.id}>
                   {hg.headers.map((header) => (
-                    <th key={header.id} className="px-6 py-3">
-                      {flexRender(
-                        header.column.columnDef.header,
-                        header.getContext()
-                      )}
+                    <th key={header.id} className="px-6 py-3 text-left">
+                      {flexRender(header.column.columnDef.header, header.getContext())}
                     </th>
                   ))}
                 </tr>
@@ -161,13 +167,14 @@ const Index = ({ reservaciones }: Props) => {
               {table.getRowModel().rows.map((row) => (
                 <tr
                   key={row.id}
-                  className="border-b hover:bg-gray-100 cursor-pointer"
+                  className="border-b hover:bg-gray-100 cursor-pointer transition"
+                  // CORRECCIÓN AQUÍ: Pasamos el objeto para que Ziggy lo mapee correctamente
                   onClick={() =>
-                    router.get(route("reservaciones.show", row.original.id))
+                    router.get(route("reservaciones.show", { reservacione: row.original.id }))
                   }
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <td key={cell.id} className="px-6 py-4">
+                    <td key={cell.id} className="px-6 py-4 text-black">
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </td>
                   ))}

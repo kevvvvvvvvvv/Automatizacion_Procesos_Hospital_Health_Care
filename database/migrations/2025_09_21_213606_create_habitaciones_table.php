@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('identificador');
             $table->string('tipo'); 
+            $table->string('ubicacion');
             $table->enum('estado',['Ocupado','Libre'])->default('Libre');
             $table->string('piso');
         });
