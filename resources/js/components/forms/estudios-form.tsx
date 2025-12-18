@@ -26,8 +26,10 @@ const optionsEstudios = [
     { value: 'RAYOS X', label: 'Rayos X'},
     { value: 'ELECTROCARDIOGRAMA', label: 'Electrocardiograma'},
     { value: 'ULTRASONIDO', label: 'Ultrasonido'},
-    { value: 'TOMOGRAFIA', label: 'Tomografía'},
-    { value: 'RESONANCIA', label: 'Resonancia'},
+    { value: 'TOMOGRAFIA COMPUTADA', label: 'Tomografía computada'},
+    { value: 'RESONANCIA MAGNETICA', label: 'Resonancia magnética'},
+    { value: 'RADIOLOGiA GENERAL', label: 'Radiología general'},
+    { value: 'ULTRASONIDO', label: 'Ultrasonido'},
 ];
 
 const FormularioPatologia: React.FC<PropsPatologia> = ({ estancia, medicos }) => {
@@ -146,6 +148,7 @@ const SolicitudEstudiosForm: React.FC<Props> = ({
     const [textoNuevoEstudio, setTextoNuevoEstudio] = useState('');
     const [filtro, setFiltro] = useState('');
     const [detallesEstudios, setDetallesEstudios] = useState<Record<number, any>>({});
+    const [deptoNuevoEstudio, setDeptoNuevoEstudio] = useState('');
 
     const optionsMedico = medicos.map(medico => ({
         value: medico.id.toString(),
@@ -184,8 +187,8 @@ const SolicitudEstudiosForm: React.FC<Props> = ({
                 case 'Imagenología':
                     if (estudio.departamento === 'Radiología') grupos['Rayos X']?.push(estudio);
                     else if (estudio.departamento === 'Ultrasonido') grupos['Ultrasonido']?.push(estudio);
-                    else if (estudio.departamento === 'Tomografía Computada') grupos['Tomografía']?.push(estudio);
-                    else if (estudio.departamento === 'Resonancia') grupos['Resonancia']?.push(estudio);
+                    else if (estudio.departamento === 'Tomografía computada') grupos['Tomografía computada']?.push(estudio);
+                    else if (estudio.departamento === 'Resonancia magnética') grupos['Resonancia magnética']?.push(estudio);
                     break;
             }
         });
@@ -233,10 +236,20 @@ const SolicitudEstudiosForm: React.FC<Props> = ({
 
     const handleAddCustomEstudio = () => {
         if (!textoNuevoEstudio.trim()) return;
-        if (!data.estudios_adicionales.includes(textoNuevoEstudio.trim())) {
-            setData('estudios_adicionales', [...data.estudios_adicionales, textoNuevoEstudio.trim()]);
+        if (!deptoNuevoEstudio) {
+            alert("Debes seleccionar a qué departamento va dirigido este estudio.");
+            return;
         }
+
+        const nuevoManual = {
+            nombre: textoNuevoEstudio.trim(),
+            departamento: deptoNuevoEstudio
+        };
+
+        setData('estudios_adicionales', [...data.estudios_adicionales, nuevoManual]);
+
         setTextoNuevoEstudio('');
+        setDeptoNuevoEstudio('');
     };
 
     const handleRemoveCustomEstudio = (indexToRemove: number) => {
@@ -259,7 +272,7 @@ const SolicitudEstudiosForm: React.FC<Props> = ({
             detalles: detallesEstudios[id] || null
         }));
 
-        post(route('solicitudes-estudios.store', { estancia: estancia.id }), {
+        post(route('estancia.solicitudes-estudios.store', { estancia: estancia.id }), {
             data: {
                 ...data,
                 estudios_estructurados: estudiosConDetalles
@@ -407,7 +420,7 @@ const SolicitudEstudiosForm: React.FC<Props> = ({
                     </div>
 
                     <div className="bg-white p-6 rounded-lg shadow-md">
-                    <h3 className="text-lg font-semibold mb-2">Estudios Seleccionados (Pendientes)</h3>
+                    <h3 className="text-lg font-semibold mb-2">Estudios seleccionados (pendientes)</h3>
                     
                     <div className="overflow-x-auto border rounded-lg">
                         <table className="min-w-full divide-y divide-gray-200">
@@ -453,6 +466,9 @@ const SolicitudEstudiosForm: React.FC<Props> = ({
                                     value={textoNuevoEstudio}
                                     onChange={e => setTextoNuevoEstudio(e.target.value)}
                                 />
+                            </div>
+                            <div className="w-1/3">
+
                             </div>
                             <button
                                 type="button"

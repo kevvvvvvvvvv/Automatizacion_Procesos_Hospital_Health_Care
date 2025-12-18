@@ -21,8 +21,12 @@ class SolicitudEstudioController extends Controller
 {
     public function store(SolicitudEstudioRequest $request, Estancia $estancia)
     {
+
         $validatedData = $request->validated();
-        
+        $detallesArray = $request->input('detallesEstudios', []);
+
+        dd($validatedData);
+
         DB::beginTransaction();
         try{
             $formularioInstancia = FormularioInstancia::create([
@@ -32,21 +36,21 @@ class SolicitudEstudioController extends Controller
                 'user_id' => Auth::id(),
             ]);
             
-            
             $solicitud = new SolicitudEstudio();
-
             $solicitud->id = $formularioInstancia->id;
             $solicitud->user_llena_id = Auth::id();
             $solicitud->user_solicita_id = $request->user_solicita_id;
-
             $solicitud->save();
 
+  
             if (!empty($request->estudios_agregados_ids)) {
-                foreach ($request->estudios_agregados_ids as $catalogoId) {
+                foreach ($request->estudios_agregados_ids as $index => $catalogoId) {
+                    $detalleItem = $detallesArray[$catalogoId] ?? null; 
+
                     SolicitudItem::create([
                         'solicitud_estudio_id' => $solicitud->id,
                         'catalogo_estudio_id' => $catalogoId,
-                        'detalles' => $validatedData['detallesEstudios'],
+                        'detalles' => $detalleItem,
                         'otro_estudio' => null, 
                         'estado' => 'solicitado'
                     ]);
@@ -54,21 +58,25 @@ class SolicitudEstudioController extends Controller
             }
 
             if (!empty($request->estudios_adicionales)) {
-                foreach ($request->estudios_adicionales as $nombreEstudioManual) {
+                foreach ($request->estudios_adicionales as $index => $nombreEstudioManual) {
+                    $detalleItem = isset($detallesArray['adicional_' . $index]) 
+                                    ? $detallesArray['adicional_' . $index] 
+                                    : null; 
+
                     SolicitudItem::create([
                         'solicitud_estudio_id' => $solicitud->id,
                         'catalogo_estudio_id' => null, 
-                        'detalles' => $validatedData['detallesEstudios'],
+                        'detalles' => $detalleItem, 
                         'otro_estudio' => $nombreEstudioManual, 
                         'estado' => 'solicitado'
                     ]);
                 }
             }
 
-
             DB::commit();
             return Redirect::back()->with('success','Se ha creado la solicitud de estudios');
-        }catch(\Exception $e){
+
+        } catch(\Exception $e){
             DB::rollback();
             Log::error('Error al crear la solicitud de estudios: '. $e->getMessage());
             return Redirect::back()->with('error','Error al crear la solicitud de estudios');

@@ -157,13 +157,10 @@ Route::post('solicitudes-patologias/{solicitud-patologia}/show', [SolicitudEstud
 
 //Route::post('solicitudes-estudios/{estancia}',[SolicitudEstudioController::class, 'store'])->name('solicitudes-estudios.store');
 
-Route::post('personal-empleados', [PersonalEmpleadoController::class, 'store'])->middleware('auth')
-    ->name('personal-empleados.store');
+Route::post('personal-empleados', [PersonalEmpleadoController::class, 'store'])->middleware('auth')->name('personal-empleados.store');
+Route::delete('personal-empleados/{personalEmpleado}', [PersonalEmpleadoController::class, 'destroy'])->middleware('auth')->name('personal-empleados.destroy');
 
-Route::delete('personal-empleados/{personalEmpleado}', [PersonalEmpleadoController::class, 'destroy'])->middleware('auth')
-    ->name('personal-empleados.destroy');
-
-Route::resource('estancia.solicitudes-estudios', SolicitudEstudioController::class)->shallow()->middleware('auth');
+Route::resource('estancia.solicitudes-estudios', SolicitudEstudioController::class)->shallow()->parameters(['estancia'=>'estancia'])->middleware('auth');
 
 
 Route::resource('pacientes.estancias.interconsultas', InterconsultaController::class)
