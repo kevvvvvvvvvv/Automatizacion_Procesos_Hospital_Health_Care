@@ -12,20 +12,16 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('reservacion_horarios', function (Blueprint $table) {
-        $table->id();
+            $table->id();
 
-        $table->foreignId('reservacion_id')
-            ->constrained('reservaciones')
-            ->cascadeOnDelete();
+            $table->foreignId('reservacion_id')
+                ->constrained('reservaciones')
+                ->cascadeOnDelete();
+            $table->dateTime('fecha_hora');
 
-        // hora exacta del bloque (ej: 2025-12-15 09:30:00)
-        $table->dateTime('fecha_hora');
-
-        $table->timestamps();
-
-        // evita duplicar el mismo horario para la misma reservación
-        $table->unique(['reservacion_id', 'fecha_hora']);
-    });
+            $table->timestamps();
+            $table->unique(['reservacion_id', 'fecha_hora']);
+        });
 
     }
 
