@@ -10,37 +10,67 @@ import InputText from '../ui/input-text';
 import Checkbox from '../ui/input-checkbox';
 
 const opcionesDeDieta = {
-    'Dieta de Llquidos claros': [
-        { value: 'Opción 1', label: 'Gelatina, Té, Jugo de Manzana diluido' },
+    'Dieta de liquidos claros': [
+        { value: 'Opción 1', label: '1 pieza de gelatina de sabor: piña, limón, manzana, uva (sujeto a disponibilidad). 1 vaso de té de manzanilla sin añadir azúcar de 250 ml. 1 vaso de jugo de manzana diluido (125 ml de agua y 125 ml de jugo). 1 vaso de agua natural de 250 ml.' },
     ],
-    'Dieta Blanda - Desayuno': [
+
+    'Dieta blanda - Desayuno': [
         { value: 'Opción 1', label: 'Omelette de espinacas con queso panela' },
         { value: 'Opción 2', label: 'Waffles de avena con miel y fruta' },
         { value: 'Opción 3', label: 'Huevo a la mexicana sin picante' },
         { value: 'Opción 4', label: 'Huevo revuelto con jamón de pavo' },
         { value: 'Opción 5', label: 'Caldito de verduras con pollo deshebrado' }, 
     ],
-    'Dieta Blanda - Comida': [
+
+    'Dieta blanda - Comida': [
         { value: 'Opción 1', label: 'Pechuga asada con verduras al vapor' },
         { value: 'Opción 2', label: 'Caldito de verduras con pollo deshebrado' },
-        { value: 'Opción 3', label: 'Fajitas de pollo con morrón y queso panela' },
-        { value: 'Opción 4', label: 'Rollitos de pechuga rellenos' },
-        { value: 'Opción 5', label: 'Consomé (paciente bichectomía)' },
+        { value: 'Opción 3', label: 'Fajitas de pollo con zanahoria, cebolla y queso panela en cubos' },
+        { value: 'Opción 4', label: 'Rollitos de pechuga rellenas de calabacitas o zanahoria fileteadas en caldillo de jitomate' },
+        { value: 'Opción 5', label: 'Consomé sin verduras ni pollo (paciente bichectomía)' },
     ],
-    'Dieta Blanda - Cena': [
+
+    'Dieta blanda - Cena': [
         { value: 'Opción 1', label: 'Huevo revuelto con jamón de pavo' },
         { value: 'Opción 2', label: 'Waffles de avena con miel y fruta' },
-        { value: 'Opción 3', label: '2 quesadillas de queso panela' },
+        { value: 'Opción 3', label: '2 quesadillas de queso panela (con tortillas de maíz)' },
         { value: 'Opción 4', label: 'Sándwich de jamón de pavo (pan integral)' },
         { value: 'Opción 5', label: 'Huevo a la mexicana sin picante' },
     ],
+
+    'Dieta para paciente diabético': [
+        { value: 'Opción 1', label: 'Omelette de espinacas o champiñones con queso panela'},
+        { value: 'Opción 2', label: 'Huevo revuelto con jamón de pavo o huevo a la mexicana sin picante'},
+        { value: 'Opción 3', label: 'Pechuga asada con guarnición de verduras al vapor'},
+        { value: 'Opción 4', label: 'Sándwich de pollo deshebrado con queso panela y verdura (usar pan integral)'},
+        { value: 'Opción 5', label: 'Caldito de verduras con pollo deshebrado'},
+    ],
+
+    'Dieta para paciente celiaco': [
+        { value: 'Opción 1', label: '2 quesadillas de queso panela (con tortillas de maíz)'},
+        { value: 'Opción 2', label: 'Omelette de espinacas con queso panela'},
+        { value: 'Opción 3', label: 'Pechuga asada con guarnición de verduras al vapor'},
+        { value: 'Opción 4', label: 'Rollitos de pechuga rellenas de calabacitas o zanahoria fileteadas en caldillo de jitomate'},
+        { value: 'Opción 5', label: 'Caldito de verduras con pollo deshebrado'},
+    ],
+
+    'Dieta para paciente oncológico': [
+        { value: 'Opción 1', label: 'Frutas hervidas (manzana y pera), opcional retirar la cáscara'},
+        { value: 'Opción 2', label: 'Papilla de verduras cocidas con pollo deshebrado'},
+        { value: 'Opción 3', label: 'Fajitas de pollo con zanahoria, cebolla y queso panela en cubos'},
+        { value: 'Opción 4', label: 'Huevo revuelto con jamón de pavo o huevo a la mexicana sin picante'},
+        { value: 'Opción 5', label: '2 quesadillas de queso panela (con tortillas de maíz)'},
+    ],
+
 };
 
 const restricciones = [
     { id: 'DIABETICO', label: 'Paciente diabético' },
     { id: 'CELIACO', label: 'Paciente celiaco (sin gluten)' },
-    { id: 'HIPERTENSO', label: 'Paciente hipertenso (bajo en sodio)' },
-    { id: 'COLECISTO', label: 'Sin colecitoqueneticos' },
+    { id: 'ONCOLÓGICO', label: 'Paciente oncológico' }
+    //{ id: 'HIPERTENSO', label: 'Paciente hipertenso (bajo en sodio)' },
+    //{ id: 'COLECISTO', label: 'Sin colecitoqueneticos' },
+
 ];
 
 
