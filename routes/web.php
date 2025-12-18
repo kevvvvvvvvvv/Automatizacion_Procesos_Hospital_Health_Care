@@ -39,6 +39,7 @@ use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\FormularioHojaOxigenoController;
 use App\Http\Controllers\ConsentimientoController;
 use App\Http\Controllers\ReservacionController;
+use App\Http\Controllers\PersonalEmpleadoController;
 
 
 use Illuminate\Support\Facades\Route;
@@ -155,6 +156,12 @@ Route::post('solicitudes-patologias/{solicitud-patologia}/show', [SolicitudEstud
 // Solicitud de estudios
 
 //Route::post('solicitudes-estudios/{estancia}',[SolicitudEstudioController::class, 'store'])->name('solicitudes-estudios.store');
+
+Route::post('personal-empleados', [PersonalEmpleadoController::class, 'store'])->middleware('auth')
+    ->name('personal-empleados.store');
+
+Route::delete('personal-empleados/{personalEmpleado}', [PersonalEmpleadoController::class, 'destroy'])->middleware('auth')
+    ->name('personal-empleados.destroy');
 
 Route::resource('estancia.solicitudes-estudios', SolicitudEstudioController::class)->shallow()->middleware('auth');
 
