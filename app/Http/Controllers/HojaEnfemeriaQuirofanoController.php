@@ -17,11 +17,13 @@ use App\Models\FormularioCatalogo;
 use App\Models\FormularioInstancia;
 use App\Models\HojaEnfermeriaQuirofano;
 use App\Models\ProductoServicio;
+use App\Models\User;
 
 class HojaEnfemeriaQuirofanoController extends Controller
 {
     public function create(Paciente $paciente, Estancia $estancia)
     {
+
         return Redirect::route('pacientes.estancias.hojasenfermeriasquirofanos.store',[
             $paciente->id,
             $estancia->id
@@ -58,16 +60,20 @@ class HojaEnfemeriaQuirofanoController extends Controller
     {
         $hojasenfermeriasquirofano->load(
             'formularioInstancia.estancia.paciente',
-            'hojaInsumosBasicos.productoServicio'
+            'hojaInsumosBasicos.productoServicio',
+            'personalEmpleados'
         );
 
+
+        $users = User::all();
         $insumos = ProductoServicio::where('tipo','INSUMOS')->get();
 
         return Inertia::render('formularios/hojas-enfermerias-quirofano/edit',[
             'paciente' => $hojasenfermeriasquirofano->formularioInstancia->estancia->paciente,
             'estancia' => $hojasenfermeriasquirofano->formularioInstancia->estancia,
             'hoja' => $hojasenfermeriasquirofano,
-            'insumos' => $insumos
+            'insumos' => $insumos,
+            'users' => $users
         ]);
     }
 

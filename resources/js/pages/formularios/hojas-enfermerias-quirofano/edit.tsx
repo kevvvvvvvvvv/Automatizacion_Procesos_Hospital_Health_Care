@@ -1,4 +1,4 @@
-import { Estancia, HojaEnfermeriaQuirofano, Paciente, ProductoServicio, User } from '@/types';
+import { Estancia, HojaEnfermeriaQuirofano, Paciente, PersonalEmpleado, ProductoServicio, User } from '@/types';
 import React, { useState } from 'react';
 import { Head } from '@inertiajs/react';
 
@@ -16,6 +16,7 @@ interface CreateProps {
     hoja: HojaEnfermeriaQuirofano,
     insumos: ProductoServicio[];
     users: User[];
+    personalEmpleados: PersonalEmpleado[];
 }
 
 type SeccionHoja = 'insumos' | 'servicios_especiales' | 'pieza_patologica' | 'general' | 'personal';
@@ -34,13 +35,8 @@ const secciones: {id: SeccionHoja, label: string}[] = [
     { id: 'personal', label: 'Personal' }
 ];
 
-const CreateHojaEnfermeriaQuirofano:CreateComponent = ({paciente, estancia, hoja, insumos, users}) => {
+const CreateHojaEnfermeriaQuirofano:CreateComponent = ({paciente, estancia, hoja, insumos, users, personalEmpleados}) => {
     const [activeSection, setActiveSection] = useState<SeccionHoja>('general');
-
-    const optionsUser = users.map((u) => ({
-        label: `${u.nombre} ${u.apellido_paterno} ${u.apellido_materno}`, 
-        value: u.id.toString() 
-    }));
 
     const NavigationTabs = () => (
         <nav className="mb-6 mt-12">
@@ -83,7 +79,8 @@ const CreateHojaEnfermeriaQuirofano:CreateComponent = ({paciente, estancia, hoja
                 return <p>Servicios especiales</p>
             case 'personal':
                 return <PersonalQuirurgicoForm
-                        
+                            users={users}
+                            personalEmpleados={personalEmpleados}
                         />
 
             default:

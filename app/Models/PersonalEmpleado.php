@@ -14,6 +14,8 @@ class PersonalEmpleado extends Model
         'nota_postoperatoria_id',
         'user_id',
         'cargo',
+        'itemable_id',
+        'itemable_type',
     ];
 
     public function user(): BelongsTo
@@ -24,5 +26,10 @@ class PersonalEmpleado extends Model
     public function notaPostoperatoria(): BelongsTo
     {
         return $this->belongsTo(NotaPostoperatoria::class, 'nota_postoperatoria_id', 'id');
+    }
+
+    public function itemable()
+    {
+        return $this->morphTo();
     }
 }

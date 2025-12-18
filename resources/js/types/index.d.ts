@@ -765,3 +765,10 @@ export type PageProps<T extends Record<string, unknown> = Record<string, unknown
     };
     [key: string]: unknown; 
 };
+
+interface PersonalEmpleado {
+    id: number; 
+    user_id: number;
+    cargo: string;
+    user: User;
+}
