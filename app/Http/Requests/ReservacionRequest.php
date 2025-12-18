@@ -1,7 +1,5 @@
 <?php
 
-// app/Http/Requests/ReservacionRequest.php
-
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
@@ -14,47 +12,56 @@ class ReservacionRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        // Asegúrate de que solo los usuarios autenticados puedan realizar esta solicitud.
-        // O si quieres permitir a todos, cámbialo a true.
         return true; 
     }
 
     /**
      * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array|string>
      */
     public function rules(): array
     {
-        // Define las opciones de localización que tienes en tu frontend.
-        $localizacionesPermitidas = ['plan_ayutla', 'acapantzingo'];
+        // 1. IMPORTANTE: Deben coincidir exactamente con los valores de tu BD
+        $localizacionesPermitidas = ['Plan de ayutla', 'Díaz Ordaz'];
 
         return [
             'localizacion' => [
                 'required', 
                 'string', 
-                // Asegura que la localización sea una de las permitidas
                 Rule::in($localizacionesPermitidas)
             ],
             'fecha' => [
                 'required', 
                 'date',
-                'after_or_equal:today' // Asegura que no se reserve en el pasado
+                // Permitimos hoy mismo o fechas futuras
+                'after_or_equal:today' 
             ],
             'horarios' => [
                 'required', 
                 'array', 
-                'min:1' // El array debe tener al menos un elemento
+                'min:1' 
             ],
-            // Regla para cada elemento del array de horarios
+            // 2. AJUSTE DE FORMATO: Como en el JS agregamos ":00", 
+            // el formato que llega es Y-m-d H:i:s
             'horarios.*' => [
                 'required', 
-                'date_format:Y-m-d H:i', // Valida el formato que estás enviando (Ej: 2025-12-15 08:00)
+                'date_format:Y-m-d H:i:s', 
             ],
         ];
     }
-    
-    
-    // Agregamos el método messages() a continuación
-    // ...
+
+    /**
+     * Mensajes personalizados para el usuario.
+     */
+    public function messages(): array
+    {
+        return [
+            'localizacion.required' => 'La ubicación es obligatoria.',
+            'localizacion.in' => 'La ubicación seleccionada no es válida.',
+            'fecha.required' => 'La fecha es obligatoria.',
+            'fecha.after_or_equal' => 'No puedes realizar reservaciones en fechas pasadas.',
+            'horarios.required' => 'Debes seleccionar al menos un horario.',
+            'horarios.array' => 'El formato de los horarios es inválido.',
+            'horarios.*.date_format' => 'El formato de hora no es válido.',
+        ];
+    }
 }

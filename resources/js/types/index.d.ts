@@ -104,6 +104,7 @@ export interface Habitacion {
     id: number;
     identificador: string;
     tipo: string;
+    ubicacion: string;
     piso: string,
     estado: 'Ocupado' | 'Libre',
     estancia_activa?: { 
@@ -758,6 +759,11 @@ export interface Reservacion{
     user_id: number;
     created_at: string;
     uopdate_at:string;
+}
+export interface ReservacionHorarios{
+    reservacion_id: number;
+    habitacion_id: number;
+    fecha_hora: string;
 }
 
 export type PageProps<T extends Record<string, unknown> = Record<string, unknown>> = T & {
