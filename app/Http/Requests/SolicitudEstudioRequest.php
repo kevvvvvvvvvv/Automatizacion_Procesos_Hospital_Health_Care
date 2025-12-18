@@ -32,7 +32,7 @@ class SolicitudEstudioRequest extends FormRequest
             'estudios_adicionales.*' => 'nullable|string|max:255',
 
             'user_solicita_id' =>'required',
-            'detallesEstudios.*' => 'nullable' 
+            'detallesEstudios.*' => 'nullable|array' 
         ];
     }
 
