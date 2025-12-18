@@ -60,6 +60,8 @@ class HojaEnfemeriaQuirofanoController extends Controller
     {
         $hojasenfermeriasquirofano->load(
             'formularioInstancia.estancia.paciente',
+            'formularioInstancia.estancia.hojaOxigenos.userInicio',
+            'formularioInstancia.estancia.hojaOxigenos.userFin',
             'hojaInsumosBasicos.productoServicio',
             'personalEmpleados'
         );
