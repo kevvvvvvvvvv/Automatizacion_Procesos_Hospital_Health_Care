@@ -251,6 +251,7 @@ export interface HojaEnfermeriaQuirofano {
     hora_fin_anestesia: string;
     hora_fin_paciente: string;
     hoja_insumos_basicos: HojaInsumosBasicos[] 
+    personal_empleados: PersonalEmpleado[];
 }
 
 export interface HojaInsumosBasicos {
@@ -788,3 +789,27 @@ export type PageProps<T extends Record<string, unknown> = Record<string, unknown
     };
     [key: string]: unknown; 
 };
+
+interface NotificationData {
+    message: string;
+    title?: string;
+    action_url?: string;
+    action_text?: string;
+    icon_type?: 'estudio' | 'medicamento' | 'sistema' | string;
+    [key: string]: any; 
+}
+
+interface LaravelNotification {
+    id: string;
+    type: string;
+    read_at: string | null;
+    created_at: string;
+    data: NotificationData;
+}
+
+interface PersonalEmpleado {
+    id: number; 
+    user_id: number;
+    cargo: string;
+    user: User;
+}

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Faker\Extension\PersonExtension;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -30,6 +31,11 @@ class HojaEnfermeriaQuirofano extends Model
     public function hojaInsumosBasicos(): HasMany
     {
         return $this->hasMany(HojaInsumosBasicos::class);
+    }
+
+    public function personalEmpleados()
+    {
+        return $this->morphMany(PersonalEmpleado::class, 'itemable');
     }
 
 }

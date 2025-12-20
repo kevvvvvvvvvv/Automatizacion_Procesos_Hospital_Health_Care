@@ -4,11 +4,14 @@ import { Head } from '@inertiajs/react';
 
 import PacienteCard from '@/components/paciente-card';
 import MainLayout from '@/layouts/MainLayout';
+import Checkbox from '@/components/ui/input-checkbox';
 
 import InsumosBasicosForm from '@/components/forms/insumos-basicos-form';
 import EnvioPieza from '@/components/forms/envio-piezas-form';
 import GeneralesForm from  '@/components/forms/generales-form';
 import PersonalQuirurgicoForm from '@/components/forms/personal-quirurgico-form';
+import ServiciosEspecialesForm from '@/components/forms/servicios-especiales-form';
+
 
 interface CreateProps {
     paciente: Paciente;
@@ -37,11 +40,6 @@ const secciones: {id: SeccionHoja, label: string}[] = [
 const CreateHojaEnfermeriaQuirofano:CreateComponent = ({paciente, estancia, hoja, insumos, users}) => {
     const [activeSection, setActiveSection] = useState<SeccionHoja>('general');
 
-    const optionsUser = users.map((u) => ({
-        label: `${u.nombre} ${u.apellido_paterno} ${u.apellido_materno}`, 
-        value: u.id.toString() 
-    }));
-
     const NavigationTabs = () => (
         <nav className="mb-6 mt-12">
             <div className="border-b border-gray-200">
@@ -67,6 +65,50 @@ const CreateHojaEnfermeriaQuirofano:CreateComponent = ({paciente, estancia, hoja
         </nav>
     );
 
+    const Servicios = () => (
+        <>
+        <div className='grid grid-cols-1 md:grid-cols-3 pb-15'>
+            <div>
+                <h3 className='pb-3 text-xl font-bold'>
+                    Equipo de laparoscopía
+                </h3>
+
+                <Checkbox
+                    id="torre"
+                    label="Torre"
+                />
+
+                <Checkbox
+                    id="armonico"
+                    label="Armonico"
+                />    
+
+                <Checkbox
+                    id="ligashure"
+                    label="Ligashure"
+                />
+
+               <Checkbox
+                    id="grapas_extras"
+                    label="Grapas extras"
+                />   
+
+                <Checkbox
+                    id="bolsa_endo"
+                    label="Bolsa endo"
+                />
+                <Checkbox
+                    id="arco_c"
+                    label="Arco en C"
+                />   
+            </div>
+        </div>
+
+            <ServiciosEspecialesForm
+                estancia={estancia}/>
+        </>
+    )
+
     const renderActiveSection = () => {
         switch (activeSection) {
             case 'general':
@@ -80,10 +122,13 @@ const CreateHojaEnfermeriaQuirofano:CreateComponent = ({paciente, estancia, hoja
                 return <EnvioPieza
                         hoja={hoja}/>
             case 'servicios_especiales':
-                return <p>Servicios especiales</p>
+                return <Servicios/>
             case 'personal':
                 return <PersonalQuirurgicoForm
-                        
+                            itemableId={hoja.id}
+                            itemableType='hoja'
+                            users={users}
+                            personalEmpleados={hoja.personal_empleados}
                         />
 
             default:

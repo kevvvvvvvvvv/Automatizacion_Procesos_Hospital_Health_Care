@@ -5,6 +5,7 @@ import Swal from 'sweetalert2';
 
 import PrimaryButton from '@/components/ui/primary-button';
 import ContadorTiempo from '@/components/counter-time'; 
+import Checkbox from '../ui/input-checkbox';
 
 interface HojaQuirofano {
     id: number;
@@ -122,7 +123,6 @@ const handleRegistrarTiempo = (campo: string, esInicio: boolean = true, tituloEt
                         {!inicio && (
                             <PrimaryButton 
                                 type="button"
-                                // Aquí SÍ usamos campoInicio
                                 onClick={() => handleRegistrarTiempo(campoInicio, true, titulo)}
                                 className={`w-full justify-center py-4 text-lg ${color === 'red' ? 'bg-red-600 hover:bg-red-700' : color === 'green' ? 'bg-green-600 hover:bg-green-700' : ''}`}
                             >
@@ -156,7 +156,7 @@ const handleRegistrarTiempo = (campo: string, esInicio: boolean = true, tituloEt
                                 {fin && (
                                     <div className="text-sm opacity-80 text-center">
                                         Fin: <strong>{formatTimeStatic(fin)}</strong>
-                                        <div className="text-xs text-green-600 font-bold mt-1">¡Registro Completado!</div>
+                                        <div className="text-xs text-green-600 font-bold mt-1">¡Registro completado!</div>
                                     </div>
                                 )}
 
@@ -170,6 +170,29 @@ const handleRegistrarTiempo = (campo: string, esInicio: boolean = true, tituloEt
 
     return (
         <div className="bg-white p-6 rounded-lg shadow-sm border mb-6">
+            <h3 className="text-lg font-semibold mb-4 text-gray-800 border-b pb-2">
+                Anestesia
+            </h3>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <Checkbox
+                    id="anestesia_general"
+                    label="Anestesía general"
+                />
+
+                <Checkbox
+                    id="anestesia_local"
+                    label="Anestesía local"
+                />
+
+                <Checkbox
+                    id="bloqueo"
+                    label="Anestesía bloqueo "
+                />
+            </div>
+
+
+
             <h3 className="text-lg font-semibold mb-4 text-gray-800 border-b pb-2">
                 Control de tiempos quirúrgicos
             </h3>

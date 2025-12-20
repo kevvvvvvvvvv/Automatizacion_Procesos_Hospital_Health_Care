@@ -202,6 +202,19 @@ class UserSeeder extends Seeder
             'password' => Hash::make('12345678'),
         ]);
 
-        $userCaja->assignRole('caja');                                                                                              
+        $userCaja->assignRole('caja');      
+        
+        $userLaboratorio = User::create([
+            'curp' => 'TORA920515MDFRRN01',
+            'nombre' => 'Ana',
+            'apellido_paterno' => 'Torres',
+            'apellido_materno' => 'Ruiz',
+            'sexo' => 'Femenino',
+            'fecha_nacimiento' => '1992-05-15',
+            'email' => 'laboratorio@test.com',
+            'password' => Hash::make('12345678'),
+        ]);
+
+        $userLaboratorio->assignRole('técnico de laboratorio');
     }
 }

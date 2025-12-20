@@ -12,13 +12,15 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('catalogo_estudios', function (Blueprint $table) {
+            $table->charset = 'utf8mb4';
+            $table->collation = 'utf8mb4_unicode_ci';
             $table->id();
-            $table->integer('codigo');
+            $table->integer('codigo')->nullable();
             $table->string('nombre'); 
             $table->string('tipo_estudio'); 
-            $table->string('departamento')->nullable();
-            $table->integer('tiempo_entrega');
-            $table->decimal('costo');
+            $table->string('departamento');
+            $table->integer('tiempo_entrega')->nullable();
+            $table->decimal('costo')->default('0.01');
             $table->timestamps();
         });
     }

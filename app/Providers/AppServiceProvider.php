@@ -12,6 +12,7 @@ use App\Models\HojaFrontal;
 use App\Models\ProductoServicio;
 use App\Models\User;
 use App\Observers\HistoryObserver;
+use Laravel\Cashier\Cashier;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -37,6 +38,8 @@ class AppServiceProvider extends ServiceProvider
             );
         });
         */
+
+        Cashier::useCustomerModel(User::class);
 
         Paciente::observe(HistoryObserver::class);
         Estancia::observe(HistoryObserver::class);

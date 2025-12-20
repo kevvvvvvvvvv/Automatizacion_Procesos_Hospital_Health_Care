@@ -40,6 +40,7 @@ use App\Http\Controllers\FormularioHojaOxigenoController;
 use App\Http\Controllers\ConsentimientoController;
 use App\Http\Controllers\ReservacionController;
 use App\Http\Controllers\ReservacionQuirofanoController;
+use App\Http\Controllers\PersonalEmpleadoController;
 
 
 use Illuminate\Support\Facades\Route;
@@ -157,7 +158,10 @@ Route::post('solicitudes-patologias/{solicitud-patologia}/show', [SolicitudEstud
 
 //Route::post('solicitudes-estudios/{estancia}',[SolicitudEstudioController::class, 'store'])->name('solicitudes-estudios.store');
 
-Route::resource('estancia.solicitudes-estudios', SolicitudEstudioController::class)->shallow()->middleware('auth');
+Route::post('personal-empleados', [PersonalEmpleadoController::class, 'store'])->middleware('auth')->name('personal-empleados.store');
+Route::delete('personal-empleados/{personalEmpleado}', [PersonalEmpleadoController::class, 'destroy'])->middleware('auth')->name('personal-empleados.destroy');
+
+Route::resource('estancia.solicitudes-estudios', SolicitudEstudioController::class)->shallow()->parameters(['estancia'=>'estancia'])->middleware('auth');
 
 
 Route::resource('pacientes.estancias.interconsultas', InterconsultaController::class)
@@ -263,6 +267,11 @@ Route::post('/notifications/mark-all-as-read', function () {
 
 // Historial
 Route::get('/historial', [HistoryController::class, 'index'])->name('historiales.index')->middleware('auth');
+
+
+Route::get('/pagar-prueba', function () {
+    return Inertia::render('checkout-page');
+});
 
 require __DIR__.'/settings.php';
 require __DIR__.'/auth.php';

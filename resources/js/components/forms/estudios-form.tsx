@@ -21,13 +21,19 @@ interface PropsPatologia{
     medicos: User[];
 }
 
+interface EstudioManual {
+    nombre: string;
+    departamento: string;
+}
+
 const optionsEstudios = [
-    { value: 'LABORATORIO', label: 'Laboratorio'},
-    { value: 'RAYOS X', label: 'Rayos X'},
-    { value: 'ELECTROCARDIOGRAMA', label: 'Electrocardiograma'},
-    { value: 'ULTRASONIDO', label: 'Ultrasonido'},
-    { value: 'TOMOGRAFIA', label: 'Tomografía'},
-    { value: 'RESONANCIA', label: 'Resonancia'},
+    { value: 'Laboratorio', label: 'Laboratorio'},
+    { value: 'Rayos X', label: 'Rayos X'},
+    { value: 'Electrocardiograma', label: 'Electrocardiograma'},
+    { value: 'Ultrasonido', label: 'Ultrasonido'},
+    { value: 'Tomografía computada', label: 'Tomografía computada'},
+    { value: 'Resonancia magnética', label: 'Resonancia magnética'},
+    { value: 'Radiología general', label: 'Radiología general'},
 ];
 
 const FormularioPatologia: React.FC<PropsPatologia> = ({ estancia, medicos }) => {
@@ -146,6 +152,7 @@ const SolicitudEstudiosForm: React.FC<Props> = ({
     const [textoNuevoEstudio, setTextoNuevoEstudio] = useState('');
     const [filtro, setFiltro] = useState('');
     const [detallesEstudios, setDetallesEstudios] = useState<Record<number, any>>({});
+    const [deptoNuevoEstudio, setDeptoNuevoEstudio] = useState('');
 
     const optionsMedico = medicos.map(medico => ({
         value: medico.id.toString(),
@@ -155,7 +162,7 @@ const SolicitudEstudiosForm: React.FC<Props> = ({
     const { data, setData, post, processing, errors, reset } = useForm({
         user_solicita_id: '',
         estudios_agregados_ids: [] as number[],
-        estudios_adicionales: [] as string[],
+        estudios_adicionales: [] as EstudioManual[],
         detallesEstudios: {} as Record<number, any>
     });
 
@@ -184,8 +191,9 @@ const SolicitudEstudiosForm: React.FC<Props> = ({
                 case 'Imagenología':
                     if (estudio.departamento === 'Radiología') grupos['Rayos X']?.push(estudio);
                     else if (estudio.departamento === 'Ultrasonido') grupos['Ultrasonido']?.push(estudio);
-                    else if (estudio.departamento === 'Tomografía Computada') grupos['Tomografía']?.push(estudio);
-                    else if (estudio.departamento === 'Resonancia') grupos['Resonancia']?.push(estudio);
+                    else if (estudio.departamento === 'Tomografía computada') grupos['Tomografía computada']?.push(estudio);
+                    else if (estudio.departamento === 'Resonancia magnética') grupos['Resonancia magnética']?.push(estudio);
+                    //else if (estudio.departamento === 'Radiología general') grupos['Radiología general']?.push(estudio);
                     break;
             }
         });
@@ -233,10 +241,20 @@ const SolicitudEstudiosForm: React.FC<Props> = ({
 
     const handleAddCustomEstudio = () => {
         if (!textoNuevoEstudio.trim()) return;
-        if (!data.estudios_adicionales.includes(textoNuevoEstudio.trim())) {
-            setData('estudios_adicionales', [...data.estudios_adicionales, textoNuevoEstudio.trim()]);
+        if (!deptoNuevoEstudio) {
+            alert("Debes seleccionar a qué departamento va dirigido este estudio.");
+            return;
         }
+
+        const nuevoManual = {
+            nombre: textoNuevoEstudio.trim(),
+            departamento: deptoNuevoEstudio
+        };
+
+        setData('estudios_adicionales', [...data.estudios_adicionales, nuevoManual]);
+
         setTextoNuevoEstudio('');
+        setDeptoNuevoEstudio('');
     };
 
     const handleRemoveCustomEstudio = (indexToRemove: number) => {
@@ -259,7 +277,7 @@ const SolicitudEstudiosForm: React.FC<Props> = ({
             detalles: detallesEstudios[id] || null
         }));
 
-        post(route('solicitudes-estudios.store', { estancia: estancia.id }), {
+        post(route('estancia.solicitudes-estudios.store', { estancia: estancia.id }), {
             data: {
                 ...data,
                 estudios_estructurados: estudiosConDetalles
@@ -327,7 +345,7 @@ const SolicitudEstudiosForm: React.FC<Props> = ({
                                 <h4 className="text-md font-semibold text-blue-700 border-b pb-1 mb-2">
                                     {categoria.label}
                                 </h4>
-                                <div className="grid grid-cols-2 md:grid-cols-3 gap-2 mt-1 ml-4">
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-2 mt-1 ml-4">
                                     {gruposEstudios[categoria.label]?.length > 0 ? (
                                         gruposEstudios[categoria.label].map(estudio => (
                                             <div key={estudio.id} className="border p-2 rounded mb-2">
@@ -407,7 +425,7 @@ const SolicitudEstudiosForm: React.FC<Props> = ({
                     </div>
 
                     <div className="bg-white p-6 rounded-lg shadow-md">
-                    <h3 className="text-lg font-semibold mb-2">Estudios Seleccionados (Pendientes)</h3>
+                    <h3 className="text-lg font-semibold mb-2">Estudios seleccionados (pendientes)</h3>
                     
                     <div className="overflow-x-auto border rounded-lg">
                         <table className="min-w-full divide-y divide-gray-200">
@@ -444,8 +462,8 @@ const SolicitudEstudiosForm: React.FC<Props> = ({
                             Ingresa el nombre del estudio manualmente si no aparece en el catálogo de arriba.
                         </p>
                         
-                        <div className="flex gap-2 items-end">
-                            <div className="flex-grow">
+                        <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-end bg-gray-50 p-4 rounded-lg border border-gray-100">
+                            <div className="md:col-span-6">
                                 <InputText
                                     id="nuevo_estudio_manual"
                                     name="nuevo_estudio_manual"
@@ -454,65 +472,86 @@ const SolicitudEstudiosForm: React.FC<Props> = ({
                                     onChange={e => setTextoNuevoEstudio(e.target.value)}
                                 />
                             </div>
-                            <button
-                                type="button"
-                                onClick={handleAddCustomEstudio}
-                                className="mb-1 px-4 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-700 text-sm font-medium h-10"
-                            >
-                                Agregar
-                            </button>
+                            <div className="md:col-span-4">
+                                <SelectInput
+                                    label='Departamento'
+                                    options={optionsEstudios}
+                                    value={deptoNuevoEstudio}
+                                    onChange={e => setDeptoNuevoEstudio(e)}
+                                />
+                            </div>
+                            <div className="md:col-span-2">
+                                <button
+                                    type="button"
+                                    onClick={handleAddCustomEstudio}
+                                    className="w-full h-10 bg-gray-900 hover:bg-gray-800 text-white text-sm font-medium rounded-md shadow-sm transition-all duration-200 focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 flex items-center justify-center"
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fillRule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clipRule="evenodd" />
+                                    </svg>
+                                    Agregar
+                                </button>
+                            </div>
                         </div>
-                    <div className="bg-white p-6 rounded-lg shadow-md">
-                        <h3 className="text-lg font-semibold mb-2">Resumen de la Solicitud</h3>
-                        
-                        <div className="overflow-x-auto border rounded-lg">
-                            <table className="min-w-full divide-y divide-gray-200">
-                                <thead>
-                                    <tr className='text-left text-xs font-medium text-gray-500 uppercase'>
-                                        <th className="px-4 py-3">Estudio</th>
-                                        <th className="px-4 py-3">Origen</th>
-                                    </tr>
-                                </thead>
-                                <tbody className="bg-white divide-y divide-gray-200">
-                                    {estudiosSeleccionados.map((estudio) => (
-                                        <tr key={`cat-${estudio.id}`}>
-                                            <td className="px-4 py-4 text-sm text-gray-900">{estudio.nombre}</td>
-                                            <td className="px-4 py-4 text-sm text-blue-600">Catálogo</td>
+                        <div className="bg-white p-6 rounded-lg shadow-md">
+                            <h3 className="text-lg font-semibold mb-2">Resumen de la Solicitud</h3>
+                            
+                            <div className="overflow-x-auto border rounded-lg">
+                                <table className="min-w-full divide-y divide-gray-200">
+                                    <thead>
+                                        <tr className='text-left text-xs font-medium text-gray-500 uppercase'>
+                                            <th className="px-4 py-3">Estudio</th>
+                                            <th className="px-4 py-3">Origen</th>
                                         </tr>
-                                    ))}
+                                    </thead>
+                                    <tbody className="bg-white divide-y divide-gray-200">
+                                        {estudiosSeleccionados.map((estudio) => (
+                                            <tr key={`cat-${estudio.id}`}>
+                                                <td className="px-4 py-4 text-sm text-gray-900">{estudio.nombre}</td>
+                                                <td className="px-4 py-4 text-sm text-blue-600">Catálogo</td>
+                                            </tr>
+                                        ))}
 
-                                    {data.estudios_adicionales.map((nombre, idx) => (
-                                        <tr key={`manual-${idx}`}>
-                                            <td className="px-4 py-4 text-sm text-gray-900 font-medium">{nombre}</td>
-                                            <td className="px-4 py-4 text-sm text-yellow-600">Manual</td>
-                                        </tr>
-                                    ))}
-                                    
-                                    {estudiosSeleccionados.length === 0 && data.estudios_adicionales.length === 0 && (
-                                        <tr>
-                                            <td colSpan={2} className="px-4 py-4 text-sm text-gray-500 text-center">
-                                                No se han seleccionado estudios.
-                                            </td>
-                                        </tr>
-                                    )}
-                                </tbody>
-                            </table>
+                                        {data.estudios_adicionales.map((nombre, idx) => (
+                                            <tr key={`manual-${idx}`}>
+                                                <td className="px-4 py-4 text-sm text-gray-900 font-medium">{nombre.nombre}</td>
+                                                <td className="px-4 py-4 text-sm text-yellow-600">Manual</td>
+                                            </tr>
+                                        ))}
+                                        
+                                        {estudiosSeleccionados.length === 0 && data.estudios_adicionales.length === 0 && (
+                                            <tr>
+                                                <td colSpan={2} className="px-4 py-4 text-sm text-gray-500 text-center">
+                                                    No se han seleccionado estudios.
+                                                </td>
+                                            </tr>
+                                        )}
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
-                    </div>
 
                         {data.estudios_adicionales.length > 0 && (
                             <div className="mt-4">
                                 <h4 className="text-sm font-medium text-gray-700 mb-2">Estudios manuales por agregar:</h4>
-                                <ul className="space-y-2">
-                                    {data.estudios_adicionales.map((nombre, index) => (
-                                        <li key={index} className="flex items-center justify-between bg-yellow-50 p-2 rounded border border-yellow-200">
-                                            <span className="text-sm text-gray-800">{nombre}</span>
+                                <ul className="mt-4 space-y-2">
+                                    {data.estudios_adicionales.map((item, index) => (
+                                        <li key={index} className="flex justify-between items-center bg-yellow-50 p-2 border border-yellow-200 rounded">
+                                            <div>
+                                                <span className="font-medium text-gray-900">
+                                                    {item.nombre} 
+                                                </span>
+                                                <span className="ml-2 text-xs text-blue-600 bg-blue-50 px-2 py-0.5 rounded border border-blue-100">
+                                                    {item.departamento}
+                                                </span>
+                                            </div>
+                                            
                                             <button
                                                 type="button"
                                                 onClick={() => handleRemoveCustomEstudio(index)}
-                                                className="text-red-500 hover:text-red-700 text-xs font-bold px-2"
+                                                className="text-red-500 hover:text-red-700 font-bold px-2"
                                             >
-                                                Eliminar
+                                                ✕
                                             </button>
                                         </li>
                                     ))}

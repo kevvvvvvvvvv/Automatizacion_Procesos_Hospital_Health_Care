@@ -13,13 +13,11 @@ use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Database\Eloquent\Relations\HasMany; 
 use App\Models\CredencialEmpleado;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Laravel\Cashier\Billable;
 
 class User extends Authenticatable 
 {
-    use HasFactory, Notifiable, TwoFactorAuthenticatable, HasRoles;
-
-    // Traits opcionales: Descomenta si los usas
-    // use TwoFactorAuthenticatable, HasApiTokens;
+    use HasFactory, Notifiable, TwoFactorAuthenticatable, HasRoles, Billable;
 
     /**
      * The attributes that are mass assignable.
