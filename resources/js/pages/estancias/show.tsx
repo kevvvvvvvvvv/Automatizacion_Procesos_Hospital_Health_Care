@@ -45,7 +45,7 @@ const Show = ({ estancia }: ShowEstanciaProps) => {
     return (
         <>
             <Head title={`Detalles de estancia: ${estancia.folio}`} />
-            
+              
             {can('consultar ventas') &&
             <Link
                 href={route('pacientes.estancias.ventas.index', { paciente, estancia })}
@@ -58,7 +58,21 @@ const Show = ({ estancia }: ShowEstanciaProps) => {
             >
                 Ir a ventas
             </Link>
+           
             }
+            
+            <div className="flex justify-end w-full mb-4">
+                <Link
+                    href={route('quirofanos.index')}
+                    className="inline-flex items-center justify-center gap-2 px-4 py-2 
+                            border border-transparent text-sm font-medium rounded-md shadow-sm 
+                            text-white hover:opacity-90 transition"
+                    style={{ backgroundColor: '#1B1C38' }}
+                >
+                    Reservar quirófano
+                </Link>
+            </div>
+            
 
             <InfoCard title={`Estancia para: ${paciente.nombre} ${paciente.apellido_paterno} ${paciente.apellido_materno}`}>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

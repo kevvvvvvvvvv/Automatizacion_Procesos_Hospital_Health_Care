@@ -39,6 +39,7 @@ use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\FormularioHojaOxigenoController;
 use App\Http\Controllers\ConsentimientoController;
 use App\Http\Controllers\ReservacionController;
+use App\Http\Controllers\ReservacionQuirofanoController;
 
 
 use Illuminate\Support\Facades\Route;
@@ -61,6 +62,8 @@ Route::resource('producto-servicios', ProductoServicioController::class)->middle
 Route::resource('pacientes', PacienteController::class)->middleware('auth');
 Route::resource('doctores', DoctorController::class)->middleware('auth');  
 Route::resource('reservaciones', ReservacionController::class)->middleware('auth');
+Route::resource('quirofanos', ReservacionQuirofanoController::class)->middleware('auth');
+
 
 
 Route::resource('pacientes.responsable', FamiliarResponsableController::class);
@@ -82,8 +85,6 @@ Route::resource('pacientes.estancias.notasevoluciones', NotaEvolucionController:
 Route::resource('pacientes.estancias.notaspreanestesicas', NotaPreAnestesicaController::class)->shallow()->middleware('auth');
 Route::resource('pacientes.estancias.hojasenfermeriasquirofanos',HojaEnfemeriaQuirofanoController::class)->shallow()->middleware('auth');
 Route::resource('pacientes.estancias.consentimientos', ConsentimientoController::class)->shallow()->middleware('auth');
-
-
 
 Route::post('/pacientes/{paciente}/estancias/{estancia}/consentimientos', 
     [ConsentimientoController::class, 'store']
