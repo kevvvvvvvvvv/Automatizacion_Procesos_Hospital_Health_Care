@@ -66,7 +66,7 @@ const CreateReservacion: React.FC<Props> = ({
       if (ocupadosEnBD < limite) {
         setData("horarios", [...data.horarios, horarioCompleto]);
       } else {
-        alert("Este horario ya está lleno por otros usuarios.");
+        alert("Este horario ya no está disponible.");
       }
     }
   };
@@ -79,10 +79,10 @@ const CreateReservacion: React.FC<Props> = ({
     }
 
     if (isEdit) {
-      // Usamos PUT para actualizar
+
       put(route("reservaciones.update", reservacion.id));
     } else {
-      // Usamos POST para crear
+
       post(route("reservaciones.store"));
     }
   };
