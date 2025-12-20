@@ -24,8 +24,8 @@ class RoleAndPermissionSeeder extends Seeder
         $roleCocina = Role::create(['name' => 'cocina']);
         $roleMantenimiento = Role::create(['name' => 'mantenimiento']);
         $roleFarmacia = Role::create(['name' => 'farmacia']);
-        $roleTecnicoRadiologo = Role::create(['name' => 'tecnico_radiologo']);
-        $roleTecnicoLaboratorio = Role::create(['name' => 'tecnico_laboratorio']);
+        $roleTecnicoRadiologo = Role::create(['name' => 'técnico radiólogo']);
+        $roleTecnicoLaboratorio = Role::create(['name' => 'técnico de laboratorio']);
         $roleFisoterapeuta = Role::create(['name' => 'fisoterapeuta']);
         $roleRecepcion = Role::create(['name' => 'recepcion']);
         $roleCaja = Role::create(['name'  => 'caja']);

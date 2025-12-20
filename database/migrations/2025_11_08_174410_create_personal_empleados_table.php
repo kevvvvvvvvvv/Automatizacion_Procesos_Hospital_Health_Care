@@ -14,9 +14,7 @@ return new class extends Migration
         Schema::create('personal_empleados', function (Blueprint $table) {
             $table->id();
 
-            $table->foreignId('nota_postoperatoria_id')
-                ->constrained('nota_postoperatorias')
-                ->onDelete('cascade');
+            $table->morphs('itemable');
 
             $table->foreignId('user_id')
                 ->constrained('users')

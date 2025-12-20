@@ -57,7 +57,6 @@ const PacienteCreate: React.FC = () => {
   };
   const handleSubmit = (e: React.FormEvent) => {
   e.preventDefault();
-  console.log('Datos enviados:', { paciente: form, responsable: responsable });
   router.post('/pacientes', { paciente: form, responsable: responsable })
   .then(response => {
       console.log('Respuesta del servidor:', response);
