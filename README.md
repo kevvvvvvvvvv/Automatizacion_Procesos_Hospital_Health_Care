@@ -103,3 +103,7 @@ php artisan vendor:publish --tag="cashier-config"
 ```bash
 php artisan install:api
 ```
+
+```bash
+npm install @stripe/stripe-js @stripe/react-stripe-js
+```

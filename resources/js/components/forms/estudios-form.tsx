@@ -27,13 +27,13 @@ interface EstudioManual {
 }
 
 const optionsEstudios = [
-    { value: 'LABORATORIO', label: 'Laboratorio'},
-    { value: 'RAYOS X', label: 'Rayos X'},
-    { value: 'ELECTROCARDIOGRAMA', label: 'Electrocardiograma'},
-    { value: 'ULTRASONIDO', label: 'Ultrasonido'},
-    { value: 'TOMOGRAFIA COMPUTADA', label: 'Tomografía computada'},
-    { value: 'RESONANCIA MAGNETICA', label: 'Resonancia magnética'},
-    { value: 'RADIOLOGiA GENERAL', label: 'Radiología general'},
+    { value: 'Laboratorio', label: 'Laboratorio'},
+    { value: 'Rayos X', label: 'Rayos X'},
+    { value: 'Electrocardiograma', label: 'Electrocardiograma'},
+    { value: 'Ultrasonido', label: 'Ultrasonido'},
+    { value: 'Tomografía computada', label: 'Tomografía computada'},
+    { value: 'Resonancia magnética', label: 'Resonancia magnética'},
+    { value: 'Radiología general', label: 'Radiología general'},
 ];
 
 const FormularioPatologia: React.FC<PropsPatologia> = ({ estancia, medicos }) => {
@@ -193,6 +193,7 @@ const SolicitudEstudiosForm: React.FC<Props> = ({
                     else if (estudio.departamento === 'Ultrasonido') grupos['Ultrasonido']?.push(estudio);
                     else if (estudio.departamento === 'Tomografía computada') grupos['Tomografía computada']?.push(estudio);
                     else if (estudio.departamento === 'Resonancia magnética') grupos['Resonancia magnética']?.push(estudio);
+                    //else if (estudio.departamento === 'Radiología general') grupos['Radiología general']?.push(estudio);
                     break;
             }
         });
@@ -462,7 +463,6 @@ const SolicitudEstudiosForm: React.FC<Props> = ({
                         </p>
                         
                         <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-end bg-gray-50 p-4 rounded-lg border border-gray-100">
-                            {/* Columna Ancha (6/12) para el texto libre */}
                             <div className="md:col-span-6">
                                 <InputText
                                     id="nuevo_estudio_manual"
@@ -472,8 +472,6 @@ const SolicitudEstudiosForm: React.FC<Props> = ({
                                     onChange={e => setTextoNuevoEstudio(e.target.value)}
                                 />
                             </div>
-
-                            {/* Columna Mediana (4/12) para el selector */}
                             <div className="md:col-span-4">
                                 <SelectInput
                                     label='Departamento'
@@ -482,8 +480,6 @@ const SolicitudEstudiosForm: React.FC<Props> = ({
                                     onChange={e => setDeptoNuevoEstudio(e)}
                                 />
                             </div>
-
-                            {/* Columna Estrecha (2/12) para el botón */}
                             <div className="md:col-span-2">
                                 <button
                                     type="button"
@@ -538,28 +534,28 @@ const SolicitudEstudiosForm: React.FC<Props> = ({
                         {data.estudios_adicionales.length > 0 && (
                             <div className="mt-4">
                                 <h4 className="text-sm font-medium text-gray-700 mb-2">Estudios manuales por agregar:</h4>
-<ul className="mt-4 space-y-2">
-    {data.estudios_adicionales.map((item, index) => (
-        <li key={index} className="flex justify-between items-center bg-yellow-50 p-2 border border-yellow-200 rounded">
-            <div>
-                <span className="font-medium text-gray-900">
-                    {item.nombre} 
-                </span>
-                <span className="ml-2 text-xs text-blue-600 bg-blue-50 px-2 py-0.5 rounded border border-blue-100">
-                    {item.departamento}
-                </span>
-            </div>
-            
-            <button
-                type="button"
-                onClick={() => handleRemoveCustomEstudio(index)}
-                className="text-red-500 hover:text-red-700 font-bold px-2"
-            >
-                ✕
-            </button>
-        </li>
-    ))}
-</ul>
+                                <ul className="mt-4 space-y-2">
+                                    {data.estudios_adicionales.map((item, index) => (
+                                        <li key={index} className="flex justify-between items-center bg-yellow-50 p-2 border border-yellow-200 rounded">
+                                            <div>
+                                                <span className="font-medium text-gray-900">
+                                                    {item.nombre} 
+                                                </span>
+                                                <span className="ml-2 text-xs text-blue-600 bg-blue-50 px-2 py-0.5 rounded border border-blue-100">
+                                                    {item.departamento}
+                                                </span>
+                                            </div>
+                                            
+                                            <button
+                                                type="button"
+                                                onClick={() => handleRemoveCustomEstudio(index)}
+                                                className="text-red-500 hover:text-red-700 font-bold px-2"
+                                            >
+                                                ✕
+                                            </button>
+                                        </li>
+                                    ))}
+                                </ul>
                             </div>
                         )}
                     </div>
