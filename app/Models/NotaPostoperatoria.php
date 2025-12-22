@@ -60,14 +60,19 @@ class NotaPostoperatoria extends Model
         return $this->belongsTo(FormularioInstancia::class, 'id', 'id');
     }
 
-    public function personalEmpleados(): HasMany
+    /*public function personalEmpleados(): HasMany
     {
         return $this->hasMany(PersonalEmpleado::class, 'nota_postoperatoria_id', 'id');
-    }
+    }*/
 
     public function transfusiones(): HasMany
     {
         return $this->hasMany(TransfusionRealizada::class, 'nota_postoperatoria_id', 'id');
+    }
+
+    public function personalEmpleados()
+    {
+        return $this->morphMany(PersonalEmpleado::class, 'itemable');
     }
 
 }

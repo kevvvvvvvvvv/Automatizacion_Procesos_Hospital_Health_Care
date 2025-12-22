@@ -17,7 +17,6 @@ return new class extends Migration
             $table->foreignId('reservacion_id')
                 ->constrained('reservaciones')
                 ->cascadeOnDelete();
-            $table->dateTime('fecha_hora');
 
         $table->foreignId('habitacion_id')
             ->constrained('habitaciones')

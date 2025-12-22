@@ -213,7 +213,7 @@ const SolicitudEstudiosForm: React.FC<Props> = ({
         const nuevosDetalles = { ...data.detallesEstudios };
 
         if (isChecked) {
-            if (categoria === 'Tomografía Computada' || categoria === 'Tomografía' || categoria === 'Resonancia') {
+            if (categoria === 'Tomografía computada' || categoria === 'Resonancia magnética') {
                 nuevosDetalles[estudioId] = { modalidad: 'Simple', via: '' };
             }
         } else {
@@ -241,6 +241,7 @@ const SolicitudEstudiosForm: React.FC<Props> = ({
 
     const handleAddCustomEstudio = () => {
         if (!textoNuevoEstudio.trim()) return;
+
         if (!deptoNuevoEstudio) {
             alert("Debes seleccionar a qué departamento va dirigido este estudio.");
             return;
@@ -575,9 +576,6 @@ const SolicitudEstudiosForm: React.FC<Props> = ({
                                         <ul className="list-disc pl-5 space-y-1">
                                             {Object.keys(errors).map((key) => (
                                                 <li key={key}>
-                                                    <span className="font-bold font-mono text-xs uppercase bg-red-100 px-1 rounded mr-2">
-                                                        {key}
-                                                    </span>
                                                     {errors[key]}
                                                 </li>
                                             ))}

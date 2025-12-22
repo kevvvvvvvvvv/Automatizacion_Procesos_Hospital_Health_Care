@@ -29,7 +29,6 @@ class SolicitudEstudioRequest extends FormRequest
             'estudios_adicionales' => 'array',
             
             'estudios_agregados_ids.*' => 'nullable|integer|exists:catalogo_estudios,id',
-            //'estudios_adicionales.*' => 'nullable|string|max:255',
 
             'user_solicita_id' =>'required',
             'detallesEstudios.*' => 'nullable|array' 
