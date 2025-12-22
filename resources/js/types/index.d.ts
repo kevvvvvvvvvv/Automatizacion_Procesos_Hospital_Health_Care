@@ -104,6 +104,7 @@ export interface Habitacion {
     id: number;
     identificador: string;
     tipo: string;
+    ubicacion: string;
     piso: string,
     estado: 'Ocupado' | 'Libre',
     estancia_activa?: { 
@@ -751,13 +752,35 @@ export interface Consentimiento{
 }
 export interface Reservacion{
     id: number;
-    fecha_hora_inicio: string;
-    fecha_hora_fin:string;
-    accion: s
+    localizacion: string;
+    fecha: string;
+    horarios: string;
+    horas: number;
+    habitaciones_id: number;
     user_id: number;
-    habitacion_id: number;
     created_at: string;
-    uopdate_at:string;
+    update_at:string;
+}
+export interface ReservacionHorarios{
+    reservacion_id: number;
+    habitacion_id: number;
+    fecha_hora: string;
+}
+export interface ReservacionQuirofano{
+    id: number;
+    habitaciones_id: number;
+    user_id:number;
+    instrumentista: string;
+    anestesiologo: string;
+    insumos_medicamentos: text;
+    esterilizar_detalle: text;
+    rayosx_detalle: Text;
+    patologico_detalle: Text;
+    horarios: string;
+    fecha:Date;
+    localizacion: string;
+    created_at: string;
+    update_at:string;
 }
 
 export type PageProps<T extends Record<string, unknown> = Record<string, unknown>> = T & {

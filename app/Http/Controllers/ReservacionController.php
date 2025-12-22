@@ -2,131 +2,195 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Reservacion;
-use Carbon\Carbon;
-use Inertia\inertia;
-use Illuminate\Support\Facades\DB;
-use App\Http\Requests\ReservacionRequest;
-use Redirect;
 use App\Models\Habitacion;
 use App\Models\ReservacionHorario;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Inertia\Inertia;
+use Carbon\Carbon;
+
+use App\Http\Requests\ReservacionRequest;
 
 class ReservacionController extends Controller
-        {
-        public function index(){
-                $reservacion = Reservacion::all();
-                return Inertia::render('reservacion/index', [
-                    'reservacion' => $reservacion
-                ]);
-            }
-            
-        public function create()
-                {
-                    // Localizaciones disponibles
-                    $localizaciones = [
-                        [
-                            'value' => 'plan_ayutla',
-                            'label' => 'Plan de Ayutla',
-                            'limite' => 5,
-                        ],
-                        [
-                            'value' => 'acapantzingo',
-                            'label' => 'Diaz ordas',
-                            'limite' => 3,
-                        ],
-                    ];
+{
 
-                    // Generar horarios de 00:00 a 23:30 cada 30 minutos
-                    $horarios = [];
-                    $inicio = Carbon::createFromTime(0, 0);
-                    $fin = Carbon::createFromTime(23, 30);
+    public function index()
+    {
+       $reservaciones = Reservacion::with([
+        'horarios.habitacion',
+        'user:id,nombre' // Importante cargar el ID y el nombre del usuario
+    ])
+    ->orderBy('fecha', 'desc')
+    ->get();
 
-                    while ($inicio <= $fin) {
-                        $horarios[] = $inicio->format('H:i');
-                        $inicio->addMinutes(30);
-                    }
-
-                    return Inertia::render('reservacion/create', [
-                        'localizaciones' => $localizaciones,
-                        'horarios' => $horarios,
-                    ]);
-                }
-
-        public function store(ReservacionRequest $request)
-        {
-            $data = $request->validated();
-            
-            DB::beginTransaction();
-
-            try {
-
-                $userId = Auth::id();
-                $localizacion = $data['localizacion'];
-                
-                $fecha = $data['fecha'];
-                
-                $horarios = $data['horarios'];
-                dd($horarios);
-                // Límite por localización
-                $limite = $localizacion === 'plan_ayutla' ? 5 : 3;
-                dd($limite); 
-                foreach ($horarios as $hora) {
-
-                    // 🔢 Cuántas reservaciones ya existen en ese horario
-                    $ocupados = ReservacionHorario::where('fecha_hora', $hora)
-                        ->whereHas('reservacion', function ($q) use ($localizacion, $fecha) {
-                            $q->where('localizacion', $localizacion)
-                            ->where('fecha', $fecha);
-                        })
-                        ->count();
-
-                    // El siguiente consultorio
-                    $numeroConsultorio = $ocupados + 1;
-
-                    if ($numeroConsultorio > $limite) {
-                        throw new \Exception('No hay consultorios disponibles.');
-                    }
-
-                    // 🏥 Obtener el consultorio correspondiente
-                    $consultorio = Habitacion::where('tipo', 'consultorio')
-                        ->orderBy('id')
-                        ->skip($numeroConsultorio - 1)
-                        ->first();
-
-                    if (!$consultorio) {
-                        throw new \Exception('Consultorio no encontrado.');
-                    }
-
-                    $reservacion = Reservacion::create([
-                        'localizacion' => $localizacion,
-                        'fecha' => $fecha,
-                        'habitacion_id' => $consultorio->id,
-                        'user_id' => $userId,
-                    ]);
-
-                    // ⏰ Guardar horario
-                    $reservacion->horarios()->create([
-                        'fecha_hora' => $hora,
-                    ]);
-                }
-                
-                DB::commit();
-
-                return redirect()
-                    ->route('reservaciones.index')
-                    ->with('success', 'Reservación creada correctamente');
-
-            } catch (\Throwable $e) {
-
-                DB::rollBack();
-
-                return back()
-                    ->withErrors([
-                        'error' => $e->getMessage()
-                    ])
-                    ->withInput();
-            }
-        }
+    return Inertia::render('reservacion/index', [
+        'reservaciones' => $reservaciones
+    ]);
     }
+
+public function show(Reservacion $reservacione)
+{
+
+    $reservacione->load(['user', 'horarios.habitacion']);
+    //dd($reservacione->ToArray());
+    return Inertia::render('reservacion/show', [
+        'reservacion' => $reservacione,
+        'user'        => $reservacione->user, // Asegúrate de que se llame 'user'
+        'horarios'    => $reservacione->horarios,
+    ]);
+}
+   
+public function create()
+{
+
+    $limitesPorSede = Habitacion::where('tipo', 'Consultorio')
+        ->select('ubicacion', DB::raw('count(*) as total'))
+        ->groupBy('ubicacion')
+        ->get()
+        ->pluck('total', 'ubicacion');
+
+
+        $ocupacionActual = ReservacionHorario::join('habitaciones', 'reservacion_horarios.habitacion_id', '=', 'habitaciones.id')
+            ->select(
+                'habitaciones.ubicacion', 
+                'reservacion_horarios.fecha_hora', 
+                DB::raw('count(*) as ocupados')
+            )
+            ->groupBy('habitaciones.ubicacion', 'reservacion_horarios.fecha_hora')
+            ->get()
+            ->mapWithKeys(function ($item) {
+                $fechaFormateada = \Carbon\Carbon::parse($item->fecha_hora)->format('Y-m-d H:i:s');
+                return [$item->ubicacion . '|' . $fechaFormateada => $item->ocupados];
+            });
+
+    return Inertia::render('reservacion/create', [
+        'limitesDinamicos' => $limitesPorSede,
+        'ocupacionActual'  => $ocupacionActual
+    ]);
+}
+
+public function store(ReservacionRequest $request)
+{
+    $data = $request->validated();
+    DB::beginTransaction();
+   
+
+    try {
+
+        $horarios = collect($data['horarios'])
+            ->map(fn ($h) => Carbon::parse($h)->format('Y-m-d H:i:s'))
+            ->toArray();
+        $sedeBusqueda = $data['localizacion']; 
+
+        $reservacion = Reservacion::create([
+            'localizacion' => $sedeBusqueda,
+            'fecha'        => $data['fecha'],
+            'horas'        => count($horarios),
+            'user_id'      => Auth::id(),
+        ]);
+
+
+        foreach ($horarios as $fechaHora) {
+            $habitacionLibre = Habitacion::where('tipo', 'Consultorio')
+                ->where('ubicacion', $sedeBusqueda) 
+                ->whereDoesntHave('horarios', function ($query) use ($fechaHora) {
+                    $query->where('fecha_hora', $fechaHora);
+                })
+                ->first();
+
+            if (!$habitacionLibre) {
+                throw new \Exception("No hay consultorios disponibles en $sedeBusqueda para las " . Carbon::parse($fechaHora)->format('H:i'));
+            }
+
+            ReservacionHorario::create([
+                'reservacion_id' => $reservacion->id,
+                'habitacion_id'  => $habitacionLibre->id,
+                'fecha_hora'     => $fechaHora,
+            ]);
+        }
+
+        DB::commit();
+        return redirect()->route('reservaciones.index')->with('success', 'Reservación creada');
+    } catch (\Throwable $e) {
+        DB::rollBack();
+        return back()->withErrors(['error' => $e->getMessage()])->withInput();
+    }
+}
+public function edit(Reservacion $reservacion)
+{
+    // Cargamos las relaciones
+    $reservacion->load('horarios');
+
+    $limitesPorSede = Habitacion::where('tipo', 'Consultorio')
+        ->select('ubicacion', DB::raw('count(*) as total'))
+        ->groupBy('ubicacion')
+        ->pluck('total', 'ubicacion');
+
+    $ocupacionActual = ReservacionHorario::join('habitaciones', 'reservacion_horarios.habitacion_id', '=', 'habitaciones.id')
+        ->select('habitaciones.ubicacion', 'reservacion_horarios.fecha_hora', DB::raw('count(*) as ocupados'))
+        ->where('reservacion_horarios.reservacion_id', '!=', $reservacion->id) // Fundamental para que no se bloquee a sí mismo
+        ->groupBy('habitaciones.ubicacion', 'reservacion_horarios.fecha_hora')
+        ->get()
+        ->mapWithKeys(function ($item) {
+            $fechaFormateada = \Carbon\Carbon::parse($item->fecha_hora)->format('Y-m-d H:i:s');
+            return [$item->ubicacion . '|' . $fechaFormateada => $item->ocupados];
+        });
+
+    // 3. PASO CLAVE: Formatear los horarios que el usuario ya tiene seleccionados
+    $horariosYaElegidos = $reservacion->horarios->map(function($h) {
+        return \Carbon\Carbon::parse($h->fecha_hora)->format('Y-m-d H:i:s');
+    });
+
+    return Inertia::render('reservacion/create', [
+        'reservacion' => $reservacion,
+        'limitesDinamicos' => $limitesPorSede,
+        'ocupacionActual' => $ocupacionActual,
+        'horariosSeleccionados' => $horariosYaElegidos // Esto inicializa los botones azules
+    ]);
+}
+public function update(ReservacionRequest $request, Reservacion $reservacion)
+{
+    $data = $request->validated();
+    DB::beginTransaction();
+
+    try {
+
+        // 1. Actualizar datos básicos
+        $reservacion->update([
+            'localizacion' => $data['localizacion'],
+            'fecha' => $data['fecha'],
+            'horas' => count($data['horarios']),
+        ]);
+
+        // 2. Limpiar horarios anteriores para reasignar
+        $reservacion->horarios()->delete();
+
+        // 3. Reasignar (igual que en store)
+        foreach ($request->horarios as $nuevoHorario) {
+            $habitacionLibre = Habitacion::where('tipo', 'Consultorio')
+                ->where('ubicacion', $data['localizacion'])
+                ->whereDoesntHave('horarios', function ($query) use ($fechaHora) {
+                    $query->where('fecha_hora', $fechaHora);
+                })
+                ->first();
+
+            if (!$habitacionLibre) {
+                throw new \Exception("Ya no hay disponibilidad para el horario seleccionado.");
+            }
+
+            ReservacionHorario::create([
+                'reservacion_id' => $reservacion->id,
+                'habitacion_id' => $habitacionLibre->id,
+                'fecha_hora' => $fechaHora,
+            ]);
+        }
+
+        DB::commit();
+        return redirect()->route('reservaciones.index')->with('success', 'Reservación actualizada.');
+    } catch (\Exception $e) {
+        DB::rollBack();
+        return back()->withErrors(['error' => $e->getMessage()]);
+    }
+}
+}

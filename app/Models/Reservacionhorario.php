@@ -8,15 +8,20 @@ class ReservacionHorario extends Model
 {
     protected $fillable = [
         'reservacion_id',
+        'habitacion_id',
         'fecha_hora',
     ];
 
-    protected $casts = [
-        'fecha_hora' => 'datetime',
-    ];
-
+    /* =========================
+       Relaciones
+    ========================= */
     public function reservacion()
     {
         return $this->belongsTo(Reservacion::class);
+    }
+
+    public function habitacion()
+    {
+        return $this->belongsTo(Habitacion::class);
     }
 }

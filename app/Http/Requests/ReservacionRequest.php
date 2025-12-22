@@ -3,7 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use App\Models\ReservacionHorario;
+use Illuminate\Validation\Rule;
 
 class ReservacionRequest extends FormRequest
 {
@@ -12,7 +12,7 @@ class ReservacionRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        return true; 
     }
 
     /**
@@ -20,31 +20,48 @@ class ReservacionRequest extends FormRequest
      */
     public function rules(): array
     {
+        // 1. IMPORTANTE: Deben coincidir exactamente con los valores de tu BD
+        $localizacionesPermitidas = ['Plan de ayutla', 'Díaz Ordaz'];
+
         return [
-            'localizacion' => ['required', 'string', 'in:plan_ayutla,acapantzingo'],
-            'fecha' => ['required', 'date'],
-            
+            'localizacion' => [
+                'required', 
+                'string', 
+                Rule::in($localizacionesPermitidas)
+            ],
+            'fecha' => [
+                'required', 
+                'date',
+                // Permitimos hoy mismo o fechas futuras
+                'after_or_equal:today' 
+            ],
+            'horarios' => [
+                'required', 
+                'array', 
+                'min:1' 
+            ],
+            // 2. AJUSTE DE FORMATO: Como en el JS agregamos ":00", 
+            // el formato que llega es Y-m-d H:i:s
+            'horarios.*' => [
+                'required', 
+                'date_format:Y-m-d H:i:s', 
+            ],
         ];
     }
 
     /**
-     * Custom validation messages.
+     * Mensajes personalizados para el usuario.
      */
     public function messages(): array
     {
         return [
-            'localizacion.required' => 'Debe seleccionar una localización.',
-            'localizacion.string' => 'La localización no es válida.',
-            'localizacion.in' => 'La localización debe ser Plan de Ayutla o Diaz ordas.',
-
-            'fecha.required' => 'Debe seleccionar una fecha.',
-            'fecha.date' => 'La fecha no tiene un formato válido.',
-
-            ];
+            'localizacion.required' => 'La ubicación es obligatoria.',
+            'localizacion.in' => 'La ubicación seleccionada no es válida.',
+            'fecha.required' => 'La fecha es obligatoria.',
+            'fecha.after_or_equal' => 'No puedes realizar reservaciones en fechas pasadas.',
+            'horarios.required' => 'Debes seleccionar al menos un horario.',
+            'horarios.array' => 'El formato de los horarios es inválido.',
+            'horarios.*.date_format' => 'El formato de hora no es válido.',
+        ];
     }
-
-    /**
-     * Advanced validation (cupos por horario y localización)
-     */
-    
 }

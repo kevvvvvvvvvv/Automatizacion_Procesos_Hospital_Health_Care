@@ -11,23 +11,21 @@ return new class extends Migration
      */
     public function up(): void
     {
-            Schema::create('reservaciones', function (Blueprint $table) {
-            $table->id();
-            $table->enum('localizacion', ['plan_ayutla', 'acapantzingo']);
-            $table->date('fecha');
+        Schema::create('reservaciones', function (Blueprint $table) {
+        $table->id();
 
-            $table->foreignId('habitacion_id')
-                ->nullable()
-                ->constrained('habitaciones')
-                ->cascadeOnDelete();
+        $table->enum('localizacion', ['plan de ayutla', 'diaz ordaz']);
+        $table->date('fecha');
 
-            $table->foreignId('user_id')
-                ->nullable()
-                ->constrained('users')
-                ->cascadeOnDelete();
+        // número total de bloques de 30 min
+        $table->integer('horas');
 
-            $table->timestamps();
-        });
+        $table->foreignId('user_id')
+            ->constrained('users')
+            ->cascadeOnDelete();
+
+        $table->timestamps();
+    });
 
     }
     
