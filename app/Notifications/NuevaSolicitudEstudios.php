@@ -11,7 +11,7 @@ use App\Models\Paciente;
 use Illuminate\Support\Collection as EloquentCollection;
 use Illuminate\Notifications\Messages\BroadcastMessage;
 
-class NuevaSolicitudEstudios extends Notification implements ShouldBroadcast
+class NuevaSolicitudEstudios extends Notification implements ShouldBroadcast, ShouldQueue
 {
     use Queueable;
 
@@ -36,7 +36,7 @@ class NuevaSolicitudEstudios extends Notification implements ShouldBroadcast
      */
     public function via(object $notifiable): array
     {
-        return ['database','broadcast'];
+        return ['database','broadcast','mail'];
     }
 
     /**
@@ -44,10 +44,37 @@ class NuevaSolicitudEstudios extends Notification implements ShouldBroadcast
      */
     public function toMail(object $notifiable): MailMessage
     {
-        return (new MailMessage)
-            ->line('The introduction to the notification.')
-            ->action('Notification Action', url('/'))
-            ->line('Thank you for using our application!');
+        $nombreCompleto = trim("{$this->paciente->nombre} {$this->paciente->apellido_paterno} {$this->paciente->apellido_materno}");
+        
+        $primerEstudio = $this->estudios->first();
+        $departamento = 'General';
+        
+        if ($primerEstudio) {
+            $departamento = $primerEstudio->catalogoEstudio->departamento 
+                            ?? $primerEstudio->detalles['departamento_manual'] 
+                            ?? 'Estudios varios';
+
+            $departamento = mb_strtoupper($departamento, 'UTF-8');
+        }
+
+        $url = url("/solicitudes-estudios/{$this->solicitudId}/edit");
+
+        $mailMessage = (new MailMessage)
+            ->subject("Nueva Solicitud de {$departamento} - Paciente: {$this->paciente->nombre}")
+            ->greeting("Hola, {$notifiable->nombre}") 
+            ->line("Se ha generado una nueva solicitud de estudios para el departamento de {$departamento}.")
+            ->line("Paciente: **{$nombreCompleto}**")
+            ->line("Estudios solicitados:");
+
+
+        foreach ($this->estudios as $estudio) {
+            $nombreEstudio = $estudio->catalogoEstudio->nombre ?? $estudio->otro_estudio;
+            $mailMessage->line("- " . $nombreEstudio);
+        }
+
+        return $mailMessage
+            ->action('Ingresar resultados', $url)
+            ->line('Por favor, ingresa los resultados lo antes posible.');
     }
 
     /**

@@ -56,48 +56,52 @@ class SolicitudEstudioController extends Controller
         
         $personal = User::all();
         $user = Auth::user();
-
-        // AGREGUÉ 'LABORATORIO' AL FINAL PARA QUE LOS MANUALES FUNCIONEN
+        
         $grupoLaboratorio = [
-            'BACTEROLOGÍA',
-            'COAGULACIÓN',
-            'HEMATOLOGÍA',
-            'HORMONAS',
-            'OTROS ESTUDIOS Y/O PERFILES',
-            'PARASITOLOGÍA',
-            'QUÍMICA CLÍNICA',
-            'SEMINOGRAMA',
-            'UROANÁLISIS',
-            'LABORATORIO' // <--- IMPORTANTE: Tu item manual decía "Laboratorio"
+            'BACTEROLOGÍA', 'COAGULACIÓN', 'HEMATOLOGÍA', 'HORMONAS',
+            'OTROS ESTUDIOS Y/O PERFILES', 'PARASITOLOGÍA', 'QUÍMICA CLÍNICA',
+            'SEMINOGRAMA', 'UROANÁLISIS', 'LABORATORIO' 
         ];
 
         $departamentosPermitidos = match(true) {
-            $user->hasRole('técnico de laboratorio')   => $grupoLaboratorio,
-            //$user->hasRole('Radiologo') => ['RAYOS X', 'IMAGENOLOGIA', 'IMAGENOLOGÍA'],
+            $user->hasRole('técnico de laboratorio') => $grupoLaboratorio,
             $user->hasRole('administrador') => ['*'], 
             default => [] 
         };
 
         $itemsFiltrados = $solicitudes_estudio->solicitudItems->filter(function ($item) use ($departamentosPermitidos) {
-            
             if (in_array('*', $departamentosPermitidos)) return true;
             
-            $deptoItem = 'general';
+            $depto = $item->catalogoEstudio->departamento 
+                    ?? $item->detalles['departamento_manual'] 
+                    ?? 'GENERAL';
             
-            if ($item->catalogoEstudio) {
-                $deptoItem = $item->catalogoEstudio->departamento;
-            } elseif (isset($item->detalles['departamento_manual'])) {
-                $deptoItem = $item->detalles['departamento_manual'];
-            }
-
-            $deptoItem = mb_strtoupper($deptoItem, 'UTF-8'); 
-
-            return in_array($deptoItem, $departamentosPermitidos);
+            return in_array(mb_strtoupper($depto, 'UTF-8'), $departamentosPermitidos);
         });
+
+        $grupos = $itemsFiltrados->groupBy(function ($item) use ($grupoLaboratorio) {
+            $nombreReal = $item->catalogoEstudio->departamento 
+                        ?? $item->detalles['departamento_manual'] 
+                        ?? 'GENERAL';
+            
+            $nombreMayus = mb_strtoupper($nombreReal, 'UTF-8');
+            if (in_array($nombreMayus, $grupoLaboratorio)) {
+                return 'LABORATORIO';
+            }
+            return $nombreMayus;
+        });
+
+        $gruposFormatted = [];
+        foreach ($grupos as $nombreGrupo => $items) {
+            $gruposFormatted[] = [
+                'nombre_grupo' => $nombreGrupo,
+                'items' => $items->values()
+            ];
+        }
 
         return Inertia::render('estudios/resultados', [
             'solicitud_estudio' => $solicitudes_estudio,
-            'items_filtrados' => $itemsFiltrados->values(),
+            'grupos_estudios' => $gruposFormatted,
             'personal' => $personal,
         ]);
     }
@@ -201,13 +205,18 @@ class SolicitudEstudioController extends Controller
 
         foreach ($grupos as $departamento => $itemsDelGrupo) {
             $usuariosDestino = $this->obtenerDestinatariosPorDepartamento($departamento);
+            $segundosEspera = 0;
 
             if ($usuariosDestino->isNotEmpty()) {
-                Notification::send($usuariosDestino, new NuevaSolicitudEstudios(
-                $itemsDelGrupo, 
-                $paciente,      
-                $solicitud->id  
-            ));
+                
+                /** @var \App\Models\User $usuario */
+                foreach ($usuariosDestino as $usuario) {
+                    $usuario->notify(
+                        (new NuevaSolicitudEstudios($itemsDelGrupo, $paciente, $solicitud->id))
+                        ->delay(now()->addSeconds($segundosEspera))
+                    );
+                    $segundosEspera += 5;
+                }
             }
         }
     }
