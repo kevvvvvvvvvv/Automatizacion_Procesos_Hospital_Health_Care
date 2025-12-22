@@ -13,6 +13,7 @@ class Habitacion extends Model
     protected $fillable = [
         'identificador',
         'tipo',
+        'ubicacion',
         'estado',
         'piso',
     ];
@@ -29,5 +30,9 @@ class Habitacion extends Model
         return $this->hasOne(Estancia::class)
                     ->where('tipo_estancia', 'Hospitalizacion') 
                     ->whereNull('fecha_egreso');              
+    }
+       public function horarios()
+    {
+        return $this->hasMany(ReservacionHorario::class);
     }
 }

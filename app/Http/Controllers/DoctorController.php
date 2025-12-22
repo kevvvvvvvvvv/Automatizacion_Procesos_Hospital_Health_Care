@@ -204,7 +204,6 @@ class DoctorController extends Controller implements HasMiddleware
                 ];
             })->toArray();
         } catch (\Exception $e) {
-            Log::error('Error en DoctorController::edit(): ' . $e->getMessage());
             $cargos = [];
             $usuarios = [];
         }

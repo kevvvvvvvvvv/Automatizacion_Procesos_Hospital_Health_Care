@@ -25,6 +25,7 @@ class HabitacionRequest extends FormRequest
             //  
             'identificador' => ['required', 'String'],
             'tipo' => ['required', 'string'],
+            'ubicacion' => ['required', 'string'],
             'piso' => ['required', 'string'],
         ];
     }
@@ -35,6 +36,9 @@ class HabitacionRequest extends FormRequest
             
             'tipo.required' => 'Es obligatorio el campo',
             'tipo.string' => 'Debes seleccionar un tipo',
+
+            'ubicacion.required' => 'Es oblicatorio el campo',
+            'ubicacion.string' => 'Debe ser un texto',
 
             'piso.required' => 'Es obligatorio el campo',
             'piso.string' => 'Debe ser texto el piso',

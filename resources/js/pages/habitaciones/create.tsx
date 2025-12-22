@@ -19,9 +19,14 @@ const HabitacionCreate: React.FC<Props> = ({ habitacion }) => {
   const { data, setData, post, put, processing, errors } = useForm({
     identificador: habitacion?.identificador ?? "",
     tipo: habitacion?.tipo ?? "",
+    ubicacion: habitacion?.ubicacion ?? "",
     piso: habitacion?.piso ?? "",
   });
 
+  const optionUbicacion = [
+    {value: "Plan de ayutla", label: "Plan de ayutla"},
+    {value: "Díaz Ordaz", label: "Díaz Ordaz"},
+  ];
   const optionsTipo = [
     { value: "Consultorio", label: "Consultorio" },
     { value: "Habitación", label: "Habitación" },
@@ -68,6 +73,15 @@ const HabitacionCreate: React.FC<Props> = ({ habitacion }) => {
             // asumo que SelectInput pasa directamente el valor seleccionado (string)
             onChange={(value: string) => setData("tipo", value)}
             error={errors.tipo}
+          />
+          
+          <SelectInput
+            label="Ubicación"
+            options={optionUbicacion}
+            placeholder="Selecciona el tipo"
+            value={data.tipo}
+            onChange={(value: string) => setData("ubicacion", value)}
+            error={errors.ubicacion}
           />
 
           <InputText
