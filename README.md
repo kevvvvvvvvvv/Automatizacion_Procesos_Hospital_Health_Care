@@ -107,3 +107,9 @@ php artisan install:api
 ```bash
 npm install @stripe/stripe-js @stripe/react-stripe-js
 ```
+
+<h2>Hacer conexion para almacenar archivos</h2>
+
+```bash
+php artisan storage:link
+``` 

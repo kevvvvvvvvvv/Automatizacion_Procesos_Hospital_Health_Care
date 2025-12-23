@@ -29,6 +29,7 @@ class RoleAndPermissionSeeder extends Seeder
         $roleFisoterapeuta = Role::create(['name' => 'fisoterapeuta']);
         $roleRecepcion = Role::create(['name' => 'recepcion']);
         $roleCaja = Role::create(['name'  => 'caja']);
+        $roleQuimico = Role::create(['name' => 'químico']);
 
         $permissions = [
             'pacientes' => ['crear', 'consultar', 'editar', 'eliminar'],
@@ -42,6 +43,7 @@ class RoleAndPermissionSeeder extends Seeder
             'detalles ventas' => ['consultar','eliminar','editar','crear'],
             'hojas' => ['crear', 'consultar', 'editar', 'eliminar',], 
             'hojas enfermerias' => ['crear', 'consultar', 'eliminar'], // Solo se puede editar el documento que una persona creó
+
         ];
 
         foreach ($permissions as $module => $actions) {

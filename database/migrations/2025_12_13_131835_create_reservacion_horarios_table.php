@@ -18,7 +18,6 @@ return new class extends Migration
                 ->constrained('reservaciones')
                 ->cascadeOnDelete();
 
-
         $table->foreignId('habitacion_id')
             ->constrained('habitaciones')
             ->cascadeOnDelete();
