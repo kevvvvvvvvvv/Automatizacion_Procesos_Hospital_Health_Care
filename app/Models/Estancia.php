@@ -33,7 +33,7 @@ class Estancia extends Model
 
     public function paciente()
     {
-        return $this->belongsTo(Paciente::class, 'paciente_id', 'id');
+        return $this->belongsTo(Paciente::class, 'paciente_id');
     }
 
     public function estanciaAnterior(): BelongsTo
@@ -43,7 +43,7 @@ class Estancia extends Model
 
     public function reingresos(): HasMany
     {
-        return $this->hasMany(Estancia::class, 'estancia_anterior_id');
+        return $this->hasMany(Estancia::class, 'estancia_anterior_id'); 
     }
 
     public function creator(): BelongsTo

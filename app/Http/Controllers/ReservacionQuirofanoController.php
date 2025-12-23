@@ -3,6 +3,7 @@ namespace App\Http\Controllers;
 
 use App\Models\ReservacionQuirofano;
 use App\Models\Paciente;
+use App\Models\User;
 use App\Models\Habitacion;
 use App\Models\Estancia;
 use Illuminate\Http\Request;
@@ -11,65 +12,72 @@ use Inertia\Inertia;
 class ReservacionQuirofanoController extends Controller
 {
     
-     public function index()
+   public function index()
 {
-    $reservaciones = ReservacionQuirofano::with(['user:id,name', 'habitacion:id,nombre'])
+    $quirofanos = ReservacionQuirofano::with([
+            'user:id,nombre,apellido_paterno', 
+            'habitacion:id,identificador', // Cambié 'nombre' por 'identificador' que es el que usas en el Show
+            'paciente:id,nombre,apellido_paterno,apellido_materno' // Añadido para que no sea null
+        ])
         ->orderBy('fecha', 'desc')
         ->get()
         ->map(function ($res) {
-           return [
+            return [
                 'id' => $res->id,
                 'fecha' => $res->fecha,
                 'localizacion' => $res->localizacion,
+                'paciente_nombre' => $res->paciente 
+                    ? "{$res->paciente->nombre} {$res->paciente->apellido_paterno}" 
+                    : 'N/A',
                 'instrumentista' => $res->instrumentista,
                 'anestesiologo' => $res->anestesiologo,
-                // Si guardaste los horarios como JSON en la BD, Laravel los convierte en array automáticamente
                 'horarios' => $res->horarios, 
-                'user' => $res->user,
-                'habitacion' => $res->habitacion,
+                'user_nombre' => $res->user ? $res->user->nombre : 'N/A',
+                'habitacion_nombre' => $res->habitacion ? $res->habitacion->identificador : 'N/A',
+                'estancia_id' => $res->estancia_id,
             ];
         });
 
-    // 3. Retornamos la vista de Inertia con los datos
+    // Eliminamos el dd() para que Inertia pueda renderizar la vista
     return Inertia::render('reservacion_quirofano/index', [
-        'reservaciones' => $reservaciones
+        'reservaciones' => $quirofanos
     ]);
-    }
-    public function create(Paciente $paciente, Estancia $estancia)
-    {
-        // 1. Cargamos explícitamente el paciente desde la estancia si no viene inyectado
-        $estancia->load('paciente');
-        $pacienteData = $paciente->exists ? $paciente : $estancia->paciente;
+}
+   public function create(Paciente $paciente, Estancia $estancia)
+{
+    // 1. Cargamos la relación del paciente dentro de la estancia
+    $estancia->load('paciente');
 
-        // 2. Límites dinámicos basados en la ubicación de las habitaciones
-        $limitesDinamicos = Habitacion::where('tipo', 'Quirofano')
+    // 2. Determinamos cuál objeto usar (Prioridad al objeto $paciente de la URL, 
+    // sino el de la estancia)
+    $pacienteData = null;
+    if ($paciente->exists) {
+        $pacienteData = $paciente;
+    } elseif ($estancia->paciente) {
+        $pacienteData = $estancia->paciente;
+    }
+
+    // 3. Si sigue siendo null, enviamos un objeto vacío para evitar errores en React
+    // o maneja el error si es obligatorio
+    
+    return Inertia::render('reservacion_quirofano/create', [
+        'paciente' => $pacienteData, 
+        'estancia' => $estancia,
+        'medicos' => \App\Models\User::all()->map(fn($u) => [
+            'id' => $u->id,
+            'nombre_completo' => "{$u->nombre} {$u->apellido_paterno} {$u->apellido_materno}"
+        ]),
+        'limitesDinamicos' => Habitacion::where('tipo', 'Quirofano')
             ->selectRaw('ubicacion, count(*) as total')
             ->groupBy('ubicacion')
             ->pluck('total', 'ubicacion')
-            ->toArray();
-
-        return Inertia::render('reservacion_quirofano/create', [
-            'paciente' => $pacienteData,
-            'estancia' => $estancia,
-            'limitesDinamicos' => $limitesDinamicos,
-        ]);
-    }
-
+            ->toArray(),
+    ]);
+}
     public function store(Request $request, Paciente $paciente, Estancia $estancia)
 {
-    $validated = $request->validate([
-        'procedimiento'     => 'required|string',
-        'tiempo_estimado'   => 'required|string',
-        'medico_operacion'  => 'required|string',
-        'instrumentista'    => 'required|string',
-        'anestesiologo'     => 'required|string',
-        'localizacion'      => 'required|string', // "Plan de ayutla" o "Díaz Ordaz"
-        'fecha'             => 'required|date',
-        'horarios'          => 'required|array',
-    ]);
+    $validated = $request->validate();
 
-    // LÓGICA DE ASIGNACIÓN AUTOMÁTICA
-    // 1. Obtener IDs de quirófanos en esa ubicación
     $quirofanosEnUbicacion = Habitacion::where('tipo', 'Quirofano')
         ->where('ubicacion', $validated['localizacion'])
         ->pluck('id');
@@ -98,17 +106,29 @@ class ReservacionQuirofanoController extends Controller
     }
 
     // 3. Crear la reservación con el ID encontrado automáticamente
-    ReservacionQuirofano::create([
-        ...$validated,
-        'habitacion_id' => $habitacionIdAsignada,
-        'estancia_id'   => $estancia->id,
-        'user_id'       => auth()->id(),
+   $reservacion = ReservacionQuirofano::create([
+        'habitacion_id'    => $habitacionIdAsignada,
+        'user_id'          => auth()->id(),
+        'estancia_id'      => $estancia->id,
+        'paciente'         => $validated['paciente'],
+        'tratante'         => $validated['tratante'],
+        'procedimiento'    => $validated['procedimiento'],
+        'tiempo_estimado'  => $validated['tiempo_estimado'],
+        'medico_operacion' => $validated['medico_operacion'],
+        'fecha'            => $validated['fecha'],
+        'horarios'         => $validated['horarios'],
+        'localizacion'     => $validated['localizacion'],
+        'comentarios'      => $validated['comentarios'],
+        
+        // Extraer detalles de los objetos
+        'instrumentista'       => $request->instrumentista['detalle'] ?? 'No solicitado',
+        'anestesiologo'        => $request->anestesiologo['detalle'] ?? 'No solicitado',
         'insumos_medicamentos' => $request->insumos_med['detalle'] ?? null,
         'esterilizar_detalle'  => $request->esterilizar['detalle'] ?? null,
         'rayosx_detalle'       => $request->rayosx['detalle'] ?? null,
         'patologico_detalle'   => $request->patologico['detalle'] ?? null,
     ]);
 
-    return redirect()->route('quirofanos.index')->with('success', 'Quirófano asignado automáticamente.');
+    return redirect()->route('quirofanos.show', $reservacion->id);
 }
 }
