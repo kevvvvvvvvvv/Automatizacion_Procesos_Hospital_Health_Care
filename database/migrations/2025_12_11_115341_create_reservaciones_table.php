@@ -20,7 +20,7 @@ return new class extends Migration
         // número total de bloques de 30 min
         $table->integer('horas');
         // En la migración de reservaciones
-        $table->number('pago')->nullable();
+        $table->decimal('pago')->nullable();
         $table->enum('estatus', ['pendiente', 'pagado', 'cancelado'])->default('pendiente');
 
 
