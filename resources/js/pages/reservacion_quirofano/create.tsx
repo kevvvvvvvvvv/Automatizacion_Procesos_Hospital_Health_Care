@@ -6,16 +6,18 @@ import PacienteCard from "@/components/paciente-card";
 import PrimaryButton from "@/components/ui/primary-button";
 import { route } from "ziggy-js";
 import { Paciente, Estancia } from "@/types";
+import InputText from "@/components/ui/input-text";
 
 interface Props {
     paciente: Paciente;
     estancia: Estancia;
     limitesDinamicos: Record<string, number>;
+    medicos: Array<{id: number, nombre_completo: string}>;
 }
 
 const generarHorarios = () => {
     const horarios: string[] = [];
-    for (let h = 8; h < 22; h++) {
+    for (let h = 0; h < 24; h++) {
         for (let m = 0; m < 60; m += 60) {
             horarios.push(`${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`);
         }
@@ -24,13 +26,20 @@ const generarHorarios = () => {
 };
 const horariosLista = generarHorarios();
 
-const CreateReservacion: React.FC<Props> = ({ paciente, estancia, limitesDinamicos }) => {
+const CreateReservacion: React.FC<Props> = ({ paciente, estancia, limitesDinamicos, medicos }) => {
+    console.log("Valores recibidos en Props:", { paciente, estancia, limitesDinamicos, medicos });
     const { data, setData, post, processing, errors } = useForm({
+    paciente: paciente 
+        ? `${paciente.nombre} ${paciente.apellido_paterno || ''}` 
+        : (estancia?.paciente 
+            ? `${estancia.paciente.nombre} ${estancia.paciente.apellido_paterno || ''}` 
+            : ""),
         procedimiento: "",
+        tratante: "",
         tiempo_estimado: "",
         medico_operacion: "",
-        instrumentista: "",
-        anestesiologo: "",
+        instrumentista: { activa: false, detalle: "" },
+        anestesiologo: { activa: false, detalle: "" },
         localizacion: "",
         fecha: new Date().toISOString().split("T")[0],
         horarios: [] as string[],
@@ -60,7 +69,7 @@ const CreateReservacion: React.FC<Props> = ({ paciente, estancia, limitesDinamic
         }
     };
 
-    const renderCondicional = (label: string, key: 'insumos_med' | 'esterilizar' | 'rayosx' | 'patologico') => (
+    const renderCondicional = (label: string, key: 'instrumentista'|'anestesiologo'|'insumos_med' | 'esterilizar' | 'rayosx' | 'patologico') => (
         <div className="p-3 border rounded-lg bg-gray-50 mb-3">
             <div className="flex items-center justify-between mb-2">
                 <span className="text-sm font-medium">{label}</span>
@@ -110,24 +119,82 @@ const CreateReservacion: React.FC<Props> = ({ paciente, estancia, limitesDinamic
                                 {errors.localizacion && <span className="text-red-500 text-xs mt-1">{errors.localizacion}</span>}
                             </div>
 
+
+           
                             <input type="text" placeholder="Procedimiento Quirúrgico" className="w-full border rounded p-2 text-sm" value={data.procedimiento} onChange={e => setData('procedimiento', e.target.value)} required />
                             
                             <div className="grid grid-cols-2 gap-4">
-                                <input type="text" placeholder="Cirujano" className="border rounded p-2 text-sm" value={data.medico_operacion} onChange={e => setData('medico_operacion', e.target.value)} required />
-                                <input type="text" placeholder="Tiempo Estimado" className="border rounded p-2 text-sm" value={data.tiempo_estimado} onChange={e => setData('tiempo_estimado', e.target.value)} required />
-                            </div>
+                                {/* CAMPO PACIENTE */}
+                                <div className="flex flex-col">
+                                    <label className="text-sm font-bold mb-1">Paciente</label>
+                                    <input 
+                                        type="text" 
+                                        value={data.paciente}
+                                        onChange={e => setData('paciente', e.target.value)}
+                                        className={`border rounded p-2 text-sm ${data.paciente ? 'bg-gray-50' : ''}`}
+                                        placeholder="Escriba nombre del paciente..."
+                                        // Si ya viene de una estancia, lo bloqueamos para que no se altere el registro
+                                        readOnly={!!(paciente?.nombre || estancia?.paciente?.nombre)}
+                                        required 
+                                    />
+                                </div>
 
-                            <div className="grid grid-cols-2 gap-4">
-                                <input type="text" placeholder="Instrumentista" className="border rounded p-2 text-sm" value={data.instrumentista} onChange={e => setData('instrumentista', e.target.value)} required />
-                                <input type="text" placeholder="Anestesiólogo" className="border rounded p-2 text-sm" value={data.anestesiologo} onChange={e => setData('anestesiologo', e.target.value)} required />
-                            </div>
+                                {/* SELECT MÉDICO TRATANTE */}
+                                <div className="flex flex-col">
+                                    <label className="text-sm font-bold mb-1">Médico Tratante</label>
+                                    <select 
+                                        value={data.tratante} 
+                                        onChange={e => setData('tratante', e.target.value)}
+                                        className="border border-gray-300 rounded p-2 text-sm"
+                                        required
+                                    >
+                                        <option value="">Seleccione médico...</option>
+                                        {medicos.map(m => (
+                                            <option key={m.id} value={m.nombre_completo}>{m.nombre_completo}</option>
+                                        ))}
+                                    </select>
+                                </div>
+
+                                {/* SELECT CIRUJANO */}
+                                <div className="flex flex-col">
+                                    <label className="text-sm font-bold mb-1">Cirujano (Médico Operación)</label>
+                                    <select 
+                                        value={data.medico_operacion} 
+                                        onChange={e => setData('medico_operacion', e.target.value)}
+                                        className="border border-gray-300 rounded p-2 text-sm"
+                                        required
+                                    >
+                                        <option value="">Seleccione cirujano...</option>
+                                        {medicos.map(m => (
+                                            <option key={m.id} value={m.nombre_completo}>{m.nombre_completo}</option>
+                                        ))}
+                                    </select>
+                                    </div>
+                                    <div className="flex flex-col">
+                                    <label className="text-sm font-bold mb-1">Tiempo estimado</label>
+                                    <input 
+                                        type="text" 
+                                        value={data.tiempo_estimado}
+                                        onChange={e => setData('tiempo_estimado', e.target.value)}
+                                        className={`border rounded p-2 text-sm ${data.tiempo_estimado ? 'bg-gray-50' : ''}`}
+                                        placeholder="El tiempo estimado..."
+                                       
+                                        required 
+                                    />
+                                </div>
+
+                                </div>
+
+                            
 
                             <div className="pt-2">
                                 <h4 className="text-sm font-bold text-gray-700 mb-2 border-b">Requerimientos</h4>
-                                {renderCondicional("Insumos/Medicamnetos especiales", "insumos_med")}
-                                {renderCondicional("Esterilización", "esterilizar")}
-                                {renderCondicional("Rayos X", "rayosx")}
-                                {renderCondicional("Patología", "patologico")}
+                                {renderCondicional("¿Solicita instrumentista?", "instrumentista")}
+                                {renderCondicional("¿Solicita anestesiologo?", "anestesiologo")}
+                                {renderCondicional("¿Solicita Insumos/Medicamnetos especiales?", "insumos_med")}
+                                {renderCondicional("¿Solicita Esterilización?", "esterilizar")}
+                                {renderCondicional("¿Solicta Rayos X?", "rayosx")}
+                                {renderCondicional("¿Solicita Patología?", "patologico")}
                             </div>
                         </div>
 
@@ -153,7 +220,9 @@ const CreateReservacion: React.FC<Props> = ({ paciente, estancia, limitesDinamic
                                     );
                                 })}
                             </div>
-                            <textarea className="w-full mt-4 border rounded p-2 text-sm" placeholder="Comentarios..." value={data.comentarios} onChange={e => setData('comentarios', e.target.value)} rows={3} />
+                            <br></br>
+                            <label className="text-sm font-bold mb-1">Comentarios</label>
+                            <textarea aria-label="Comentarios" className="w-full mt-4 border rounded p-2 text-sm" placeholder="Comentarios..." value={data.comentarios} onChange={e => setData('comentarios', e.target.value)} rows={3} />
                         </div>
                     </div>
                 </FormLayout>

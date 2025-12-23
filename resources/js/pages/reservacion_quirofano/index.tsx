@@ -16,27 +16,19 @@ import AddButton from "@/components/ui/add-button";
 import { Pencil, Eye } from "lucide-react";
 
 /* =========================
-   TIPOS ADAPTADOS A QUIRÓFANO
+   TIPOS CORREGIDOS (Coinciden con el Controller)
 ========================= */
-type Habitacion = {
-    id: number;
-    nombre: string;
-};
-
-type User = {
-    name?: string;
-    nombre?: string;
-};
-
 type ReservacionQuirofano = {
     id: number;
-    localizacion: string;
     fecha: string;
-    horarios: string[]; // Array de strings ["2025-10-10 08:00:00", ...]
+    localizacion: string;
+    paciente_nombre: string;
     instrumentista: string;
     anestesiologo: string;
-    habitacion: Habitacion | null;
-    user: User | null;
+    horarios: string[]; 
+    user_nombre: string;
+    habitacion_nombre: string;
+    estancia_id: number;
 };
 
 interface Props {
@@ -44,6 +36,7 @@ interface Props {
 }
 
 const Index = ({ reservaciones }: Props) => {
+    console.log(reservaciones);
     const [globalFilter, setGlobalFilter] = useState("");
     const [sorting, setSorting] = useState<SortingState>([]);
 
@@ -61,36 +54,38 @@ const Index = ({ reservaciones }: Props) => {
             cell: ({ row }) => {
                 const horarios = row.original.horarios;
                 if (!horarios || horarios.length === 0) return "—";
-                // Extraemos solo la hora del primer bloque seleccionado
-                return horarios[0].split(" ")[1].substring(0, 5) + " hrs";
+                // El formato es "YYYY-MM-DD HH:MM:SS", cortamos para ver HH:MM
+                try {
+                    return horarios[0].split(" ")[1].substring(0, 5) + " hrs";
+                } catch (e) {
+                    return "—";
+                }
             },
         },
         {
-            id: "localizacion",
-            header: "Ubicación",
-            cell: ({ row }) => row.original.localizacion,
+            accessorKey: "paciente_nombre",
+            header: "Paciente",
         },
         {
-            id: "quirofano",
+            accessorKey: "habitacion_nombre", // Usamos el nombre que viene del map del controller
             header: "Quirófano",
-            cell: ({ row }) => row.original.habitacion?.nombre ?? "No asignado",
         },
         {
             id: "equipo",
-            header: "Equipo Médico",
+            header: "Solicitudes",
             cell: ({ row }) => (
                 <div className="text-xs">
-                    <p><span className="font-semibold">Inst:</span> {row.original.instrumentista}</p>
-                    <p><span className="font-semibold">Anest:</span> {row.original.anestesiologo}</p>
+                    <p><span className="font-semibold">Inst:</span> {row.original.instrumentista || 'No'}</p>
+                    <p><span className="font-semibold">Anest:</span> {row.original.anestesiologo || 'No'}</p>
                 </div>
             ),
         },
         {
-            id: "usuario",
+            accessorKey: "user_nombre",
             header: "Solicitante",
             cell: ({ row }) => (
                 <span className="font-medium text-gray-700 uppercase text-xs">
-                    {row.original.user?.name || row.original.user?.nombre || "N/A"}
+                    {row.original.user_nombre}
                 </span>
             ),
         },
@@ -98,7 +93,7 @@ const Index = ({ reservaciones }: Props) => {
             id: "acciones",
             header: "Acciones",
             cell: ({ row }) => (
-                <div className="flex gap-2">
+                <div className="flex gap-2" onClick={(e) => e.stopPropagation()}>
                     <Link
                         href={route("quirofanos.show", row.original.id)}
                         className="p-2 text-gray-600 hover:bg-gray-100 rounded-full transition"
@@ -107,7 +102,6 @@ const Index = ({ reservaciones }: Props) => {
                     </Link>
                     <Link
                         href={route("quirofanos.edit", row.original.id)}
-                        onClick={(e) => e.stopPropagation()}
                         className="p-2 text-blue-600 hover:bg-blue-100 rounded-full transition"
                     >
                         <Pencil size={18} />
@@ -131,11 +125,16 @@ const Index = ({ reservaciones }: Props) => {
 
     return (
         <div className="p-4 md:p-8">
+            <Head title="Control de Quirófanos" />
+            
             <div className="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
                 <h1 className="text-2xl font-bold text-gray-800">
                     Control de Quirófanos
                 </h1>
 
+                {/* IMPORTANTE: El create de tu controller pide paciente y estancia. 
+                    Si es una reservación general, podrías necesitar una ruta distinta 
+                    o pasar parámetros nulos si tu route lo permite */}
                 <AddButton href={route("quirofanos.create")}>
                     Nueva Reservación
                 </AddButton>
@@ -146,7 +145,7 @@ const Index = ({ reservaciones }: Props) => {
                     type="text"
                     value={globalFilter}
                     onChange={(e) => setGlobalFilter(e.target.value)}
-                    placeholder="Buscar por médico, equipo o fecha..."
+                    placeholder="Buscar por paciente, quirófano o solicitante..."
                     className="w-full max-w-sm p-2.5 border border-gray-300 rounded-lg text-sm shadow-sm focus:ring-2 focus:ring-indigo-500 outline-none"
                 />
             </div>
@@ -191,7 +190,6 @@ const Index = ({ reservaciones }: Props) => {
                 </table>
             </div>
             
-            {/* Paginación simple */}
             <div className="mt-4 flex items-center justify-between px-2">
                 <div className="text-xs text-gray-500">
                     Mostrando {table.getRowModel().rows.length} de {data.length} registros
