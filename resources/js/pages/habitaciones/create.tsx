@@ -70,7 +70,6 @@ const HabitacionCreate: React.FC<Props> = ({ habitacion }) => {
             options={optionsTipo}
             placeholder="Selecciona el tipo"
             value={data.tipo}
-            // asumo que SelectInput pasa directamente el valor seleccionado (string)
             onChange={(value: string) => setData("tipo", value)}
             error={errors.tipo}
           />
@@ -79,7 +78,7 @@ const HabitacionCreate: React.FC<Props> = ({ habitacion }) => {
             label="Ubicación"
             options={optionUbicacion}
             placeholder="Selecciona el tipo"
-            value={data.tipo}
+            value={data.ubicacion} 
             onChange={(value: string) => setData("ubicacion", value)}
             error={errors.ubicacion}
           />

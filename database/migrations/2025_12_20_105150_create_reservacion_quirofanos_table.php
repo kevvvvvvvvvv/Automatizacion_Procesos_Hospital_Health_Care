@@ -15,8 +15,9 @@ return new class extends Migration
         $table->id();
         $table->foreignId('habitacion_id')->constrained('habitaciones')->cascadeOnDelete();
         $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
-        $table->foreignId('estancia_id')->constrained('estancias')->cascadeOnDelete();
-
+        $table->foreignId('estancia_id')->constrained('estancias')->cascadeOnDelete()->nullable();
+        $table->string('paciente')->nullble();
+        $table->string('tratante');
         $table->string('procedimiento');
         $table->string('tiempo_estimado');
         $table->string('medico_operacion');
