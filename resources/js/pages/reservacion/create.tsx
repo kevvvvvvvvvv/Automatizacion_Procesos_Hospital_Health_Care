@@ -16,7 +16,7 @@ interface Props {
 
 const localizaciones = [
   { value: "Plan de ayutla", label: "Plan de Ayutla" },
-  { value: "Díaz Ordaz", label: "Díaz Ordaz" },
+  { value: "Gustavo Díaz Ordaz", label: "Gustavo Díaz Ordaz" },
 ];
 
 const generarHorarios = () => {
