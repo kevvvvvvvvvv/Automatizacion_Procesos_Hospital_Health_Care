@@ -770,6 +770,8 @@ export interface ReservacionQuirofano{
     id: number;
     habitaciones_id: number;
     user_id:number;
+    tratante: string;
+    paciente: string;
     instrumentista: string;
     anestesiologo: string;
     insumos_medicamentos: text;

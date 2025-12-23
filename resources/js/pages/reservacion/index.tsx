@@ -40,6 +40,7 @@ type Reservacion = {
   fecha: string;
   horas: number;
   horarios: ReservacionHorario[];
+  estatus: string;
   user: User | null; 
 };
 
@@ -95,6 +96,12 @@ const Index = ({ reservaciones }: Props) => {
           </span>
         );
       },
+    },
+    {
+      id: "Estatus",
+      header: "Estatus",
+      cell: ({row}) =>
+        row.original.estatus ?? "No encontrado",
     },
     {
       id: "acciones",
