@@ -84,11 +84,12 @@ public function store(ReservacionRequest $request)
         $sedeBusqueda = $data['localizacion']; 
 
         $reservacion = Reservacion::create([
-            'localizacion' => $sedeBusqueda,
-            'fecha'        => $data['fecha'],
-            'horas'        => count($horarios),
-            'user_id'      => Auth::id(),
-        ]);
+        'localizacion' => $data['localizacion'],
+        'fecha'        => $data['fecha'],
+        'horas'        => count($horarios),
+        'user_id'      => Auth::id(),
+        'estatus'      => 'pendiente', 
+    ]);
 
 
         foreach ($horarios as $fechaHora) {
@@ -111,7 +112,7 @@ public function store(ReservacionRequest $request)
         }
 
         DB::commit();
-        return redirect()->route('reservaciones.index')->with('success', 'Reservación creada');
+        return redirect()->route('reservaciones.show', $reservacion->id);
     } catch (\Throwable $e) {
         DB::rollBack();
         return back()->withErrors(['error' => $e->getMessage()])->withInput();

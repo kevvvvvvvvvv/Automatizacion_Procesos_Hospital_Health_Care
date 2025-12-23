@@ -1,9 +1,8 @@
 import React from "react";
-import { Head, Link } from "@inertiajs/react";
+import { Head, Link, useForm } from "@inertiajs/react";
 import MainLayout from "@/layouts/MainLayout";
 import { route } from "ziggy-js";
-import { Pencil, ArrowLeft, Calendar, MapPin, User, Clock } from "lucide-react";
-
+import { Pencil, Calendar, MapPin, User, CreditCard, Lock, DoorOpen, Eye } from "lucide-react";
 import InfoField from "@/components/ui/info-field";
 
 interface Props {
@@ -13,106 +12,139 @@ interface Props {
 }
 
 const ShowReservacion = ({ reservacion, user, horarios }: Props) => {
-  // Manejo de carga o datos inexistentes
   if (!reservacion) return <div className="p-10 text-center">Cargando...</div>;
+
+  // --- LÓGICA DE COLORES POR CONSULTORIO ---
+  // Definimos una paleta de colores suaves (bg) y fuertes (text/border)
+  const colorPalette = [
+    { bg: 'bg-indigo-50', text: 'text-indigo-600', border: 'border-indigo-200' },
+    { bg: 'bg-emerald-50', text: 'text-emerald-600', border: 'border-emerald-200' },
+    { bg: 'bg-amber-50', text: 'text-amber-600', border: 'border-amber-200' },
+    { bg: 'bg-rose-50', text: 'text-rose-600', border: 'border-rose-200' },
+    { bg: 'bg-cyan-50', text: 'text-cyan-600', border: 'border-cyan-200' },
+  ];
+
+  // Mapeamos cada consultorio único a un color de la paleta
+  const consultoriosUnicos = Array.from(new Set(horarios.map(h => h.habitacion?.identificador)));
+  const colorMap: Record<string, typeof colorPalette[0]> = {};
+  
+  consultoriosUnicos.forEach((id, index) => {
+    colorMap[id || "S/A"] = colorPalette[index % colorPalette.length];
+  });
+
+  const { data, setData, post, processing } = useForm({
+    nombre_tarjeta: '',
+    numero_tarjeta: '',
+    expiracion: '',
+    cvv: '',
+  });
 
   return (
     <MainLayout pageTitle="Detalles de Reservación" link="reservaciones.index">
       <Head title={`Reservación #${reservacion.id}`} />
 
-      <div className="max-w-4xl mx-auto p-4 md:p-8">
-        
-        {/* Barra de Acciones Superior */}
-        <div className="flex justify-between items-center mb-8">
-   
-        </div>
-
+      <div className="max-w-6xl mx-auto p-4 md:p-8">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           
-          {/* Columna Izquierda: Tarjeta de Información */}
+          {/* Columna Izquierda: Info y Pago */}
           <div className="md:col-span-1 space-y-6">
             <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
-              <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-6">
-                Información General
-              </h3>
-              
+              <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-6">Información General</h3>
               <div className="space-y-6">
                 <div className="flex items-center">
-                  <div className="bg-indigo-50 p-2 rounded-lg mr-4">
-                    <User className="text-indigo-600" size={20} />
-                  </div>
+                  <div className="bg-slate-50 p-2 rounded-lg mr-4"><User className="text-slate-600" size={20} /></div>
                   <div>
                     <p className="text-[11px] text-gray-400 uppercase font-bold">Médico / Usuario</p>
-                    <InfoField label="Nombre: " value={`${user.nombre} ${user.apellido_paterno}`}/>
-                    
+                    <InfoField label="" value={`${user.nombre} ${user.apellido_paterno}`}/>
                   </div>
                 </div>
-
                 <div className="flex items-center">
-                  <div className="bg-indigo-50 p-2 rounded-lg mr-4">
-                    <Calendar className="text-indigo-600" size={20} />
-                  </div>
+                  <div className="bg-slate-50 p-2 rounded-lg mr-4"><Calendar className="text-slate-600" size={20} /></div>
                   <div>
-                    <p className="text-[11px] text-gray-400 uppercase font-bold">Fecha de Reserva</p>
+                    <p className="text-[11px] text-gray-400 uppercase font-bold">Fecha</p>
                     <p className="text-sm font-semibold text-gray-900">
-                      {new Date(reservacion.fecha).toLocaleDateString("es-MX", {
-                        weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
-                      })}
+                      {new Date(reservacion.fecha).toLocaleDateString("es-MX", { weekday: 'long', day: 'numeric', month: 'long', timeZone: 'UTC' })}
                     </p>
-                  </div>
-                </div>
-
-                <div className="flex items-center">
-                  <div className="bg-indigo-50 p-2 rounded-lg mr-4">
-                    <MapPin className="text-indigo-600" size={20} />
-                  </div>
-                  <div>
-                    <p className="text-[11px] text-gray-400 uppercase font-bold">Ubicación</p>
-                    <p className="text-sm font-semibold text-gray-900">{reservacion.localizacion}</p>
                   </div>
                 </div>
               </div>
             </div>
+
+            {/* Formulario de Pago */}
+            <div className="md:col-span-1 space-y-6">
+            {reservacion.estatus === 'pendiente' && (
+                <div className="bg-amber-50 border border-amber-200 p-4 rounded-2xl">
+                    <p className="text-amber-800 text-xs font-bold uppercase flex items-center gap-2">
+                        <Eye size={14} /> Reservación Temporal
+                    </p>
+                    <p className="text-amber-700 text-[11px] mt-1">
+                        Los consultorios están apartados. Tienes 10 minutos para completar el pago o se liberarán automáticamente.
+                    </p>
+                </div>
+            )}
+
+    {/* Aquí va tu tarjeta de Información General y luego la de Pago */}
+    {/* Si el estatus es 'pagado', podrías ocultar el formulario de pago y mostrar un ticket */}
+</div>
+            <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+              <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-6">Método de Pago</h3>
+              <form className="space-y-4">
+                <input type="text" placeholder="Nombre en Tarjeta" className="w-full border-gray-200 rounded-xl text-sm" onChange={e => setData('nombre_tarjeta', e.target.value)} />
+                <input type="text" placeholder="Número de Tarjeta" className="w-full border-gray-200 rounded-xl text-sm" onChange={e => setData('numero_tarjeta', e.target.value)} />
+                <div className="grid grid-cols-2 gap-4">
+                  <input type="text" placeholder="MM/AA" className="border-gray-200 rounded-xl text-sm" />
+                  <input type="password" placeholder="CVV" className="border-gray-200 rounded-xl text-sm" />
+                </div>
+                <button className="w-full bg-indigo-600 text-white text-sm font-bold py-3 rounded-xl hover:bg-indigo-700 transition flex items-center justify-center gap-2">
+                  <Lock size={14} /> Pagar Ahora
+                </button>
+              </form>
+            </div>
           </div>
 
-          {/* Columna Derecha: Listado de Bloques */}
+          {/* Columna Derecha: Bloques con Colores Diferenciados */}
           <div className="md:col-span-2">
             <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
               <div className="px-6 py-4 border-b border-gray-50 flex items-center justify-between bg-gray-50/50">
-                <h3 className="font-bold text-gray-700 text-sm">Bloques de Horario Asignados</h3>
-                <span className="bg-indigo-100 text-indigo-700 text-[10px] px-2 py-1 rounded-full font-bold">
-                  {horarios?.length || 0} BLOQUES
-                </span>
+                <h3 className="font-bold text-gray-700 text-sm">Bloques Horarios</h3>
+                <div className="flex gap-2">
+                   {consultoriosUnicos.map((id) => (
+                     <span key={id} className={`text-[9px] px-2 py-0.5 rounded-full border ${colorMap[id || "S/A"].bg} ${colorMap[id || "S/A"].text} ${colorMap[id || "S/A"].border} font-bold`}>
+                       {id}
+                     </span>
+                   ))}
+                </div>
               </div>
               
               <div className="divide-y divide-gray-50">
-                {horarios && horarios.length > 0 ? (
-                  horarios.map((h: any, index: number) => (
-                    <div key={index} className="px-6 py-4 flex justify-between items-center hover:bg-gray-50/50 transition">
+                {horarios?.map((h: any, index: number) => {
+                  const idConsultorio = h.habitacion?.identificador || "S/A";
+                  const estilo = colorMap[idConsultorio];
+
+                  return (
+                    <div key={index} className={`px-6 py-4 flex justify-between items-center transition hover:bg-gray-50`}>
                       <div className="flex items-center">
+                        {/* Indicador de color lateral */}
+                        <div className={`w-1 h-10 rounded-full mr-4 ${estilo.text.replace('text', 'bg')}`} />
+                        
                         <div className="bg-white border border-gray-200 text-gray-700 font-mono font-bold px-3 py-1.5 rounded-lg text-sm mr-4 shadow-sm">
-                          {new Date(h.fecha_hora).toLocaleTimeString("es-MX", {
-                            hour: '2-digit', minute: '2-digit'
-                          })}
+                          {new Date(h.fecha_hora).toLocaleTimeString("es-MX", { hour: '2-digit', minute: '2-digit' })}
                         </div>
                         <div className="flex flex-col">
                            <span className="text-gray-900 text-sm font-medium">Bloque de consulta</span>
-                           <span className="text-gray-400 text-[10px] uppercase tracking-tighter">Duración: 30 minutos</span>
+                           <span className={`${estilo.text} text-[10px] font-bold uppercase`}>{idConsultorio}</span>
                         </div>
                       </div>
-                      <div className="text-right">
-                        <span className="text-[10px] text-gray-400 block font-bold uppercase">Consultorio</span>
-                        <span className="font-bold text-indigo-600 bg-indigo-50 px-2 py-1 rounded text-sm">
-                          {h.habitacion?.identificador || "S/A"}
+
+                      <div className={`flex flex-col items-end px-4 py-2 rounded-xl border ${estilo.bg} ${estilo.border}`}>
+                        <span className={`text-[9px] ${estilo.text} font-black uppercase tracking-tighter`}>Consultorio</span>
+                        <span className={`font-bold ${estilo.text} text-base`}>
+                          {idConsultorio}
                         </span>
                       </div>
                     </div>
-                  ))
-                ) : (
-                  <div className="p-10 text-center text-gray-400 text-sm italic">
-                    No hay horarios registrados.
-                  </div>
-                )}
+                  );
+                })}
               </div>
             </div>
           </div>
