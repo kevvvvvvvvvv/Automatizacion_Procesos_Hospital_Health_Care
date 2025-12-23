@@ -211,7 +211,7 @@ class UserSeeder extends Seeder
             'apellido_materno' => 'Ruiz',
             'sexo' => 'Femenino',
             'fecha_nacimiento' => '1992-05-15',
-            'email' => 'laboratorio@test.com',
+            'email' => 'tmko220776@upemor.edu.mx',
             'password' => Hash::make('12345678'),
         ]);
 
