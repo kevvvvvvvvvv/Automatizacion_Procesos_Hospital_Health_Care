@@ -14,11 +14,77 @@ class HabitacionSeeder extends Seeder
     public function run(): void
     {
         Habitacion::create([
+            'identificador' => 'Consultorio 1',
+            'tipo' => 'Consultorio',
+            'estado' => 'Libre',
+            'ubicacion' => 'Plan de ayutla',
+            'piso' => 'Planta Ayutla',
+        ]);
+
+        Habitacion::create([
+            'identificador' => 'Consultorio 2',
+            'tipo' => 'Consultorio',
+            'estado' => 'Libre',
+            'ubicacion' => 'Plan de ayutla',
+            'piso' => 'Planta baja',
+        ]);
+
+        Habitacion::create([
+            'identificador' => 'Consultorio 3',
+            'tipo' => 'Consultorio',
+            'estado' => 'Libre',
+            'ubicacion' => 'Plan de ayutla',
+            'piso' => 'Planta baja',
+        ]);
+
+        Habitacion::create([
+            'identificador' => 'Consultorio 4',
+            'tipo' => 'Consultorio',
+            'estado' => 'Libre',
+            'ubicacion' => 'Plan de ayutla',
+            'piso' => 'Planta baja',
+        ]);
+
+        Habitacion::create([
+            'identificador' => 'Consultorio 5',
+            'tipo' => 'Consultorio',
+            'estado' => 'Libre',
+            'ubicacion' => 'Plan de ayutla',
+            'piso' => 'Planta baja',
+        ]);
+
+        Habitacion::create([
+            'identificador' => 'Consultorio 1',
+            'tipo' => 'Consultorio',
+            'estado' => 'Libre',
+            'ubicacion' => 'Gustavo Díaz Ordaz',
+            'piso' => 'Planta baja',
+        ]);
+
+        Habitacion::create([
+            'identificador' => 'Consultorio 2',
+            'tipo' => 'Consultorio',
+            'estado' => 'Libre',
+            'ubicacion' => 'Gustavo Díaz Ordaz',
+            'piso' => 'Planta baja',
+        ]);
+
+        Habitacion::create([
+            'identificador' => 'Consultorio 3',
+            'tipo' => 'Consultorio',
+            'estado' => 'Libre',
+            'ubicacion' => 'Gustavo Díaz Ordaz',
+            'piso' => 'Planta baja',
+        ]);
+
+
+        //Habiracions para hospitalización
+        Habitacion::create([
             'identificador' => 'Suit 1A',
             'tipo' => 'Habitación',
             'estado' => 'Libre',
             'ubicacion' => 'Plan de ayutla',
-            'piso' => 'Planta Baja',
+            'piso' => 'Planta baja',
         ]);
 
         Habitacion::create([
@@ -26,47 +92,7 @@ class HabitacionSeeder extends Seeder
             'tipo' => 'Habitación',
             'estado' => 'Libre',
             'ubicacion' => 'Plan de ayutla',
-            'piso' => 'Planta Baja',
-        ]);
-
-        Habitacion::create([
-            'identificador' => 'Suit 2',
-            'tipo' => 'Consultorio',
-            'estado' => 'Libre',
-            'ubicacion' => 'Plan de ayutla',
-            'piso' => 'Planta Baja',
-        ]);
-
-        Habitacion::create([
-            'identificador' => 'Suit 3',
-            'tipo' => 'Consultorio',
-            'estado' => 'Libre',
-            'ubicacion' => 'Plan de ayutla',
-            'piso' => 'Planta Baja',
-        ]);
-
-        Habitacion::create([
-            'identificador' => 'Suit 4',
-            'tipo' => 'Consultorio',
-            'estado' => 'Libre',
-            'ubicacion' => 'Plan de ayutla',
-            'piso' => 'Planta Baja',
-        ]);
-
-        Habitacion::create([
-            'identificador' => 'Suit 5',
-            'tipo' => 'Consultorio',
-            'estado' => 'Libre',
-            'ubicacion' => 'Plan de ayutla',
-            'piso' => 'Planta Baja',
-        ]);
-
-        Habitacion::create([
-            'identificador' => 'Suit 6',
-            'tipo' => 'Consultorio',
-            'estado' => 'Libre',
-            'ubicacion' => 'Plan de ayutla',
-            'piso' => 'Planta Baja',
+            'piso' => 'Planta baja',
         ]);
     }
 }

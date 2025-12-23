@@ -64,7 +64,7 @@ Route::resource('pacientes', PacienteController::class)->middleware('auth');
 Route::resource('doctores', DoctorController::class)->middleware('auth');  
 Route::resource('reservaciones', ReservacionController::class)->middleware('auth');
 Route::resource('quirofanos', ReservacionQuirofanoController::class)->middleware('auth');
-
+Route::post('/reservaciones/{reservacione}/pagar',[ReservacionController::class,'pagar'])->middleware('auth');
 
 
 Route::resource('pacientes.responsable', FamiliarResponsableController::class);
