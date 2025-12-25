@@ -82,9 +82,21 @@ export interface User {
     updated_at: string;
     roles: string[];
 
+    credenciales: CredencialEmpleado[];
+
     roles?: string[];
     permissions?: string[]; 
 };
+
+export interface CredencialEmpleado {
+    cedula_profesional: string;
+    titulo: string;
+}
+
+export interface Role {
+    id: number;
+    name: string;
+}
 
 export interface FormularioCatalogo {
     id: number;

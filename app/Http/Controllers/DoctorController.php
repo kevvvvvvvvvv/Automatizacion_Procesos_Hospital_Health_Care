@@ -2,16 +2,20 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UserRequest;
 use App\Models\CredencialEmpleado;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Models\Cargo;
 use Inertia\Inertia;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Log;  
+use Illuminate\Support\Facades\Hash;  
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests; 
+use Spatie\Permission\Models\Role;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Exception;
 
 class DoctorController extends Controller implements HasMiddleware
 {
@@ -28,38 +32,33 @@ class DoctorController extends Controller implements HasMiddleware
         ];
     }
 
-    public function index(Request $request)
+    public function index()
     {
         $query = User::query()
             ->select([
                 'id', 'nombre', 'apellido_paterno', 'apellido_materno', 'email', 
-                'fecha_nacimiento', 'cargo_id', 'colaborador_responsable_id', 
+                'fecha_nacimiento', 'colaborador_responsable_id', 
                 'sexo', 'created_at'
             ])
             ->orderBy('created_at', 'desc');
 
-        $doctores = $query->with(['cargo', 'colaborador_responsable'])
+        $doctores = $query->with(['colaborador_responsable', 'roles'])
             ->get()
             ->map(function ($user) {
                 return [
                     'id' => $user->id,
-                    'nombre_completo' => $user->nombre_completo,  // Usa accessor
+                    'nombre_completo' => $user->nombre_completo,  
                     'email' => $user->email ?? 'No proporcionado',
-                    'fecha_nacimiento' => $user->fecha_nacimiento_formateada ?? 'No especificada',  // CORREGIDO: snake_case
-                    'cargo' => $user->cargo?->nombre ?? 'Sin cargo',
-                    'responsable' => $user->colaborador_responsable?->nombre_completo ?? 'Sin responsable',  // Usa accessor
+                    'fecha_nacimiento' => $user->fecha_nacimiento_formateada ?? 'No especificada',  
+                    'cargo' => $user->roles->first()?->name ?? 'Sin cargo',
+                    'responsable' => $user->colaborador_responsable?->nombre_completo ?? 'Sin responsable', 
                     'created_at' => date('Y-m-d H:i', strtotime($user->created_at)),
                     'sexo' => $user->sexo ?? 'No especificado',
-                    'professional_qualifications' => $user->professional_qualifications ?? [],  // AGREGADO
+                    'professional_qualifications' => $user->professional_qualifications ?? [], 
                 ];
             });
-
-        // DEBUG TEMPORAL: Comenta después
-        // Log::info('Doctores en index:', $doctores->toArray());
-
         return Inertia::render('Medicos/index', [
             'doctores' => $doctores,
-            'flash' => $request->session()->get('success'),
         ]);
     }
 
@@ -67,24 +66,24 @@ class DoctorController extends Controller implements HasMiddleware
     {
         $doctor = User::with(['cargo', 'colaborador_responsable'])->findOrFail($id);
 
-        // Mapeo COMPLETO para coincidir con type Doctor en frontend
+
         $doctorData = [
             'id' => $doctor->id,
-            'nombre' => $doctor->nombre ?? '',  // Crudo para fallback
+            'nombre' => $doctor->nombre ?? '', 
             'apellido_paterno' => $doctor->apellido_paterno ?? '',
             'apellido_materno' => $doctor->apellido_materno ?? null,
-            'nombre_completo' => $doctor->nombre_completo ?? trim(($doctor->nombre ?? '') . ' ' . ($doctor->apellido_paterno ?? '') . ' ' . ($doctor->apellido_materno ?? '')),  // Accessor o fallback
-            'fecha_nacimiento' => $doctor->fecha_nacimiento_formateada ?? ($doctor->fecha_nacimiento ? date('d/m/Y', strtotime($doctor->fecha_nacimiento)) : 'No especificada'),  // CORREGIDO: snake_case
+            'nombre_completo' => $doctor->nombre_completo ?? trim(($doctor->nombre ?? '') . ' ' . ($doctor->apellido_paterno ?? '') . ' ' . ($doctor->apellido_materno ?? '')),  
+            'fecha_nacimiento' => $doctor->fecha_nacimiento_formateada ?? ($doctor->fecha_nacimiento ? date('d/m/Y', strtotime($doctor->fecha_nacimiento)) : 'No especificada'),  
             'sexo' => $doctor->sexo ?? null,
             'curp' => $doctor->curp ?? null,
             'cargo' => $doctor->cargo?->nombre ?? 'Sin cargo',
             'colaborador_responsable' => $doctor->colaborador_responsable ? [
                 'id' => $doctor->colaborador_responsable->id,
-                'nombre_completo' => $doctor->colaborador_responsable->nombre_completo ?? 'Sin nombre',  // Accessor o fallback
+                'nombre_completo' => $doctor->colaborador_responsable->nombre_completo ?? 'Sin nombre',  
             ] : null,
             'email' => $doctor->email ?? 'No proporcionado',
-            'created_at' => $doctor->created_at ? date('d/m/Y H:i', strtotime($doctor->created_at)) : 'No disponible',  // Formateado
-            'professional_qualifications' => $doctor->professional_qualifications ?? [],  // AGREGADO: Array de {titulo, cedula}
+            'created_at' => $doctor->created_at ? date('d/m/Y H:i', strtotime($doctor->created_at)) : 'No disponible',  
+            'professional_qualifications' => $doctor->professional_qualifications ?? [],  
         ];
 
         
@@ -95,170 +94,148 @@ class DoctorController extends Controller implements HasMiddleware
 
    
 
-     public function store(Request $request)
+    public function store(UserRequest $request)
     {
-        // Validar campos básicos de users (SIN professional_qualifications)
-        $validatedBasic = $request->validate([
-            'nombre' => 'required|string|max:100',
-            'apellido_paterno' => 'required|string|max:100',
-            'apellido_materno' => 'nullable|string|max:100',
-            'curp' => 'nullable|string|max:18|unique:users,curp', // Unique para evitar duplicados
-            'sexo' => 'nullable|in:Masculino,Femenino',
-            'fecha_nacimiento' => 'required|date',
-            'cargo_id' => 'required|exists:cargos,id', // Asumiendo tabla cargos
-            'colaborador_responsable_id' => 'nullable|exists:users,id', // Otros usuarios
-            'email' => 'required|email|unique:users,email',
-            'password' => 'required|min:8|confirmed', // Requerido en creación, con confirmed para password_confirmation
-        ]);
-        // Validar el array de professional_qualifications por separado (al menos uno)
-        $qualificationsData = $request->validate([
-            'professional_qualifications' => 'required|array|min:1',
-            'professional_qualifications.*.titulo' => 'required|string|max:100',
-            'professional_qualifications.*.cedula' => 'nullable|string|max:50|unique:credencial_empleados,cedula', // Unique global
-        ], [
-            'professional_qualifications.*.cedula.unique' => 'La cédula ya está registrada para otro empleado.',
-        ]);
-        // Crear el usuario en users (solo con campos básicos - NO incluye el array)
-        $user = User::create([
-            'nombre' => $validatedBasic['nombre'],
-            'apellido_paterno' => $validatedBasic['apellido_paterno'],
-            'apellido_materno' => $validatedBasic['apellido_materno'],
-            'curp' => $validatedBasic['curp'],
-            'sexo' => $validatedBasic['sexo'],
-            'fecha_nacimiento' => $validatedBasic['fecha_nacimiento'],
-            'cargo_id' => $validatedBasic['cargo_id'],
-            'colaborador_responsable_id' => $validatedBasic['colaborador_responsable_id'],
-            'email' => $validatedBasic['email'],
-            'password' => Hash::make($validatedBasic['password']), // Hash con bcrypt
-        ]);
-        // AHORA procesar el array y crear filas en credencial_empleados
-        // Cada ítem del array = una fila con id_user = $user->id (nuevo ID)
-             foreach ($qualificationsData['professional_qualifications'] as $qual) {
-                CredencialEmpleado::create([
-            'user_id' => $user->id,
-            'titulo' => $qual['titulo'],
-            'cedula_profesional' => $qual['cedula'] ?? null,
-        ]);
-     }
-     
-        // Redirigir con éxito (Inertia maneja flash messages)
-        return redirect()->route('doctores.index')->with('success', 'Doctor creado correctamente.');
+        $validatedData = $request->validated();
+
+        DB::beginTransaction();
+        try {
+            $user = User::create([
+                'nombre'             => $validatedData['nombre'],
+                'apellido_paterno'   => $validatedData['apellido_paterno'],
+                'apellido_materno'   => $validatedData['apellido_materno'],
+                'curp'               => $validatedData['curp'],
+                'sexo'               => $validatedData['sexo'],
+                'fecha_nacimiento'   => $validatedData['fecha_nacimiento'],
+                'telefono'           => $validatedData['telefono'],
+                'colaborador_responsable_id' => $validatedData['colaborador_responsable_id'],
+                'email'              => $validatedData['email'],
+                'password'           => Hash::make($validatedData['password']),
+            ]);
+
+            $role = Role::find($validatedData['cargo_id']);
+            $user->assignRole($role);
+
+            if (isset($validatedData['professional_qualifications'])) {
+                foreach ($validatedData['professional_qualifications'] as $qual) {
+                    CredencialEmpleado::create([
+                        'user_id'            => $user->id,
+                        'titulo'             => $qual['titulo'],
+                        'cedula_profesional' => $qual['cedula'] ?? null,
+                    ]);
+                }
+            }
+            DB::commit();
+            return redirect()->route('doctores.index')->with('success', 'Doctor creado correctamente.');
+        } catch (Exception $e) {
+            DB::rollBack();
+            Log::error("Fallo al crear doctor: " . $e->getMessage());
+            return back()->withInput()->with('error', 'Error al registrar al colaborador');
+        }
     }
-    // En create: Pasa props para selects (si no lo tienes)
+
+
     public function create()
     {
-        return Inertia::render('Medicos/create', [  // Nota: Corrige el nombre si es 'Medicos/create'
-            'cargos' => \App\Models\Cargo::all(['id', 'nombre']), // Asumiendo modelo Cargo existe
-            'usuarios' => User::whereNotNull('nombre')  // Filtra por columna real (nombre no null)
-                ->select(['id', 'nombre', 'apellido_paterno', 'apellido_materno'])  // Solo columnas reales
-                ->orderBy('nombre')  // Ordena por columna real
+
+        $allRolesInDatabase = Role::select('id','name')->get();
+
+        return Inertia::render('Medicos/create', [  
+            'cargos' => $allRolesInDatabase, 
+            'usuarios' => User::whereNotNull('nombre') 
+                ->select(['id', 'nombre', 'apellido_paterno', 'apellido_materno'])  
+                ->orderBy('nombre')  
                 ->get()
                 ->map(function ($user) {
                     return [
                         'id' => $user->id,
-                        'nombre_completo' => $user->nombre_completo,  // Accessor: Se computa en memoria
+                        'nombre_completo' => $user->nombre_completo, 
                     ];
-                })->toArray(),  // Convierte a array para Inertia
+                })->toArray(), 
         ]);
     }
 
 
-    public function edit($id)
+    public function edit(User $user)
     {
-        $doctor = User::with(['cargo', 'colaborador_responsable'])->findOrFail($id);
-        // Mapea datos del doctor (como en show(), pero con IDs para form)
+        $user->load(['roles', 'credenciales', 'colaborador_responsable']);
+
         $doctorData = [
-            'id' => $doctor->id,
-            'nombre' => $doctor->nombre ?? '',
-            'apellido_paterno' => $doctor->apellido_paterno ?? '',
-            'apellido_materno' => $doctor->apellido_materno ?? null,
-            'curp' => $doctor->curp ?? null,
-            'sexo' => $doctor->sexo ?? null,
-            'fecha_nacimiento' => $doctor->fecha_nacimiento ? $doctor->fecha_nacimiento->format('Y-m-d') : null,  // Formato para <input type="date">
-            'cargo_id' => $doctor->cargo_id ?? null,
-            'colaborador_responsable_id' => $doctor->colaborador_responsable_id ?? null,
-            'email' => $doctor->email ?? '',
-            'professional_qualifications' => $doctor->professional_qualifications ?? [],
-        ];
-        $cargos = [];
-        $usuarios = [];
-        try {
-            
-            if (class_exists(\App\Models\Cargo::class)) {
-                $cargos = Cargo::all(['id', 'nombre'])->toArray();
-            } else {
-                $cargos = [
-                    ['id' => 1, 'nombre' => 'Médico General'],
-                    ['id' => 2, 'nombre' => 'Especialista en Cardiología'],
-                ];
-            }
-            // CORREGIDO: Igual que en create() – campos reales en query, map después
-            $usuariosQuery = User::whereNotNull('cargo_id')
-                ->select(['id', 'nombre', 'apellido_paterno', 'apellido_materno'])  // Solo columnas reales
-                ->orderBy('nombre')  // Ordena por columna real
-                ->get();
-            $usuarios = $usuariosQuery->map(function ($user) {
+            'id' => $user->id,
+            'nombre' => $user->nombre,
+            'apellido_paterno' => $user->apellido_paterno,
+            'apellido_materno' => $user->apellido_materno,
+            'curp' => $user->curp,
+            'sexo' => $user->sexo,
+            'fecha_nacimiento' => $user->fecha_nacimiento ? \Carbon\Carbon::parse($user->fecha_nacimiento)->format('Y-m-d') : '',
+            'email' => $user->email,
+            'telefono' => $user->telefono,
+            'colaborador_responsable_id' => $user->colaborador_responsable_id,
+            'cargo_id' => $user->roles->first()?->id ?? '', 
+            'credenciales' => $user->credenciales->map(function($qual) {
                 return [
-                    'id' => $user->id,
-                    'nombre_completo' => $user->nombre_completo,  // Accessor después de get()
+                    'titulo' => $qual->titulo,
+                    'cedula' => $qual->cedula_profesional, 
                 ];
-            })->toArray();
-        } catch (\Exception $e) {
-            $cargos = [];
-            $usuarios = [];
-        }
-        // DEBUG TEMPORAL: Verifica en consola (comenta después)
-        // Log::info('Datos en edit:', ['doctor' => $doctorData, 'usuarios' => $usuarios]);
-        return Inertia::render('Medicos/edit', [
-            'doctor' => $doctorData,
+            }),
+        ];
+
+        $cargos = Role::select('id', 'name')->orderBy('name')->get();
+        $usuarios = User::select('id', 'nombre', 'apellido_paterno', 'apellido_materno')
+            ->orderBy('nombre')
+            ->get()
+            ->map(function ($u) {
+                return [
+                    'id' => $u->id,
+                    'nombre_completo' => $u->nombre_completo,
+                ];
+            });
+
+        return Inertia::render('Medicos/create', [
+            'user' => $doctorData,
             'cargos' => $cargos,
-            'usuarios' => $usuarios,
         ]);
     }
 
-    // AGREGADO: Método update() para manejar la actualización del doctor
     public function update(Request $request, $id)
     {
-        $doctor = User::findOrFail($id);  // Encuentra el doctor por ID
+        $doctor = User::findOrFail($id);  
 
-        // Validación: Similar a store, pero ignora el ID actual en unique constraints
         $validated = $request->validate([
             'nombre' => 'required|string|max:100',
             'apellido_paterno' => 'required|string|max:100',
-            'apellido_materno' => 'nullable|string|max:100',  // Opcional
-            'curp' => 'nullable|string|max:18|unique:users,curp,' . $id,  // Ignora propio ID
+            'apellido_materno' => 'nullable|string|max:100',  
+            'curp' => 'nullable|string|max:18|unique:users,curp,' . $id, 
             'sexo' => 'nullable|in:Masculino,Femenino',
             'fecha_nacimiento' => 'required|date',
             'cargo_id' => 'required|exists:cargos,id',
             'colaborador_responsable_id' => 'nullable|exists:users,id',
-            'email' => 'required|email|unique:users,email,' . $id,  // Ignora propio ID
-            'password' => 'nullable|string|min:8|confirmed',  // OPCIONAL: Solo si se proporciona
-            'professional_qualifications' => 'required|array|min:1',  // Array de al menos 1
+            'email' => 'required|email|unique:users,email,' . $id,  
+            'password' => 'nullable|string|min:8|confirmed',  
+            'professional_qualifications' => 'required|array|min:1',  
             'professional_qualifications.*.titulo' => 'required|string|max:100',
             'professional_qualifications.*.cedula' => 'nullable|string|max:20',
         ]);
 
-        // Prepara datos para update (password solo si no está vacío)
         $updateData = $validated;
         if (empty($validated['password'])) {
-            unset($updateData['password']);  // No actualizar password si no se proporciona
+            unset($updateData['password']);  
             unset($updateData['password_confirmation']);
         } else {
-            $updateData['password'] = Hash::make($validated['password']);  // Hash si se proporciona
-            unset($updateData['password_confirmation']);  // No guardar confirm
+            $updateData['password'] = Hash::make($validated['password']);  
+            unset($updateData['password_confirmation']);  
         }
 
-        // Actualiza el doctor
+
         $doctor->update($updateData);
 
-        // Opcional: Log para debug
         Log::info('Doctor actualizado:', ['id' => $id, 'data' => $updateData]);
 
         return redirect()->route('doctores.index')
             ->with('success', 'Doctor actualizado exitosamente.');
     }
 
-    // AGREGADO: Método destroy() para eliminar (opcional, si lo usas en el index)
+
     public function destroy($id)
     {
         $doctor = User::findOrFail($id);

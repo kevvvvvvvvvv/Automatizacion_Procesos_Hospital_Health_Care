@@ -26,8 +26,8 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name', 'email', 'password', 
-        'nombre', 'apellido_paterno', 'apellido_materno', 
-        'curp', 'sexo', 'fecha_nacimiento', 'cargo_id', 'colaborador_responsable_id',
+        'nombre', 'apellido_paterno', 'apellido_materno','telefono',
+        'curp', 'sexo', 'fecha_nacimiento', 'colaborador_responsable_id',
     ];
 
     /**
@@ -84,13 +84,6 @@ class User extends Authenticatable
     {
         return $this->fecha_nacimiento ? $this->fecha_nacimiento->format('d/m/Y') : 'No especificada';
     }
-
-
-    public function getCargoNombreAttribute()
-    {
-        return $this->cargo ? $this->cargo->nombre : 'Sin cargo asignado';
-    }
-
 
     public function scopeDoctores($query)
     {
