@@ -89,15 +89,13 @@ class FormularioHojaEnfermeriaController extends Controller
             'formularioInstancia.estancia.hojaOxigenos.userInicio',
             'formularioInstancia.estancia.hojaOxigenos.userFin',  
         );
+
         $estancia = $hojasenfermeria->formularioInstancia->estancia;
         $estancia->load('hojaSondasCateters');
 
-        //dd($hojasenfermeria->toArray());
-
         $paciente = $hojasenfermeria->formularioInstancia->estancia->paciente;
 
-        $medicamentos = ProductoServicio::where('subtipo','MEDICAMENTOS')->get();
-        $soluciones = ProductoServicio::where('subtipo','INSUMOS')->get();  
+ 
 
         $columnasGraficas = [
             'fecha_hora_registro',
@@ -119,7 +117,8 @@ class FormularioHojaEnfermeriaController extends Controller
                                 ->filter() 
                                 ->sortByDesc('created_at')
                                 ->values();
-        
+        $medicamentos = ProductoServicio::where('subtipo','MEDICAMENTOS')->get();
+        $soluciones = ProductoServicio::where('subtipo','INSUMOS')->get(); 
         $medicos = User::all();
         $usuarios = User::all();
 
@@ -129,7 +128,10 @@ class FormularioHojaEnfermeriaController extends Controller
             ->get();
 
 
-        $notaPostoperatoria = $estancia->notasPostoperatorias()->latest()->first();
+        $nota = $this->obtenerListaTratamiento($estancia);
+
+        //dd($nota->toArray());
+
         return Inertia::render('formularios/hojas-enfermerias/edit',[
             'paciente' => $paciente,
             'estancia' => $estancia,
@@ -141,7 +143,9 @@ class FormularioHojaEnfermeriaController extends Controller
             'solicitudesAnteriores' => $solicitudesAnteriores,
             'medicos' => $medicos,
             'usuarios' => $usuarios,
-            'notaPostoperatoria' => $notaPostoperatoria,
+
+            'nota' =>$nota,
+            'checklistInicial' => $nota ? $nota->checklistItems->where('is_completed', true)->values() : []
         ]);
     }
 
@@ -168,4 +172,29 @@ class FormularioHojaEnfermeriaController extends Controller
         
         return Redirect::back()->with('success', $message);
     }
+
+    private function obtenerListaTratamiento(Estancia $estancia){
+        $notaPostoperatoria = $estancia->notasPostoperatorias()->latest()->first();
+        $notaEvolucion = $estancia->notasEvoluciones()->latest()->first();
+
+        $nota = null;
+
+        if ($notaPostoperatoria && $notaEvolucion) {
+            $nota = $notaPostoperatoria->created_at > $notaEvolucion->created_at 
+                    ? $notaPostoperatoria 
+                    : $notaEvolucion;
+        } elseif ($notaPostoperatoria) {
+            $nota = $notaPostoperatoria;
+        } else {
+            $nota = $notaEvolucion;
+        }
+
+        if ($nota) {
+            $nota->load('checklistItems');
+        }
+        
+        return $nota;
+    }
 }
+
+
