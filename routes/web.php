@@ -41,6 +41,7 @@ use App\Http\Controllers\ConsentimientoController;
 use App\Http\Controllers\ReservacionController;
 use App\Http\Controllers\ReservacionQuirofanoController;
 use App\Http\Controllers\PersonalEmpleadoController;
+use App\Http\Controllers\CheckListController;
 
 
 use Illuminate\Support\Facades\Route;
@@ -86,6 +87,8 @@ Route::resource('pacientes.estancias.notasevoluciones', NotaEvolucionController:
 Route::resource('pacientes.estancias.notaspreanestesicas', NotaPreAnestesicaController::class)->shallow()->middleware('auth');
 Route::resource('pacientes.estancias.hojasenfermeriasquirofanos',HojaEnfemeriaQuirofanoController::class)->shallow()->middleware('auth');
 Route::resource('pacientes.estancias.consentimientos', ConsentimientoController::class)->shallow()->middleware('auth');
+
+Route::post('/checklist/toggle', [ChecklistController::class, 'toggle'])->name('checklist.toggle');
 
 Route::post('/pacientes/{paciente}/estancias/{estancia}/consentimientos', 
     [ConsentimientoController::class, 'store']

@@ -9,7 +9,6 @@ import { Estancia, Paciente, User, FormularioInstancia, Habitacion, FamiliarResp
 import InfoCard from '@/components/ui/info-card';
 import InfoField from '@/components/ui/info-field';
 import { usePermission } from '@/hooks/use-permission';
-import consentimientos from '@/routes/consentimientos';
 
 interface ShowEstanciaProps {
     estancia: Estancia & {
@@ -61,6 +60,7 @@ const Show = ({ estancia }: ShowEstanciaProps) => {
            
             }
             
+            {/** 
             <div className="flex justify-end w-full mb-4">
                 <Link 
                     href={route("quirofanos.create", { 
@@ -70,9 +70,10 @@ const Show = ({ estancia }: ShowEstanciaProps) => {
                     className="inline-flex items-center justify-center gap-2 px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white hover:opacity-90 transition"
                     style={{ backgroundColor: '#1B1C38' }}
                 >
-                    Programar Cirugía
+                    Programar cirugía
                 </Link>
             </div>
+            */}
             
 
             <InfoCard title={`Estancia para: ${paciente.nombre} ${paciente.apellido_paterno} ${paciente.apellido_materno}`}>
@@ -368,7 +369,7 @@ const Show = ({ estancia }: ShowEstanciaProps) => {
                     <div className="space-y-4">
                                 {estancia.consentimiento && estancia.consentimiento.length > 0 ? (
                                     estancia.consentimiento.map((c) => {
-                                        const raw = c.route_pdf; // 'pdfs/consentimiento/Consentimiento_informado_hospitalizacion.blade.php'
+                                        const raw = c.route_pdf; 
                                         const normalized = raw
                                         .replace('consentimiento/', '')
                                         .replace('.blade.php', '')

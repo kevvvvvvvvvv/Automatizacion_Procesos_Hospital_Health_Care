@@ -99,7 +99,7 @@ const Generalidades: React.FC<GeneralidadesProps> = ({ data, setData, errors }) 
         type="number"
         value={getValue(data.talla)}
         onChange={(e) => setData('talla', e.target.value)}
-        placeholder="Ej: 1.75"
+        placeholder="Ej: 175"
         error={errors.talla}
       />
 
