@@ -20,20 +20,20 @@ use Illuminate\Support\Facades\Notification;
 use App\Models\User;
 use App\Notifications\NuevaSolicitudEstudios;
 use Inertia\Inertia;
+use App\Services\TwilioWhatsAppService;
 
 class SolicitudEstudioController extends Controller
 {
-    public function store(SolicitudEstudioRequest $request, Estancia $estancia)
+    public function store(SolicitudEstudioRequest $request, Estancia $estancia, TwilioWhatsAppService $twilio)
     {
         
         $validatedData = $request->validated();
-
+        DB::beginTransaction();
         try {
-            DB::beginTransaction();
-
             $solicitud = $this->crearCabeceraSolicitud($request, $estancia);
             $itemsParaNotificar = $this->guardarItems($request, $solicitud);
             $this->procesarNotificaciones($solicitud, $itemsParaNotificar);
+            $this->enviarRecordatorioCita($twilio);
 
             DB::commit();
             return Redirect::back()->with('success', 'Solicitud creada y notificada.');
@@ -104,6 +104,85 @@ class SolicitudEstudioController extends Controller
             'grupos_estudios' => $gruposFormatted,
             'personal' => $personal,
         ]);
+    }
+
+    public function update(Request $request, SolicitudEstudio $solicitudes_estudio)
+    {
+        $validated = $request->validate([
+            'grupos' => 'required|array',
+            // Validamos campos dentro de cada grupo
+            'grupos.*.fecha_hora_grupo' => 'nullable|date',
+            'grupos.*.problema_clinico' => 'nullable|string|max:500',
+            'grupos.*.incidentes_accidentes' => 'nullable|string|max:500',
+            // Validamos el archivo (importante usar reglas de archivo)
+            'grupos.*.archivo_grupo' => 'nullable|file|mimes:pdf,jpg,jpeg,png,xlsx,xls|max:10240', // Max 10MB
+            
+            // Validamos los items dentro de cada grupo
+            'grupos.*.items' => 'required|array',
+            'grupos.*.items.*.id' => 'required|exists:solicitud_items,id',
+            'grupos.*.items.*.cancelado' => 'boolean',
+        ]);
+
+        try {
+            DB::transaction(function () use ($request) {
+                // Iteramos sobre cada grupo recibido del formulario
+                foreach ($request->grupos as $index => $grupoData) {
+                    
+                    $rutaArchivo = null;
+
+                    // 2. Manejo de subida de archivos
+                    // Nota: Accedemos usando el índice numérico del array
+                    if ($request->hasFile("grupos.{$index}.archivo_grupo")) {
+                        $archivo = $request->file("grupos.{$index}.archivo_grupo");
+                        // Guardar en disco 'public' dentro de carpeta 'resultados'
+                        $rutaArchivo = $archivo->store('resultados_estudios', 'public');
+                    }
+
+                    // 3. Actualizar cada Item (Estudio individual) dentro del grupo
+                    foreach ($grupoData['items'] as $itemData) {
+                        $item = SolicitudItem::findOrFail($itemData['id']);
+
+                        if ($itemData['cancelado']) {
+                            // CASO A: El estudio fue cancelado
+                            $item->update([
+                                'estado' => 'CANCELADO',
+                                'fecha_realizacion' => now(),
+                                // Limpiamos o mantenemos notas según tu lógica
+                                'notas_cancelacion' => 'Cancelado durante la entrega de resultados',
+                            ]);
+                        } else {
+                            // CASO B: El estudio se realizó correctamente
+                            
+                            // Preparamos datos a actualizar
+                            $datosActualizar = [
+                                'estado' => 'FINALIZADO', // O 'ENTREGADO'
+                                'fecha_realizacion' => $grupoData['fecha_hora_grupo'] ?? now(),
+                                'problema_clinico' => $grupoData['problema_clinico'],
+                                'incidentes_accidentes' => $grupoData['incidentes_accidentes'],
+                            ];
+
+                            // Solo actualizamos la ruta del archivo si se subió uno nuevo
+                            // Si no, mantenemos el anterior (si existía)
+                            if ($rutaArchivo) {
+                                $datosActualizar['ruta_archivo_resultado'] = $rutaArchivo;
+                            }
+
+                            $item->update($datosActualizar);
+                        }
+                    }
+                }
+                
+                // Opcional: Actualizar estatus general de la solicitud padre
+                // $solicitud_estudio->update(['estatus' => 'COMPLETADO']);
+            });
+
+            return redirect()->route('dashboard')
+                ->with('success', 'Resultados guardados correctamente.');            
+
+        }catch(\Exception $e){
+            Log::error('Error al registrar los resultados de los estudios: ', $e->getMessage());
+            return Redirect::back()->with('error','Error al registrar los resultados de los estudios.');
+        }
     }
 
     public function generarPDF(SolicitudEstudio $solicitudes_estudio)
@@ -249,5 +328,19 @@ class SolicitudEstudioController extends Controller
 
             default => User::role('administrador')->get(),
         };
+    }
+
+    public function enviarRecordatorioCita(TwilioWhatsAppService $twilio)
+    {
+        $numeroCliente = '+5217774571517'; 
+        
+        $fecha = '2025-12-28';
+        $hora = '10:00 AM';
+
+        $mensaje = "Your appointment is coming up on $fecha at $hora";
+
+        $twilio->sendMessage($numeroCliente, $mensaje);
+
+        return "Notificación de cita enviada (En inglés por Sandbox)";
     }
 }
