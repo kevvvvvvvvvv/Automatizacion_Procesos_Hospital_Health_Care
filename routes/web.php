@@ -261,14 +261,6 @@ Route::post('/notifications/mark-all-as-read', function () {
 // Historial
 Route::get('/historial', [HistoryController::class, 'index'])->name('historiales.index')->middleware('auth');
 
-<<<<<<< HEAD
-Route::get ('/rerservacion/reserva', [ReservacionController::class, 'reserva'])->name('rerservaciones.reserva')->middleware('auth');
-Route::get('/pagar-prueba', function () {
-    return Inertia::render('checkout-page');
-});
-=======
-
->>>>>>> 745073db13017ca4800ebef11070c872f77f8834
 
 require __DIR__.'/settings.php';
 require __DIR__.'/auth.php';
