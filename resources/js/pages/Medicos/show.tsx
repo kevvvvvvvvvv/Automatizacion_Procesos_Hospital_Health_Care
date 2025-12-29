@@ -4,12 +4,10 @@ import { Pencil } from 'lucide-react';
 import MainLayout from '@/layouts/MainLayout';
 import { route } from 'ziggy-js';
 
-import BackButton from '@/components/ui/back-button';
 import AddButton from '@/components/ui/add-button';
 
 import InfoCard from '@/components/ui/info-card';
 import InfoField from '@/components/ui/info-field';
-import { ChildProcess } from 'node:child_process';
 
 type Doctor = {
   id: number;

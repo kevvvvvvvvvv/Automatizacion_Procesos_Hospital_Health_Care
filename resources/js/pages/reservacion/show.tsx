@@ -1,9 +1,13 @@
 import React from "react";
-import { Head, Link, useForm } from "@inertiajs/react";
+import { Head, useForm } from "@inertiajs/react";
 import MainLayout from "@/layouts/MainLayout";
 import { route } from "ziggy-js";
-import { Pencil, Calendar, MapPin, User, CreditCard, Lock, DoorOpen, Eye } from "lucide-react";
+import { Calendar, User, Lock, Eye } from "lucide-react";
 import InfoField from "@/components/ui/info-field";
+
+import { Elements } from '@stripe/react-stripe-js';
+import { stripePromise } from '@/lib/stripe'; 
+import PaymentForm from '@/components/payment-form/payment-form';
 
 interface Props {
   reservacion: any;
@@ -14,8 +18,6 @@ interface Props {
 const ShowReservacion = ({ reservacion, user, horarios }: Props) => {
   if (!reservacion) return <div className="p-10 text-center">Cargando...</div>;
 
-  // --- LÓGICA DE COLORES POR CONSULTORIO ---
-  // Definimos una paleta de colores suaves (bg) y fuertes (text/border)
   const colorPalette = [
     { bg: 'bg-indigo-50', text: 'text-indigo-600', border: 'border-indigo-200' },
     { bg: 'bg-emerald-50', text: 'text-emerald-600', border: 'border-emerald-200' },
@@ -24,7 +26,6 @@ const ShowReservacion = ({ reservacion, user, horarios }: Props) => {
     { bg: 'bg-cyan-50', text: 'text-cyan-600', border: 'border-cyan-200' },
   ];
 
-  // Mapeamos cada consultorio único a un color de la paleta
   const consultoriosUnicos = Array.from(new Set(horarios.map(h => h.habitacion?.identificador)));
   const colorMap: Record<string, typeof colorPalette[0]> = {};
   
@@ -32,12 +33,9 @@ const ShowReservacion = ({ reservacion, user, horarios }: Props) => {
     colorMap[id || "S/A"] = colorPalette[index % colorPalette.length];
   });
 
-  const { data, setData, post, processing } = useForm({
-    nombre_tarjeta: '',
-    numero_tarjeta: '',
-    expiracion: '',
-    cvv: '',
-  });
+
+  const precioPorBloque = 100; 
+  const totalPagar = (horarios?.length || 0) * precioPorBloque;
 
   return (
     <MainLayout pageTitle="Detalles de Reservación" link="reservaciones.index">
@@ -45,8 +43,6 @@ const ShowReservacion = ({ reservacion, user, horarios }: Props) => {
 
       <div className="max-w-6xl mx-auto p-4 md:p-8">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          
-          {/* Columna Izquierda: Info y Pago */}
           <div className="md:col-span-1 space-y-6">
             <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
               <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-6">Información General</h3>
@@ -69,8 +65,6 @@ const ShowReservacion = ({ reservacion, user, horarios }: Props) => {
                 </div>
               </div>
             </div>
-
-            {/* Formulario de Pago */}
             <div className="md:col-span-1 space-y-6">
             {reservacion.estatus === 'pendiente' && (
                 <div className="bg-amber-50 border border-amber-200 p-4 rounded-2xl">
@@ -82,27 +76,26 @@ const ShowReservacion = ({ reservacion, user, horarios }: Props) => {
                     </p>
                 </div>
             )}
-
-    {/* Aquí va tu tarjeta de Información General y luego la de Pago */}
-    {/* Si el estatus es 'pagado', podrías ocultar el formulario de pago y mostrar un ticket */}
-</div>
+            </div>
             <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
-              <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-6">Método de Pago</h3>
-              <form className="space-y-4">
-                <input type="text" placeholder="Nombre en Tarjeta" className="w-full border-gray-200 rounded-xl text-sm" onChange={e => setData('nombre_tarjeta', e.target.value)} />
-                <input type="text" placeholder="Número de Tarjeta" className="w-full border-gray-200 rounded-xl text-sm" onChange={e => setData('numero_tarjeta', e.target.value)} />
-                <div className="grid grid-cols-2 gap-4">
-                  <input type="text" placeholder="MM/AA" className="border-gray-200 rounded-xl text-sm" />
-                  <input type="password" placeholder="CVV" className="border-gray-200 rounded-xl text-sm" />
-                </div>
-                <button className="w-full bg-indigo-600 text-white text-sm font-bold py-3 rounded-xl hover:bg-indigo-700 transition flex items-center justify-center gap-2">
-                  <Lock size={14} /> Pagar Ahora
-                </button>
-              </form>
+              <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-6">Estado del Pago</h3>
+              {reservacion.estatus === 'pagado' ? (
+                  <div className="bg-green-50 text-green-700 p-4 rounded-xl text-center font-bold border border-green-200">
+                      ¡Reservación Pagada! ✅
+                  </div>
+              ) : (
+                  <>
+                      <Elements stripe={stripePromise}>
+                          <PaymentForm 
+                              reservacione={reservacion.id} 
+                              monto={totalPagar} 
+                          />
+                      </Elements>
+                  </>
+              )}
             </div>
           </div>
 
-          {/* Columna Derecha: Bloques con Colores Diferenciados */}
           <div className="md:col-span-2">
             <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
               <div className="px-6 py-4 border-b border-gray-50 flex items-center justify-between bg-gray-50/50">
@@ -124,7 +117,6 @@ const ShowReservacion = ({ reservacion, user, horarios }: Props) => {
                   return (
                     <div key={index} className={`px-6 py-4 flex justify-between items-center transition hover:bg-gray-50`}>
                       <div className="flex items-center">
-                        {/* Indicador de color lateral */}
                         <div className={`w-1 h-10 rounded-full mr-4 ${estilo.text.replace('text', 'bg')}`} />
                         
                         <div className="bg-white border border-gray-200 text-gray-700 font-mono font-bold px-3 py-1.5 rounded-lg text-sm mr-4 shadow-sm">

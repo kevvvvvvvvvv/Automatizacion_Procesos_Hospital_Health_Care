@@ -13,9 +13,9 @@ return new class extends Migration
      {
          Schema::create('credencial_empleados', function (Blueprint $table) {
              $table->id();
-             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');  // Quita unique()
+             $table->foreignId('user_id')->constrained('users')->onDelete('cascade'); 
              $table->string('titulo', 100);
-             $table->string('cedula_profesional', 100);  // Si 'cedula' es el mismo, usa este nombre
+             $table->string('cedula_profesional', 100);  
              $table->timestamps();
          });
      }

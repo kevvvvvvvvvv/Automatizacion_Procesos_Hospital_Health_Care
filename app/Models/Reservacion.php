@@ -11,12 +11,11 @@ class Reservacion extends Model
         'localizacion',
         'fecha',
         'horas',
+        'estatus',
         'user_id',
+        'stripe_payment_id'
     ];
 
-    /* =========================
-       Relaciones
-    ========================= */
     public function horarios()
     {
         return $this->hasMany(ReservacionHorario::class);

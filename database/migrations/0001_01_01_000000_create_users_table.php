@@ -22,6 +22,8 @@ return new class extends Migration
             $table->enum('sexo', ['Masculino', 'Femenino']);
             $table->date('fecha_nacimiento');
 
+            $table->string('telefono');
+
             $table->foreignId('colaborador_responsable_id')
                   ->nullable()
                   ->constrained('users') 
