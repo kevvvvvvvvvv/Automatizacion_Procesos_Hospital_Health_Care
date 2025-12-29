@@ -28,19 +28,7 @@ return new class extends Migration
             $table->integer('glucemia_capilar')->nullable();
             $table->decimal('talla')->nullable();
             $table->decimal('peso')->nullable();
-            $table->integer('uresis')->nullable();
-            $table->string('uresis_descripcion', 255)->nullable();
-            $table->integer('evacuaciones')->nullable();
-            $table->string('evacuaciones_descripcion', 255)->nullable();
-            $table->integer('emesis')->nullable();
-            $table->string('emesis_descripcion', 255)->nullable();
-            $table->integer('drenes')->nullable();
-            $table->string('drenes_descripcion', 255)->nullable();
             $table->string('estado_conciencia')->nullable();
-            $table->string('escala_braden')->nullable();
-            $table->string('escala_glasgow')->nullable();
-            $table->string('escala_ramsey')->nullable();
-            $table->string('escala_eva')->nullable();
 
             $table->timestamps();
         });

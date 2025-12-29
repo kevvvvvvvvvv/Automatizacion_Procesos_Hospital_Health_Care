@@ -130,8 +130,6 @@ class FormularioHojaEnfermeriaController extends Controller
 
         $nota = $this->obtenerListaTratamiento($estancia);
 
-        //dd($nota->toArray());
-
         return Inertia::render('formularios/hojas-enfermerias/edit',[
             'paciente' => $paciente,
             'estancia' => $estancia,

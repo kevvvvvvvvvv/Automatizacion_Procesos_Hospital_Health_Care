@@ -42,8 +42,9 @@ use App\Http\Controllers\ReservacionController;
 use App\Http\Controllers\ReservacionQuirofanoController;
 use App\Http\Controllers\PersonalEmpleadoController;
 use App\Http\Controllers\CheckListController;
-
-
+use App\Http\Controllers\HojaControlLiquidoController;
+use App\Http\Controllers\HojaEscalaValoracionController;
+use App\Models\HojaContolLiquido;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;
@@ -128,10 +129,11 @@ Route::get(
 
 
 Route::post('hojassignos/{hojasenfermeria}',[FormularioHojaSignosController::class, 'store'])->name('hojassignos.store');
+Route::post('hojas-control-liquidos/{hojasenfermeria}',[HojaControlLiquidoController::class, 'store'])->name('hojas-control-liquidos.store');
+Route::post('hojas-escalas-valoracion/{hojasenfermeria}',[HojaEscalaValoracionController::class, 'store'])->name('hojas-escalas-valoracion.store');
+
 
 Route::resource('pacientes.estancias.interconsultas', InterconsultaController::class)->shallow()->parameters(['interconsultas' => 'interconsulta']);
-
-Route::post('hojassignos/{hojasenfermeria}',[FormularioHojaSignosController::class, 'store'])->name('hojassignos.store');
 
 Route::resource('pacientes.estancias.interconsultas', InterconsultaController::class)
     ->shallow()
