@@ -787,24 +787,35 @@ export interface ReservacionHorarios{
     habitacion_id: number;
     fecha_hora: string;
 }
-export interface ReservacionQuirofano{
+export interface ReservacionQuirofano {
     id: number;
-    habitaciones_id: number;
-    user_id:number;
+
+    habitacion_id: number;
+    user_id: number;
+    estancia_id: number | null;
+
+    paciente: string | null;
     tratante: string;
-    paciente: string;
-    instrumentista: string;
-    anestesiologo: string;
-    insumos_medicamentos: text;
-    esterilizar_detalle: text;
-    rayosx_detalle: Text;
-    patologico_detalle: Text;
-    horarios: string;
-    fecha:Date;
+    procedimiento: string;
+    tiempo_estimado: string;
+    medico_operacion: string;
+
+    instrumentista: string | null;
+    anestesiologo: string | null;
+    insumos_medicamentos: string | null;
+    esterilizar_detalle: string | null;
+    rayosx_detalle: string | null;
+    patologico_detalle: string | null;
+    comentarios: string | null;
+
+    horarios: string[];
+    fecha: string;
     localizacion: string;
+
     created_at: string;
-    update_at:string;
+    updated_at: string;
 }
+
 
 export type PageProps<T extends Record<string, unknown> = Record<string, unknown>> = T & {
     auth: {

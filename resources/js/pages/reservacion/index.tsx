@@ -196,7 +196,7 @@ const Index = ({ reservaciones }: Props) => {
 };
 
 Index.layout = (page: React.ReactNode) => (
-  <MainLayout pageTitle="Reservaciones" link="dashboard">
+  <MainLayout pageTitle="Reservaciones de consultorio" link="rerservaciones.reserva">
     {page}
   </MainLayout>
 );

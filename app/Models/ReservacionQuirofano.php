@@ -7,31 +7,35 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class ReservacionQuirofano extends Model
 {
-    protected $fillable = [
-        'habitacion_id',
-        'user_id',
-        'estancia_id',
-        'paciente',         // Agregado: para guardar el nombre manual o de estancia
-        'tratante',         // Agregado: médico tratante
-        'procedimiento',
-        'tiempo_estimado',
-        'medico_operacion', // Cirujano
-        'instrumentista',
-        'anestesiologo',
-        'insumos_medicamentos',
-        'esterilizar_detalle',
-        'rayosx_detalle',
-        'patologico_detalle',
-        'comentarios',
-        'horarios',
-        'fecha',
-        'localizacion'
+   public function rules(): array
+{
+    return [
+        'estancia_id'          => 'nullable|exists:estancias,id',
+        'paciente'             => 'nullable|string|max:255',
+        'tratante'             => 'required|string|max:255',
+        'procedimiento'        => 'required|string|max:500',
+        'tiempo_estimado'      => 'required|string|max:100',
+        'medico_operacion'     => 'required|string|max:255',
+        'fecha'                => 'required|date|after_or_equal:today',
+        'horarios'             => 'required|array|min:1',
+        'instrumentista'       => 'nullable|string',
+        'anestesiologo'        => 'nullable|string',
+        'insumos_medicamentos' => 'nullable|string',
+        'esterilizar_detalle'  => 'nullable|string',
+        'rayosx_detalle'       => 'nullable|string',
+        'patologico_detalle'   => 'nullable|string',
+        'laparoscopia_detalle' => 'nullable|string', // 👈 Agrega esta línea
+        'comentarios'          => 'nullable|string|max:1000',
+        'localizacion'         => 'nullable|string', // 👈 Agrega esta si la vas a enviar
     ];
+}
 
     protected $casts = [
-        'horarios' => 'array', // Crucial para manejar el JSON de la base de datos
-        'fecha' => 'date',
+        'horarios' => 'array',
+        'fecha' => 'date:Y-m-d', // Formateado para facilitar el uso en el frontend
     ];
+
+    // --- Relaciones ---
 
     public function estancia(): BelongsTo
     {
@@ -42,13 +46,6 @@ class ReservacionQuirofano extends Model
     {
         return $this->belongsTo(User::class);
     }
-    // En App\Models\Estancia.php
-
-public function paciente()
-{
-    // Asegúrate de que la llave foránea sea correcta (ej. paciente_id)
-    return $this->belongsTo(Paciente::class, 'paciente_id');
-}
 
     public function habitacion(): BelongsTo
     {

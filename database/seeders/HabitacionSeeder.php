@@ -94,5 +94,13 @@ class HabitacionSeeder extends Seeder
             'ubicacion' => 'Plan de ayutla',
             'piso' => 'Planta baja',
         ]);
+
+         Habitacion::create([
+            'identificador' => 'Quirofano',
+            'tipo' => 'Quirofano',
+            'estado' => 'Libre',
+            'ubicacion' => 'Plan de ayutla',
+            'piso' => 'Planta Alta',
+        ]);
     }
 }
