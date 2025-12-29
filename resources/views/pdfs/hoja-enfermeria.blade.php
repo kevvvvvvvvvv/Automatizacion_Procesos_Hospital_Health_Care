@@ -101,5 +101,10 @@
     <h1>Hoja de enfermería</h1>
     <h2>Ministración de medicamentos</h2>
 
+    @foreach ($notaData->hojaMedicamentos as $medicamento)
+        {{ $medicamento->id }} <br>
+    @endforeach
+
+
 </body>
 </html>

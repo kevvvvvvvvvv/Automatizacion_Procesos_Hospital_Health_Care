@@ -204,7 +204,8 @@ class FormularioHojaEnfermeriaController extends Controller
     public function generarPDF(HojaEnfermeria $hojasenfermeria)
     {
         $hojasenfermeria->load(
-            'formularioInstancia.estancia.paciente'
+            'formularioInstancia.estancia.paciente',
+            'hojaMedicamentos.aplicaciones',
         );
 
         $headerData = [
@@ -216,6 +217,8 @@ class FormularioHojaEnfermeriaController extends Controller
         $viewData = [
             'notaData'=> $hojasenfermeria
         ];
+
+        //dd($hojasenfermeria->toArray());
 
         return $this->pdfGenerator->generateStandardPdf(
             'pdfs.hoja-enfermeria',
