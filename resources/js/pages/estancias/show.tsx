@@ -61,18 +61,19 @@ const Show = ({ estancia }: ShowEstanciaProps) => {
            
             }
             
-            <div className="flex justify-end w-full mb-4">
-                <Link 
-                    href={route("quirofanos.create", { 
-                        paciente: paciente.id, 
-                        estancia: estancia.id 
-                    })}
-                    className="inline-flex items-center justify-center gap-2 px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white hover:opacity-90 transition"
-                    style={{ backgroundColor: '#1B1C38' }}
-                >
-                    Programar Cirugía
-                </Link>
-            </div>
+          <div className="flex justify-end w-full mb-4">
+            <Link 
+              href={route("quirofanos.create", {
+                    paciente: paciente.id,
+                    estancia: estancia.id
+                })}
+                className="inline-flex items-center justify-center gap-2 px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white hover:opacity-90 transition"
+
+                style={{ backgroundColor: '#1B1C38' }}
+            >
+                Programar Cirugía
+            </Link>
+        </div>
             
 
             <InfoCard title={`Estancia para: ${paciente.nombre} ${paciente.apellido_paterno} ${paciente.apellido_materno}`}>
