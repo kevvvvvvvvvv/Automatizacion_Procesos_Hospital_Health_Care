@@ -16,7 +16,11 @@ class SolicitudItem extends Model
         'otro_estudio',
         'detalles',
         'user_realiza_id',
-        'resultados,'
+
+        'fecha_realizacion',
+        'problema_clinico',
+        'incidentes_accidentes',
+        'ruta_archivo_resultado'
     ];
 
     protected $casts = [

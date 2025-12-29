@@ -75,4 +75,15 @@ class NotaPostoperatoria extends Model
         return $this->morphMany(PersonalEmpleado::class, 'itemable');
     }
 
+    public function checklistItems()
+    {
+        return $this->morphMany(CheckListItem::class, 'nota');
+    }
+
+    protected $appends = ['model_type'];
+
+    public function getModelTypeAttribute()
+    {
+        return self::class; 
+    }
 }

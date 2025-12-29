@@ -27,6 +27,8 @@ return new class extends Migration
         $table->foreignId('user_id')
             ->constrained('users')
             ->cascadeOnDelete();
+        
+        $table->string('stripe_payment_id')->nullable();
 
         $table->timestamps();
     });
