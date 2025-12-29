@@ -66,10 +66,7 @@ const Index = ({ reservaciones }: Props) => {
             accessorKey: "paciente_nombre",
             header: "Paciente",
         },
-        {
-            accessorKey: "habitacion_nombre", // Usamos el nombre que viene del map del controller
-            header: "Quirófano",
-        },
+        
         {
             id: "equipo",
             header: "Solicitudes",
@@ -135,8 +132,11 @@ const Index = ({ reservaciones }: Props) => {
                 {/* IMPORTANTE: El create de tu controller pide paciente y estancia. 
                     Si es una reservación general, podrías necesitar una ruta distinta 
                     o pasar parámetros nulos si tu route lo permite */}
-                <AddButton href={route("quirofanos.create")}>
-                    Nueva Reservación
+                <AddButton 
+                    href={route("quirofanos.create")} // Sin pasar parámetros
+                    className="bg-green-600 text-white px-4 py-2 rounded shadow"
+                >
+                    Programar Cirugía Externa
                 </AddButton>
             </div>
 
@@ -212,7 +212,7 @@ const Index = ({ reservaciones }: Props) => {
 };
 
 Index.layout = (page: React.ReactNode) => (
-    <MainLayout pageTitle="Listado Quirófanos" link="dashboard">
+    <MainLayout pageTitle="Listado Quirófanos" link="rerservaciones.reserva">
         {page}
     </MainLayout>
 );

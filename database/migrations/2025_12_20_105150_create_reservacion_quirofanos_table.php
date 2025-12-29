@@ -11,33 +11,50 @@ return new class extends Migration
      */
     public function up(): void
     {
-    Schema::create('reservacion_quirofanos', function (Blueprint $table) {
-        $table->id();
-        $table->foreignId('habitacion_id')->constrained('habitaciones')->cascadeOnDelete();
-        $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
-        $table->foreignId('estancia_id')->constrained('estancias')->cascadeOnDelete()->nullable();
-        $table->string('paciente')->nullble();
-        $table->string('tratante');
-        $table->string('procedimiento');
-        $table->string('tiempo_estimado');
-        $table->string('medico_operacion');
-        
-        
-        // Almacenamos el detalle. Si es NULL, se entiende que marcaron "No".
-        $table->text('instrumentista');
-        $table->text('anestesiologo');
-        $table->text('insumos_medicamentos')->nullable();
-        $table->text('esterilizar_detalle')->nullable();
-        $table->text('rayosx_detalle')->nullable();
-        $table->text('patologico_detalle')->nullable();
-        $table->text('comentarios')->nullable();
+        Schema::create('reservacion_quirofanos', function (Blueprint $table) {
+            $table->id();
 
-        $table->json('horarios'); // Guardamos el array de horas seleccionadas
-        $table->date('fecha');
-        $table->string('localizacion');
-        $table->timestamps();
-    });
-}
+            // Relaciones
+            $table->foreignId('habitacion_id')
+                ->nullable()
+                ->constrained('habitaciones')
+                ->cascadeOnDelete();
+
+            $table->foreignId('user_id')
+                ->constrained('users')
+                ->cascadeOnDelete();
+
+            $table->foreignId('estancia_id')
+                ->nullable()
+                ->constrained('estancias')
+                ->cascadeOnDelete();
+
+            // Datos principales
+            $table->string('paciente')->nullable(); // Nombre manual para externos o copia del nombre de estancia
+            $table->string('tratante');
+            $table->string('procedimiento');
+            $table->string('tiempo_estimado');
+            $table->string('medico_operacion'); // El Cirujano
+
+            // Detalles requeridos (Si son NULL significa que se seleccionó "NO" en el formulario)
+            $table->text('laparoscopia_detalle')->nullable(); // Agregado para el formulario
+            $table->text('instrumentista')->nullable();
+            $table->text('anestesiologo')->nullable();
+            $table->text('insumos_medicamentos')->nullable();
+            $table->text('esterilizar_detalle')->nullable();
+            $table->text('rayosx_detalle')->nullable();
+            $table->text('patologico_detalle')->nullable();
+            
+            // Notas y Agenda
+            $table->text('comentarios')->nullable();
+            $table->json('horarios'); // Se guarda como array gracias al cast en el Modelo
+            $table->date('fecha');
+            $table->string('localizacion')->nullable(); // Quirófano 1, Quirófano 2, etc.
+
+            $table->timestamps();
+        });
+    }
+
     /**
      * Reverse the migrations.
      */

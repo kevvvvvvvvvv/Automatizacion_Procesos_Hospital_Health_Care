@@ -93,7 +93,7 @@ export default function Dashboard() {
                      <CardButton
                         icon={MdCalendarMonth}
                         text="Reservar"
-                        onClick={() => router.visit(route('reservaciones.index'))}
+                        onClick={() => router.visit(route('rerservaciones.reserva'))}
                     />
                 </div>                      
             </MainLayout>

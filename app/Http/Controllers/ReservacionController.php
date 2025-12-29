@@ -19,7 +19,7 @@ class ReservacionController extends Controller
     {
        $reservaciones = Reservacion::with([
         'horarios.habitacion',
-        'user:id,nombre' // Importante cargar el ID y el nombre del usuario
+        'user:id,nombre'
     ])
     ->orderBy('fecha', 'desc')
     ->get();
@@ -27,6 +27,19 @@ class ReservacionController extends Controller
     return Inertia::render('reservacion/index', [
         'reservaciones' => $reservaciones
     ]);
+    }
+    public function reserva(){
+         $reservaciones = Reservacion::with([
+        'horarios.habitacion',
+        'user:id,nombre'
+    ])
+    ->orderBy('fecha', 'desc')
+    ->get();
+
+    return Inertia::render('reservacion/reserva', [
+        'reservaciones' => $reservaciones
+    ]);
+    
     }
 
 public function show(Reservacion $reservacione)
