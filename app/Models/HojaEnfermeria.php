@@ -40,6 +40,16 @@ class HojaEnfermeria extends Model
         return $this->hasMany(HojaSignos::class);
     }
 
+    public function hojaControlLiquidos(): HasMany
+    {
+        return $this->hasMany(HojaControlLiquido::class);
+    }
+
+    public function hojaEscalaValoraciones(): HasMany
+    {
+        return $this->hasMany(HojaEscalaValoracion::class);
+    }
+
     public function soliciudesDieta(): HasMany
     {
         return $this->hasMany(SolicitudDieta::class);
