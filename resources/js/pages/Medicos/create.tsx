@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Head, useForm, router } from '@inertiajs/react';
+import React, { useState } from 'react';
+import { Head, useForm } from '@inertiajs/react';
 import { route } from 'ziggy-js';
 import { CredencialEmpleado, Role, User } from '@/types';
 
@@ -95,14 +95,14 @@ const CreateDoctor: React.FC<Props> = ({ cargos = [], user }) => {
         apellido_paterno: user?.apellido_paterno || '',
         apellido_materno: user?.apellido_materno || '',
         curp: user?.curp || '',
-        sexo: user?.sexo || '',
+        sexo: (user?.sexo as string) || '',
         fecha_nacimiento: user?.fecha_nacimiento || '',
-        cargo_id: user?.roles || '',
+        cargo_id: user?.cargo_id || '',
         colaborador_responsable_id: user?.colaborador_responsable_id || '',
         email: user?.email || '',
         password: '',
         password_confirmation: '',
-        telefono: '',
+        telefono:user.telefono || '',
         professional_qualifications: user?.credenciales || '',  
     });
 
@@ -270,7 +270,7 @@ const CreateDoctor: React.FC<Props> = ({ cargos = [], user }) => {
                             {qualifications.map((qual, index) => (
                             <tr key={index} className="hover:bg-gray-50">
                                 <td className="border border-gray-300 px-4 py-2">{qual.titulo}</td>
-                                <td className="border border-gray-300 px-4 py-2">{qual.cedula || 'N/A'}</td>
+                                <td className="border border-gray-300 px-4 py-2">{qual.cedula_profesional || 'N/A'}</td>
                                 <td className="border border-gray-300 px-4 py-2">
                                 <button
                                     type="button"
