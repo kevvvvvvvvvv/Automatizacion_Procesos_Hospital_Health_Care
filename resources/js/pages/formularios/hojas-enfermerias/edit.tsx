@@ -11,7 +11,7 @@ import PrimaryButton from '@/components/ui/primary-button';
 import MainLayout from '@/layouts/MainLayout';
 import PacienteCard from '@/components/paciente-card';
 import TerapiaIVForm from '@/components/terapia-iv-form';
-import SignosVitalesForm from '@/components/signos-vitales-form';
+import SignosVitalesForm from '@/components/forms/signos-vitales-form';
 import GraficaContent from '@/components/graphs/grafica-content'
 import MedicamentosForm from '@/components/forms/medicamentos-form';
 import SondasCateteresForm from '@/components/forms/sondas-cateteres-form';
@@ -19,6 +19,9 @@ import EstudiosForm from '@/components/forms/estudios-form';
 import DietasForm from '@/components/forms/dietas-form';
 import PlanPostoperatorioChecklist from '@/components/plan-postoperatorio-check-list';
 import ServiciosEspecialesForm from '@/components/forms/servicios-especiales-form';
+import EscalaValoracionForm from '@/components/forms/escalas-valoracion-form';
+import ControlLiquidosForm from '@/components/forms/control-liquidos-form';
+
 
 interface CreateProps {
     paciente: Paciente;
@@ -36,10 +39,13 @@ interface CreateProps {
     checklistInicial:ChecklistItemData[];
 }
 
-type SeccionHoja = 'signos' | 'medicamentos' | 'terapia_iv' | 'estudios' | 'sondas' | 'liquidos' | 'dieta' | 'servicios_especiales' | 'observaciones' | 'graficas' ;
+type SeccionHoja = 'signos' | 'medicamentos' | 'terapia_iv' | 'estudios' | 'sondas' | 'liquidos' | 'dieta' | 'servicios_especiales' | 'observaciones' | 'graficas' | 'control_liquidos' | 'escalas_valoracion';
 
 const secciones: { id: SeccionHoja, label: string }[] = [
     { id: 'signos', label: 'Tomar signos' },
+    { id: 'control_liquidos', label:'Control de liquidos'},
+    { id: 'escalas_valoracion', label:'Escalas de valoracion'},
+
     { id: 'medicamentos', label: 'Ministración de medicamentos' },
     { id: 'terapia_iv', label: 'Terapia intravenosa' },
     { id: 'estudios', label: 'Ordenar estudios' },
@@ -220,42 +226,54 @@ const Create: CreateComponent = ({
         switch (activeSection) {
             case 'signos':
                 return <SignosVitalesForm 
-                    hoja={hojaenfermeria}/>;
+                            hoja={hojaenfermeria}
+                        />;
+            case 'control_liquidos': 
+                return <ControlLiquidosForm
+                            hoja={hojaenfermeria}
+                        />;
+            case 'escalas_valoracion':
+                return <EscalaValoracionForm 
+                            hoja={hojaenfermeria}
+                        />;
             case 'medicamentos':
                 return <MedicamentosForm 
-                        hoja={hojaenfermeria}
-                        medicamentos={medicamentos}/>;
+                            hoja={hojaenfermeria}
+                            medicamentos={medicamentos}
+                        />;
             case 'terapia_iv':
                 return <TerapiaIVForm
-                        hoja={hojaenfermeria}
-                        soluciones={soluciones}/>;
+                            hoja={hojaenfermeria}
+                            soluciones={soluciones}
+                        />;
             case 'estudios':
                 return <EstudiosForm
-                        estancia={estancia}
-                        catalogoEstudios={catalogoEstudios}
-                        solicitudesAnteriores={solicitudesAnteriores}
-                        medicos={medicos}
+                            estancia={estancia}
+                            catalogoEstudios={catalogoEstudios}
+                            solicitudesAnteriores={solicitudesAnteriores}
+                            medicos={medicos}
                         />
             case 'sondas':
                 return <SondasCateteresForm
-                        hoja={hojaenfermeria}
-                        estancia={estancia}/>
-            case 'liquidos':
-                return <div><p>Campos para Control de Líquidos...</p></div>;
+                            hoja={hojaenfermeria}
+                            estancia={estancia}
+                        />
             case 'dieta':
                 return <DietasForm
-                        hoja={hojaenfermeria}
+                            hoja={hojaenfermeria}
                         />
             case 'servicios_especiales':
-                    return <ServiciosEspecialesForm
+                return <ServiciosEspecialesForm
                             estancia={estancia}
-                            />
+                        />
             case 'observaciones':
                 return <Observaciones
-                        hojasenfermeria={hojaenfermeria}/>
+                            hojasenfermeria={hojaenfermeria}
+                        />
             case 'graficas':
                 return <GraficaContent
-                        historialSignos={dataParaGraficas ?? []}/>
+                            historialSignos={dataParaGraficas ?? []}
+                        />
             default:
                 return null;
         }

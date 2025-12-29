@@ -78,25 +78,13 @@ export interface User {
     fecha_nacimiento: string; 
     colaborador_responsable_id: number | null;
     email: string;
-    telefono: string;
     created_at: string; 
     updated_at: string;
-    roles: Role;
-    cargo_id:number;
 
-    credenciales: CredencialEmpleado[];
+
+
     permissions?: string[]; 
 };
-
-export interface CredencialEmpleado {
-    cedula_profesional: string;
-    titulo: string;
-}
-
-export interface Role {
-    id: number;
-    name: string;
-}
 
 export interface FormularioCatalogo {
     id: number;
@@ -607,7 +595,6 @@ export interface notasEgresos {
     pronostico: string;
     defuncion: string;
 }
-
 export interface notasEvoluciones {
   id: number;
   evolucion_actualizacion: string;
@@ -627,7 +614,7 @@ export interface notasEvoluciones {
   manejo_medicamentos: string;
   manejo_medidas_generales: string;
   manejo_laboratorios: string;
-  model_type: string;
+ 
 }
   /*
 
@@ -691,15 +678,7 @@ export interface NotaPostoperatoria {
 
     created_at: string; 
     updated_at: string; 
-
-    model_type: string;
 }
-
-export interface ChecklistItemData {
-    section_id: string;
-    task_index: number;
-}
-
 export interface NotaPreAnestesica{
     id: number;
     ta: string;
@@ -789,28 +768,29 @@ export interface ReservacionHorarios{
 }
 export interface ReservacionQuirofano {
     id: number;
-
-    habitacion_id: number;
+    habitacion_id: number | null; // Cambiado a nullable
     user_id: number;
     estancia_id: number | null;
 
-    paciente: string | null;
+    paciente: string; // Cambiado a string (siempre llegará un nombre)
     tratante: string;
     procedimiento: string;
     tiempo_estimado: string;
     medico_operacion: string;
 
+    // Detalles de servicios
+    laparoscopia_detalle: string | null; // <--- Agregado
     instrumentista: string | null;
     anestesiologo: string | null;
     insumos_medicamentos: string | null;
     esterilizar_detalle: string | null;
     rayosx_detalle: string | null;
     patologico_detalle: string | null;
+    
     comentarios: string | null;
-
     horarios: string[];
     fecha: string;
-    localizacion: string;
+    localizacion: string | null;
 
     created_at: string;
     updated_at: string;
