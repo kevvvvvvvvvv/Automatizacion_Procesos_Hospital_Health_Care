@@ -1,8 +1,9 @@
 import React, { useState, useMemo } from 'react';
-import { Head, Link, router } from '@inertiajs/react';  // AGREGADO: Link para editar
-import { Edit, Trash2 } from 'lucide-react';  // AGREGADO: Icons para botones (instala lucide-react si no tienes)
+import { Head, Link, router } from '@inertiajs/react';  
+import { Edit, Trash2 } from 'lucide-react';  
 import MainLayout from '@/layouts/MainLayout';
 import { route } from 'ziggy-js';
+import { User } from '@/types';
 
 import {
   useReactTable,
@@ -16,21 +17,11 @@ import {
 } from '@tanstack/react-table';
 import AddButton from '@/components/ui/add-button';
 
-interface Doctor {
-  id: number;
-  nombre_completo: string;
-  email: string;
-  fecha_nacimiento: string;
-  cargo: string;
-  responsable: string;
-  created_at: string;
-  sexo?: string;  
-}
 
 interface Props {
-  doctores: Doctor[];
+    doctores: User[];
   
-  };
+};
 
 
 const DoctorIndex = ({doctores} : Props) => {
@@ -38,10 +29,8 @@ const DoctorIndex = ({doctores} : Props) => {
 
   const [sorting, setSorting] = useState<SortingState>([]);
   
-  const [deletingId, setDeletingId] = useState<number | null>(null);  // AGREGADO: Para loading en delete
-
-  // Columnas: AGREGADO: Nueva columna 'actions' al final
-  const columns = useMemo<ColumnDef<Doctor>[]>(
+  const [deletingId, setDeletingId] = useState<number | null>(null);  
+  const columns = useMemo<ColumnDef<User>[]>(
     () => [
       {
         accessorKey: 'nombre_completo',
@@ -71,29 +60,27 @@ const DoctorIndex = ({doctores} : Props) => {
         accessorKey: 'created_at',
         header: 'Creado',
       },
-      // AGREGADO: Columna de acciones (no sortable, fixed width)
       {
         id: 'actions',
         header: 'Acciones',
         enableSorting: false,
-        size: 120,  // Ancho fijo para botones
+        size: 120,  
         cell: ({ row }) => {
           const doctorId = row.original.id;
           const isDeleting = deletingId === doctorId;
 
           return (
             <div className="flex space-x-2">
-              {/* Botón Editar */}
+
               <Link
-                href={route('doctores.edit', doctorId)}
+                href={route('doctores.edit', {doctore: doctorId})}
                 className="p-1 text-blue-600 hover:bg-blue-100 rounded transition-colors"
                 title="Editar doctor"
-                onClick={(e) => e.stopPropagation()}  // AGREGADO: Evita click en fila
+                onClick={(e) => e.stopPropagation()}
               >
                 <Edit size={16} />
               </Link>
               
-              {/* Botón Eliminar */}
               <button
                 onClick={(e) => {
                   e.stopPropagation();  

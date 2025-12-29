@@ -78,13 +78,13 @@ export interface User {
     fecha_nacimiento: string; 
     colaborador_responsable_id: number | null;
     email: string;
+    telefono: string;
     created_at: string; 
     updated_at: string;
-    roles: string[];
+    roles: Role;
+    cargo_id:number;
 
     credenciales: CredencialEmpleado[];
-
-    roles?: string[];
     permissions?: string[]; 
 };
 

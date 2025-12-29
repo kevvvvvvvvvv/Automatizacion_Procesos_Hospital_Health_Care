@@ -156,9 +156,10 @@ class DoctorController extends Controller implements HasMiddleware
     }
 
 
-    public function edit(User $user)
+    public function edit(User $doctore)
     {
-        $user->load(['roles', 'credenciales', 'colaborador_responsable']);
+        $doctore->load(['roles', 'credenciales', 'colaborador_responsable']);
+        $user = $doctore;
 
         $doctorData = [
             'id' => $user->id,
