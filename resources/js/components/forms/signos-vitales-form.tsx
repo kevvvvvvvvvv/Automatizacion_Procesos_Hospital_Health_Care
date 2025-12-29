@@ -21,7 +21,7 @@ interface Props {
 
 const SignosVitalesForm: React.FC<Props> = ({ hoja }) => {
 
-    const { data, setData, post, processing, errors, wasSuccessful } = useForm({
+    const { data, setData, post, processing, errors, reset } = useForm({
         fecha_hora_registro: new Date().toISOString().slice(0, 16), 
         tension_arterial_sistolica: '',
         tension_arterial_diastolica: '',
@@ -32,33 +32,22 @@ const SignosVitalesForm: React.FC<Props> = ({ hoja }) => {
         glucemia_capilar: '',
         peso: '',
         talla: '',
-        uresis: '',
-        uresis_descripcion: '',
-        evacuaciones: '',
-        evacuaciones_descripcion: '',
-        emesis: '',
-        emesis_descripcion: '',
-        drenes: '',
-        drenes_descripcion: '',
         estado_conciencia: '',
-        escala_braden: '',
-        escala_glasgow: '',
-        escala_ramsey: '',
-        escala_eva: '',
     });
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         post(route('hojassignos.store', { hojasenfermeria: hoja.id }), {
             preserveScroll: true,
+            onSuccess: ()=>{
+                reset();
+            }
         });
     }
 
     return (
         <>
         <form onSubmit={handleSubmit}>
-            {wasSuccessful && <div className="mb-4 text-sm font-medium text-green-600">Signos vitales guardados con éxito.</div>}
-
             <h2 className='mb-5 font-bold text-xl'>Tensión arterial</h2>
             <div className="grid grid-cols-3 md:grid-cols-6 items-center gap-1">
                 <InputText 
@@ -160,127 +149,9 @@ const SignosVitalesForm: React.FC<Props> = ({ hoja }) => {
                 />
             </div>
 
-            <h2 className='mb-5 font-bold text-xl mt-5'>Control de liquidos</h2>
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
-                <InputText 
-                    id="uresis" 
-                    name="uresis" 
-                    label="Uresis (cantidad)" 
-                    type="number" 
-                    value={data.uresis} 
-                    onChange={(e) => setData('uresis', e.target.value)} 
-                    error={errors.uresis} 
-                />
-                <InputText 
-                    id="uresis_descripcion" 
-                    name="uresis_descripcion" 
-                    label="Uresis (descripción)" 
-                    value={data.uresis_descripcion} 
-                    onChange={(e) => setData('uresis_descripcion', e.target.value)} 
-                    error={errors.uresis_descripcion} 
-                />
-                
-                <InputText 
-                    id="evacuaciones" 
-                    name="evacuaciones" 
-                    label="Evacuaciones (cantidad)" 
-                    type="number" 
-                    value={data.evacuaciones} 
-                    onChange={(e) => setData('evacuaciones', e.target.value)} 
-                    error={errors.evacuaciones} 
-                />
-                <InputText 
-                    id="evacuaciones_descripcion" 
-                    name="evacuaciones_descripcion" 
-                    label="Evacuaciones (descripción)" 
-                    value={data.evacuaciones_descripcion} 
-                    onChange={(e) => setData('evacuaciones_descripcion', e.target.value)} 
-                    error={errors.evacuaciones_descripcion} 
-                />
-
-                <InputText 
-                    id="emesis" 
-                    name="emesis" 
-                    label="Emesis (cantidad)" 
-                    type="number" 
-                    value={data.emesis} 
-                    onChange={(e) => setData('emesis', e.target.value)} 
-                    error={errors.emesis} 
-                />
-                <InputText 
-                    id="emesis_descripcion" 
-                    name="emesis_descripcion" 
-                    label="Emesis (descripción)" 
-                    value={data.emesis_descripcion} 
-                    onChange={(e) => setData('emesis_descripcion', e.target.value)} 
-                    error={errors.emesis_descripcion} 
-                />
-
-                <InputText 
-                    id="drenes" 
-                    name="drenes" 
-                    label="Drenes (cantidad)" 
-                    type="number" 
-                    value={data.drenes} 
-                    onChange={(e) => setData('drenes', e.target.value)} 
-                    error={errors.drenes} 
-                />
-                <InputText 
-                    id="drenes_descripcion" 
-                    name="drenes_descripcion" 
-                    label="Drenes (descripción)" 
-                    value={data.drenes_descripcion} 
-                    onChange={(e) => setData('drenes_descripcion', e.target.value)} 
-                    error={errors.drenes_descripcion} 
-                />
-            </div>
-
-            <h2 className='mb-5 font-bold text-xl mt-5'>Escalas de valoración</h2>
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
-                <InputText 
-                    id="escala_glasgow" 
-                    name="escala_glasgow" 
-                    label="Escala Glasgow (0-15)" 
-                    type= "number"
-                    value={data.escala_glasgow} 
-                    onChange={(e) => setData('escala_glasgow', e.target.value)} 
-                    error={errors.escala_glasgow} 
-                />
-                
-                <InputText 
-                    id="escala_braden" 
-                    name="escala_braden" 
-                    label="Escala Braden (1-25)" 
-                    type = "number"
-                    value={data.escala_braden} 
-                    onChange={(e) => setData('escala_braden', e.target.value)} 
-                    error={errors.escala_braden} 
-                />
-
-                <InputText 
-                    id="escala_ramsey" 
-                    name="escala_ramsey" 
-                    label="Escala Ramsey(1-6)" 
-                    type = "number"
-                    value={data.escala_ramsey} 
-                    onChange={(e) => setData('escala_ramsey', e.target.value)} 
-                    error={errors.escala_ramsey} 
-                />
-
-                <InputText 
-                    id="escala_eva" 
-                    name="escala_eva" 
-                    type="number"
-                    label="Escala EVA (0-10)" 
-                    value={data.escala_eva} 
-                    onChange={(e) => setData('escala_eva', e.target.value)} 
-                    error={errors.escala_eva} 
-                />
-            </div>
-
             <div className="flex justify-end mt-6">
                 <PrimaryButton type="submit" disabled={processing}>
-                    {processing ? 'Guardando...' : 'Guardar Signos Vitales'}
+                    {processing ? 'Guardando...' : 'Guardar'}
                 </PrimaryButton>
             </div>
         </form>
