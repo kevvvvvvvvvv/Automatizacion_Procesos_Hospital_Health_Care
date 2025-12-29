@@ -24,7 +24,8 @@
         "spatie/browsershot": "^5.0",
         "spatie/laravel-pdf": "^1.8",
         "spatie/laravel-permission": "^6.23",
-        "tightenco/ziggy": "^2.6"
+        "tightenco/ziggy": "^2.6",
+        "twilio/sdk": "^8.10"
     },
     "require-dev": {
         "barryvdh/laravel-ide-helper": "^3.6",

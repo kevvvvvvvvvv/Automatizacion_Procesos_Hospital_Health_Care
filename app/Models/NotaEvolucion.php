@@ -34,9 +34,22 @@ class NotaEvolucion extends Model
         'manejo_medidas_generales',
         
     ];
+
     public function formularioInstancia()
     {
         return $this->belongsTo(FormularioInstancia::class, 'id', 'id');
+    }
+
+    public function checklistItems()
+    {
+        return $this->morphMany(CheckListItem::class, 'nota');
+    }
+
+    protected $appends = ['model_type'];
+
+    public function getModelTypeAttribute()
+    {
+        return self::class; 
     }
 }
 

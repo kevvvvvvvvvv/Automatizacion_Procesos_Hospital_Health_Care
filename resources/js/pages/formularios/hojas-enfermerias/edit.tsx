@@ -1,5 +1,5 @@
 import React, { useState } from 'react'; 
-import { Paciente, Estancia, ProductoServicio, HojaEnfermeria, HojaSignosGraficas, CatalogoEstudio, User, SolicitudEstudio, NotaPostoperatoria } from '@/types';
+import { ChecklistItemData, Paciente, Estancia, ProductoServicio, HojaEnfermeria, HojaSignosGraficas, CatalogoEstudio, User, SolicitudEstudio, NotaPostoperatoria, notasEvoluciones } from '@/types';
 import { Head, useForm, router } from '@inertiajs/react';
 import { route } from 'ziggy-js';
 import Swal from 'sweetalert2';
@@ -32,7 +32,8 @@ interface CreateProps {
     medicos: User[];
     usuarios: User[];
 
-    notaPostoperatoria: NotaPostoperatoria;
+    nota: notasEvoluciones | NotaPostoperatoria | null;
+    checklistInicial:ChecklistItemData[];
 }
 
 type SeccionHoja = 'signos' | 'medicamentos' | 'terapia_iv' | 'estudios' | 'sondas' | 'liquidos' | 'dieta' | 'servicios_especiales' | 'observaciones' | 'graficas' ;
@@ -163,8 +164,19 @@ const Observaciones = ({hojasenfermeria}: Props) => {
     )
 }
 
-const Create: CreateComponent = ({ paciente, estancia, hojaenfermeria ,medicamentos, soluciones, dataParaGraficas, catalogoEstudios, solicitudesAnteriores, medicos,          
-    notaPostoperatoria}) => {
+const Create: CreateComponent = ({ 
+    paciente, 
+    estancia, 
+    hojaenfermeria ,
+    medicamentos, 
+    soluciones, 
+    dataParaGraficas, 
+    catalogoEstudios, 
+    solicitudesAnteriores, 
+    medicos,          
+    nota,
+    checklistInicial
+}) => {
 
     const [activeSection, setActiveSection] = useState<SeccionHoja>('signos');
 
@@ -172,10 +184,11 @@ const Create: CreateComponent = ({ paciente, estancia, hojaenfermeria ,medicamen
         <>
         <div className="mt-12">
             <h2 className="text-2xl font-bold text-gray-800 mb-10">
-                Checklist de plan postoperatorio
+                Checklist de plan
             </h2>
-            <PlanPostoperatorioChecklist 
-                nota={notaPostoperatoria} 
+            <PlanPostoperatorioChecklist
+                nota={nota} 
+                checklistInicial={checklistInicial}
             />
         </div>
         <nav className="mb-6 mt-12">

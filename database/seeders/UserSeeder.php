@@ -26,7 +26,7 @@ class UserSeeder extends Seeder
             'fecha_nacimiento' => '1985-01-01',
             'email' => 'juan.perez@hospital.com',
             'password' => Hash::make('password123'),
-            'cargo_id' => 6,
+            'telefono' => '7774441234',
         ]);
 
         $userJuan->colaborador_responsable_id = $userJuan->id;
@@ -40,9 +40,9 @@ class UserSeeder extends Seeder
             'sexo' => 'Femenino',
             'fecha_nacimiento' => '1990-02-14',
             'email' => 'enfermeralicenciada@hospital.com',
+            'telefono' => '7774441234',
             'colaborador_responsable_id' => $userJuan->id, 
             'password' => Hash::make('password123'),
-            'cargo_id' => 3,
         ]);
         CredencialEmpleado::create([
             'user_id' => $userMaria->id,
@@ -57,10 +57,10 @@ class UserSeeder extends Seeder
             'apellido_materno' => 'Moreno',
             'sexo' => 'Masculino',
             'fecha_nacimiento' => '1982-07-10',
-            'colaborador_responsable_id' => $userJuan->id, 
+            'colaborador_responsable_id' => $userJuan->id,
+            'telefono' => '7774441234', 
             'email' => 'enfermeraauxiliar@hospital.com',
             'password' => Hash::make('password123'),
-            'cargo_id' => 5,
         ]);
 
        
@@ -71,10 +71,10 @@ class UserSeeder extends Seeder
             'apellido_materno' => 'Díaz',
             'sexo' => 'Femenino',
             'fecha_nacimiento' => '1988-03-20',
-            'colaborador_responsable_id' => $userCarlos->id, 
+            'colaborador_responsable_id' => $userCarlos->id,
+            'telefono' => '7774441234', 
             'email' => 'laura.hernandez@hospital.com',
             'password' => Hash::make('password123'),
-            'cargo_id' => 3,
         ]);
 
         $userAndres = User::create([
@@ -84,10 +84,10 @@ class UserSeeder extends Seeder
             'apellido_materno' => 'Luna',
             'sexo' => 'Masculino',
             'fecha_nacimiento' => '1991-09-23',
-            'colaborador_responsable_id' => $userMaria->id, 
+            'colaborador_responsable_id' => $userMaria->id,
+            'telefono' => '7774441234', 
             'email' => 'andres.gonzalez@hospital.com',
             'password' => Hash::make('password123'),
-            'cargo_id' => 1,
         ]);
 
         $user = User::create([
@@ -97,10 +97,10 @@ class UserSeeder extends Seeder
             'apellido_materno' => 'Rojas',
             'sexo' => 'Femenino',
             'fecha_nacimiento' => '1995-01-05',
-            'colaborador_responsable_id' => $userAndres->id, 
+            'colaborador_responsable_id' => $userAndres->id,
+            'telefono' => '7774441234', 
             'email' => 'sofia.martinez@hospital.com',
             'password' => Hash::make('password123'),
-            'cargo_id' => 2,
         ]);
 
         CredencialEmpleado::create([
@@ -123,8 +123,8 @@ class UserSeeder extends Seeder
             'sexo' => 'Masculino', 
             'fecha_nacimiento' => '2004-02-10',
             'email' => 'kevinyahirt@gmail.com',
+            'telefono' => '7774441234',
             'password' => Hash::make('12345678'),
-            'cargo_id' => 2,
         ]);
 
         $user->assignRole('administrador');
@@ -137,8 +137,8 @@ class UserSeeder extends Seeder
             'sexo' => 'Masculino', 
             'fecha_nacimiento' => '2000-01-01',
             'email' => 'healthcare@test.com',
+            'telefono' => '7774441234',
             'password' => Hash::make('12345678'),
-            'cargo_id' => 2, 
         ]);
 
         $user->assignRole('administrador');
@@ -151,8 +151,8 @@ class UserSeeder extends Seeder
             'sexo' => 'Masculino', 
             'fecha_nacimiento' => '2004-03-02',
             'email' => 'efrainhdz@gmail.com',
+            'telefono' => '7774441234',
             'password' => Hash::make('12345678'),
-            'cargo_id' => 3,
         ]);
 
         $user->assignRole('administrador');
@@ -172,8 +172,8 @@ class UserSeeder extends Seeder
             'sexo' => 'Masculino', 
             'fecha_nacimiento' => '2004-03-02',
             'email' => 'farmacia@test.com',
+            'telefono' => '7774441234',
             'password' => Hash::make('12345678'),
-            'cargo_id' => 9,
         ]);
 
         $user->assignRole('farmacia');
@@ -186,6 +186,7 @@ class UserSeeder extends Seeder
             'sexo' => 'Femenino',
             'fecha_nacimiento' => '1995-06-15',
             'email' => 'recepcion@test.com',
+            'telefono' => '7774441234',
             'password' => Hash::make('12345678'),
         ]);
 
@@ -199,6 +200,7 @@ class UserSeeder extends Seeder
             'sexo' => 'Masculino',
             'fecha_nacimiento' => '1990-01-01',
             'email' => 'caja@test.com',
+            'telefono' => '7774441234',
             'password' => Hash::make('12345678'),
         ]);
 
@@ -211,6 +213,7 @@ class UserSeeder extends Seeder
             'apellido_materno' => 'Ruiz',
             'sexo' => 'Femenino',
             'fecha_nacimiento' => '1992-05-15',
+            'telefono' => '7774441234',
             'email' => 'tmko220776@upemor.edu.mx',
             'password' => Hash::make('12345678'),
         ]);

@@ -32,7 +32,11 @@ return new class extends Migration
                   ->constrained('users')
                   ->onDelete('set null');
             
-            $table->text('resultados')->nullable();
+            $table->datetime('fecha_realizacion')->nullable();
+            $table->string('problema_clinico')->nullable();
+            $table->string('incidentes_accidentes')->nullable();
+            $table->text('ruta_archivo_resultado')->nullable();
+
             $table->timestamps();
         });
     }

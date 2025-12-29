@@ -99,6 +99,19 @@ class Estancia extends Model
         );
     }
 
+    public function notasEvoluciones(): HasManyThrough
+    {
+        return $this->hasManyThrough(
+            NotaEvolucion::class,
+            FormularioInstancia::class,
+            'estancia_id',
+            'id',
+            'id',
+            'id'
+
+        );
+    }
+
     public function hojaOxigenos(): HasMany
     {
         return $this->hasMany(HojaOxigeno::class);

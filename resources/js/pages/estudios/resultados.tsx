@@ -51,7 +51,7 @@ const ResultadosComponent = ({ solicitud_estudio, grupos_estudios }: Props) => {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        post(route('solicitudes.update_resultados', solicitud_estudio.id), {
+        post(route('solicitudes-estudios.update', solicitud_estudio.id), {
             forceFormData: true,
         });
     };
@@ -64,8 +64,8 @@ const ResultadosComponent = ({ solicitud_estudio, grupos_estudios }: Props) => {
                 title={`Solicitud #${solicitud_estudio.id}`} 
                 onSubmit={handleSubmit} 
                 actions={
-                    <PrimaryButton disabled={processing}>
-                        {processing ? 'Guardando...' : 'Guardar Todo'} 
+                    <PrimaryButton disabled={processing} type='submit'>
+                        {processing ? 'Guardando...' : 'Guardar'} 
                     </PrimaryButton>
                 }
             >
