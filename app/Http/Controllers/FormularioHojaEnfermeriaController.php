@@ -4,8 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\HojaEnfermeriaRequest;
 use App\Models\CatalogoEstudio;
-use Illuminate\Http\Request;
-use Illuminate\Http\RedirectResponse;
 
 use App\Models\Paciente;
 use App\Models\Estancia;
@@ -13,19 +11,28 @@ use App\Models\FormularioCatalogo;
 use App\Models\FormularioInstancia;
 use App\Models\HojaEnfermeria;
 use App\Models\ProductoServicio;
-use App\Models\HojaMedicamento;
 use App\Models\HojaSignos;
-use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 
 use Inertia\Inertia;
 
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\DB;
-use PhpParser\Node\Stmt\Return_;
+
+use App\Services\PdfGeneratorService;
 
 class FormularioHojaEnfermeriaController extends Controller
 {
+    protected $pdfGenerator;
+
+    public function __construct(PdfGeneratorService $pdfGenerator)
+    {
+        $this->pdfGenerator = $pdfGenerator;
+    }
+
+
     public function create(Paciente $paciente, Estancia $estancia)
     {
         $estancia->load('formularioInstancias.hojaEnfermeria');
@@ -80,7 +87,6 @@ class FormularioHojaEnfermeriaController extends Controller
 
     public function edit(HojaEnfermeria $hojasenfermeria)
     {
-
         $hojasenfermeria->load(
             'formularioInstancia.estancia.paciente', 
             'hojasTerapiaIV.solucion',
@@ -192,6 +198,33 @@ class FormularioHojaEnfermeriaController extends Controller
         }
         
         return $nota;
+    }
+
+
+    public function generarPDF(HojaEnfermeria $hojasenfermeria)
+    {
+        $hojasenfermeria->load(
+            'formularioInstancia.estancia.paciente'
+        );
+
+        $headerData = [
+            'historiaclinica' => $hojasenfermeria,
+            'paciente' => $hojasenfermeria->formularioInstancia->estancia->paciente,
+            'estancia' => $hojasenfermeria->formularioInstancia->estancia
+        ];
+
+        $viewData = [
+            'notaData'=> $hojasenfermeria
+        ];
+
+        return $this->pdfGenerator->generateStandardPdf(
+            'pdfs.hoja-enfermeria',
+            $viewData,
+            $headerData,
+            'hoja-enfermeria-',
+            $hojasenfermeria->formularioInstancia->estancia->id
+        );
+
     }
 }
 
