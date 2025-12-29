@@ -30,6 +30,7 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             EstanciaSeeder::class,
             CatalogoEstudioSeeder::class,
+            HabitacionPrecioSeeder::class,
         ]);
 
     }
