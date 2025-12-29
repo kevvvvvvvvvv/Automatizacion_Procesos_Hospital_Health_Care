@@ -181,10 +181,6 @@ Route::get('/interconsultas/{interconsulta}/pdf', [InterconsultaController::clas
     ->name('interconsultas.pdf')
     ->middleware('auth');
 
-Route::get('/hojasenfermerias/{hojasenfermerias}/pdf', [FormularioHojaEnfermeriaController::class, 'generarPDF'])
-    ->name('hojasenfermerias.pdf')
-    ->middleware('auth');
-
 Route::get('/traslados/{traslado}/pdf', [TrasladoController::class, 'generarPDF'])
     ->name('traslados.pdf')
     ->middleware('auth');
@@ -193,7 +189,7 @@ Route::get('/preoperatorias/{preoperatoria}/pdf', [PreoperatoriaController::clas
     ->name('preoperatorias.pdf')
     ->middleware('auth');
 
-Route::get('/hojasenfermerias/{hojasenfermerias}/pdf', [FormularioHojaEnfermeriaController::class, 'generarPDF'])
+Route::get('/hojasenfermerias/{hojasenfermeria}/pdf', [FormularioHojaEnfermeriaController::class, 'generarPDF'])
     ->name('hojasenfermerias.pdf')
     ->middleware('auth');
 
@@ -260,7 +256,7 @@ Route::post('/notifications/mark-all-as-read', function () {
 
 // Historial
 Route::get('/historial', [HistoryController::class, 'index'])->name('historiales.index')->middleware('auth');
-
+Route::get ('/rerservacion/reserva', [ReservacionController::class, 'reserva'])->name('rerservaciones.reserva')->middleware('auth');
 
 require __DIR__.'/settings.php';
 require __DIR__.'/auth.php';
