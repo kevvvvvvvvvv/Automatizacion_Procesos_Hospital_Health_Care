@@ -254,7 +254,7 @@ const TerapiaIVForm: React.FC<Props> = ({ hoja, soluciones }) => {
                             ) : (
                             hoja.hojas_terapia_i_v?.map((terapia) => (
                                 <tr key={terapia.id}>
-                                    <td className="px-4 py-4 text-sm text-gray-900">{terapia.solucion?.nombre_prestacion || '...'}</td>
+                                    <td className="px-4 py-4 text-sm text-gray-900">{terapia.detalle_soluciones?.nombre_prestacion || '...'}</td>
                                     <td className="px-4 py-4 text-sm text-gray-500">{terapia.cantidad}</td>
                                     <td className="px-4 py-4 text-sm text-gray-500">{terapia.duracion}</td>
                                     <td className="px-4 py-4 text-sm text-gray-500">{terapia.flujo_ml_hora}</td>
@@ -277,7 +277,7 @@ const TerapiaIVForm: React.FC<Props> = ({ hoja, soluciones }) => {
                                     <td className="px-4 py-4 text-sm">
                                         <button
                                             type="button"
-                                            onClick={() => handleRemoveSavedTerapia(terapia.id)}
+                                            onClick={() => handleRemoveSavedTerapia(terapia.id.toString())}
                                             className="text-red-600 hover:text-red-900"
                                         >
                                             Eliminar

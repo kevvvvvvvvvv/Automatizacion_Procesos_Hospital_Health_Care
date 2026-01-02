@@ -89,11 +89,13 @@ class FormularioHojaEnfermeriaController extends Controller
     {
         $hojasenfermeria->load(
             'formularioInstancia.estancia.paciente', 
-            'hojasTerapiaIV.solucion',
+            'hojasTerapiaIV.detalleSoluciones',
             'hojaMedicamentos.productoServicio',
             'hojaMedicamentos.aplicaciones',
             'formularioInstancia.estancia.hojaOxigenos.userInicio',
-            'formularioInstancia.estancia.hojaOxigenos.userFin',  
+            'formularioInstancia.estancia.hojaOxigenos.userFin',
+            'hojaEscalaValoraciones',
+            'hojaControlLiquidos'  
         );
 
         $estancia = $hojasenfermeria->formularioInstancia->estancia;
@@ -206,6 +208,10 @@ class FormularioHojaEnfermeriaController extends Controller
         $hojasenfermeria->load(
             'formularioInstancia.estancia.paciente',
             'hojaMedicamentos.aplicaciones',
+            'hojaMedicamentos.productoServicio',
+            'hojasTerapiaIV.detalleSoluciones',
+            'formularioInstancia.user.credenciales',
+            'hojaSignos',
         );
 
         $headerData = [
@@ -215,7 +221,8 @@ class FormularioHojaEnfermeriaController extends Controller
         ];
 
         $viewData = [
-            'notaData'=> $hojasenfermeria
+            'notaData'=> $hojasenfermeria,
+            'medico'=> $hojasenfermeria->formularioInstancia->user,
         ];
 
         //dd($hojasenfermeria->toArray());

@@ -20,7 +20,7 @@ class HojaTerapiaIV extends Model
         'fecha_hora_inicio',
     ];
 
-    public function solucion():BelongsTo
+    public function detalleSoluciones():BelongsTo
     {
         return $this->belongsTo(ProductoServicio::class, 'solucion','id');
     }
