@@ -20,16 +20,17 @@ class ReservacionController extends Controller
     public function index()
     {
        $reservaciones = Reservacion::with([
-        'horarios.habitacion',
-        'user:id,nombre'
-    ])
-    ->orderBy('fecha', 'desc')
-    ->get();
+            'horarios.habitacion',
+            'user:id,nombre'
+        ])
+        ->orderBy('fecha', 'desc')
+        ->get();
 
-    return Inertia::render('reservacion/index', [
-        'reservaciones' => $reservaciones
-    ]);
+        return Inertia::render('reservacion/index', [
+            'reservaciones' => $reservaciones
+        ]);
     }
+
     public function reserva(){
          $reservaciones = Reservacion::with([
         'horarios.habitacion',
