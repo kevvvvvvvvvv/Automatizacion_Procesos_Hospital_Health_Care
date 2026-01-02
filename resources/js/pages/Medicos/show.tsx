@@ -5,37 +5,18 @@ import MainLayout from '@/layouts/MainLayout';
 import { route } from 'ziggy-js';
 
 import AddButton from '@/components/ui/add-button';
-
+import {User, CredencialEmpleado} from "@/types";
 import InfoCard from '@/components/ui/info-card';
 import InfoField from '@/components/ui/info-field';
 
-type Doctor = {
-  id: number;
-  nombre?: string;  // Opcional, como indicas
-  apellido_paterno: string;
-  apellido_materno?: string | null;
-  nombre_completo?: string;  // Accessor (opcional si no se envía)
-  fecha_nacimiento?: string;  // Accessor formateado (opcional)
-  sexo?: string;
-  curp?: string;
-  cargo?: string;  // Accessor (opcional)
-  colaborador_responsable?: {
-    id: number;
-    nombre_completo: string;
-  } | null;
-  email: string;
-  created_at: string;
-  professional_qualifications?: Array<{  // AGREGADO: Para títulos y cédulas (basado en CreateDoctor)
-    titulo: string;
-    cedula?: string;
-  }>;  // Array de calificaciones, opcional
-};
+
 
 type ShowDoctorProps = {
-  doctor?: Doctor;  // Opcional para manejar undefined
+  doctor?: User; 
+  credencial?: CredencialEmpleado;
 };
 
-const Show = ({ doctor }: ShowDoctorProps) => {
+const Show = ({ doctor, credencial }: ShowDoctorProps) => {
 
   // Safeguard: Si no hay doctor, muestra error
   if (!doctor) {
@@ -50,10 +31,10 @@ const Show = ({ doctor }: ShowDoctorProps) => {
   }
 
   // Fallback para nombre completo: Prioriza accessor, luego construye
-  const nombreCompleto = doctor.nombre_completo || 
+  const nombreCompleto = doctor.nombre || 
     `${doctor.nombre || ''} ${doctor.apellido_paterno || ''} ${doctor.apellido_materno || ''}`.trim() || 
     'Nombre no disponible';
-
+  const credenciales = credencial?.user_id;
   // Formatear fecha si no es accessor
   const fechaNacimientoFormatted = doctor.fecha_nacimiento || 
     (doctor.fecha_nacimiento ? new Date(doctor.fecha_nacimiento).toLocaleDateString('es-MX') : 'No especificada');
@@ -103,44 +84,56 @@ const Show = ({ doctor }: ShowDoctorProps) => {
               label="CURP"
               value={doctor.curp || 'No proporcionada'}
             />
-            <InfoField
+            {/*<InfoField
               label="Cargo"
               value={doctor.cargo || 'No asignado'}
-            />  
+            />*/}  
             <InfoField
               label="Colaborador Responsable"
-              value={doctor.colaborador_responsable?.nombre_completo || 'Sin responsable'}
+              value={doctor.colaborador_responsable_id || 'Sin responsable'}
               className="md:col-span-2"
             />
           </div>
         </InfoCard>
 
-        {/* AGREGADO: Sección para Calificaciones Profesionales (títulos y cédulas) */}
-        {doctor.professional_qualifications && doctor.professional_qualifications.length > 0 && (
-          <InfoCard title="Calificaciones Profesionales" className="mt-8">
-            <div className="overflow-x-auto">
-              <table className="w-full border-collapse border border-gray-300 bg-white rounded-lg shadow">
-                <thead className="bg-gray-100">
-                  <tr>
-                    <th className="border border-gray-300 px-4 py-2 text-left">Título</th>
-                    <th className="border border-gray-300 px-4 py-2 text-left">Cédula</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {doctor.professional_qualifications.map((qual, index) => (
-                    <tr key={index} className="hover:bg-gray-50">
-                      <td className="border border-gray-300 px-4 py-2">{qual.titulo}</td>
-                      <td className="border border-gray-300 px-4 py-2">{qual.cedula || 'N/A'}</td>
+            <InfoCard title="Calificaciones Profesionales" className="mt-8">
+        {/* Verificamos que exista y que, si es array, tenga al menos un elemento */}
+        {credencial && (Array.isArray(credencial) ? credencial.length > 0 : true) ? (
+          <div className="overflow-x-auto">
+            <table className="w-full border-collapse border border-gray-300 bg-white rounded-lg shadow">
+              <thead className="bg-gray-100">
+                <tr>
+                  <th className="border border-gray-300 px-4 py-2 text-left font-semibold text-gray-700">Título</th>
+                  <th className="border border-gray-300 px-4 py-2 text-left font-semibold text-gray-700">Cédula Profesional</th>
+                </tr>
+              </thead>
+              <tbody>
+                {/* Si es array usamos el primer elemento [0], si es objeto lo usamos directo */}
+                {(() => {
+                  const data = Array.isArray(credencial) ? credencial[0] : credencial;
+                  return (
+                    <tr className="hover:bg-gray-50 transition-colors">
+                      <td className="border border-gray-300 px-4 py-2 text-gray-800">
+                        {data.titulo || 'No especificado'}
+                      </td>
+                      <td className="border border-gray-300 px-4 py-2 text-gray-800 font-mono">
+                        {data.cedula_profesional || 'Sin cédula'}
+                      </td>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-            {doctor.professional_qualifications.length === 0 && (
-              <p className="text-gray-500 text-sm italic mt-4">No hay calificaciones registradas.</p>
-            )}
-          </InfoCard>
+                  );
+                })()}
+              </tbody>
+            </table>
+          </div>
+        ) : (
+          <div className="text-center py-6 bg-gray-50 rounded-lg border border-dashed border-gray-300">
+            <p className="text-gray-500 text-sm italic">
+              No hay una credencial de empleado registrada para este doctor.
+            </p>
+          </div>
         )}
+      </InfoCard>
+        
 
         <InfoCard title="Información de Contacto" className="mt-8">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

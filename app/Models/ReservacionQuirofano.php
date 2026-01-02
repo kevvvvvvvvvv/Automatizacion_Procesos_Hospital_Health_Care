@@ -1,49 +1,42 @@
 <?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
 class ReservacionQuirofano extends Model
 {
+    // Esto permite que el método fill($data) funcione
     protected $fillable = [
-        'habitacion_id',
-        'user_id',
         'paciente',
+        'paciente_id',
         'estancia_id',
-        'tratante',
         'procedimiento',
+        'tratante',
         'tiempo_estimado',
         'medico_operacion',
         'fecha',
         'horarios',
         'localizacion',
+        'habitacion_id',
+        'user_id',
+        'comentarios',
         'instrumentista',
         'anestesiologo',
         'insumos_medicamentos',
         'esterilizar_detalle',
         'rayosx_detalle',
         'patologico_detalle',
-        'laparoscopia_detalle',
-        'comentarios',
+        'laparoscopia_detalle'
     ];
 
+    // No olvides los casts para los horarios
     protected $casts = [
         'horarios' => 'array',
-        'fecha' => 'date:Y-m-d',
+        'fecha' => 'date'
     ];
 
-    /* =====================
-       Relaciones
-    ===================== */
-
-    public function estancia(): BelongsTo
-    {
-        return $this->belongsTo(Estancia::class);
-    }
-
-    public function user(): BelongsTo
-    {
-        return $this->belongsTo(User::class);
-    }
-
-    public function habitacion(): BelongsTo
-    {
-        return $this->belongsTo(Habitacion::class);
-    }
-}
+    // Relaciones
+    public function user() { return $this->belongsTo(User::class); }
+    public function habitacion() { return $this->belongsTo(Habitacion::class); }
+}   
