@@ -39,7 +39,7 @@ interface CreateProps {
     checklistInicial:ChecklistItemData[];
 }
 
-type SeccionHoja = 'signos' | 'medicamentos' | 'terapia_iv' | 'estudios' | 'sondas' | 'liquidos' | 'dieta' | 'servicios_especiales' | 'observaciones' | 'graficas' | 'control_liquidos' | 'escalas_valoracion';
+type SeccionHoja = 'signos' | 'medicamentos' | 'terapia_iv' | 'estudios' | 'sondas' | 'dieta' | 'servicios_especiales' | 'observaciones' | 'graficas' | 'control_liquidos' | 'escalas_valoracion';
 
 const secciones: { id: SeccionHoja, label: string }[] = [
     { id: 'signos', label: 'Tomar signos' },
@@ -50,7 +50,6 @@ const secciones: { id: SeccionHoja, label: string }[] = [
     { id: 'terapia_iv', label: 'Terapia intravenosa' },
     { id: 'estudios', label: 'Ordenar estudios' },
     { id: 'sondas', label: 'Sondas y catéteres' },
-    { id: 'liquidos', label: 'Control de líquidos' },
     { id: 'dieta', label: 'Dieta' },
     { id: 'servicios_especiales', label: 'Servicios especiales'},
     { id: 'observaciones', label: 'Observaciones' },

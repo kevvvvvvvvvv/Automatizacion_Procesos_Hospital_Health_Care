@@ -148,6 +148,8 @@ Route::resource('pacientes.estancias.interconsultas', InterconsultaController::c
 
 Route::post('hojassondascateters/{hojasenfermeria}',[FormularioHojaSondaCateterController::class, 'store'])->name('hojassondascateters.store')->middleware('auth');
 Route::patch('hojassondascateters/{hojasenfermeria}/{hojassondascateter}',[FormularioHojaSondaCateterController::class, 'update'])->name('hojassondascateters.update')->middleware('auth');
+Route::post('hoja-medicamentos/{hoja_medicamento}/aplicaciones', [AplicacionMedicamentoController::class, 'store'])->name('aplicaciones.store');
+
 
 // Rutas para estudios y patologías
 Route::post('solicitudes-patologias/{estancia}', [SolicitudEstudioPatologiaController::class, 'store'])->name('solicitudes-patologias.store')->middleware('auth');
@@ -181,10 +183,6 @@ Route::get('/interconsultas/{interconsulta}/pdf', [InterconsultaController::clas
     ->name('interconsultas.pdf')
     ->middleware('auth');
 
-Route::get('/hojasenfermerias/{hojasenfermerias}/pdf', [FormularioHojaEnfermeriaController::class, 'generarPDF'])
-    ->name('hojasenfermerias.pdf')
-    ->middleware('auth');
-
 Route::get('/traslados/{traslado}/pdf', [TrasladoController::class, 'generarPDF'])
     ->name('traslados.pdf')
     ->middleware('auth');
@@ -193,7 +191,7 @@ Route::get('/preoperatorias/{preoperatoria}/pdf', [PreoperatoriaController::clas
     ->name('preoperatorias.pdf')
     ->middleware('auth');
 
-Route::get('/hojasenfermerias/{hojasenfermerias}/pdf', [FormularioHojaEnfermeriaController::class, 'generarPDF'])
+Route::get('/hojasenfermerias/{hojasenfermeria}/pdf', [FormularioHojaEnfermeriaController::class, 'generarPDF'])
     ->name('hojasenfermerias.pdf')
     ->middleware('auth');
 
