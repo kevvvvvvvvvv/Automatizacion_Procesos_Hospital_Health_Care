@@ -63,16 +63,56 @@ class ReservacionQuirofanoController extends Controller
         ]);
     }
 
-   public function store(ReservacionQuirofanoRequest $request)
+ public function store(ReservacionQuirofanoRequest $request)
 {
-    $validated = $request->validated();
-    $validated['user_id'] = auth()->id();
-    
-    // Si tienes una lógica para asignar la habitación por la localización:
-    // $validated['habitacion_id'] = ... 
+    $data = $request->validated();
+    dd($this->all());
+    $LOCALIZACION = 'Plan de Ayutla';
 
-    ReservacionQuirofano::create($validated);
+    /* ===============================
+       1. Obtener quirófanos disponibles
+    =============================== */
+    $quirofanos = Habitacion::where('tipo', 'Quirofano')
+        ->where('ubicacion', $LOCALIZACION)
+        ->pluck('id');
 
-    return redirect()->route('quirofanos.index')->with('success', 'Reservación creada.');
+    $habitacionAsignada = null;
+
+    foreach ($quirofanos as $quirofanoId) {
+        $ocupado = ReservacionQuirofano::where('habitacion_id', $quirofanoId)
+            ->where('fecha', $data['fecha'])
+            ->where(function ($query) use ($data) {
+                foreach ($data['horarios'] as $hora) {
+                    $query->orWhereJsonContains('horarios', $hora);
+                }
+            })
+            ->exists();
+
+        if (! $ocupado) {
+            $habitacionAsignada = $quirofanoId;
+            break;
+        }
+    }
+
+    if (! $habitacionAsignada) {
+        return back()->withErrors([
+            'horarios' => 'No hay quirófanos disponibles en los horarios seleccionados.'
+        ]);
+    }
+
+   ReservacionQuirofano::create([
+    'habitacion_id' => $habitacionAsignada,
+    'user_id' => auth()->id(),
+    'localizacion' => 'Plan de Ayutla',
+
+    ...$request->validated(),
+]);
+
+
+    return redirect()
+        ->route('quirofanos.index')
+        ->with('success', 'Cirugía programada correctamente.');
 }
+
+
 }
