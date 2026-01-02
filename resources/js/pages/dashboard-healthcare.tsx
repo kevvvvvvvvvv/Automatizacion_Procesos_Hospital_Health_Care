@@ -4,7 +4,7 @@ import { LuBedSingle } from "react-icons/lu";
 import { RiArchiveDrawerFill } from "react-icons/ri";
 import { MdCalendarMonth } from "react-icons/md"
 import { MdHistory, MdAdd } from "react-icons/md";
-import { FaUserDoctor } from "react-icons/fa6";
+import { FaUserDoctor, FaBowlFood } from "react-icons/fa6";
 import { route } from 'ziggy-js';
 import { Head, usePage, PageProps as InertiaPageProps, router } from '@inertiajs/react';
 import { User } from '@/types';
@@ -95,7 +95,15 @@ export default function Dashboard() {
                         text="Reservar"
                         onClick={() => router.visit(route('rerservaciones.reserva'))}
                     />
-                </div>                      
+                </div>     
+
+                <div>
+                     <CardButton
+                        icon={FaBowlFood}
+                        text="Dietas"
+                        onClick={() => router.visit(route('dietas.index'))}
+                    />
+                </div>                   
             </MainLayout>
         </>
     );

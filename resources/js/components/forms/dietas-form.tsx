@@ -67,10 +67,9 @@ const opcionesDeDieta = {
 const restricciones = [
     { id: 'DIABETICO', label: 'Paciente diabético' },
     { id: 'CELIACO', label: 'Paciente celiaco (sin gluten)' },
-    { id: 'ONCOLÓGICO', label: 'Paciente oncológico' }
-    //{ id: 'HIPERTENSO', label: 'Paciente hipertenso (bajo en sodio)' },
-    //{ id: 'COLECISTO', label: 'Sin colecitoqueneticos' },
-
+    { id: 'ONCOLÓGICO', label: 'Paciente oncológico' },
+    { id: 'HIPERTENSO', label: 'Paciente hipertenso (bajo en sodio)' },
+    { id: 'COLECISTO', label: 'Sin colecitoqueneticos' },
 ];
 
 
