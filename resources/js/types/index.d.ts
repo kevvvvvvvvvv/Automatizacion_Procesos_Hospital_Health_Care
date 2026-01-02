@@ -839,3 +839,16 @@ interface PersonalEmpleado {
     cargo: string;
     user: User;
 }
+
+export interface CategoriaDieta {
+    id: number;
+    categoria: string;
+}
+
+export interface Dieta {
+    id: number;
+    alimento:string;
+    costo: number;
+    categoria_dieta: CategoriaDieta;
+    categoria_dieta_id:number;
+}

@@ -42,6 +42,7 @@ use App\Http\Controllers\ReservacionController;
 use App\Http\Controllers\ReservacionQuirofanoController;
 use App\Http\Controllers\PersonalEmpleadoController;
 use App\Http\Controllers\CheckListController;
+use App\Http\Controllers\DietaController;
 use App\Http\Controllers\HojaControlLiquidoController;
 use App\Http\Controllers\HojaEscalaValoracionController;
 use App\Models\HojaContolLiquido;
@@ -67,6 +68,7 @@ Route::resource('doctores', DoctorController::class)->middleware('auth');
 Route::resource('reservaciones', ReservacionController::class)->middleware('auth');
 Route::resource('quirofanos', ReservacionQuirofanoController::class)->middleware('auth');
 Route::post('/reservaciones/{reservacione}/pagar',[ReservacionController::class,'pagar'])->middleware('auth');
+Route::resource('dietas',DietaController::class)->middleware('auth');
 
 
 Route::resource('pacientes.responsable', FamiliarResponsableController::class);
