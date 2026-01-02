@@ -20,16 +20,9 @@ class ReservacionController extends Controller
     public function index()
     {
        $reservaciones = Reservacion::with([
-<<<<<<< HEAD
         'horarios.habitacion',
         'user:id,nombre'
     ])
-=======
-            'horarios.habitacion',
-            'user:id,nombre' 
-        ])
-
->>>>>>> 745073db13017ca4800ebef11070c872f77f8834
     ->orderBy('fecha', 'desc')
     ->get();
 

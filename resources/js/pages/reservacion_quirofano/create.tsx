@@ -4,9 +4,10 @@ import MainLayout from "@/layouts/MainLayout";
 import FormLayout from "@/components/form-layout";
 import PrimaryButton from "@/components/ui/primary-button";
 import { route } from "ziggy-js";
-import { Paciente, Estancia } from "@/types";
+import { Paciente, Estancia, ReservacionQuirofano } from "@/types";
 
 interface Props {
+    quirofanos?: ReservacionQuirofano;
     paciente?: Paciente | null;
     estancia?: Estancia | null;
     limitesDinamicos: Record<string, number>;
@@ -32,6 +33,7 @@ const horariosLista = generarHorarios();
 const CreateReservacion: React.FC<Props> = ({
     paciente,
     estancia,
+    quirofanos,
     limitesDinamicos,
     medicos = [],
 }) => {
@@ -63,46 +65,66 @@ const CreateReservacion: React.FC<Props> = ({
         patologico: { activa: false, detalle: "" },
     });
 
-    const { data, setData, processing } = form;
+    const { data, setData, processing, post, put } = form;
 
     /* =======================
        SUBMIT
     ======================= */
     const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
+    e.preventDefault();
 
-        if (data.horarios.length === 0) {
-            alert("Debe seleccionar al menos un horario.");
-            return;
-        }
+    if (data.horarios.length === 0) {
+        alert("Debe seleccionar al menos un horario.");
+        return;
+    }
 
-        form
-            .transform((data) => ({
-                paciente: data.paciente_nombre,
-                paciente_id: data.paciente_id,
-                estancia_id: data.estancia_id,
+    const payload = {
+        paciente: data.paciente_nombre,
+        paciente_id: data.paciente_id,
+        estancia_id: data.estancia_id,
 
-                procedimiento: data.procedimiento,
-                tratante: data.tratante,
-                tiempo_estimado: data.tiempo_estimado,
-                medico_operacion: data.medico_operacion,
-                localizacion: data.localizacion,
-                fecha: data.fecha,
-                horarios: data.horarios,
-                comentarios: data.comentarios,
+        procedimiento: data.procedimiento,
+        tratante: data.tratante,
+        tiempo_estimado: data.tiempo_estimado,
+        medico_operacion: data.medico_operacion,
+        localizacion: data.localizacion,
+        fecha: data.fecha,
+        horarios: data.horarios,
+        comentarios: data.comentarios,
 
-                instrumentista: data.instrumentista.activa ? data.instrumentista.detalle : null,
-                anestesiologo: data.anestesiologo.activa ? data.anestesiologo.detalle : null,
-                insumos_medicamentos: data.insumos_med.activa ? data.insumos_med.detalle : null,
-                esterilizar_detalle: data.esterilizar.activa ? data.esterilizar.detalle : null,
-                rayosx_detalle: data.rayosx.activa ? data.rayosx.equipos.join(", ") : null,
-                patologico_detalle: data.patologico.activa ? data.patologico.detalle : null,
-                laparoscopia_detalle: data.laparoscopia.activa
-                    ? `${data.laparoscopia.detalle} (Energía: ${data.laparoscopia.energia.join(", ")})`
-                    : null,
-            }))
-            post(route("quirofanos.store"));
+        instrumentista: data.instrumentista.activa
+            ? data.instrumentista.detalle
+            : null,
+
+        anestesiologo: data.anestesiologo.activa
+            ? data.anestesiologo.detalle
+            : null,
+
+        insumos_medicamentos: data.insumos_med.activa
+            ? data.insumos_med.detalle
+            : null,
+
+        esterilizar_detalle: data.esterilizar.activa
+            ? data.esterilizar.detalle
+            : null,
+
+        rayosx_detalle: data.rayosx.activa
+            ? data.rayosx.equipos.join(", ")
+            : null,
+
+        patologico_detalle: data.patologico.activa
+            ? data.patologico.detalle
+            : null,
+
+        laparoscopia_detalle: data.laparoscopia.activa
+            ? `${data.laparoscopia.detalle} (Energía: ${data.laparoscopia.energia.join(", ")})`
+            : null,
     };
+
+    post(route("quirofanos.store"));
+};
+
+
 
     /* =======================
        HORARIOS
@@ -237,11 +259,7 @@ const CreateReservacion: React.FC<Props> = ({
         <MainLayout pageTitle="Programación de Quirófano" link="quirofanos.index">
             <Head title="Reservar Quirófano" />
 
-            {errors && (
-                <pre className="bg-red-100 text-red-700 p-2 text-xs mb-4">
-                    {JSON.stringify(errors, null, 2)}
-                </pre>
-            )}
+            
 
             <FormLayout
                 title="Detalles de la Cirugía"
