@@ -103,7 +103,7 @@ const PacienteEdit: React.FC<EditProps> = ({ paciente }) => {
   };
 
   return (
-    <MainLayout>
+    <MainLayout pageTitle='Edición del paciente' link='pacientes.index'>
       <Head title="Editar Paciente" />
       <form className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-lg text-black space-y-8" onSubmit={handleSubmit}>
         <h1 className="text-2xl font-bold mb-6 text-center">Editar Paciente</h1>

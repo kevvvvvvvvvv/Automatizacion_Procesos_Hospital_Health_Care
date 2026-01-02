@@ -142,7 +142,8 @@ const Index = ({ reservaciones }: Props) => {
           <h1 className="text-3xl font-bold text-black">
             Listado de Reservaciones
           </h1>
-
+          </div>
+        <div className="flex justify-between mb-6">
           <AddButton href={route("reservaciones.create")}>
             Crear Reservación
           </AddButton>

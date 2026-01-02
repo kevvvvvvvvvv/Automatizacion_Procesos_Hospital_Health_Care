@@ -1,47 +1,35 @@
 <?php
+
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+
 class ReservacionQuirofanoRequest extends FormRequest
 {
     public function authorize(): bool
     {
         return true;
     }
+public function rules(): array
+{
+   return [
+        'fecha' => ['required'],
+        'horarios' => ['required', 'array'],
+    ];
+}
 
-    public function rules(): array
+    public function messages(): array
     {
-        
-        return [ 
-            
-            'paciente' => ['nullable','string'],
-
-            'tratante' => ['required','string'],
-            'procedimiento' => ['required','string'],
-            'tiempo_estimado' => ['required','string'],
-            'medico_operacion' => ['required','string'],
-
-            'laparoscopia_detalle' => ['nullable','string'],
-            'instrumentista' => ['nullable','string'],
-            'anestesiologo' => ['nullable','string'],
-            'insumos_medicamentos' =>[ 'nullable','string'],
-            'esterilizar_detalle' => ['nullable','string'],
-            'rayosx_detalle' => ['nullable','string'],
-            'patologico_detalle' => ['nullable','string'],
-
-            'comentarios' => ['nullable','string'],
-            'horarios' => ['required','array'],
-            'fecha' => ['required','date'],
-        ];
-        dd($this->all());
-    }
-    public function messages():array
-    {
-        
-        return[
-            //
+        return [
+            'paciente.required' => 'El nombre del paciente es obligatorio.',
+            'tratante.required' => 'El médico tratante es obligatorio.',
+            'procedimiento.required' => 'Debe especificar el procedimiento.',
+            'tiempo_estimado.required' => 'El tiempo estimado es obligatorio.',
+            'medico_operacion.required' => 'Debe seleccionar al médico de operación.',
+            'horarios.required' => 'Debe seleccionar al menos un bloque de horario.',
+            'horarios.min' => 'Seleccione al menos un horario.',
+            'fecha.required' => 'La fecha es obligatoria.',
+            'fecha.date' => 'Formato de fecha no válido.',
         ];
     }
-
-    
 }

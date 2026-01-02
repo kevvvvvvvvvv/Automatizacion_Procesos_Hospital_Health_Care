@@ -76,6 +76,7 @@ export interface User {
     apellido_materno: string;
     sexo: 'Masculino' | 'Femenino';
     fecha_nacimiento: string; 
+    telefono: string;
     colaborador_responsable_id: number | null;
     email: string;
     created_at: string; 
@@ -85,6 +86,14 @@ export interface User {
 
     permissions?: string[]; 
 };
+
+export interface CredencialEmpleado{
+    id: number;
+    user_id: number;
+    titulo: string;
+    cedula_profesional: string;
+
+}
 
 export interface FormularioCatalogo {
     id: number;
@@ -768,18 +777,18 @@ export interface ReservacionHorarios{
 }
 export interface ReservacionQuirofano {
     id: number;
-    habitacion_id: number | null; // Cambiado a nullable
+    habitacion_id: number | null; 
     user_id: number;
     estancia_id: number | null;
 
-    paciente: string; // Cambiado a string (siempre llegará un nombre)
+    paciente: string; 
     tratante: string;
     procedimiento: string;
     tiempo_estimado: string;
     medico_operacion: string;
 
     // Detalles de servicios
-    laparoscopia_detalle: string | null; // <--- Agregado
+    laparoscopia_detalle: string | null; 
     instrumentista: string | null;
     anestesiologo: string | null;
     insumos_medicamentos: string | null;

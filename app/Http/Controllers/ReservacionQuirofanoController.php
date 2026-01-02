@@ -25,7 +25,6 @@ class ReservacionQuirofanoController extends Controller
                 'id' => $res->id,
                 'fecha' => $res->fecha,
                 'localizacion' => $res->localizacion,
-                // Como en la migración 'paciente' es un string, lo usamos directo
                 'paciente_nombre' => $res->paciente ?? 'N/A', 
                 'instrumentista' => $res->instrumentista,
                 'anestesiologo' => $res->anestesiologo,
@@ -62,57 +61,89 @@ class ReservacionQuirofanoController extends Controller
                 ->toArray(),
         ]);
     }
-
- public function store(ReservacionQuirofanoRequest $request)
+public function store(ReservacionQuirofanoRequest $request)
 {
     $data = $request->validated();
-    dd($this->all());
     $LOCALIZACION = 'Plan de Ayutla';
 
-    /* ===============================
-       1. Obtener quirófanos disponibles
-    =============================== */
-    $quirofanos = Habitacion::where('tipo', 'Quirofano')
-        ->where('ubicacion', $LOCALIZACION)
-        ->pluck('id');
+    try {
+        // ... (Tu lógica de búsqueda de quirófano se mantiene igual) ...
+        $quirofanos = Habitacion::where('tipo', 'Quirofano')->where('ubicacion', $LOCALIZACION)->pluck('id');
+        $habitacionAsignada = null;
 
-    $habitacionAsignada = null;
+        foreach ($quirofanos as $quirofanoId) {
+            $ocupado = ReservacionQuirofano::where('habitacion_id', $quirofanoId)
+                ->where('fecha', $data['fecha'])
+                ->where(function ($query) use ($data) {
+                    foreach ($data['horarios'] as $hora) {
+                        $query->orWhereJsonContains('horarios', $hora);
+                    }
+                })->exists();
 
-    foreach ($quirofanos as $quirofanoId) {
-        $ocupado = ReservacionQuirofano::where('habitacion_id', $quirofanoId)
-            ->where('fecha', $data['fecha'])
-            ->where(function ($query) use ($data) {
-                foreach ($data['horarios'] as $hora) {
-                    $query->orWhereJsonContains('horarios', $hora);
-                }
-            })
-            ->exists();
-
-        if (! $ocupado) {
-            $habitacionAsignada = $quirofanoId;
-            break;
+            if (!$ocupado) {
+                $habitacionAsignada = $quirofanoId;
+                break;
+            }
         }
-    }
 
-    if (! $habitacionAsignada) {
+        if (!$habitacionAsignada) {
+            return back()->withErrors(['horarios' => 'No hay quirófanos disponibles.']);
+        }
+
+        /* ======================================================
+           3. Persistencia de Datos - REVISA LOS NOMBRES AQUÍ
+        ========================================================= */
+        $reservacion = new ReservacionQuirofano();
+        
+        $reservacion->habitacion_id    = $habitacionAsignada;
+        $reservacion->user_id          = auth()->id();
+        $reservacion->localizacion     = $LOCALIZACION;
+        
+        $reservacion->paciente         = $request->paciente;
+        //$reservacion->paciente_id      = $request->paciente_id;
+        $reservacion->estancia_id      = $request->estancia_id;
+        $reservacion->procedimiento    = $request->procedimiento;
+        $reservacion->tratante         = $request->tratante;
+        $reservacion->medico_operacion = $request->medico_operacion;
+        $reservacion->tiempo_estimado  = $request->tiempo_estimado;
+        $reservacion->fecha            = $request->fecha;
+        $reservacion->horarios         = $request->horarios;
+        $reservacion->comentarios      = $request->comentarios;
+
+        // --- REVISA SI ESTOS NOMBRES EXISTEN EN TU MIGRACIÓN ---
+        $reservacion->instrumentista        = $request->instrumentista;
+        $reservacion->anestesiologo         = $request->anestesiologo;
+        $reservacion->insumos_medicamentos  = $request->insumos_medicamentos;
+        $reservacion->esterilizar_detalle   = $request->esterilizar_detalle;
+        $reservacion->rayosx_detalle        = $request->rayosx_detalle;
+        $reservacion->patologico_detalle    = $request->patologico_detalle;
+        $reservacion->laparoscopia_detalle  = $request->laparoscopia_detalle;
+
+        $reservacion->save();
+
+        return redirect()->route('quirofanos.index')->with('success', 'Reservación creada.');
+
+    } catch (\Exception $e) {
+        // Este mensaje te dirá exactamente cuál es la columna que MySQL no encuentra
         return back()->withErrors([
-            'horarios' => 'No hay quirófanos disponibles en los horarios seleccionados.'
+            'error' => 'Error de Base de Datos: ' . $e->getMessage()
         ]);
     }
-
-   ReservacionQuirofano::create([
-    'habitacion_id' => $habitacionAsignada,
-    'user_id' => auth()->id(),
-    'localizacion' => 'Plan de Ayutla',
-
-    ...$request->validated(),
-]);
-
-
-    return redirect()
-        ->route('quirofanos.index')
-        ->with('success', 'Cirugía programada correctamente.');
 }
 
 
+public function show(ReservacionQuirofano $quirofano)
+{
+    // Cargamos el usuario que creó la reservación y la habitación asignada
+    $quirofano->load(['user', 'habitacion']);
+
+    return Inertia::render('reservacion_quirofano/show', [
+        'quirofano' => $quirofano, 
+        // Pasamos el usuario por separado para mantener la estructura de tus Props
+        'user'      => $quirofano->user,
+        // Aunque los horarios están dentro del objeto quirofano, 
+        // los pasamos por separado si tu componente los espera así
+        'horarios'  => $quirofano->horarios ?? [],
+    ]);
 }
+};

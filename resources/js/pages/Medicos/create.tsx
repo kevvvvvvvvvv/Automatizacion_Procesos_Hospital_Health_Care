@@ -102,7 +102,7 @@ const CreateDoctor: React.FC<Props> = ({ cargos = [], user }) => {
         email: user?.email || '',
         password: '',
         password_confirmation: '',
-        telefono:user.telefono || '',
+        telefono: user?.telefono || '',
         professional_qualifications: user?.credenciales || '',  
     });
 
@@ -126,7 +126,7 @@ const CreateDoctor: React.FC<Props> = ({ cargos = [], user }) => {
     return (
         <MainLayout link='doctores.index' pageTitle={title}>
             <Head title={title}/>
-            <FormLayout title="" onSubmit={handleSubmit} actions={
+            <FormLayout title="Registar Usuario" onSubmit={handleSubmit} actions={
                 <PrimaryButton disabled={processing} type='submit'>{processing ? 'Guardando...' : btnText}</PrimaryButton>
             }>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
