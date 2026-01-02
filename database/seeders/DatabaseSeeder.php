@@ -31,6 +31,8 @@ class DatabaseSeeder extends Seeder
             EstanciaSeeder::class,
             CatalogoEstudioSeeder::class,
             HabitacionPrecioSeeder::class,
+            CategoriaDietaSeeder::class,
+            DietaSeeder::class,
         ]);
 
     }
