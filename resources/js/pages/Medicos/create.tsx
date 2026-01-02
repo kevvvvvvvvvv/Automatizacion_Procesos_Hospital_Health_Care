@@ -102,7 +102,7 @@ const CreateDoctor: React.FC<Props> = ({ cargos = [], user }) => {
         email: user?.email || '',
         password: '',
         password_confirmation: '',
-        telefono:user.telefono || '',
+        telefono:user?.telefono || '',
         professional_qualifications: user?.credenciales || '',  
     });
 
