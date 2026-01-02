@@ -273,14 +273,17 @@ export interface HojaInsumosBasicos {
     producto_servicio: ProductoServicio;
 }
 
-export interface HojaTerapia {
+export interface HojaTerapiaIV {
     id: number;
     hoja_enfermeria_id: number;
     solucion: ProductoServicio;
     flujo_ml_hora: number;
     fecha_hora_inicio: string;
+    cantidad: number;
+    duracion: number;
     created_at: string;
     updated_at: string;
+    detalle_soluciones: ProductoServicio;
 }
 
 export interface HojaSignos {
