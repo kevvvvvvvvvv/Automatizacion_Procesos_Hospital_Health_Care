@@ -32,6 +32,11 @@ class SolicitudItem extends Model
         return $this->belongsTo(SolicitudEstudio::class);
     }
 
+    public function userRealiza(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+
     public function catalogoEstudio(): BelongsTo
     {
         return $this->belongsTo(CatalogoEstudio::class);

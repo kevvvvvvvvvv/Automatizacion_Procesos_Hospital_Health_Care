@@ -20,6 +20,8 @@ class SolicitudDieta extends Model
         'horario_inicio_dieta',
     ];
 
+    public $timestamps = false;
+
     public function usuarioSupervisa()
     {
         return $this->belongsTo(User::class, 'user_supervisa_id');

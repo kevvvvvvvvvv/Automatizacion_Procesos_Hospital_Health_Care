@@ -55,4 +55,8 @@ class HojaEnfermeria extends Model
         return $this->hasMany(SolicitudDieta::class);
     }
 
+    public function solicitudesEstudio(): MorphMany
+    {
+        return $this->morphMany(SolicitudEstudio::class, 'itemable');
+    }
 }

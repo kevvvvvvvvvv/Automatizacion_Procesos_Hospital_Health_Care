@@ -1,5 +1,5 @@
 import React, { useState } from 'react'; 
-import { ChecklistItemData, Paciente, Estancia, ProductoServicio, HojaEnfermeria, HojaSignosGraficas, CatalogoEstudio, User, SolicitudEstudio, NotaPostoperatoria, notasEvoluciones } from '@/types';
+import { ChecklistItemData, Paciente, Estancia, ProductoServicio, HojaEnfermeria, HojaSignosGraficas, CatalogoEstudio, User, SolicitudEstudio, NotaPostoperatoria, notasEvoluciones, CategoriaDieta } from '@/types';
 import { Head, useForm, router } from '@inertiajs/react';
 import { route } from 'ziggy-js';
 import Swal from 'sweetalert2';
@@ -37,6 +37,8 @@ interface CreateProps {
 
     nota: notasEvoluciones | NotaPostoperatoria | null;
     checklistInicial:ChecklistItemData[];
+
+    categoria_dietas: CategoriaDieta [];
 }
 
 type SeccionHoja = 'signos' | 'medicamentos' | 'terapia_iv' | 'estudios' | 'sondas' | 'dieta' | 'servicios_especiales' | 'observaciones' | 'graficas' | 'control_liquidos' | 'escalas_valoracion';
@@ -180,7 +182,8 @@ const Create: CreateComponent = ({
     solicitudesAnteriores, 
     medicos,          
     nota,
-    checklistInicial
+    checklistInicial,
+    categoria_dietas
 }) => {
 
     const [activeSection, setActiveSection] = useState<SeccionHoja>('signos');
@@ -251,6 +254,8 @@ const Create: CreateComponent = ({
                             catalogoEstudios={catalogoEstudios}
                             solicitudesAnteriores={solicitudesAnteriores}
                             medicos={medicos}
+                            modeloId={hojaenfermeria.id}
+                            modeloTipo='App\Models\HojaEnfermeria'
                         />
             case 'sondas':
                 return <SondasCateteresForm
@@ -260,6 +265,7 @@ const Create: CreateComponent = ({
             case 'dieta':
                 return <DietasForm
                             hoja={hojaenfermeria}
+                            categoria_dietas={categoria_dietas}
                         />
             case 'servicios_especiales':
                 return <ServiciosEspecialesForm

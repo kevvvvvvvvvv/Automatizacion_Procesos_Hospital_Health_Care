@@ -26,7 +26,6 @@ class SolicitudEstudioController extends Controller
 {
     public function store(SolicitudEstudioRequest $request, Estancia $estancia, TwilioWhatsAppService $twilio)
     {
-        
         $validatedData = $request->validated();
         DB::beginTransaction();
         try {
@@ -110,14 +109,12 @@ class SolicitudEstudioController extends Controller
     {
         $validated = $request->validate([
             'grupos' => 'required|array',
-            // Validamos campos dentro de cada grupo
             'grupos.*.fecha_hora_grupo' => 'nullable|date',
             'grupos.*.problema_clinico' => 'nullable|string|max:500',
             'grupos.*.incidentes_accidentes' => 'nullable|string|max:500',
-            // Validamos el archivo (importante usar reglas de archivo)
-            'grupos.*.archivo_grupo' => 'nullable|file|mimes:pdf,jpg,jpeg,png,xlsx,xls|max:10240', // Max 10MB
+
+            'grupos.*.archivo_grupo' => 'nullable|file|mimes:pdf,jpg,jpeg,png,xlsx,xls|max:10240', 
             
-            // Validamos los items dentro de cada grupo
             'grupos.*.items' => 'required|array',
             'grupos.*.items.*.id' => 'required|exists:solicitud_items,id',
             'grupos.*.items.*.cancelado' => 'boolean',
@@ -125,7 +122,6 @@ class SolicitudEstudioController extends Controller
 
         try {
             DB::transaction(function () use ($request) {
-                // Iteramos sobre cada grupo recibido del formulario
                 foreach ($request->grupos as $index => $grupoData) {
                     
                     $rutaArchivo = null;
@@ -185,6 +181,19 @@ class SolicitudEstudioController extends Controller
         }
     }
 
+    public function show(SolicitudEstudio $solicitudes_estudio)
+    {
+        $solicitudes_estudio->load(
+            'userSolicita',
+            'userLlena',
+            'solicitudItems.catalogoEstudio',
+            'solicitudItems.userRealiza'
+        );
+        return Inertia::render('estudios/items/index', [
+            'solicitud' => $solicitudes_estudio,
+        ]);
+    }
+
     public function generarPDF(SolicitudEstudio $solicitudes_estudio)
     {
         $solicitudes_estudio->load(
@@ -226,6 +235,9 @@ class SolicitudEstudioController extends Controller
         $solicitud->user_solicita_id = $request->user_solicita_id;
         $solicitud->problemas_clinicos = $request->diagnostico_problemas;
         $solicitud->incidentes_accidentes = $request->incidentes_accidentes;
+        $solicitud->itemable_id = $request->itemable_id;
+        $solicitud->itemable_type= $request->itemable_type;
+
         $solicitud->save();
 
         return $solicitud;
@@ -243,7 +255,7 @@ class SolicitudEstudioController extends Controller
                     'catalogo_estudio_id' => $catalogoId,
                     'detalles' => $detallesArray[$catalogoId] ?? null,
                     'otro_estudio' => null, 
-                    'estado' => 'solicitado'
+                    'estado' => 'SOLICITADO'
                 ]);
                 $itemsCollection->push($item);
             }
@@ -257,7 +269,7 @@ class SolicitudEstudioController extends Controller
                         'catalogo_estudio_id' => null, 
                         'otro_estudio' => $itemManual['nombre'], 
                         'detalles' => ['departamento_manual' => $itemManual['departamento'] ?? 'GENERAL'], 
-                        'estado' => 'solicitado'
+                        'estado' => 'SOLICITADO'
                     ]);
                     $itemsCollection->push($item);
                 }
@@ -324,7 +336,7 @@ class SolicitudEstudioController extends Controller
             'ULTRASONIDO' => User::role('técnico radiólogo')->get(),
 
             // --- GRUPO: RESONANCIA (O puedes unirlo al anterior) ---
-            'RESONANCIA MAGNÉTICA' => User::role(['Radiologo', 'Jefe Imagenologia'])->get(),
+            'RESONANCIA MAGNÉTICA' => User::all(),
 
             default => User::role('administrador')->get(),
         };
