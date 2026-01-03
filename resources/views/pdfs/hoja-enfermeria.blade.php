@@ -410,6 +410,37 @@
         </tbody>
     </table>
 
+    <h3>Estudios de laboratorio y gabinetes</h3>
+
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 50%">Fecha/hora solicitud</th>
+                <th style="width: 50%">Estudio solicitado</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if ($notaData->solicitudesEstudio->isEmpty())
+                <tr>
+                    <td class="empty-cell" colspan="2">
+                        No se han órdenes de estudios.
+                    </td>
+                </tr>
+            @else
+                @foreach ($notaData->solicitudesEstudio as $solicitud)
+                    @foreach ($solicitud->solicitudItems as $item)
+                        <tr>
+                            <td>{{ $solicitud->created_at->format('d/m/Y H:i') }}</td>
+                            <td>
+                                {{ $item->catalogoEstudio->nombre ?? $item->otro_estudio ?? 'Nombre no encontrado'}}
+                            </td>
+                        </tr>
+                    @endforeach
+                @endforeach
+            @endif
+        </tbody>
+    </table>
+
     <h3>Observaciones</h3>
     @empty($notaData->observaciones)
         <p>Sin nada que reportar.</p>
@@ -498,7 +529,7 @@
                 'data' => $ta_sistolica,
                 'borderColor' => 'red',
                 'fill' => false,
-                'spanGaps' => true // Importante: Si hay nulls, conecta los puntos existentes
+                'spanGaps' => true
             ],
             [
                 'label' => 'Diastólica',
@@ -575,15 +606,14 @@
             [
                 'label' => 'Nivel (5=Alerta, 1=Coma)',
                 'data' => $dataConciencia,
-                'borderColor' => '#8e44ad', // Morado oscuro
+                'borderColor' => '#8e44ad', 
                 'backgroundColor' => 'rgba(142, 68, 173, 0.2)',
                 'fill' => false,
-                'steppedLine' => true, // IMPORTANTE: Hace que la línea se vea como escalones
+                'steppedLine' => true,
                 'spanGaps' => true
             ]
         ]) }}">
         
-        {{-- Leyenda explicativa pequeña para el PDF --}}
         <div style="font-size: 8pt; color: #666; margin-top: 5px; text-align: center;">
             Escala: 5-Alerta | 4-Letárgico | 3-Obnubilado | 2-Estuporoso | 1-Coma
         </div>

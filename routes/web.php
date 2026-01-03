@@ -70,7 +70,6 @@ Route::resource('quirofanos', ReservacionQuirofanoController::class)->middleware
 Route::post('/reservaciones/{reservacione}/pagar',[ReservacionController::class,'pagar'])->middleware('auth');
 Route::resource('dietas',DietaController::class)->middleware('auth');
 
-
 Route::resource('pacientes.responsable', FamiliarResponsableController::class);
 Route::resource('pacientes.estancias', EstanciaController::class)->shallow()->middleware('auth');
 Route::resource('pacientes.estancias.hojasfrontales', FormularioHojaFrontalController::class)->shallow()->parameters(['hojasfrontales' => 'hojaFrontal'])->middleware('auth');
@@ -100,6 +99,8 @@ Route::post('/pacientes/{paciente}/estancias/{estancia}/consentimientos',
 
 Route::post('hojasterapiasiv/{hojasenfermeria}',[FormularioHojaTerapiaIVController::class,'store'])->name('hojasterapiasiv.store');
 Route::patch('hojasterapiasiv/{hojasenfermeria}/{hojasterapiasiv}',[FormularioHojaTerapiaIVController::class,'update'])->name('hojasterapiasiv.update');
+
+Route::resource('hojasenfermerias.dietas',FormularioHojaDietaController::class)->shallow()->middleware('auth');
 
 Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
     ->name('logout');
@@ -142,9 +143,6 @@ Route::resource('pacientes.estancias.interconsultas', InterconsultaController::c
     ->parameters(['interconsultas' => 'interconsulta']);
 
 Route::post('hojassignos/{hojasenfermeria}',[FormularioHojaSignosController::class, 'store'])->name('hojassignos.store');
-
-Route::post('dietas/{hojasenfermeria}',[FormularioHojaDietaController::class, 'store'])->name('dietas.store')->middleware('auth');
-
 Route::resource('pacientes.estancias.interconsultas', InterconsultaController::class)->shallow()->parameters(['interconsultas' => 'interconsulta']);
 
 

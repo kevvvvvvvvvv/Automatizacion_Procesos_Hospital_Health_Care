@@ -14,6 +14,8 @@ interface Props {
     catalogoEstudios: CatalogoEstudio[]; 
     solicitudesAnteriores: SolicitudEstudio[];
     medicos: User[];
+    modeloId: number;      
+    modeloTipo: string;
 }
 
 interface PropsPatologia{
@@ -24,10 +26,6 @@ interface PropsPatologia{
 interface EstudioManual {
     nombre: string;
     departamento: string;
-}
-
-interface EstudioProps {
-    estudios: CatalogoEstudio[];
 }
 
 const ESTUDIOS_FRECUENTES = [
@@ -51,7 +49,6 @@ const optionsEstudios = [
     { value: 'Radiología general', label: 'Radiología general'},
 ];
 
-// --- COMPONENTE PATOLOGÍA (Igual) ---
 const FormularioPatologia: React.FC<PropsPatologia> = ({ estancia, medicos }) => {
     const { data, setData, post, processing, errors } = useForm({
         user_solicita_id: '', estudio_solicitado: '', biopsia_pieza_quirurgica: '', revision_laminillas: '', estudios_especiales: '', pcr: '', pieza_remitida: '', datos_clinicos: '',
@@ -80,9 +77,14 @@ const FormularioPatologia: React.FC<PropsPatologia> = ({ estancia, medicos }) =>
 };
 
 
-
-// --- COMPONENTE PRINCIPAL ---
-const SolicitudEstudiosForm: React.FC<Props> = ({ estancia, catalogoEstudios = [], solicitudesAnteriores = [], medicos }) => {
+const SolicitudEstudiosForm: React.FC<Props> = ({ 
+    estancia, 
+    catalogoEstudios = [], 
+    solicitudesAnteriores = [], 
+    medicos,
+    modeloId,      
+    modeloTipo,
+}) => {
     
     const [activeTab, setActiveTab] = useState<'estudios' | 'patologia'>('estudios');
     const [filtro, setFiltro] = useState('');
@@ -98,7 +100,9 @@ const SolicitudEstudiosForm: React.FC<Props> = ({ estancia, catalogoEstudios = [
         user_solicita_id: '',
         estudios_agregados_ids: [] as number[],
         estudios_adicionales: [] as EstudioManual[],
-        detallesEstudios: {} as Record<number, { modalidad?: string, via?: string, especificacion?: string }>
+        detallesEstudios: {} as Record<number, { modalidad?: string, via?: string, especificacion?: string }>,
+        itemable_id: modeloId,
+        itemable_type: modeloTipo,
     });
 
     const estudiosVisibles = useMemo(() => {

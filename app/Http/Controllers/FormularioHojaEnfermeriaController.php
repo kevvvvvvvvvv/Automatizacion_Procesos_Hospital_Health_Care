@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\HojaEnfermeriaRequest;
 use App\Models\CatalogoEstudio;
-
+use App\Models\CategoriaDieta;
 use App\Models\Paciente;
 use App\Models\Estancia;
 use App\Models\FormularioCatalogo;
@@ -103,8 +103,6 @@ class FormularioHojaEnfermeriaController extends Controller
 
         $paciente = $hojasenfermeria->formularioInstancia->estancia->paciente;
 
- 
-
         $columnasGraficas = [
             'fecha_hora_registro',
             'tension_arterial_sistolica',
@@ -126,9 +124,11 @@ class FormularioHojaEnfermeriaController extends Controller
                                 ->sortByDesc('created_at')
                                 ->values();
         $medicamentos = ProductoServicio::where('subtipo','MEDICAMENTOS')->get();
-        $soluciones = ProductoServicio::where('subtipo','INSUMOS')->get(); 
+        $soluciones = ProductoServicio::where('nombre_prestacion', 'like', 'SOLUCION%')->get();
         $medicos = User::all();
         $usuarios = User::all();
+        $categoria_dietas = CategoriaDieta::with('dietas')->get();
+        $sondas_cateteres = ProductoServicio::where('nombre_prestacion','like','SONDA%')->orWhere('nombre_prestacion', 'like', 'CATETER%')->get();
 
         $dataParaGraficas = HojaSignos::select($columnasGraficas)
             ->where('hoja_enfermeria_id', $hojasenfermeria->id)
@@ -151,7 +151,9 @@ class FormularioHojaEnfermeriaController extends Controller
             'usuarios' => $usuarios,
 
             'nota' =>$nota,
-            'checklistInicial' => $nota ? $nota->checklistItems->where('is_completed', true)->values() : []
+            'checklistInicial' => $nota ? $nota->checklistItems->where('is_completed', true)->values() : [],
+
+            'categoria_dietas' => $categoria_dietas
         ]);
     }
 
@@ -212,6 +214,7 @@ class FormularioHojaEnfermeriaController extends Controller
             'hojasTerapiaIV.detalleSoluciones',
             'formularioInstancia.user.credenciales',
             'hojaSignos',
+            'solicitudesEstudio.solicitudItems.catalogoEstudio',
         );
 
         $headerData = [

@@ -40,7 +40,7 @@ const ControlLiquidosForm = ({hoja}: Props) => {
                 <InputText 
                     id="uresis" 
                     name="uresis" 
-                    label="Uresis (cantidad)" 
+                    label="Uresis (ml)" 
                     type="number" 
                     value={data.uresis} 
                     onChange={(e) => setData('uresis', e.target.value)} 
@@ -58,7 +58,7 @@ const ControlLiquidosForm = ({hoja}: Props) => {
                 <InputText 
                     id="evacuaciones" 
                     name="evacuaciones" 
-                    label="Evacuaciones (cantidad)" 
+                    label="Evacuaciones (ml)" 
                     type="number" 
                     value={data.evacuaciones} 
                     onChange={(e) => setData('evacuaciones', e.target.value)} 
@@ -76,7 +76,7 @@ const ControlLiquidosForm = ({hoja}: Props) => {
                 <InputText 
                     id="emesis" 
                     name="emesis" 
-                    label="Emesis (cantidad)" 
+                    label="Emesis (ml)" 
                     type="number" 
                     value={data.emesis} 
                     onChange={(e) => setData('emesis', e.target.value)} 
@@ -94,7 +94,7 @@ const ControlLiquidosForm = ({hoja}: Props) => {
                 <InputText 
                     id="drenes" 
                     name="drenes" 
-                    label="Drenes (cantidad)" 
+                    label="Drenes (ml)" 
                     type="number" 
                     value={data.drenes} 
                     onChange={(e) => setData('drenes', e.target.value)} 

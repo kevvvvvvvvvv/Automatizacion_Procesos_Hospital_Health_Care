@@ -1,68 +1,12 @@
 import React, { useMemo } from 'react';
 import { useForm } from '@inertiajs/react';
-import { HojaEnfermeria, SolicitudDieta } from '@/types'; 
+import { CategoriaDieta, HojaEnfermeria, SolicitudDieta } from '@/types'; 
 import { route } from 'ziggy-js';
 import SelectInput from '@/components/ui/input-select';
 import PrimaryButton from '@/components/ui/primary-button';
-//import InputDateTime from '@/components/ui/input-date-time';
 
 import InputText from '../ui/input-text';
 import Checkbox from '../ui/input-checkbox';
-
-const opcionesDeDieta = {
-    'Dieta de liquidos claros': [
-        { value: 'Opción 1', label: '1 pieza de gelatina de sabor: piña, limón, manzana, uva (sujeto a disponibilidad). 1 vaso de té de manzanilla sin añadir azúcar de 250 ml. 1 vaso de jugo de manzana diluido (125 ml de agua y 125 ml de jugo). 1 vaso de agua natural de 250 ml.' },
-    ],
-
-    'Dieta blanda - Desayuno': [
-        { value: 'Opción 1', label: 'Omelette de espinacas con queso panela' },
-        { value: 'Opción 2', label: 'Waffles de avena con miel y fruta' },
-        { value: 'Opción 3', label: 'Huevo a la mexicana sin picante' },
-        { value: 'Opción 4', label: 'Huevo revuelto con jamón de pavo' },
-        { value: 'Opción 5', label: 'Caldito de verduras con pollo deshebrado' }, 
-    ],
-
-    'Dieta blanda - Comida': [
-        { value: 'Opción 1', label: 'Pechuga asada con verduras al vapor' },
-        { value: 'Opción 2', label: 'Caldito de verduras con pollo deshebrado' },
-        { value: 'Opción 3', label: 'Fajitas de pollo con zanahoria, cebolla y queso panela en cubos' },
-        { value: 'Opción 4', label: 'Rollitos de pechuga rellenas de calabacitas o zanahoria fileteadas en caldillo de jitomate' },
-        { value: 'Opción 5', label: 'Consomé sin verduras ni pollo (paciente bichectomía)' },
-    ],
-
-    'Dieta blanda - Cena': [
-        { value: 'Opción 1', label: 'Huevo revuelto con jamón de pavo' },
-        { value: 'Opción 2', label: 'Waffles de avena con miel y fruta' },
-        { value: 'Opción 3', label: '2 quesadillas de queso panela (con tortillas de maíz)' },
-        { value: 'Opción 4', label: 'Sándwich de jamón de pavo (pan integral)' },
-        { value: 'Opción 5', label: 'Huevo a la mexicana sin picante' },
-    ],
-
-    'Dieta para paciente diabético': [
-        { value: 'Opción 1', label: 'Omelette de espinacas o champiñones con queso panela'},
-        { value: 'Opción 2', label: 'Huevo revuelto con jamón de pavo o huevo a la mexicana sin picante'},
-        { value: 'Opción 3', label: 'Pechuga asada con guarnición de verduras al vapor'},
-        { value: 'Opción 4', label: 'Sándwich de pollo deshebrado con queso panela y verdura (usar pan integral)'},
-        { value: 'Opción 5', label: 'Caldito de verduras con pollo deshebrado'},
-    ],
-
-    'Dieta para paciente celiaco': [
-        { value: 'Opción 1', label: '2 quesadillas de queso panela (con tortillas de maíz)'},
-        { value: 'Opción 2', label: 'Omelette de espinacas con queso panela'},
-        { value: 'Opción 3', label: 'Pechuga asada con guarnición de verduras al vapor'},
-        { value: 'Opción 4', label: 'Rollitos de pechuga rellenas de calabacitas o zanahoria fileteadas en caldillo de jitomate'},
-        { value: 'Opción 5', label: 'Caldito de verduras con pollo deshebrado'},
-    ],
-
-    'Dieta para paciente oncológico': [
-        { value: 'Opción 1', label: 'Frutas hervidas (manzana y pera), opcional retirar la cáscara'},
-        { value: 'Opción 2', label: 'Papilla de verduras cocidas con pollo deshebrado'},
-        { value: 'Opción 3', label: 'Fajitas de pollo con zanahoria, cebolla y queso panela en cubos'},
-        { value: 'Opción 4', label: 'Huevo revuelto con jamón de pavo o huevo a la mexicana sin picante'},
-        { value: 'Opción 5', label: '2 quesadillas de queso panela (con tortillas de maíz)'},
-    ],
-
-};
 
 const restricciones = [
     { id: 'DIABETICO', label: 'Paciente diabético' },
@@ -75,13 +19,14 @@ const restricciones = [
 
 interface Props {
     hoja: HojaEnfermeria;
+    categoria_dietas: CategoriaDieta[];
 }
 
-const DietaForm: React.FC<Props> = ({ hoja }) => {
+const DietaForm: React.FC<Props> = ({ hoja, categoria_dietas = [] }) => {
     
-    const tiposDeDietaOptions = Object.keys(opcionesDeDieta).map(tipo => ({
-        value: tipo,
-        label: tipo,
+    const categoriaOptions = categoria_dietas.map((c) => ({
+        value: c.id,
+        label: c.categoria
     }));
 
     const { data, setData, post, processing, errors, reset } = useForm({
@@ -99,10 +44,22 @@ const DietaForm: React.FC<Props> = ({ hoja }) => {
         restricciones: [] as string[],
     });
 
-    const opcionesDeComida = useMemo(() => {
+    const dietasDisponibles = useMemo(() => {
         if (!data.tipo_dieta) return [];
-        return opcionesDeDieta[data.tipo_dieta] || [];
-    }, [data.tipo_dieta]);
+
+        const categoriaEncontrada = categoria_dietas.find(
+            (c) => c.id === Number(data.tipo_dieta)
+        );
+
+        if (categoriaEncontrada && categoriaEncontrada.dietas) {
+            return categoriaEncontrada.dietas.map((d) => ({
+                value: d.id,
+                label: `${d.alimento}`
+            }));
+        }
+
+        return [];
+    }, [data.tipo_dieta, categoria_dietas]);
 
     const handleTipoDietaChange = (value: string) => {
         setData(currentData => ({
@@ -114,7 +71,7 @@ const DietaForm: React.FC<Props> = ({ hoja }) => {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        post(route('dietas.store', { hojasenfermeria: hoja.id }), {
+        post(route('hojasenfermerias.dietas.store', { hojasenfermeria: hoja.id }), {
             preserveScroll: true,
             onSuccess: () => reset(),
         });
@@ -177,7 +134,7 @@ const DietaForm: React.FC<Props> = ({ hoja }) => {
                 <h3 className="text-lg font-semibold mb-4">Definir la dieta (pedido)</h3>
 
             <div className="bg-white p-6 rounded-lg shadow-md space-y-4">
-                <h3 className="text-lg font-semibold">1. Indicar Restricciones del Paciente</h3>
+                <h3 className="text-lg font-semibold">1. Indicar restricciones del paciente</h3>
                 <p className="text-sm text-gray-600">
                     Selecciona las condiciones del paciente para filtrar las opciones de dieta.
                 </p>
@@ -198,7 +155,7 @@ const DietaForm: React.FC<Props> = ({ hoja }) => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <SelectInput
                         label="Tipo de dieta"
-                        options={tiposDeDietaOptions}
+                        options={categoriaOptions}
                         value={data.tipo_dieta}
                         onChange={(value) => handleTipoDietaChange(value as string)}
                         error={errors.tipo_dieta}
@@ -206,7 +163,7 @@ const DietaForm: React.FC<Props> = ({ hoja }) => {
                     
                     <SelectInput
                         label="Opción específica"
-                        options={opcionesDeComida}
+                        options={dietasDisponibles}
                         value={data.opcion_seleccionada}
                         onChange={(value) => setData('opcion_seleccionada', value as string)}
                         error={errors.opcion_seleccionada}
@@ -225,7 +182,7 @@ const DietaForm: React.FC<Props> = ({ hoja }) => {
 
                 <div className="flex justify-end pt-4">
                     <PrimaryButton type="submit" disabled={processing || !data.opcion_seleccionada}>
-                        {processing ? 'Guardando...' : 'Guardar Pedido de Dieta'}
+                        {processing ? 'Guardando...' : 'Guardar'}
                     </PrimaryButton>
                 </div>
             </form>
