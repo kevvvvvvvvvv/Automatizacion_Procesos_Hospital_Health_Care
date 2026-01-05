@@ -65,8 +65,7 @@ class DoctorController extends Controller implements HasMiddleware
     public function show($id)
     {
         $doctor = User::with(['cargo', 'colaborador_responsable'])->findOrFail($id);
-
-
+       
         $doctorData = [
             'id' => $doctor->id,
             'nombre' => $doctor->nombre ?? '', 
@@ -89,6 +88,7 @@ class DoctorController extends Controller implements HasMiddleware
         
         return Inertia::render('Medicos/show', [
             'doctor' => $doctorData,
+            'credencial' =>$doctor->credenciales,
         ]);
     }
 

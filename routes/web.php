@@ -261,6 +261,8 @@ Route::post('/notifications/mark-all-as-read', function () {
 Route::get('/historial', [HistoryController::class, 'index'])->name('historiales.index')->middleware('auth');
 Route::get ('/rerservacion/reserva', [ReservacionController::class, 'reserva'])->name('rerservaciones.reserva')->middleware('auth');
 
+
+
 require __DIR__.'/settings.php';
 require __DIR__.'/auth.php';
       

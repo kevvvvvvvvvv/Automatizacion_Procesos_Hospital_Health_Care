@@ -1,10 +1,32 @@
-import { Head, router } from '@inertiajs/react';
+import { Head, router, useForm } from '@inertiajs/react';
 import React, { useState } from "react";
 import MainLayout from '@/layouts/MainLayout';
 import InputField from "@/components/ui/input-text";
 import AddButton from '@/components/ui/add-button';
+import FormLayout from '@/components/form-layout';
+import Paciente from '@/types';
+import { Plus, Trash2 } from 'lucide-react';
+
+import PrimaryButton from '@/components/ui/primary-button';
 
 
+
+
+const initialResponsableState = {
+  nombre_completo: "",  // Cambia a nombre_completo
+  parentesco: "",
+};
+
+
+
+const sexos = ["Masculino", "Femenino"];
+const estadosCivil = [
+  "Soltero(a)",
+  "Casado(a)",
+  "Divorciado(a)",
+  "Viudo(a)",
+  "Union libre",
+];
 const initialState = {
   curp: "",
   nombre: "",
@@ -28,25 +50,15 @@ const initialState = {
   nombre_madre: "",
   
 };
-const initialResponsableState = {
-  nombre_completo: "",  // Cambia a nombre_completo
-  parentesco: "",
-};
-
-
-
-const sexos = ["Masculino", "Femenino"];
-const estadosCivil = [
-  "Soltero(a)",
-  "Casado(a)",
-  "Divorciado(a)",
-  "Viudo(a)",
-  "Union libre",
-];
 
 const PacienteCreate: React.FC = () => {
-  const [form, setForm] = useState(initialState);
-  const [responsable, setResponsable] = useState(initialResponsableState);
+    const {data, setData, post, processing, errors} = useForm({
+       
+        
+    });
+  const [form, setForm, ] = useState(initialState);
+    const [responsable, setResponsable] = useState(initialResponsableState);
+    const [familiares, setFamiliares] = useState<any[]>([]);
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     if (name in form) {
@@ -55,28 +67,43 @@ const PacienteCreate: React.FC = () => {
       setResponsable({ ...responsable, [name]: value });
     }
   };
-  const handleSubmit = (e: React.FormEvent) => {
-  e.preventDefault();
-  router.post('/pacientes', { paciente: form, responsable: responsable })
-  .then(response => {
-      console.log('Respuesta del servidor:', response);
-      // Si funciona, puedes redirigir o mostrar un mensaje
-  })
-  .catch(error => {
-      console.error('Error del servidor:', error);
-      // Muestra un mensaje de error al usuario
-  });
+ // NUEVO: Función para agregar a la tabla
+    const addFamiliar = () => {
+        if (!responsable.nombre_completo || !responsable.parentesco) return;
+        
+        setFamiliares([...familiares, responsable]);
+        setResponsable(initialResponsableState); // Limpiar campos del familiar
+    };
+
+    // NUEVO: Función para eliminar de la tabla
+    const removeFamiliar = (index: number) => {
+        setFamiliares(familiares.filter((_, i) => i !== index));
+    };
+
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        // IMPORTANTE: Enviamos 'familiares' (la lista) en lugar de un solo objeto
+        router.post('/pacientes', { 
+            paciente: form, 
+            responsables: familiares 
+        });
+    
 
 };
   return (
-    <MainLayout>
-        <form className="max-w-4xl mx-auto p-6 bg-text-white rounded-lg shadow-lg text-black space-y-8" onSubmit={handleSubmit}>
-        <h1 className="text-2xl font-bold mb-6 text-center">Registrar Paciente</h1>
+    <MainLayout pageTitle='Registro de paciente' link='pacientes.index'>
+         
+        <FormLayout title='Registrar paciente'
+        onSubmit={handleSubmit}
+        actions = {
+            <PrimaryButton type='submit' disabled={processing}>
+                Guardar paciente
+            </PrimaryButton>
+        }>
         <div className="flex justify-between items-center mb-6"></div>    
         
         
         {/* Datos Personales */}
-        <fieldset className="border border-gray-600 rounded-md p-4">
             <legend className="text-lg font-semibold mb-4">Datos Personales</legend>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <InputField
@@ -141,11 +168,10 @@ const PacienteCreate: React.FC = () => {
                 type="date"
             />
             </div>
-        </fieldset>
+       
 
         {/* Dirección */}
-        <fieldset className="border border-gray-600 rounded-md p-4">
-            <legend className="text-lg font-semibold mb-4">Dirección</legend>
+           <legend className="text-lg font-semibold mb-4">Dirección</legend>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <InputField
                 id="calle"
@@ -219,10 +245,9 @@ const PacienteCreate: React.FC = () => {
                 maxLength={10}
             />
             </div>
-        </fieldset>
+        
 
         {/* Contacto y Estado Civil */}
-        <fieldset className="border border-gray-600 rounded-md p-4">
             <legend className="text-lg font-semibold mb-4">Contacto y Estado Civil</legend>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <InputField
@@ -260,10 +285,9 @@ const PacienteCreate: React.FC = () => {
                 maxLength={100}
             />
             </div>
-        </fieldset>
-
+        
         {/* Otros Datos */}
-        <fieldset className="border border-gray-600 rounded-md p-4">
+        
             <legend className="text-lg font-semibold mb-4">Otros Datos</legend>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <InputField
@@ -293,39 +317,71 @@ const PacienteCreate: React.FC = () => {
             />
             
             </div>
-        </fieldset>
-        {/* Familiar Responsable */}
-            <fieldset className="border border-gray-600 rounded-md p-4">
+         {/* Familiar Responsable */}
                 <legend className="text-lg font-semibold mb-4">Familiar Responsable</legend>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <InputField
-                    id="nombre_completo"
-                    label="Nombre Completo del Familiar Responsable"
-                    name="nombre_completo"  // Cambia a nombre_completo
-                    value={responsable.nombre_completo}
-                    onChange={handleChange}
-                    maxLength={100}
-                />
-                <InputField
-                    id="parentesco"
-                    label="Parentesco"
-                    name="parentesco"
-                    value={responsable.parentesco}
-                    onChange={handleChange}
-                    maxLength={100}
-                />
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end bg-gray-50 p-4 rounded-lg border">
+                    <InputField
+                        id="nombre_completo"
+                        label="Nombre del Familiar"
+                        name="nombre_completo"
+                        value={responsable.nombre_completo}
+                        onChange={handleChange}
+                    />
+                    <InputField
+                        id="parentesco"
+                        label="Parentesco"
+                        name="parentesco"
+                        value={responsable.parentesco}
+                        onChange={handleChange}
+                    />
+                    <button
+                        type="button"
+                        onClick={addFamiliar}
+                        className="flex items-center justify-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition h-[42px]"
+                    >
+                        <Plus size={18} /> Agregar a la lista
+                    </button>
                 </div>
-            </fieldset>
-        <div className="text-center">
-            <button
-            type="submit"
-            className="bg-[#2a2b56] hover:bg-[#3b3c7a] text-white font-semibold py-2 px-6 rounded-md transition"
-            >
-            Registrar Paciente
-            </button>
-        </div>
-        </form>
-    </MainLayout>
+
+                {/* TABLA DE FAMILIARES */}
+                <div className="mt-6">
+                    <table className="w-full border-collapse bg-white rounded-lg overflow-hidden shadow-sm border border-gray-200">
+                        <thead className="bg-gray-100">
+                            <tr>
+                                <th className="px-4 py-2 text-left text-sm font-bold text-gray-700 border-b">Nombre Completo</th>
+                                <th className="px-4 py-2 text-left text-sm font-bold text-gray-700 border-b">Parentesco</th>
+                                <th className="px-4 py-2 text-center text-sm font-bold text-gray-700 border-b w-20">Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {familiares.length > 0 ? (
+                                familiares.map((f, index) => (
+                                    <tr key={index} className="border-b hover:bg-gray-50">
+                                        <td className="px-4 py-2 text-sm">{f.nombre_completo}</td>
+                                        <td className="px-4 py-2 text-sm">{f.parentesco}</td>
+                                        <td className="px-4 py-2 text-center">
+                                            <button
+                                                type="button"
+                                                onClick={() => removeFamiliar(index)}
+                                                className="text-red-500 hover:text-red-700"
+                                            >
+                                                <Trash2 size={18} />
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))
+                            ) : (
+                                <tr>
+                                    <td colSpan={3} className="px-4 py-4 text-center text-gray-400 text-sm italic">
+                                        No se han agregado familiares responsables aún.
+                                    </td>
+                                </tr>
+                            )}
+                        </tbody>
+                    </table>
+                </div>
+            </FormLayout>
+        </MainLayout>
   );
 
 };
