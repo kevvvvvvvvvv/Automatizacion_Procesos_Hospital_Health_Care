@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 class SolicitudEstudio extends Model
 {
@@ -15,6 +16,8 @@ class SolicitudEstudio extends Model
         'problemas_clinicos',
         'incidentes_accidentes',
         'resultado',
+        'itemable_type',
+        'itemable_id'
     ];
 
     public $incrementing = false;
@@ -39,4 +42,9 @@ class SolicitudEstudio extends Model
         return $this->belongsTo(FormularioInstancia::class, 'id', 'id');
     }
 
+
+    public function itemable(): MorphTo
+    {
+        return $this->morphTo();
+    }
 }

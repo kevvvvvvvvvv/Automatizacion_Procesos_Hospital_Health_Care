@@ -30,6 +30,9 @@ return new class extends Migration
             $table->text('problemas_clinicos')->nullable(); 
             $table->text('incidentes_accidentes')->nullable();
             $table->text('resultado')->nullable();
+
+            $table->nullableMorphs('itemable');
+
             $table->timestamps();
         });
     }

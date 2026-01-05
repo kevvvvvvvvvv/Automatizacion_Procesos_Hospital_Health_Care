@@ -477,6 +477,10 @@ export interface SolicitudItem {
     created_at: string;
     updated_at: string;
     catalogo_estudio?: CatalogoEstudio;
+    otro_estudio: string;
+
+    ruta_archivo_resultado: string;
+    
     user_realiza?: User;
 }
 
@@ -492,6 +496,9 @@ export interface SolicitudEstudio {
     user_solicita?: User;
     user_llena?: User;
     solicitud_items?: SolicitudItem[]; 
+
+    user_solicita: User;
+    user_llena?: User;
 }
 
 export interface SolicitudDieta {
@@ -843,6 +850,7 @@ interface PersonalEmpleado {
 export interface CategoriaDieta {
     id: number;
     categoria: string;
+    dietas: Dieta[];
 }
 
 export interface Dieta {
