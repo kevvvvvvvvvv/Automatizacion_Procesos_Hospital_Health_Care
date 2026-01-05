@@ -138,7 +138,7 @@ export interface Estancia {
     familiar_responsable_id: number | null;
     estancia_anterior_id: number | null;
 
-    hoja_sondas_cateters: HojaSondaCateter[];
+    //hoja_sondas_cateters: HojaSondaCateter[];
     hoja_oxigenos:HojaOxigeno[];
 
     paciente: Paciente;
@@ -248,10 +248,12 @@ export interface HojaEnfermeria {
     estado: string;
     created_at: string;
     updated_at: string;
+
     hojas_terapia_i_v: HojaTerapiaIV[] | null; 
     hoja_medicamentos: HojaMedicamento[] | null;
     hoja_signos: HojaSignos[] | null;
     solicitud_dietas: SolicitudDieta[] | null;
+    sondas_cateteres: HojaSondaCateter[] | null;
 }
 
 export interface HojaEnfermeriaQuirofano {
@@ -379,14 +381,17 @@ export interface SharedProps extends PageProps {
 
 export interface HojaSondaCateter {
     id: number;
-    tipo_dispositivo: string;
-    calibre: string;
+    
+    producto_servicio_id:number;
+
     fecha_instalacion: string;
     fecha_caducidad: string;
     user_id: number;
     observaciones: string;
     user: User;
     estancia: Estancia;
+
+    producto_servicio: ProductoServicio;
 }
 
 export interface HojaOxigeno {

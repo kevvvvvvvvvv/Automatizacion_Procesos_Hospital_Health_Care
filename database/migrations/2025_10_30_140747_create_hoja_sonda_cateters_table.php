@@ -13,17 +13,24 @@ return new class extends Migration
     {
         Schema::create('hoja_sonda_cateters', function (Blueprint $table) {
             $table->id();
-            $table->string('tipo_dispositivo');
-            $table->string('calibre');
+
+            $table->foreignId('producto_servicio_id')
+                ->constrained('producto_servicios')
+                ->onDelete('cascade');
+
             $table->datetime('fecha_instalacion')->nullable();
+    
             $table->datetime('fecha_caducidad')->nullable();
             $table->foreignId('user_id')
                 ->constrained('users')
                 ->onDelete('cascade');
+
             $table->string('observaciones')->nullable();
-            $table->foreignId('estancia_id')
-                ->constrained('estancias')
+
+            $table->foreignId('hoja_enfermeria_id')
+                ->constrained('hoja_enfermerias')
                 ->onDelete('cascade');
+
             $table->timestamps();
         });
     }

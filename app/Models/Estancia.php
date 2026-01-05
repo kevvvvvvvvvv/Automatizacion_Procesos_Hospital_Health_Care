@@ -81,12 +81,6 @@ class Estancia extends Model
         return $this->hasMany(Interconsulta::class);
     }
 
-    public function hojaSondasCateters():HasMany
-    {
-        return $this->hasMany(HojaSondaCateter::class);
-    }
-
-
     public function notasPostoperatorias(): HasManyThrough
     {
         return $this->hasManyThrough(

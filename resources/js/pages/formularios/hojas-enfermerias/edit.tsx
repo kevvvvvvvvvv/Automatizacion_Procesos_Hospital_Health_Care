@@ -29,6 +29,7 @@ interface CreateProps {
     hojaenfermeria: HojaEnfermeria;
     medicamentos: ProductoServicio[];
     soluciones: ProductoServicio[];
+    sondas_cateters: ProductoServicio[];
     dataParaGraficas: HojaSignosGraficas[];
     catalogoEstudios: CatalogoEstudio[];
     solicitudesAnteriores: SolicitudEstudio[];
@@ -183,7 +184,8 @@ const Create: CreateComponent = ({
     medicos,          
     nota,
     checklistInicial,
-    categoria_dietas
+    categoria_dietas,
+    sondas_cateters,
 }) => {
 
     const [activeSection, setActiveSection] = useState<SeccionHoja>('signos');
@@ -261,6 +263,7 @@ const Create: CreateComponent = ({
                 return <SondasCateteresForm
                             hoja={hojaenfermeria}
                             estancia={estancia}
+                            sondas_cateters={sondas_cateters}
                         />
             case 'dieta':
                 return <DietasForm

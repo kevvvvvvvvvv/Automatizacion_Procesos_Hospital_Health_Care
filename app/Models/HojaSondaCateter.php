@@ -12,23 +12,29 @@ class HojaSondaCateter extends Model
 
     protected $fillable = [
         'id',
-        'tipo_dispositivo',
-        'calibre',
+
+        'producto_servicio_id',
+
         'fecha_instalacion',
         'fecha_caducidad',
         'user_id',
         'observaciones',
-        'estancia_id',
+        'hoja_enfermeria_id',
     ];
 
-    public function estancia():BelongsTo
+    public function hojaEnfermeria(): BelongsTo
     {
-        return $this->belongsTo(Estancia::class,'estancia_id','id');
+        return $this->belongsTo(HojaEnfermeria::class);
     }
 
     public function user():BelongsTo
     {
         return $this->belongs(User::class,'user_id','id');
+    }
+
+    public function productoServicio(): BelongsTo
+    {
+        return $this->belongsTo(ProductoServicio::class);
     }
 
 }

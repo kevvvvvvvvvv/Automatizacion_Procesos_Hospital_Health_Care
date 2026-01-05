@@ -59,4 +59,9 @@ class HojaEnfermeria extends Model
     {
         return $this->morphMany(SolicitudEstudio::class, 'itemable');
     }
+
+    public function sondasCateteres(): HasMany
+    {
+        return $this->hasMany(HojaSondaCateter::class);
+    }
 }
