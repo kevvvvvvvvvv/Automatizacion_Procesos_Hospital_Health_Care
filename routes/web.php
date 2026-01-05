@@ -100,7 +100,7 @@ Route::post('/pacientes/{paciente}/estancias/{estancia}/consentimientos',
 Route::post('hojasterapiasiv/{hojasenfermeria}',[FormularioHojaTerapiaIVController::class,'store'])->name('hojasterapiasiv.store');
 Route::patch('hojasterapiasiv/{hojasenfermeria}/{hojasterapiasiv}',[FormularioHojaTerapiaIVController::class,'update'])->name('hojasterapiasiv.update');
 
-Route::resource('hojasenfermerias.dietas',FormularioHojaDietaController::class)->shallow()->middleware('auth');
+Route::resource('hojasenfermerias.dietas',FormularioHojaDietaController::class)->middleware('auth');
 
 Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
     ->name('logout');
