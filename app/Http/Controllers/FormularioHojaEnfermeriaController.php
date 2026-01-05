@@ -95,12 +95,11 @@ class FormularioHojaEnfermeriaController extends Controller
             'formularioInstancia.estancia.hojaOxigenos.userInicio',
             'formularioInstancia.estancia.hojaOxigenos.userFin',
             'hojaEscalaValoraciones',
-            'hojaControlLiquidos'  
+            'hojaControlLiquidos',
+            'sondasCateteres.productoServicio',
         );
 
         $estancia = $hojasenfermeria->formularioInstancia->estancia;
-        $estancia->load('hojaSondasCateters');
-
         $paciente = $hojasenfermeria->formularioInstancia->estancia->paciente;
 
         $columnasGraficas = [
@@ -128,7 +127,7 @@ class FormularioHojaEnfermeriaController extends Controller
         $medicos = User::all();
         $usuarios = User::all();
         $categoria_dietas = CategoriaDieta::with('dietas')->get();
-        $sondas_cateteres = ProductoServicio::where('nombre_prestacion','like','SONDA%')->orWhere('nombre_prestacion', 'like', 'CATETER%')->get();
+        $sondas_cateters = ProductoServicio::where('nombre_prestacion','like','SONDA%')->orWhere('nombre_prestacion', 'like', 'CATETER%')->get();
 
         $dataParaGraficas = HojaSignos::select($columnasGraficas)
             ->where('hoja_enfermeria_id', $hojasenfermeria->id)
@@ -144,6 +143,7 @@ class FormularioHojaEnfermeriaController extends Controller
             'hojaenfermeria' => $hojasenfermeria, 
             'medicamentos' => $medicamentos,
             'soluciones' => $soluciones,
+            'sondas_cateters' => $sondas_cateters,
             'dataParaGraficas' => $dataParaGraficas,
             'catalogoEstudios' => $catalogoEstudios,
             'solicitudesAnteriores' => $solicitudesAnteriores,
@@ -213,8 +213,10 @@ class FormularioHojaEnfermeriaController extends Controller
             'hojaMedicamentos.productoServicio',
             'hojasTerapiaIV.detalleSoluciones',
             'formularioInstancia.user.credenciales',
+            'formularioInstancia.user.colaborador_responsable.credenciales',
             'hojaSignos',
             'solicitudesEstudio.solicitudItems.catalogoEstudio',
+            'sondasCateteres.productoServicio',
         );
 
         $headerData = [

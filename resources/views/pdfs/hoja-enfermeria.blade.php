@@ -133,6 +133,12 @@
             padding: 20px;
         }
 
+        .empty-data {
+            text-align: left;
+            font-style: italic;
+            color: #777;
+        }
+
         .fecha-item {
             display: block;
             margin-bottom: 2px;
@@ -190,7 +196,7 @@
         }
         .grafica-item {
             display: inline-block;
-            width: 48%; 
+            width: 33%; 
             margin-bottom: 5px;
             text-align: center;
             vertical-align: top;
@@ -441,6 +447,44 @@
         </tbody>
     </table>
 
+    <h3>Sondas y catéteres</h3>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 33%">Dispositivo</th>
+                <th style="width: 33%">Fecha instalación</th>
+                <th style="width: 33%">Fecha caducidad</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if ($notaData->sondasCateteres->isEmpty())
+                <tr>
+                    <td colspan="3" class="empty-cell">No se han registrado escalas de valoración.</td>
+                </tr>
+            @else
+                @foreach ($notaData->sondasCateteres as $sondas)
+                    <tr>   
+                        <td>{{$sondas->productoServicio->nombre_prestacion}}</td>
+                        @if (!$sondas->fecha_instalacion)
+                            <td class="empty-data">Sin fecha registrada</td>
+                        @else
+                            <td>{{$sondas->fecha_instalacion}}</td>
+                        @endif
+
+                        @if (!$sondas->fecha_caducidad)
+                            <td class="empty-data">Sin fecha registrada</td>
+                        @else
+                            <td>{{$sondas->fecha_caducidad}}</td>
+                        @endif
+                        
+                        
+                    </tr>
+                @endforeach
+            @endif
+
+        </tbody>
+    </table>
+
     <h3>Observaciones</h3>
     @empty($notaData->observaciones)
         <p>Sin nada que reportar.</p>
@@ -620,20 +664,38 @@
     </div>
 
     @if(isset($medico))
-        <div class="signature-section">
-            <div class="signature-line"></div>
-            <p style="font-size: 9pt; color: #555;">Nombre completo, cédula profesional y firma del médico</p>
-            <p>{{ $medico->nombre . " " . $medico->apellido_paterno . " " . $medico->apellido_materno}}</p>
-            @if($medico->credenciales->isNotEmpty())
-                <div class="credentials-list">
-                    @foreach($medico->credenciales as $credencial)
-                        <p>
-                            <strong>Título:</strong> {{ $credencial->titulo }} | <strong>Cédula Profesional:</strong> {{ $credencial->cedula_profesional }}
-                        </p>
-                    @endforeach
-                </div>
-            @endif
-        </div>
+        @if(!$medico->colaborador_responsable)
+            <div class="signature-section">
+                <div class="signature-line"></div>
+                <p style="font-size: 9pt; color: #555;">Nombre completo, cédula profesional y firma del médico</p>
+                <p>{{ $medico->nombre . " " . $medico->apellido_paterno . " " . $medico->apellido_materno}}</p>
+                @if($medico->credenciales->isNotEmpty())
+                    <div class="credentials-list">
+                        @foreach($medico->credenciales as $credencial)
+                            <p>
+                                <strong>Título:</strong> {{ $credencial->titulo }} | <strong>Cédula Profesional:</strong> {{ $credencial->cedula_profesional }}
+                            </p>
+                        @endforeach
+                    </div>
+                @endif
+            </div>
+        @else
+            <div class="signature-section">
+                <div class="signature-line"></div>
+                <p style="font-size: 9pt; color: #555;">Nombre completo, cédula profesional y firma del médico</p>
+                <p>{{$medico->colaborador_responsable->nombre . " " . $medico->colaborador_responsable->apellido_paterno . " " . $medico->colaborador_responsable->apellido_materno}}</p>
+                @if($medico->colaborador_responsable->credenciales->isNotEmpty())
+                    <div class="credentials-list">
+                        @foreach($medico->colaborador_responsable->credenciales as $credencial)
+                            <p>
+                                <strong>Título:</strong> {{ $credencial->titulo }} | <strong>Cédula Profesional:</strong> {{ $credencial->cedula_profesional }}
+                            </p>
+                        @endforeach
+                    </div>
+                @endif
+            </div>
+
+        @endif
     @endif  
     
 </body>

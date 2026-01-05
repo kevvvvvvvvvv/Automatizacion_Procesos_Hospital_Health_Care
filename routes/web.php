@@ -111,6 +111,7 @@ Route::prefix('pacientes/{paciente}/estancias/{estancia}')->group(function () {
     Route::post('notasegresos', [NotasEgresoController::class, 'store'])->name('pacientes.estancias.notasegresos.store');
     Route::get('notasegresos/{notaEgreso}', [NotaPreAnestesicaController::class, 'show'])->name('pacientes.estancias.notasegresos.show');
 });
+
 Route::post('hojasterapiasiv/{hojasenfermeria}',[FormularioHojaTerapiaIVController::class,'store'])->name('hojasterapiasiv.store');
 Route::patch('hojasterapiasiv/{hojasenfermeria}/{hojasterapiasiv}',[FormularioHojaTerapiaIVController::class,'update'])->name('hojasterapiasiv.update');
 
