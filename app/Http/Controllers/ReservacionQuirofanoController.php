@@ -65,9 +65,8 @@ public function store(ReservacionQuirofanoRequest $request)
 {
     $data = $request->validated();
     $LOCALIZACION = 'Plan de Ayutla';
-
+    //dd($data->toArray());
     try {
-        // ... (Tu lógica de búsqueda de quirófano se mantiene igual) ...
         $quirofanos = Habitacion::where('tipo', 'Quirofano')->where('ubicacion', $LOCALIZACION)->pluck('id');
         $habitacionAsignada = null;
 
@@ -124,7 +123,6 @@ public function store(ReservacionQuirofanoRequest $request)
         return redirect()->route('quirofanos.index')->with('success', 'Reservación creada.');
 
     } catch (\Exception $e) {
-        // Este mensaje te dirá exactamente cuál es la columna que MySQL no encuentra
         return back()->withErrors([
             'error' => 'Error de Base de Datos: ' . $e->getMessage()
         ]);
@@ -134,15 +132,11 @@ public function store(ReservacionQuirofanoRequest $request)
 
 public function show(ReservacionQuirofano $quirofano)
 {
-    // Cargamos el usuario que creó la reservación y la habitación asignada
     $quirofano->load(['user', 'habitacion']);
 
     return Inertia::render('reservacion_quirofano/show', [
         'quirofano' => $quirofano, 
-        // Pasamos el usuario por separado para mantener la estructura de tus Props
         'user'      => $quirofano->user,
-        // Aunque los horarios están dentro del objeto quirofano, 
-        // los pasamos por separado si tu componente los espera así
         'horarios'  => $quirofano->horarios ?? [],
     ]);
 }

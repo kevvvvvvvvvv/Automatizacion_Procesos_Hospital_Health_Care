@@ -4,32 +4,18 @@ import InputText from '@/components/ui/input-text';
 
 const labelClasses = `block text-sm font-medium text-gray-700 mb-1`;
 const textAreaClasses = `w-full rounded-md shadow-sm border px-3 py-2 focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500`;
-
 interface GeneralidadesProps {
-    data: {
-        ta?: string;
-        fc?: string | number;
-        fr?: string | number;
-        temp?: string | number;
-        peso?: string | number;
-        talla?: string | number;
-        resumen_del_interrogatorio?: string;
-        exploracion_fisica?: string;
-        resultado_estudios?: string;
-        tratamiento?: string;
-        diagnostico_o_problemas_clinicos?: string;
-        plan_de_estudio?: string;
-        pronostico?: string;
-
-        [key: string]: any;
-    };
-    setData: (field: string, value: string) => void;
-    errors: Record<string, string | undefined>;
+  data: any; // O una interfaz más específica
+  setData: (field: string, value: any) => void;
+  errors: Record<string, string | undefined>;
 }
 
 const Generalidades: React.FC<GeneralidadesProps> = ({ data, setData, errors }) => {
+  const labelClasses = `block text-sm font-medium text-gray-700 mb-1`;
+  const textAreaClasses = `w-full rounded-md shadow-sm border px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition`;
 
-  const getValue = (val: any) => (val !== null && val !== undefined) ? String(val) : '';
+  // Helper para manejar inputs numéricos y evitar nulos
+  const getValue = (val: any) => (val !== null && val !== undefined) ? val : '';
 
   return (
     <>
