@@ -31,7 +31,7 @@ class NotaEvolucionRequest extends FormRequest
             'fr' => 'required|numeric|min:0|max:100', // Frecuencia respiratoria
             'temp' => 'required|numeric|min:30|max:45', // Temperatura en °C
             'peso' => 'required|numeric|min:0|max:500', // Peso en kg
-            'talla' => 'required|numeric|min:0|max:3', // Talla en m
+            'talla' => 'required|numeric|min:0|max:300', // Talla en m
 
             // Otros campos
              'resultado_estudios' => ['nullable', 'string'],

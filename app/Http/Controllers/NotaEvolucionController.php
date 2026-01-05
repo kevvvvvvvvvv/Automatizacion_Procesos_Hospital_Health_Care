@@ -83,14 +83,22 @@ class NotaEvolucionController extends Controller
             'estancia' => $notasevolucione->estancia,
         ]);
     }
-    public function edit (){
-        //
+    public function edit (NotaEvolucion $notasevolucione){
+        $notasevolucione->load([
+            'formularioInstancia.estancia.paciente',
+            'formularioInstancia.user'
+        ]);
+        return Inertia::render('formularios/notaevolucion/edit', [
+            'notasevolucione' => $notasevolucione,
+            'paciente' => $notasevolucione->formularioInstancia->estancia->paciente,
+            'estancia' => $notasevolucione->formularioInstancia->estancia,
+        ]);
     }
     public function update(NotaEvolucionRequest $request, Paciente $paciente, Estancia $estancia, NotaEvolucion $notaEvolucion)
     {
         $validateData = $request->validated();
         $notaEvolucion->update($validateData);
-        return redirect()->route('pacientes.estancias.notasevoluciones.show', [
+        return redirect()->route('notasevoluciones.show', [
             'paciente' => $paciente->id,
             'estancia' => $estancia->id,
             'notaevolucion' => $notaEvolucion->id, 
