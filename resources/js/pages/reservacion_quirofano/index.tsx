@@ -36,7 +36,7 @@ interface Props {
 }
 
 const Index = ({ reservaciones }: Props) => {
-    console.log(reservaciones);
+    
     const [globalFilter, setGlobalFilter] = useState("");
     const [sorting, setSorting] = useState<SortingState>([]);
 

@@ -31,7 +31,7 @@ class InterconsultaController extends Controller
     public function create(Paciente $paciente, Estancia $estancia)
      {
         return Inertia::render('formularios/interconsulta/create',[
-            'paciente' => $paciente,
+            'paciente' => $paciente, 
             'estancia' => $estancia,
         ]);
      }
@@ -44,7 +44,10 @@ class InterconsultaController extends Controller
      */
     public function store(InterconsultasRequest $request, Paciente $paciente, Estancia $estancia)
     {
+        
+       // dd($request->toArray());
         $validatedData = $request->validated();
+        
         DB::beginTransaction();
         try {
             $formularioInstancia = FormularioInstancia::create([
