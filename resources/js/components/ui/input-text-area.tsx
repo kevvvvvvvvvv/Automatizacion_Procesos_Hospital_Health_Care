@@ -15,7 +15,7 @@ const TextareaInput: React.FC<TextareaInputProps> = ({
   ...props 
 }) => {
   const baseClasses =
-    'block w-full rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm';
+    'block w-full rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm mt-4 mb-4';
 
   const errorClasses = 'border-red-500 text-red-900 placeholder-red-300 focus:ring-red-500 focus:border-red-500';
 

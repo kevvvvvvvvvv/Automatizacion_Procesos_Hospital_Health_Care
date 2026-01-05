@@ -21,8 +21,6 @@ class DietaController extends Controller
     public function create()
     {
         $dietas = CategoriaDieta::all();
-        $dietas->load('categoriaDieta');
-
         return Inertia::render('dietas/create',['categoria_dietas' =>$dietas]);
     }
 
