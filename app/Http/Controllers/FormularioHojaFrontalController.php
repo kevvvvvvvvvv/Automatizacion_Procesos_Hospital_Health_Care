@@ -23,7 +23,8 @@ use Spatie\Browsershot\Browsershot;
 class FormularioHojaFrontalController extends Controller
 {
     public function create(Paciente $paciente, Estancia $estancia){
-         $medicos = User::where('cargo_id','2')->get();
+        //$medicos = User::role('medico')->get();
+        $medicos = User::all();
 
         return Inertia::render('formularios/hojas-frontales/create',[
                                 'paciente' => $paciente,

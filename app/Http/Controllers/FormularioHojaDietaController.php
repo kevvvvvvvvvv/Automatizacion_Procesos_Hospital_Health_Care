@@ -13,6 +13,7 @@ class FormularioHojaDietaController extends Controller
 {
     public function store(Request $request, HojaEnfermeria $hojasenfermeria){
         dd($request->toArray());
+        
         SolicitudDieta::create([
             'hoja_enfermeria_id' => $hojasenfermeria->id,
             'user_supervisa_id' => Auth::id(),

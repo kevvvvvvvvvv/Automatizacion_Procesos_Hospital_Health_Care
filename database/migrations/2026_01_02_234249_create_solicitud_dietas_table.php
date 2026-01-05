@@ -17,8 +17,9 @@ return new class extends Migration
                   ->constrained('hoja_enfermerias')
                   ->onDelete('cascade');
 
-            $table->string('tipo_dieta'); // Ej: "Líquidos Claros", "Blanda - Desayuno"
-            $table->string('opcion_seleccionada'); // Ej: "Opción 1: Omelette..."
+            $table->foreignId('dieta_id')
+                ->constrained('dietas')
+                ->onDelete('cascade');
             
             $table->datetime('horario_solicitud');
             $table->foreignId('user_supervisa_id')->nullable() // "Quién supervisó"
@@ -31,11 +32,6 @@ return new class extends Migration
                   ->onDelete('set null');
 
             $table->string('observaciones')->nullable();
-            
-            $table->datetime('horario_operacion')->nullable();
-            $table->datetime('horario_termino')->nullable();
-            $table->datetime('horario_inicio_dieta')->nullable();
-
             $table->string('tipo_paciente')->nullable();
 
             $table->timestamps();
