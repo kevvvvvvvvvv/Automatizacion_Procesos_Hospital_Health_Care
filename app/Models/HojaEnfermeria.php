@@ -50,7 +50,7 @@ class HojaEnfermeria extends Model
         return $this->hasMany(HojaEscalaValoracion::class);
     }
 
-    public function soliciudesDieta(): HasMany
+    public function solicitudesDieta(): HasMany
     {
         return $this->hasMany(SolicitudDieta::class);
     }

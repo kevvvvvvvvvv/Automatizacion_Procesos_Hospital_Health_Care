@@ -1,20 +1,11 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useForm } from '@inertiajs/react';
 import { CategoriaDieta, HojaEnfermeria, SolicitudDieta } from '@/types'; 
 import { route } from 'ziggy-js';
+
 import SelectInput from '@/components/ui/input-select';
 import PrimaryButton from '@/components/ui/primary-button';
-
 import InputText from '../ui/input-text';
-import Checkbox from '../ui/input-checkbox';
-
-const restricciones = [
-    { id: 'DIABETICO', label: 'Paciente diabético' },
-    { id: 'CELIACO', label: 'Paciente celiaco (sin gluten)' },
-    { id: 'ONCOLÓGICO', label: 'Paciente oncológico' },
-    { id: 'HIPERTENSO', label: 'Paciente hipertenso (bajo en sodio)' },
-    { id: 'COLECISTO', label: 'Sin colecitoqueneticos' },
-];
 
 
 interface Props {
@@ -29,26 +20,18 @@ const DietaForm: React.FC<Props> = ({ hoja, categoria_dietas = [] }) => {
         label: c.categoria
     }));
 
-    const { data, setData, post, processing, errors, reset } = useForm({
-        tipo_dieta: '',
-        opcion_seleccionada: '',
-        horario_solicitud: new Date().toISOString().slice(0, 16),
-        user_supervisa_id: '',
-        horario_entrega: '',
-        user_entrega_id: '',
-        observaciones: '',
+    const [ categoriaData, setCategoriaData] = useState('');
 
-        horario_operacion: '',
-        horario_termino: '',
-        horario_inicio_dieta: '',
-        restricciones: [] as string[],
+    const { data, setData, post, processing, errors, reset } = useForm({
+        dieta_id: '',
+        observaciones: '',
     });
 
     const dietasDisponibles = useMemo(() => {
-        if (!data.tipo_dieta) return [];
+        if (!categoriaData) return [];
 
         const categoriaEncontrada = categoria_dietas.find(
-            (c) => c.id === Number(data.tipo_dieta)
+            (c) => c.id === Number(categoriaData)
         );
 
         if (categoriaEncontrada && categoriaEncontrada.dietas) {
@@ -59,37 +42,17 @@ const DietaForm: React.FC<Props> = ({ hoja, categoria_dietas = [] }) => {
         }
 
         return [];
-    }, [data.tipo_dieta, categoria_dietas]);
-
-    const handleTipoDietaChange = (value: string) => {
-        setData(currentData => ({
-            ...currentData,
-            tipo_dieta: value,
-            opcion_seleccionada: '', 
-        }));
-    }
+    }, [categoriaData, categoria_dietas]);
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         post(route('hojasenfermerias.dietas.store', { hojasenfermeria: hoja.id }), {
             preserveScroll: true,
-            onSuccess: () => reset(),
+            onSuccess: () => {
+                reset();
+                setCategoriaData('');
+            }
         });
-    }
-
-    const handleRestrictionChange = (restriccionId: string, isChecked: boolean) => {
-        if (isChecked) {
-            setData(currentData => ({
-                ...currentData,
-                restricciones: [...currentData.restricciones, restriccionId]
-            }));
-        } else {
-            setData(currentData => ({
-                ...currentData,
-                restricciones: currentData.restricciones.filter(r => r !== restriccionId)
-            }));
-        }
-        setData('opcion_seleccionada', '');
     }
 
     return (
@@ -116,58 +79,21 @@ const DietaForm: React.FC<Props> = ({ hoja, categoria_dietas = [] }) => {
             </div>
 
             <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow-md space-y-4">
-                {/*<h3 className="text-lg font-semibold mb-4">Datos operatorios</h3>
-                <InputDateTime
-                    id='horario_operacion'
-                    name='horario_operacion'
-                    label='Horario de operación'
-                    value={data.horario_operacion}
-                    onChange={e=> setData('horario_operacion', e as string)}/>
-
-                <InputDateTime
-                    id='horario_termino'
-                    name='horario_termino'
-                    label='Horario de termino de operación'
-                    value={data.horario_termino}
-                    onChange={e=> setData('horario_termino', e as string)}/>*/}
-
                 <h3 className="text-lg font-semibold mb-4">Definir la dieta (pedido)</h3>
-
-            <div className="bg-white p-6 rounded-lg shadow-md space-y-4">
-                <h3 className="text-lg font-semibold">1. Indicar restricciones del paciente</h3>
-                <p className="text-sm text-gray-600">
-                    Selecciona las condiciones del paciente para filtrar las opciones de dieta.
-                </p>
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
-                    {restricciones.map(restriccion => (
-                        <Checkbox
-                            key={restriccion.id}
-                            id={`restriccion_${restriccion.id}`}
-                            label={restriccion.label}
-                            checked={data.restricciones.includes(restriccion.id)}
-                            onChange={e => handleRestrictionChange(restriccion.id, e.target.checked)}
-                        />
-                    ))}
-                </div>
-            </div>
-
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <SelectInput
                         label="Tipo de dieta"
                         options={categoriaOptions}
-                        value={data.tipo_dieta}
-                        onChange={(value) => handleTipoDietaChange(value as string)}
-                        error={errors.tipo_dieta}
+                        value={categoriaData}
+                        onChange={(value) => setCategoriaData(value)}
                     />
                     
                     <SelectInput
                         label="Opción específica"
                         options={dietasDisponibles}
-                        value={data.opcion_seleccionada}
-                        onChange={(value) => setData('opcion_seleccionada', value as string)}
-                        error={errors.opcion_seleccionada}
-                        //disabled={!data.tipo_dieta} // Deshabilitado hasta que se elija un tipo
+                        value={data.dieta_id}
+                        onChange={(value) => setData('dieta_id', value as string)}
+                        error={errors.dieta_id}
                     />
 
                     <InputText
@@ -181,7 +107,7 @@ const DietaForm: React.FC<Props> = ({ hoja, categoria_dietas = [] }) => {
                 </div>
 
                 <div className="flex justify-end pt-4">
-                    <PrimaryButton type="submit" disabled={processing || !data.opcion_seleccionada}>
+                    <PrimaryButton type="submit" disabled={processing || !data.dieta_id}>
                         {processing ? 'Guardando...' : 'Guardar'}
                     </PrimaryButton>
                 </div>
