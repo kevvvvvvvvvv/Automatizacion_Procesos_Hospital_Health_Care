@@ -212,6 +212,33 @@
 </head>
 <body>
     <h1>Hoja de enfermería</h1>
+
+    <h3>Dieta</h3>
+    <table>
+        <thead>
+            <tr>
+                <th style=" width: 33%">Dieta</th>
+                <th style=" width: 33%">Fecha/hora solicitud</th>
+                <th style=" width: 33%">Observaciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if ($notaData->solicitudesDieta->isEmpty())
+                <tr>
+                    <td colspan="3" class="empty-cell">No se han registrado dietas solicitadas.</td>
+                </tr>
+            @else
+                @foreach ($notaData->solicitudesDieta as $dieta)
+                    <tr>
+                        <td>{{$dieta->dieta->alimento}}</td>
+                        <td>{{$dieta->horario_solicitud}}</td>
+                        <td>{{$dieta->observaciones}}</td>
+                    </tr>
+                @endforeach
+            @endif
+        </tbody>
+    </table>
+
     <h3>Ministración de medicamentos</h3>
     <table>
         <thead>

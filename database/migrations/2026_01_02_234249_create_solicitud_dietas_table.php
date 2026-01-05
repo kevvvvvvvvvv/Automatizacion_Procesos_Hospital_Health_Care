@@ -20,8 +20,9 @@ return new class extends Migration
             $table->foreignId('dieta_id')
                 ->constrained('dietas')
                 ->onDelete('cascade');
-            
+
             $table->datetime('horario_solicitud');
+
             $table->foreignId('user_supervisa_id')->nullable() // "Quién supervisó"
                   ->constrained('users')
                   ->onDelete('set null');
@@ -32,9 +33,6 @@ return new class extends Migration
                   ->onDelete('set null');
 
             $table->string('observaciones')->nullable();
-            $table->string('tipo_paciente')->nullable();
-
-            $table->timestamps();
         });
     }
 
