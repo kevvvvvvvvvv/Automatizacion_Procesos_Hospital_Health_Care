@@ -43,8 +43,9 @@ class TrasladoController extends Controller
     }
     public function store(Paciente $paciente, Estancia $estancia, TrasladoRequest $request)
     {
+        
         $validatedData = $request->validated();
-
+        $traslado->update($validatedData);
         DB::beginTransaction();
         $formularioInstancia = FormularioInstancia::create([
             'fecha_hora' => now(),
@@ -84,13 +85,29 @@ class TrasladoController extends Controller
     ]);
 }
 
-    public function edit($id)
+    public function edit(Traslado $traslado)
     {
-        //
+        
+        $traslado->load([
+            'formularioInstancia.estancia.paciente',
+            'formularioInstancia.user'
+        ]);
+        //dd($traslado);
+        return Inertia::render('formularios/traslado/edit', [
+            'traslado' => $traslado,
+            'paciente' => $traslado->formularioInstancia->estancia->paciente,
+            'estancia' => $traslado->formularioInstancia->estancia,
+        ]);
     }
-    public function update(Request $request, $id)
+    public function update(TrasladoRequest $request, Traslado $traslado, Paciente $paciente, Estancia $estancia)
     {
-        //
+        //dd($request);
+        $validatedData = $request->validated();
+        $traslado->update($validatedData);
+        return redirect()->route('traslados.show', [
+            'traslado' => $traslado->id
+            ])
+            ->with('Success', 'Nota de traslado actualizada');
     }
 
     /*public function destroy($id)
