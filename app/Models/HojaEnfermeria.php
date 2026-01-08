@@ -15,7 +15,12 @@ class HojaEnfermeria extends Model
         'id',
         'turno',
         'observaciones',
+        'habitus_exterior',
         'estado',
+    ];
+
+    protected $cast = [
+        'habitus_exterior' => 'array'
     ];
 
     public $incrementing = false;

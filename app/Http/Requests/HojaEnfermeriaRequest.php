@@ -23,7 +23,8 @@ class HojaEnfermeriaRequest extends FormRequest
     {
         return [
             'observaciones' => 'nullable|string',
-            'estado' => 'string|nullable|in:Abierto,Cerrado'
+            'estado' => 'string|nullable|in:Abierto,Cerrado',
+            'habitus_exterior' => 'nullable|array'
         ];
     }
 

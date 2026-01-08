@@ -78,7 +78,7 @@ const SignosVitalesForm: React.FC<Props> = ({ hoja }) => {
                 <InputText 
                     id="frecuencia_cardiaca" 
                     name="frecuencia_cardiaca" 
-                    label="Frecuencia Cardíaca (por minuto)" 
+                    label="Frecuencia cardíaca (por minuto)" 
                     type="number" 
                     value={data.frecuencia_cardiaca} 
                     onChange={(e) => setData('frecuencia_cardiaca', e.target.value)} 
@@ -88,7 +88,7 @@ const SignosVitalesForm: React.FC<Props> = ({ hoja }) => {
                 <InputText 
                     id="frecuencia_respiratoria" 
                     name="frecuencia_respiratoria" 
-                    label="Frecuencia Respiratoria (por minuto)" 
+                    label="Frecuencia respiratoria (por minuto)" 
                     type="number" 
                     value={data.frecuencia_respiratoria} 
                     onChange={(e) => setData('frecuencia_respiratoria', e.target.value)} 
@@ -106,7 +106,7 @@ const SignosVitalesForm: React.FC<Props> = ({ hoja }) => {
                 <InputText 
                     id="saturacion_oxigeno" 
                     name="saturacion_oxigeno" 
-                    label="Saturación de Oxígeno (%)" 
+                    label="Saturación de oxígeno (%)" 
                     type="number" 
                     value={data.saturacion_oxigeno} 
                     onChange={(e) => setData('saturacion_oxigeno', e.target.value)} 
@@ -115,7 +115,7 @@ const SignosVitalesForm: React.FC<Props> = ({ hoja }) => {
                 <InputText 
                     id="glucemia_capilar" 
                     name="glucemia_capilar" 
-                    label="Glucemia Capilar (mg/dL)" 
+                    label="Glucemia capilar (mg/dL)" 
                     type="number" 
                     value={data.glucemia_capilar} 
                     onChange={(e) => setData('glucemia_capilar', e.target.value)} 
@@ -141,7 +141,7 @@ const SignosVitalesForm: React.FC<Props> = ({ hoja }) => {
                 />
                 
                 <SelectInput
-                    label="Estado de Conciencia"
+                    label="Estado de conciencia"
                     options={opcionesEstadoConciencia}
                     value={data.estado_conciencia}
                     onChange={(value) => setData('estado_conciencia', value as string)}

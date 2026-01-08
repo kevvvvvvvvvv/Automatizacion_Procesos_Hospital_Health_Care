@@ -5,7 +5,6 @@ import { route } from 'ziggy-js';
 import Swal from 'sweetalert2';
 import 'sweetalert2/dist/sweetalert2.min.css';
 
-import InputTextArea from '@/components/ui/input-text-area';
 import PrimaryButton from '@/components/ui/primary-button';
 
 import MainLayout from '@/layouts/MainLayout';
@@ -21,6 +20,7 @@ import PlanPostoperatorioChecklist from '@/components/plan-postoperatorio-check-
 import ServiciosEspecialesForm from '@/components/forms/servicios-especiales-form';
 import EscalaValoracionForm from '@/components/forms/escalas-valoracion-form';
 import ControlLiquidosForm from '@/components/forms/control-liquidos-form';
+import HabitusExteriorForm from '@/components/forms/habitus-exterior-form';
 
 
 interface CreateProps {
@@ -138,39 +138,7 @@ type CreateComponent = React.FC<CreateProps> & {
     layout: (page: React.ReactElement) => React.ReactNode;
 };
 
-interface Props {
-    hojasenfermeria: HojaEnfermeria
-}
 
-const Observaciones = ({hojasenfermeria}: Props) => {
-
-    const { data, setData, put, processing, errors } = useForm({
-        observaciones: hojasenfermeria.observaciones || '',
-    });
-
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        put(route('hojasenfermerias.update', { hojasenfermeria: hojasenfermeria.id }));
-    };
-
-    return (
-        <form onSubmit={handleSubmit}>
-            <InputTextArea
-                id='observaciones'
-                label='Observaciones'
-                value={data.observaciones}
-                onChange={e => setData('observaciones', e.target.value)}
-                error={errors.observaciones}
-            />
-
-            <div className="mt-4">
-                <PrimaryButton type='submit' disabled={processing}>
-                    {processing ? 'Guardando...' : 'Guardar observaciones'}
-                </PrimaryButton>
-            </div>
-        </form>
-    )
-}
 
 const Create: CreateComponent = ({ 
     paciente, 
@@ -203,7 +171,7 @@ const Create: CreateComponent = ({
         </div>
         <nav className="mb-6 mt-12">
             <div className="border-b border-gray-200">
-                <div className="flex flex-wrap -mb-px gap-x-6 gap-y-2" aria-label="Tabs">
+                <div className="flex flex-nowrap overflow-x-auto -mb-px gap-x-6 pb-px" aria-label="Tabs">
                     {secciones.map((seccion) => (
                         <button
                             key={seccion.id}
@@ -275,7 +243,7 @@ const Create: CreateComponent = ({
                             estancia={estancia}
                         />
             case 'observaciones':
-                return <Observaciones
+                return <HabitusExteriorForm
                             hojasenfermeria={hojaenfermeria}
                         />
             case 'graficas':
