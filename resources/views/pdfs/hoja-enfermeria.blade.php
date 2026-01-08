@@ -4,14 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Hoja de enfermería</title>
+    <title>Hoja de enfermería de servicio hospitalario</title>
     <style>
         @page {
             size: A4;
             margin-top: 5.5cm;
             margin-bottom: 1.5cm;
-            margin-left: 1.2cm;
-            margin-right: 1.2cm;
+            margin-left: 1cm;
+            margin-right: 1cm;
 
             @bottom-right {
                 content: "Página " counter(page) " de " counter(pages);
@@ -46,6 +46,13 @@
             padding-bottom: 3px;
             font-size: 12pt;
             page-break-after: avoid;
+        }
+
+        h4 {
+            margin-top: 10px;
+            margin-bottom: 8px;
+            padding-bottom: 3px;
+            font-size: 10pt;
         }
 
         p {
@@ -211,111 +218,10 @@
     </style>
 </head>
 <body>
-    <h1>Hoja de enfermería</h1>
+    <h1>Hoja de enfermería de servicio hospitalario</h1>
 
-    <h3>Dieta</h3>
-    <table>
-        <thead>
-            <tr>
-                <th style=" width: 33%">Dieta</th>
-                <th style=" width: 33%">Fecha/hora solicitud</th>
-                <th style=" width: 33%">Observaciones</th>
-            </tr>
-        </thead>
-        <tbody>
-            @if ($notaData->solicitudesDieta->isEmpty())
-                <tr>
-                    <td colspan="3" class="empty-cell">No se han registrado dietas solicitadas.</td>
-                </tr>
-            @else
-                @foreach ($notaData->solicitudesDieta as $dieta)
-                    <tr>
-                        <td>{{$dieta->dieta->alimento}}</td>
-                        <td>{{$dieta->horario_solicitud}}</td>
-                        <td>{{$dieta->observaciones}}</td>
-                    </tr>
-                @endforeach
-            @endif
-        </tbody>
-    </table>
-
-    <h3>Ministración de medicamentos</h3>
-    <table>
-        <thead>
-            <tr>
-                <th style="width: 25%;">Medicamento</th>
-                <th style="width: 10%;">Dosis</th>
-                <th style="width: 10%;">Gramaje</th>
-                <th style="width: 15%;">Vía Admin.</th>
-                <th style="width: 10%;">Duración</th>
-                <th style="width: 10%;">Unidad</th>
-                <th style="width: 20%;">Fecha/Hora Aplicación</th>
-            </tr>
-        </thead>
-        <tbody>
-            @if ($notaData->hojaMedicamentos->isEmpty())
-                <tr>
-                    <td colspan="7" class="empty-cell">
-                        No se han registrado medicamentos administrados.
-                    </td>
-                </tr>
-            @else
-                @foreach ($notaData->hojaMedicamentos as $medicamento)
-                    <tr>
-                        <td><strong>{{ $medicamento->productoServicio->nombre_prestacion }}</strong></td>
-                        <td>{{ $medicamento->dosis }}</td>
-                        <td>{{ $medicamento->gramaje }}</td>
-                        <td>{{ $medicamento->via_administracion }}</td>
-                        <td>{{ $medicamento->duracion_tratamiento }}</td>
-                        <td>{{ $medicamento->unidad }}</td>
-                        <td>
-                            <span class="fecha-item">{{ $medicamento->fecha_hora_inicio }}</span>
-                            @if (!$medicamento->aplicaciones->isEmpty())
-                                @foreach ($medicamento->aplicaciones as $aplicacion)
-                                    <span class="fecha-item" style="color: #666;">
-                                        {{ $aplicacion->fecha_aplicacion }}
-                                    </span>
-                                @endforeach
-                            @endif
-                        </td> 
-                    </tr>
-                @endforeach
-            @endif
-        </tbody>
-    </table>
-    <h3>Terapia intravenosa</h3>
-    <table>
-        <thead>
-            <tr>
-                <th style="width: 25%">Solución</th>
-                <th style="width: 25%">Cantidad (ml)</th>
-                <th style="width: 25%">Duración</th>
-                <th style="width: 25%">Flujo (ml/hora)</th>
-            </tr>
-        </thead>
-        <tbody>
-            @if ($notaData->hojasTerapiaIV->isEmpty())
-                <tr>
-                    <td colspan="4" class="empty-cell">
-                        No se han registrado terapias intravenosas.
-                    </td>
-                </tr>
-            @else
-                @foreach ($notaData->hojasTerapiaIV as $terapia)
-                    <tr>
-                        <td>{{$terapia->detalleSoluciones->nombre_prestacion}}</td>
-                        <td>{{$terapia->cantidad}}</td>
-                        <td>{{$terapia->duracion}}</td>
-                        <td>{{$terapia->flujo_ml_hora}}</td>
-                    </tr>
-                @endforeach
-
-            @endif
-
-        </tbody>
-    </table>
-
-    <h3>Escalas de valoración</h3>
+    <h3>Habitus exterior</h3>
+    <h4>Escalas de valoración</h4>
     <table>
         <thead>
             <tr>
@@ -375,7 +281,115 @@
         </tbody>
     </table>
 
-    <h3>Control de líquidos</h3>
+
+    <h3>Ministración de medicamentos</h3>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 25%;">Medicamento</th>
+                <th style="width: 10%;">Dosis</th>
+                <th style="width: 10%;">Gramaje</th>
+                <th style="width: 15%;">Vía administración</th>
+                <th style="width: 10%;">Duración</th>
+                <th style="width: 10%;">Unidad</th>
+                <th style="width: 20%;">Fecha/Hora Aplicación</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if ($notaData->hojaMedicamentos->isEmpty())
+                <tr>
+                    <td colspan="7" class="empty-cell">
+                        No se han registrado medicamentos administrados.
+                    </td>
+                </tr>
+            @else
+                @foreach ($notaData->hojaMedicamentos as $medicamento)
+                    <tr>
+                        <td><strong>{{ $medicamento->productoServicio->nombre_prestacion }}</strong></td>
+                        <td>{{ $medicamento->dosis }}</td>
+                        <td>{{ $medicamento->gramaje }}</td>
+                        <td>{{ $medicamento->via_administracion }}</td>
+                        <td>{{ $medicamento->duracion_tratamiento }}</td>
+                        <td>{{ $medicamento->unidad }}</td>
+                        <td>
+                            <span class="fecha-item">{{ $medicamento->fecha_hora_inicio }}</span>
+                            @if (!$medicamento->aplicaciones->isEmpty())
+                                @foreach ($medicamento->aplicaciones as $aplicacion)
+                                    <span class="fecha-item" style="color: #666;">
+                                        {{ $aplicacion->fecha_aplicacion }}
+                                    </span>
+                                @endforeach
+                            @endif
+                        </td> 
+                    </tr>
+                @endforeach
+            @endif
+        </tbody>
+    </table>
+
+    <h3>Procedimientos realizados</h3>
+
+    <h4>Dieta</h4>
+    <table>
+        <thead>
+            <tr>
+                <th style=" width: 33%">Dieta</th>
+                <th style=" width: 33%">Fecha/hora solicitud</th>
+                <th style=" width: 33%">Observaciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if ($notaData->solicitudesDieta->isEmpty())
+                <tr>
+                    <td colspan="3" class="empty-cell">No se han registrado dietas solicitadas.</td>
+                </tr>
+            @else
+                @foreach ($notaData->solicitudesDieta as $dieta)
+                    <tr>
+                        <td>{{$dieta->dieta->categoriaDieta->categoria}}</td>
+                        <td>{{$dieta->horario_solicitud}}</td>
+                        <td>{{$dieta->observaciones}}</td>
+                    </tr>
+                @endforeach
+            @endif
+        </tbody>
+    </table>
+
+    <h4>Terapia intravenosa</h4>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 25%">Solución</th>
+                <th style="width: 25%">Cantidad (ml)</th>
+                <th style="width: 25%">Duración</th>
+                <th style="width: 25%">Flujo (ml/hora)</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if ($notaData->hojasTerapiaIV->isEmpty())
+                <tr>
+                    <td colspan="4" class="empty-cell">
+                        No se han registrado terapias intravenosas.
+                    </td>
+                </tr>
+            @else
+                @foreach ($notaData->hojasTerapiaIV as $terapia)
+                    <tr>
+                        <td>{{$terapia->detalleSoluciones->nombre_prestacion}}</td>
+                        <td>{{$terapia->cantidad}}</td>
+                        <td>{{$terapia->duracion}}</td>
+                        <td>{{$terapia->flujo_ml_hora}}</td>
+                    </tr>
+                @endforeach
+
+            @endif
+
+        </tbody>
+    </table>
+
+    
+
+    <h4>Control de líquidos</h4>
     <table>
         <thead>
             <tr>
@@ -443,8 +457,7 @@
         </tbody>
     </table>
 
-    <h3>Estudios de laboratorio y gabinetes</h3>
-
+    <h4>Estudios de laboratorio y gabinetes</h4>
     <table>
         <thead>
             <tr>
@@ -474,7 +487,7 @@
         </tbody>
     </table>
 
-    <h3>Sondas y catéteres</h3>
+    <h4>Sondas y catéteres</h4>
     <table>
         <thead>
             <tr>
@@ -672,23 +685,25 @@
         ]) }}">
     </div>
 
-    <div class="grafica-item">
-        <img class="grafica-img" src="{{ getChartUrl('Estado de Conciencia', $labels, [
-            [
-                'label' => 'Nivel (5=Alerta, 1=Coma)',
-                'data' => $dataConciencia,
-                'borderColor' => '#8e44ad', 
-                'backgroundColor' => 'rgba(142, 68, 173, 0.2)',
-                'fill' => false,
-                'steppedLine' => true,
-                'spanGaps' => true
-            ]
-        ]) }}">
-        
-        <div style="font-size: 8pt; color: #666; margin-top: 5px; text-align: center;">
-            Escala: 5-Alerta | 4-Letárgico | 3-Obnubilado | 2-Estuporoso | 1-Coma
-        </div>
-    </div>
+    <table>
+        <thead>
+            <tr>
+                <tr>
+                    <th>Tensión arterial</th>
+                    <th></th>
+                </tr>
+                <th>Frecuencia cardíaca</th>
+                <th>Temperatura</th>
+                <th>Saturación O2 (%)</th>
+                <th>Glucemia capilar (mg/dL)</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+
+        </tbody>
+    </table>
+
 
     @if(isset($medico))
         @if(!$medico->colaborador_responsable)

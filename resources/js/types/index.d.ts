@@ -865,3 +865,8 @@ export interface Dieta {
     categoria_dieta: CategoriaDieta;
     categoria_dieta_id:number;
 }
+
+export interface ChecklistItemData {
+    section_id: string;
+    task_index: number;
+}
