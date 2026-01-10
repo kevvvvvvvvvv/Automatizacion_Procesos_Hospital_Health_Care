@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
 
             $table->integer('escala_eva');
-            $table->string('ubicacion_dolor');
+            $table->string('ubicacion_dolor')->nullable();
             $table->foreignId('hoja_escala_valoracion_id')
                 ->constrained('hoja_escala_valoracions')
                 ->onDelete('cascade');
