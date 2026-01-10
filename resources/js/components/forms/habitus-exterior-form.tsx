@@ -217,7 +217,7 @@ const HabitusExteriorForm = ({hojasenfermeria}: Props) => {
                     label='Vestido y Aliño'
                     options={higieneOptions}
                     value={data.habitus_exterior.higiene}
-                    onChange={(e) => updateHabitus('higiene', e.target.value)}
+                    onChange={(e) => updateHabitus('higiene', e)}
                 />
 
             </div>

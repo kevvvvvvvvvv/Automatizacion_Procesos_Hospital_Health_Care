@@ -23,8 +23,8 @@ class HojaSignosRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'tension_arterial_sistolica' => ['nullable', 'integer', 'min:0'],
-            'tension_arterial_diastolica' => ['nullable', 'integer', 'min:0'],
+            'tension_arterial_sistolica' => ['nullable', 'integer', 'min:0', 'required_with:tension_arterial_diastolica'],
+            'tension_arterial_diastolica' => ['nullable', 'integer', 'min:0', 'required_with:tension_arterial_sistolica'],
             'frecuencia_cardiaca' => ['nullable', 'integer', 'min:0'],
             'frecuencia_respiratoria' => ['nullable', 'integer', 'min:0'],
             'saturacion_oxigeno' => ['nullable', 'integer', 'min:0', 'max:100'], 
@@ -42,6 +42,8 @@ class HojaSignosRequest extends FormRequest
             // --- T.A. Sistólica ---
             'tension_arterial_sistolica.integer' => 'La T.A. sistólica debe ser un número entero.',
             'tension_arterial_sistolica.min' => 'La T.A. sistólica no puede ser un valor negativo.',
+            'tension_arterial_sistolica.required_with' => 'Debes ingresar ambas cifras de la tensión arterial (sistólica y diastólica).',
+            'tension_arterial_diastolica.required_with' => 'Debes ingresar ambas cifras de la tensión arterial (sistólica y diastólica).',
 
             // --- T.A. Diastólica ---
             'tension_arterial_diastolica.integer' => 'La T.A. diastólica debe ser un número entero.',

@@ -28,4 +28,6 @@ class HojaSignos extends Model
     {   
         return $this->belongsTo(HojaEnfermeria::class,'hoja_enfermeria_id','id');
     }
+
+    
 }
