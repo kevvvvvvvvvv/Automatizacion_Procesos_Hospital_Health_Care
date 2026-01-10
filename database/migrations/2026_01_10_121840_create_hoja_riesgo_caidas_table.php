@@ -13,6 +13,18 @@ return new class extends Migration
     {
         Schema::create('hoja_riesgo_caidas', function (Blueprint $table) {
             $table->id();
+
+            $table->foreignId('hoja_enfermeria_id')
+                ->constrained('hoja_enfermerias')
+                ->onDelete('cascade');
+
+            $table->boolean('caidas_previas');
+            $table->string('estado_mental');
+            $table->string('deambulacion');
+            $table->boolean('edad_mayor_70');
+            $table->json('medicamentos')->nullable();
+            $table->json('deficits')->nullable();
+            $table->integer('puntaje_total');
             $table->timestamps();
         });
     }

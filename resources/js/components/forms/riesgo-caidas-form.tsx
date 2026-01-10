@@ -1,9 +1,10 @@
 import React, { useEffect } from 'react';
 import { useForm } from '@inertiajs/react';
 import { HojaEnfermeria } from '@/types';
+import { route } from 'ziggy-js';
+
 import PrimaryButton from '../ui/primary-button';
 import SelectInput from '../ui/input-select';
-
 import Checkbox from '../ui/input-checkbox';
 
 interface Props {
@@ -28,67 +29,41 @@ const deficitList = [
 
 const RiesgoCaidasForm = ({ hoja }: Props) => {
     
-    // Recuperamos datos previos si existen, o inicializamos vacíos
-    const initialData = hoja.riesgo_caidas_data || {};
 
-    const { data, setData, put, processing } = useForm({
-        // CAMPOS UNICOS (Select)
-        caidas_previas: initialData.caidas_previas || '0', // '0' = No, '1' = Sí
-        estado_mental: initialData.estado_mental || 'orientado',
-        deambulacion: initialData.deambulacion || 'normal',
-        edad_mayor_70: initialData.edad_mayor_70 || false, // Booleano para checkbox simple
+    const { data, setData, post, processing } = useForm({
+        caidas_previas: '0', 
+        estado_mental: 'orientado',
+        deambulacion: 'normal',
+        edad_mayor_70: false, 
 
-        // CAMPOS MULTIPLES (Arrays para Checkboxes)
-        medicamentos: initialData.medicamentos || [], // Ej: ['diureticos', 'sedantes']
-        deficits: initialData.deficits || [],
+        medicamentos: [] as string[], 
+        deficits: [] as string[],
         
-        // Puntuación total (Calculada)
-        score_total: initialData.score_total || 0,
+        puntaje_total: 0,
     });
 
-    // --- LÓGICA PARA CHECKBOXES DE LISTA (Medicamentos / Déficits) ---
     const handleMultiCheckboxChange = (field: 'medicamentos' | 'deficits', value: string, checked: boolean) => {
-        let currentArray = [...data[field]];
+        let currentArray = [...data[field]] as string[];
         
         if (checked) {
-            // Agregar si no existe
             currentArray.push(value);
         } else {
-            // Quitar si existe
             currentArray = currentArray.filter(item => item !== value);
         }
         
         setData(field, currentArray);
     };
 
-    // --- CALCULO AUTOMÁTICO DEL RIESGO (Escala Downton) ---
-    // Se ejecuta cada vez que cambian los datos para mostrar el score en tiempo real
     useEffect(() => {
         let puntos = 0;
-
-        // 1. Caídas previas (Sí = 1 punto)
         if (data.caidas_previas === '1') puntos += 1;
-
-        // 2. Medicamentos (En Downton, se suma 1 punto por cada categoría de riesgo)
-        // Nota: Algunas versiones suman 1 si toma AL MENOS UNO, otras suman por cada uno.
-        // Ajusta según el protocolo de tu hospital. Aquí sumo 1 punto por cada med seleccionado.
         puntos += data.medicamentos.length; 
-
-        // 3. Déficits (1 punto por cada uno)
         puntos += data.deficits.length;
-
-        // 4. Estado mental (Confuso = 1 punto)
         if (data.estado_mental === 'confuso') puntos += 1;
-
-        // 5. Deambulación (Cualquier cosa que no sea normal = 1 punto)
         if (data.deambulacion !== 'normal') puntos += 1;
-
-        // 6. Edad (Mayor 70 = 1 punto)
         if (data.edad_mayor_70) puntos += 1;
-
-        // Actualizamos el score en el formulario sin disparar re-render infinito
-        if (data.score_total !== puntos) {
-            setData('score_total', puntos);
+        if (data.puntaje_total !== puntos) {
+            setData('puntaje_total', puntos);
         }
 
     }, [data.caidas_previas, data.medicamentos, data.deficits, data.estado_mental, data.deambulacion, data.edad_mayor_70]);
@@ -96,10 +71,12 @@ const RiesgoCaidasForm = ({ hoja }: Props) => {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        put(route('hojas.update_riesgo', hoja.id));
+        post(route('hojas-riesgo-caidas.store', {hojasenfermeria: hoja.id})
+            
+        );
     };
 
-    // Determinar nivel de riesgo para mostrar color
+
     const getNivelRiesgo = (puntos: number) => {
         if (puntos >= 3) return { texto: 'ALTO RIESGO', color: 'text-red-600 font-bold' };
         if (puntos >= 1) return { texto: 'MEDIANO RIESGO', color: 'text-yellow-600 font-bold' };
@@ -119,7 +96,6 @@ const RiesgoCaidasForm = ({ hoja }: Props) => {
                 ]}
             />
 
-            {/* SECCIÓN 2: MEDICAMENTOS (CHECKBOXES) */}
             <div className="border p-4 rounded bg-gray-50">
                 <h3>Medicamentos</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
@@ -139,7 +115,7 @@ const RiesgoCaidasForm = ({ hoja }: Props) => {
                 </div>
             </div>
 
-            {/* SECCIÓN 3: DÉFICITS (CHECKBOXES) */}
+
             <div className="border p-4 rounded bg-gray-50">
                 <h3>Déficits sensitivo-motores</h3>
                 <div className="grid grid-cols-1 gap-2">
@@ -181,7 +157,6 @@ const RiesgoCaidasForm = ({ hoja }: Props) => {
                 ]}
             />
 
-            {/* SECCIÓN 6: EDAD */}
             <div className="flex items-center mt-4">
                 <Checkbox 
                     label=''
@@ -196,15 +171,15 @@ const RiesgoCaidasForm = ({ hoja }: Props) => {
 
             <div className="mt-6 p-4 border-2 border-blue-100 rounded-lg text-center bg-blue-50">
                 <p className="text-gray-600 uppercase text-xs tracking-wider">Puntuación Total</p>
-                <div className="text-3xl font-bold text-gray-800">{data.score_total} Puntos</div>
-                <div className={`mt-2 ${getNivelRiesgo(data.score_total).color}`}>
-                    {getNivelRiesgo(data.score_total).texto}
+                <div className="text-3xl font-bold text-gray-800">{data.puntaje_total} Puntos</div>
+                <div className={`mt-2 ${getNivelRiesgo(data.puntaje_total).color}`}>
+                    {getNivelRiesgo(data.puntaje_total).texto}
                 </div>
             </div>
 
-            <div className="mt-4">
-                <PrimaryButton disabled={processing}>
-                    Guardar Evaluación
+            <div className="flex justify-end mt-4">
+                <PrimaryButton disabled={processing} type='submit'>
+                    {processing ? 'Guardando...' : 'Guardar'}
                 </PrimaryButton>
             </div>
         </form>
