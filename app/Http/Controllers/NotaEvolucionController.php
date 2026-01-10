@@ -64,7 +64,8 @@ class NotaEvolucionController extends Controller
 
             DB::commit();
 
-            return Redirect::route('estancias.show', $estancia->id)->with('success','Se ha creado la nota de evolución');
+            return Redirect::route('estancias.show', $estancia->id)
+            ->with('success','Se ha creado la nota de evolución');
         } catch (\Exception $e) {
             DB::rollBack();
             return Redirect::back()->with('error', 'Error al crear nota de evolución: ' . $e->getMessage());
@@ -72,38 +73,57 @@ class NotaEvolucionController extends Controller
     }
 
       public function show(Paciente $paciente, Estancia $estancia, NotaEvolucion $notasevolucione)
-    {
-        $notasevolucione->load([
-            'formularioInstancia.estancia.paciente',
-             'formularioInstancia.user']);
-        
-        return Inertia::render('formularios/notaevolucion/show', [
-            'notasevolucione' => $notasevolucione,  
-            'paciente' => $notasevolucione->formularioInstancia->estancia->paciente,
-            'estancia' => $notasevolucione->estancia,
-        ]);
-    }
-    public function edit (NotaEvolucion $notasevolucione){
-        $notasevolucione->load([
-            'formularioInstancia.estancia.paciente',
-            'formularioInstancia.user'
-        ]);
-        return Inertia::render('formularios/notaevolucion/edit', [
-            'notasevolucione' => $notasevolucione,
-            'paciente' => $notasevolucione->formularioInstancia->estancia->paciente,
-            'estancia' => $notasevolucione->formularioInstancia->estancia,
-        ]);
-    }
-    public function update(NotaEvolucionRequest $request, Paciente $paciente, Estancia $estancia, NotaEvolucion $notaEvolucion)
-    {
-        $validateData = $request->validated();
-        $notaEvolucion->update($validateData);
-        return redirect()->route('notasevoluciones.show', [
-            'paciente' => $paciente->id,
-            'estancia' => $estancia->id,
-            'notaevolucion' => $notaEvolucion->id, 
-        ])->with('success', 'Nota de Evolución actualizada exitosamente.');
-    }
+{
+    $notasevolucione->load([
+        'formularioInstancia.estancia.paciente',
+        'formularioInstancia.user'
+    ]);
+    
+    return Inertia::render('formularios/notaevolucion/show', [
+
+        'paciente' => $paciente, // El paciente que llega por parámetro
+        'estancia' => $estancia, // ¡Asegúrate de que esta línea exista!
+                'notasevolucione' => $notasevolucione,
+    ]);
+}
+    public function edit(NotaEvolucion $notasevolucione)
+{
+    $notasevolucione->load([
+        'formularioInstancia.estancia.paciente',
+        'formularioInstancia.user'
+    ]);
+
+    // Necesitas traer estas listas para que el formulario tenga opciones que mostrar
+    $soluciones = ProductoServicio::where('tipo','INSUMOS')->get();
+    $medicamentos = ProductoServicio::where('tipo','INSUMOS')->get();
+    $estudios = CatalogoEstudio::where('tipo_estudio','Laboratorio')->get();
+
+    return Inertia::render('formularios/notaevolucion/edit', [
+        // Cambiamos 'notasevolucione' por 'evolucion' para que coincida con tu React Props
+        'evolucion' => $notasevolucione, 
+        'paciente' => $notasevolucione->formularioInstancia->estancia->paciente,
+        'estancia' => $notasevolucione->formularioInstancia->estancia,
+        'soluciones' => $soluciones,
+        'medicamentos' => $medicamentos,
+        'estudios' => $estudios,
+    ]);
+}// NotaEvolucionController.php
+
+        public function update(
+            NotaEvolucionRequest $request, 
+            Paciente $paciente, 
+            Estancia $estancia, 
+            NotaEvolucion $notasevolucione // <--- Cambia $notaEvolucion por $notasevolucione si es necesario
+        ) {
+            $validateData = $request->validated();
+            $notasevolucione->update($validateData);
+            
+            return redirect()->route('notasevoluciones.show', [
+                'paciente' => $paciente->id,
+                'estancia' => $estancia->id,
+                'notasevolucione' => $notasevolucione->id, 
+            ])->with('success', 'Nota de Evolución actualizada.');
+        }
 
     public function generarPDF(NotaEvolucion $notasevolucione)
     {
