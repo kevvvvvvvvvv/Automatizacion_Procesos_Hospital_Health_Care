@@ -55,6 +55,11 @@ class HojaEnfermeria extends Model
         return $this->hasMany(HojaEscalaValoracion::class);
     }
 
+    public function hojaRiesgoCaida(): HasMany
+    {
+        return $this->hasMany(HojaRiesgoCaida::class);
+    }
+
     public function solicitudesDieta(): HasMany
     {
         return $this->hasMany(SolicitudDieta::class);
@@ -69,4 +74,6 @@ class HojaEnfermeria extends Model
     {
         return $this->hasMany(HojaSondaCateter::class);
     }
+
+
 }

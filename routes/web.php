@@ -43,6 +43,7 @@ use App\Http\Controllers\ReservacionQuirofanoController;
 use App\Http\Controllers\PersonalEmpleadoController;
 use App\Http\Controllers\CheckListController;
 use App\Http\Controllers\DietaController;
+use App\Http\Controllers\FormularioHojaRiesgoCaidaController;
 use App\Http\Controllers\HojaControlLiquidoController;
 use App\Http\Controllers\HojaEscalaValoracionController;
 use App\Models\HojaContolLiquido;
@@ -120,6 +121,9 @@ Route::patch('hojasmedicamentos/{hojasenfermeria}/{hojasmedicamento}',[Formulari
 
 Route::post('hojas-oxigenos/{estancia}', [FormularioHojaOxigenoController::class, 'store'])->name('hojasoxigenos.store')->middleware('auth');
 Route::patch('hojas-oxigenos/{hojasoxigeno}', [FormularioHojaOxigenoController::class, 'update'])->name('hojasoxigenos.update')->middleware('auth');
+
+Route::post('hojas-riesgo-caidas/{hojasenfermeria}',[FormularioHojaRiesgoCaidaController::class, 'store'])->name('hojas-riesgo-caidas.store')->middleware('auth');
+
 
 //Rutas Hoja de enfermeria en quirofano
 Route::post('hojasinsumosbasicos/{hojasenfermeriasquirofano}', [FormularioHojaInsumosBasicosController::class, 'store'])->name('hojasinsumosbasicos.store')->middleware('auth');

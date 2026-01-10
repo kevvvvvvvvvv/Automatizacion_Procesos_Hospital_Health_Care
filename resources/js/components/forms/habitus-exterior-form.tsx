@@ -54,7 +54,10 @@ const pielOptions = [
     { value: 'palida_fria', label: 'Pálida y fría' },
     { value: 'con_heridas', label: 'Con heridas / Lesiones' },
     { value: 'con_hematomas', label: 'Con hematomas / Equimosis (Moretones)' },
-    { value: 'con_exantema', label: 'Con exantema (Erupciones/Granitos)' }
+    { value: 'con_exantema', label: 'Con exantema (Erupciones/Granitos)' },
+    { value: 'edematosa', label: 'Edematosa (Hinchada / Retención de líquidos)' },
+    { value: 'marmorea', label: 'Marmórea (Piel veteada / Signo de choque)' },
+    { value: 'cianotica_distal', label: 'Cianótica distal (Dedos azules)' }
 ];
 
 const posturaOptions = [
@@ -66,10 +69,42 @@ const posturaOptions = [
 
 const estadoConciencaOptions = [
     { value: 'alerta', label: 'Alerta' },
+    { value: 'agitado', label: 'Agitado / Delirio' },
     { value: 'letárgico', label: 'Letárgico' },
     { value: 'obnubilado', label: 'Obnubilado' },
     { value: 'estuporoso', label: 'Estuporoso' },
     { value: 'coma', label: 'Coma' },
+];
+
+const marchaOptions = [
+    { value: 'normal', label: 'Eubásica / Normal' },
+    { value: 'claudicante', label: 'Claudicante (Cojera)' },
+    { value: 'ataxica', label: 'Atáxica (Tambaleante / Borracho)' },
+    { value: 'espastica', label: 'Espástica (Rigidez / Arrastra pies)' },
+    { value: 'parkinsoniana', label: 'Parkinsoniana (Pasos cortos y rápidos)' },
+    { value: 'no_valorable', label: 'No valorable (En cama/silla)' }
+];
+
+const movimientosOptions = [
+    { value: 'ninguno', label: 'Ninguno' },
+    { value: 'temblor', label: 'Temblores' },
+    { value: 'tics', label: 'Tics' },
+    { value: 'convulsiones', label: 'Convulsiones / Crisis' },
+    { value: 'fasciculaciones', label: 'Fasciculaciones (Saltos musculares)' },
+    { value: 'corea', label: 'Corea (Movimientos involuntarios rápidos)' },
+    { value: 'distonia', label: 'Distonía (Contracciones musculares)' }
+];
+
+const higieneOptions = [
+    { value: 'adecuado', label: 'Limpio y Adecuado' },
+    { value: 'desalinado', label: 'Desaliñado / Descuidado' },
+    { value: 'mala_higiene', label: 'Mala higiene / Olor fétido' },
+];
+
+const edadAparenteOptions = [
+    { value: 'igual', label: 'Igual a la cronológica' },
+    { value: 'mayor', label: 'Mayor a la cronológica (Se ve más viejo)' },
+    { value: 'menor', label: 'Menor a la cronológica (Se ve más joven)' },
 ];
 
 const HabitusExteriorForm = ({hojasenfermeria}: Props) => {
@@ -83,6 +118,10 @@ const HabitusExteriorForm = ({hojasenfermeria}: Props) => {
             postura:  '',
             piel: '',
             estado_conciencia: '',
+            marcha: '',
+            movimientos: '',
+            higiene: '',
+            edad_aparente: ''
         }
     });
 
@@ -152,6 +191,35 @@ const HabitusExteriorForm = ({hojasenfermeria}: Props) => {
                     value={data.habitus_exterior.estado_conciencia}
                     onChange={(e) => updateHabitus('estado_conciencia', e)}
                 />
+
+                <SelectInput
+                    label='Edad Aparente'
+                    options={edadAparenteOptions}
+                    value={data.habitus_exterior.edad_aparente}
+                    onChange={(e) => updateHabitus('edad_aparente', e)}
+                />
+
+                <SelectInput
+                    label='Marcha (Forma de caminar)'
+                    options={marchaOptions}
+                    value={data.habitus_exterior.marcha}
+                    onChange={(e) => updateHabitus('marcha', e)}
+                />
+
+                <SelectInput
+                    label='Movimientos Anormales'
+                    options={movimientosOptions}
+                    value={data.habitus_exterior.movimientos}
+                    onChange={(e) => updateHabitus('movimientos', e)}
+                />
+
+                <SelectInput
+                    label='Vestido y Aliño'
+                    options={higieneOptions}
+                    value={data.habitus_exterior.higiene}
+                    onChange={(e) => updateHabitus('higiene', e.target.value)}
+                />
+
             </div>
             <div className="mt-4 flex justify-end">
                 <PrimaryButton type='submit' disabled={processing}>
