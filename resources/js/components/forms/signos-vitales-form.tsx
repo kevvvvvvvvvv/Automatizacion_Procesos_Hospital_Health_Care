@@ -4,16 +4,7 @@ import { HojaEnfermeria, HojaSignos } from '@/types';
 import { route } from 'ziggy-js';
 
 import InputText from '@/components/ui/input-text';
-import SelectInput from '@/components/ui/input-select'; 
 import PrimaryButton from '@/components/ui/primary-button';
-
-const opcionesEstadoConciencia = [
-    { value: 'Alerta', label: 'Alerta' },
-    { value: 'Letárgico', label: 'Letárgico' },
-    { value: 'Obnubilado', label: 'Obnubilado' },
-    { value: 'Estuporoso', label: 'Estuporoso' },
-    { value: 'Coma', label: 'Coma' },
-];
 
 interface Props {
     hoja: HojaEnfermeria;
@@ -32,7 +23,6 @@ const SignosVitalesForm: React.FC<Props> = ({ hoja }) => {
         glucemia_capilar: '',
         peso: '',
         talla: '',
-        estado_conciencia: '',
     });
 
     const handleSubmit = (e: React.FormEvent) => {
@@ -140,13 +130,6 @@ const SignosVitalesForm: React.FC<Props> = ({ hoja }) => {
                     error={errors.talla} 
                 />
                 
-                <SelectInput
-                    label="Estado de conciencia"
-                    options={opcionesEstadoConciencia}
-                    value={data.estado_conciencia}
-                    onChange={(value) => setData('estado_conciencia', value as string)}
-                    error={errors.estado_conciencia}
-                />
             </div>
 
             <div className="flex justify-end mt-6">

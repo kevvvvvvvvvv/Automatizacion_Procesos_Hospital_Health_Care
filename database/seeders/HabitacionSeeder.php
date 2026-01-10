@@ -17,7 +17,7 @@ class HabitacionSeeder extends Seeder
             'identificador' => 'Consultorio 1',
             'tipo' => 'Consultorio',
             'estado' => 'Libre',
-            'ubicacion' => 'Plan de ayutla',
+            'ubicacion' => 'Plan de Ayutla',
             'piso' => 'Planta Ayutla',
         ]);
 
@@ -25,7 +25,7 @@ class HabitacionSeeder extends Seeder
             'identificador' => 'Consultorio 2',
             'tipo' => 'Consultorio',
             'estado' => 'Libre',
-            'ubicacion' => 'Plan de ayutla',
+            'ubicacion' => 'Plan de Ayutla',
             'piso' => 'Planta baja',
         ]);
 
@@ -33,7 +33,7 @@ class HabitacionSeeder extends Seeder
             'identificador' => 'Consultorio 3',
             'tipo' => 'Consultorio',
             'estado' => 'Libre',
-            'ubicacion' => 'Plan de ayutla',
+            'ubicacion' => 'Plan de Ayutla',
             'piso' => 'Planta baja',
         ]);
 
@@ -41,7 +41,7 @@ class HabitacionSeeder extends Seeder
             'identificador' => 'Consultorio 4',
             'tipo' => 'Consultorio',
             'estado' => 'Libre',
-            'ubicacion' => 'Plan de ayutla',
+            'ubicacion' => 'Plan de Ayutla',
             'piso' => 'Planta baja',
         ]);
 
@@ -49,7 +49,7 @@ class HabitacionSeeder extends Seeder
             'identificador' => 'Consultorio 5',
             'tipo' => 'Consultorio',
             'estado' => 'Libre',
-            'ubicacion' => 'Plan de ayutla',
+            'ubicacion' => 'Plan de Ayutla',
             'piso' => 'Planta baja',
         ]);
 
@@ -83,7 +83,7 @@ class HabitacionSeeder extends Seeder
             'identificador' => 'Suit 1A',
             'tipo' => 'Habitación',
             'estado' => 'Libre',
-            'ubicacion' => 'Plan de ayutla',
+            'ubicacion' => 'Plan de Ayutla',
             'piso' => 'Planta baja',
         ]);
 
@@ -91,7 +91,7 @@ class HabitacionSeeder extends Seeder
             'identificador' => 'Suit 1B',
             'tipo' => 'Habitación',
             'estado' => 'Libre',
-            'ubicacion' => 'Plan de ayutla',
+            'ubicacion' => 'Plan de Ayutla',
             'piso' => 'Planta baja',
         ]);
 
@@ -99,7 +99,7 @@ class HabitacionSeeder extends Seeder
             'identificador' => 'Quirofano',
             'tipo' => 'Quirofano',
             'estado' => 'Libre',
-            'ubicacion' => 'Plan de ayutla',
+            'ubicacion' => 'Plan de Ayutla',
             'piso' => 'Planta Alta',
         ]);
     }

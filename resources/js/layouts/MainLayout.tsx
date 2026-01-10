@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, usePage, router } from '@inertiajs/react';
 import { route } from 'ziggy-js';
-import { SharedProps, LaravelNotification, NotificationData } from '@/types';
+import { SharedProps, LaravelNotification } from '@/types';
 
 const formatTime = (time: string): string => {
     return new Date(time).toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' });

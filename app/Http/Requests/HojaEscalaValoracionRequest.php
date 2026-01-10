@@ -23,9 +23,11 @@ class HojaEscalaValoracionRequest extends FormRequest
     {
         return [
             'escala_braden' => ['nullable', 'numeric', 'between:1,25'],
-            'escala_glasgow' => ['nullable', 'numeric', 'between:0,15'],
+            'escala_glasgow' => ['nullable', 'numeric', 'between:3,15'],
             'escala_ramsey' => ['nullable', 'numeric', 'between:1,6'],
-            'escala_eva' => ['nullable', 'numeric', 'between:0,10'],
+            'valoracion_dolor' =>['nullable','array'],
+            'valoracion_dolor.*.escala_eva' => ['required','between:0,10'],
+            'valoracion_dolor.*.ubicacion_dolor' => ['required', 'string']
         ];
     }
 
@@ -36,6 +38,9 @@ class HojaEscalaValoracionRequest extends FormRequest
             'escala_glasgow.between' => 'La escala Glasgow debe estar entre 0 y 15.',
             'escala_ramsey.between' => 'La escala Ramsey debe estar entre 1 y 6.',
             'escala_eva.between' => 'La escala EVA debe estar entre 0 y 10.',
+            'valoracion_dolor.*.escala_eva.between' => 'La escala EVA debe estar entre 0 y 10 en todos los registros.',
+            'valoracion_dolor.*.escala_eva.required' => 'El valor de EVA es obligatorio.',
+            'valoracion_dolor.*.ubicacion_dolor.required' => 'La ubicación es obligatoria',
         ];
     }
 }

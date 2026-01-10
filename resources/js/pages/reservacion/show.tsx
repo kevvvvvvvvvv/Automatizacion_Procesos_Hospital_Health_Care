@@ -92,7 +92,7 @@ const ShowReservacion = ({ reservacion, user, horarios }: Props) => {
               <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-6">Resumen de Pago</h3>
               {reservacion.estatus === 'pagado' ? (
                 <div className="bg-green-50 text-green-700 p-4 rounded-xl text-center font-bold border border-green-200 text-sm">
-                  ¡Reservación Pagada! ✅
+                  ¡Reservación pagada! ✅
                 </div>
               ) : (
                 <div className="overflow-hidden">
@@ -108,11 +108,10 @@ const ShowReservacion = ({ reservacion, user, horarios }: Props) => {
             </div>
           </div>
 
-          {/* COLUMNA DERECHA: Bloques Horarios (Ocupa 8 de 12 en desktop) */}
           <div className="lg:col-span-8">
             <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
               <div className="px-4 sm:px-6 py-4 border-b border-gray-50 flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-gray-50/50">
-                <h3 className="font-bold text-gray-700 text-sm">Bloques Horarios</h3>
+                <h3 className="font-bold text-gray-700 text-sm">Bloques horarios</h3>
                 <div className="flex flex-wrap gap-1.5">
                    {consultoriosUnicos.map((id) => (
                      <span key={id} className={`text-[9px] px-2 py-0.5 rounded-full border ${colorMap[id || "S/A"].bg} ${colorMap[id || "S/A"].text} ${colorMap[id || "S/A"].border} font-bold`}>

@@ -21,6 +21,7 @@ import ServiciosEspecialesForm from '@/components/forms/servicios-especiales-for
 import EscalaValoracionForm from '@/components/forms/escalas-valoracion-form';
 import ControlLiquidosForm from '@/components/forms/control-liquidos-form';
 import HabitusExteriorForm from '@/components/forms/habitus-exterior-form';
+import RiesgoCaidasForm from '@/components/forms/riesgo-caidas-form';
 
 
 interface CreateProps {
@@ -42,12 +43,13 @@ interface CreateProps {
     categoria_dietas: CategoriaDieta [];
 }
 
-type SeccionHoja = 'signos' | 'medicamentos' | 'terapia_iv' | 'estudios' | 'sondas' | 'dieta' | 'servicios_especiales' | 'observaciones' | 'graficas' | 'control_liquidos' | 'escalas_valoracion';
+type SeccionHoja = 'signos' | 'riesgo_caidas' |'medicamentos' | 'terapia_iv' | 'estudios' | 'sondas' | 'dieta' | 'servicios_especiales' | 'observaciones' | 'graficas' | 'control_liquidos' | 'escalas_valoracion';
 
 const secciones: { id: SeccionHoja, label: string }[] = [
     { id: 'signos', label: 'Tomar signos' },
     { id: 'control_liquidos', label:'Control de liquidos'},
     { id: 'escalas_valoracion', label:'Escalas de valoracion'},
+    { id: 'riesgo_caidas', label: 'Riesgo de caídas'},
 
     { id: 'medicamentos', label: 'Ministración de medicamentos' },
     { id: 'terapia_iv', label: 'Terapia intravenosa' },
@@ -171,7 +173,7 @@ const Create: CreateComponent = ({
         </div>
         <nav className="mb-6 mt-12">
             <div className="border-b border-gray-200">
-                <div className="flex flex-nowrap overflow-x-auto -mb-px gap-x-6 pb-px" aria-label="Tabs">
+                <div className="flex flex-nowrap overflow-x-auto -mb-px scrollbar-hide gap-x-6 pb-px" aria-label="Tabs">
                     {secciones.map((seccion) => (
                         <button
                             key={seccion.id}
@@ -200,6 +202,10 @@ const Create: CreateComponent = ({
                 return <SignosVitalesForm 
                             hoja={hojaenfermeria}
                         />;
+            case 'riesgo_caidas':
+                return <RiesgoCaidasForm
+                            hoja={hojaenfermeria}
+                        />
             case 'control_liquidos': 
                 return <ControlLiquidosForm
                             hoja={hojaenfermeria}

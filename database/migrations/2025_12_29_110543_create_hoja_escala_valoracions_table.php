@@ -22,7 +22,6 @@ return new class extends Migration
             $table->string('escala_braden')->nullable();
             $table->string('escala_glasgow')->nullable();
             $table->string('escala_ramsey')->nullable();
-            $table->string('escala_eva')->nullable();
             
             $table->timestamps();
         });

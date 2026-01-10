@@ -28,7 +28,6 @@ return new class extends Migration
             $table->integer('glucemia_capilar')->nullable();
             $table->decimal('talla')->nullable();
             $table->decimal('peso')->nullable();
-            $table->string('estado_conciencia')->nullable();
 
             $table->timestamps();
         });
