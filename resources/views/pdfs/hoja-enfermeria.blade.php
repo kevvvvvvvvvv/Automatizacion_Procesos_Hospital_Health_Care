@@ -59,6 +59,10 @@
             margin: 0 0 8px 0;
         }
 
+        .negritas {
+            font-weight: 900;
+        }
+
         .one-line{
             display: inline-block;
             padding-right: 10px;
@@ -221,15 +225,15 @@
     <h1>Hoja de enfermería de servicio hospitalario</h1>
 
     <h3>Habitus exterior</h3>
-    <h4>Escalas de valoración</h4>
+    <h3>Escalas y valoración del dolor (localización y escala)</h3>
     <table>
         <thead>
             <tr>
-                <th class="w-20">Fecha/Hora</th> 
-                <th class="w-20 text-center">Escala Braden</th>
-                <th class="w-20 text-center">Escala Glasgow</th>
-                <th class="w-20 text-center">Escala Ramsay</th>
-                <th class="w-20 text-center">Escala EVA</th>
+                <th style="width: 20%">Fecha/Hora</th> 
+                <th style="width: 11%" class="text-center">Escala Braden</th>
+                <th style="width: 11%" class="text-center">Escala Glasgow</th>
+                <th style="width: 11%" class="text-center">Escala Ramsay</th>
+                <th style="width: 47%" class="text-center">Escala EVA</th>
             </tr>
         </thead>
         <tbody>
@@ -267,12 +271,22 @@
                                 <span class="sin-dato">-</span>
                             @endif
                         </td>
-
-                        <td class="text-center">
-                            @if($valoracion->escala_eva !== null)
-                                <span class="score-valor">{{ $valoracion->escala_eva }}</span>
-                            @else
+                        <td class="text-center align-top"> 
+                            @if($valoracion->valoracionDolor->isEmpty())
                                 <span class="sin-dato">-</span>
+                            @else
+                                <div class="flex flex-col gap-2 p-1">
+                                    @foreach($valoracion->valoracionDolor as $dolor)
+                                        <div class="{{ !$loop->last ? 'border-b border-gray-200 pb-1' : '' }}">
+                                            <span class="font-bold {{ $dolor->escala_eva >= 7 ? 'text-red-600' : ($dolor->escala_eva >= 4 ? 'text-yellow-600' : 'text-green-600') }}">
+                                                ESCALA: {{ $dolor->escala_eva }},
+                                                @if($dolor->ubicacion_dolor)
+                                                    UBICACIÓN: {{ $dolor->ubicacion_dolor }}
+                                                @endif
+                                            </span>
+                                        </div>
+                                    @endforeach
+                                </div>
                             @endif
                         </td>
                     </tr>
@@ -525,6 +539,90 @@
         </tbody>
     </table>
 
+    @php
+        $medicamentosMap = [
+            'tranquilizantes' => 'Tranquilizantes / Sedantes',
+            'diureticos' => 'Diuréticos',
+            'hipotensores' => 'Hipotensores (no diuréticos)',
+            'antiparkinsonianos' => 'Antiparkinsonianos',
+            'antidepresivos' => 'Antidepresivos',
+            'otros' => 'Otros medicamentos',
+            'anestesia' => 'Anestesia' 
+        ];
+
+        $deficitsMap = [
+            'visuales' => 'Alteraciones visuales',
+            'auditivas' => 'Alteraciones auditivas',
+            'extremidades' => 'Extremidades (parálisis/paresia)'
+        ];
+
+        $estadoMentalMap = [
+            'orientado' => 'Orientado',
+            'confuso' => 'Confuso',
+        ];
+
+        $deambulacionMap = [
+            'normal' => 'Normal',
+            'segura_ayuda' => 'Segura con ayuda',
+            'insegura' => 'Insegura con/sin ayuda',
+            'imposible' => 'Imposible'
+        ];
+    @endphp
+
+    <h3>Nivel de riesgo de caídas</h3>
+    <table>
+        <thead>
+            <tr> 
+                <th>Fecha/hora registro</th>
+                <th>Caídas previas</th>
+                <th>Estado mental</th>
+                <th>Deambulación</th>
+                <th>Mayor a 70 años</th>
+                <th>Medicamentos</th>
+                <th>Déficits sensitivo-motores</th>
+                <th>Puntaje total</th>
+            </tr>
+        </thead>
+        <tbody>
+        @if ($notaData->hojaRiesgoCaida->isEmpty())
+            <tr>
+                <td colspan="8" class="empty-cell">No se han registrado escalas de valoración.</td>
+            </tr>
+        @else  
+            @foreach ($notaData->hojaRiesgoCaida as $riesgo)  
+                <tr>
+                    <td>{{ $riesgo->created_at }}</td>
+                    <td>{{ $riesgo->caidas_previas ? 'Sí' : 'No' }}</td>
+                    <td>{{ ucfirst($riesgo->estado_mental) }}</td>
+                    <td>{{ $deambulacionMap[$riesgo->deambulacion] ?? $riesgo->deambulacion }}</td>
+                    <td>{{ $riesgo->edad_mayor_70 ? 'Sí' : 'No' }}</td>
+                    <td>
+                        @if($riesgo->medicamentos)
+                            @foreach ($riesgo->medicamentos as $medicamento)
+                                <div>• {{ $medicamentosMap[$medicamento] ?? $medicamento }}</div>
+                            @endforeach
+                        @else
+                            Sin datos
+                        @endif
+                    </td>
+                    <td>
+                        @if($riesgo->deficits)
+                            @foreach ($riesgo->deficits as $deficit)
+                                <div>• {{ $deficitsMap[$deficit] ?? $deficit }}</div>
+                            @endforeach
+                        @else  
+                            Sin datos
+                        @endif
+                    </td>
+                    <td>{{ $riesgo->puntaje_total }}</td>
+                </tr>
+            
+            @endforeach
+        @endif
+    </tbody>
+    </table>
+    
+    
     <h3>Observaciones</h3>
     @empty($notaData->observaciones)
         <p>Sin nada que reportar.</p>
@@ -712,9 +810,18 @@
                 @foreach ($notaData->hojaSignos as $signos)
                     <tr>
                         <td>{{$signos->created_at ?? ''}}</td>
-
-                        <td>{{$signos->tension_arterial_sistolica}}/{{$signos->tension_arterial_diastolica}}</td>
-                        <td></td>
+                        @if ($signos->tension_arterial_sistolica && $signos->tension_arterial_diastolica)
+                            <td>{{$signos->tension_arterial_sistolica}}/{{$signos->tension_arterial_diastolica}}</td>
+                        @else
+                            <td></td>
+                        @endif
+                        <td>{{$signos->frecuencia_cardiaca}}</td>
+                        <td>{{$signos->frecuencia_respiratoria}}</td>
+                        <td>{{$signos->temperatura}}</td>
+                        <td>{{$signos->saturacion_oxigeno}}</td>
+                        <td>{{$signos->glucemia_capilar}}</td>
+                        <td>{{$signos->peso}}</td>
+                        <td>{{$signos->talla}}</td>
                     </tr>
                 @endforeach
             @endif

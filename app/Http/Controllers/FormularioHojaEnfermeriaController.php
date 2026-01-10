@@ -217,6 +217,8 @@ class FormularioHojaEnfermeriaController extends Controller
             'solicitudesEstudio.solicitudItems.catalogoEstudio',
             'sondasCateteres.productoServicio',
             'solicitudesDieta.dieta.categoriaDieta',
+            'hojaEscalaValoraciones.valoracionDolor',
+            'hojaRiesgoCaida',
         );
 
         $headerData = [
