@@ -128,7 +128,7 @@ const EscalaValoracionForm = ({ hoja }: Props) => {
                         <button
                             type="button"
                             onClick={agregarDolor}
-                            disabled={!nuevoDolor.escala_eva || !nuevoDolor.ubicacion_dolor}
+                            disabled={!nuevoDolor.escala_eva}
                             className="h-10 px-4 py-2 bg-gray-800 text-white text-sm font-medium rounded hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                         
                         >
