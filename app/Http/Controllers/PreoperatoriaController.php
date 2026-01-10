@@ -15,6 +15,7 @@ use Spatie\LaravelPdf\Facades\Pdf;
 use App\Http\Requests\PreoperatoriaRequest;
 use App\Models\FormularioCatalogo;
 use Spatie\Browsershot\Browsershot;
+use Redirect;
 
 class PreoperatoriaController extends Controller
 {
@@ -58,7 +59,7 @@ class PreoperatoriaController extends Controller
                 'estancia' => $estancia->id,
             ])->with('success', 'Preoperatoria creada exitosamente.');
     } catch (\Exception $e) {
-        DB::rollBack();
+        DB::rollBack(); 
         return redirect()->back()->withErrors(['error' => 'Error al crear la preoperatoria: ' . $e->getMessage()])->withInput();
     }
     }
@@ -76,7 +77,8 @@ class PreoperatoriaController extends Controller
 
     }
     public function edit(Paciente $paciente, Estancia $estancia, Preoperatoria $preoperatoria)
-    {
+    {   
+        //dd($estancia->toArray());
         $preoperatoria->load([
             'formularioInstancia.estancia.paciente',
             'formularioInstancia.user',
@@ -87,14 +89,19 @@ class PreoperatoriaController extends Controller
             'preoperatoria' => $preoperatoria,
         ]);
     }
-    public function update(PreoperatoriaRequest $request, Paciente $paciente, Estancia $estancia, Preoperatoria $preoperatoria)
-    {
-        $validatedData = $request->validated();
-        $preoperatoria->update($validatedData);
-        return redirect()->route('estancias.show', [
-            'estancia' => $estancia->id,
-        ])->with('success', 'Preoperatoria actualizada exitosamente.');
-    }
+   public function update(PreoperatoriaRequest $request, Paciente $paciente, Estancia $estancia, Preoperatoria $preoperatoria)
+{
+
+    $validatedData = $request->validated();
+    $preoperatoria->update($validatedData);
+    
+    // Forzamos la llave del parámetro para que Laravel no se pierda
+     return redirect()->route('preoperatorias.show', [
+                'paciente' => $paciente->id,
+                'estancia' => $estancia->id,
+                'preoperatoria' => $preoperatoria->id, 
+            ])->with('success', 'Nota preoperatoria actualizada.');
+}
     public function destroy($id)
     {
         //
