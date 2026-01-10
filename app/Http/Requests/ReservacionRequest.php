@@ -20,8 +20,7 @@ class ReservacionRequest extends FormRequest
      */
     public function rules(): array
     {
-        // 1. IMPORTANTE: Deben coincidir exactamente con los valores de tu BD
-        $localizacionesPermitidas = ['Plan de ayutla', 'Díaz Ordaz'];
+        $localizacionesPermitidas = ['Plan de Ayutla', 'Gustavo Díaz Ordaz'];
 
         return [
             'localizacion' => [
@@ -32,7 +31,6 @@ class ReservacionRequest extends FormRequest
             'fecha' => [
                 'required', 
                 'date',
-                // Permitimos hoy mismo o fechas futuras
                 'after_or_equal:today' 
             ],
             'horarios' => [
@@ -40,8 +38,6 @@ class ReservacionRequest extends FormRequest
                 'array', 
                 'min:1' 
             ],
-            // 2. AJUSTE DE FORMATO: Como en el JS agregamos ":00", 
-            // el formato que llega es Y-m-d H:i:s
             'horarios.*' => [
                 'required', 
                 'date_format:Y-m-d H:i:s', 

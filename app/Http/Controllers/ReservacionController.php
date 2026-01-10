@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 use Laravel\Cashier\Exceptions\IncompletePayment;
 
 use App\Http\Requests\ReservacionRequest;
+use Illuminate\Support\Facades\Redirect;
 
 class ReservacionController extends Controller
 {
@@ -33,15 +34,15 @@ class ReservacionController extends Controller
 
     public function reserva(){
          $reservaciones = Reservacion::with([
-        'horarios.habitacion',
-        'user:id,nombre'
-    ])
-    ->orderBy('fecha', 'desc')
-    ->get();
+            'horarios.habitacion',
+            'user:id,nombre'
+        ])
+        ->orderBy('fecha', 'desc')
+        ->get();
 
-    return Inertia::render('reservacion/reserva', [
-        'reservaciones' => $reservaciones
-    ]);
+        return Inertia::render('reservacion/reserva', [
+            'reservaciones' => $reservaciones
+        ]);
     
     }
 
@@ -86,11 +87,8 @@ class ReservacionController extends Controller
 
     public function store(ReservacionRequest $request)
     {
-
-        //dd($request->toArray());
         $data = $request->validated();
         DB::beginTransaction();
-    
 
         try {
 
@@ -128,10 +126,11 @@ class ReservacionController extends Controller
             }
 
             DB::commit();
-            return redirect()->route('reservaciones.show', $reservacion->id);
+            return redirect()->route('reservaciones.show', $reservacion->id)->with('success','Reservación registrada.');
         } catch (\Throwable $e) {
             DB::rollBack();
-            return back()->withErrors(['error' => $e->getMessage()])->withInput();
+            \Log::error('Error al registrar la reservación: ' . $e->getMessage());
+            return  Redirect::back()->with('error','Error al registrar la reservación.');
         }
     }
 
@@ -165,6 +164,7 @@ class ReservacionController extends Controller
             'horariosSeleccionados' => $horariosYaElegidos 
         ]);
     }
+
     public function update(ReservacionRequest $request, Reservacion $reservacion)
     {
         $data = $request->validated();
@@ -198,11 +198,13 @@ class ReservacionController extends Controller
                 ]);
             }
 
+
             DB::commit();
             return redirect()->route('reservaciones.index')->with('success', 'Reservación actualizada.');
         } catch (\Exception $e) {
             DB::rollBack();
-            return back()->withErrors(['error' => $e->getMessage()]);
+            \Log::error('Error al actualizar la reservación: ' .  $e->getMessage());
+            return Redirect::back()->with('error','Error al actualizar la reservación.');
         }
     }
 

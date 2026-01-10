@@ -112,7 +112,6 @@ class FormularioHojaEnfermeriaController extends Controller
             'saturacion_oxigeno', 
             'glucemia_capilar',
             'talla',
-            'estado_conciencia',
             'peso',
         ];
 

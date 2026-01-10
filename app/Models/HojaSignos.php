@@ -22,7 +22,6 @@ class HojaSignos extends Model
         'glucemia_capilar',
         'talla',
         'peso',
-        'estado_conciencia',
     ];
 
     public function hojaEnfermeria():BelongsTo

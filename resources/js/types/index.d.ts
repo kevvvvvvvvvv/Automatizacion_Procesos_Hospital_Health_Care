@@ -298,24 +298,13 @@ export interface HojaSignos {
     glucemia_capilar: number | null;
     talla: number | null;
     peso: number | null;
-    uresis: number | null;
-    uresis_descripcion: string | null;
-    evacuaciones: number | null;
-    evacuaciones_descripcion: string | null;
-    emesis: number | null;
-    emesis_descripcion: string | null;
-    drenes: number | null;
-    drenes_descripcion: string | null;
-    estado_conciencia: string | null;
-    escala_braden: string | null;
-    escala_glasgow: string | null;
-    escala_eva: string | null;
     created_at: string;
     updated_at: string;
 }
 
 export interface HojaSignosGraficas {
     fecha_hora_registro: string;
+    talla: number | null;
     tension_arterial_sistolica: number | null;
     tension_arterial_diastolica: number | null;
     frecuencia_cardiaca: number | null;

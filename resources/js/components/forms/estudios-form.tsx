@@ -3,11 +3,11 @@ import { useForm } from '@inertiajs/react';
 import { Estancia, CatalogoEstudio, SolicitudEstudio, User } from '@/types';
 import { route } from 'ziggy-js';
 
-import InputTextArea from '@/components/ui/input-text-area';
 import PrimaryButton from '@/components/ui/primary-button';
 import Checkbox from '@/components/ui/input-checkbox';
 import InputText from '@/components/ui/input-text';
 import SelectInput from '@/components/ui/input-select';
+import Button from '../button';
 
 interface Props {
     estancia: Estancia;
@@ -18,15 +18,25 @@ interface Props {
     modeloTipo: string;
 }
 
-interface PropsPatologia{
-    estancia: Estancia;
-    medicos: User[];
-}
-
 interface EstudioManual {
     nombre: string;
     departamento: string;
 }
+
+/* 
+perfil de medicina interna:
+bh, Química sanguina de 6, grupo y RH, 
+electrolitos séricos de 6 elementos amilasa, lipasa 
+perfil de tiempos de sangrado y coagulación
+*/
+const MEDICINA_INTERNA = [
+    1, 35, 3, 63, 60, 61, 80
+];
+
+/* perfil preo-operatorio sencillos y clásicos: biometría, química de 6 y electrolitos de 6, tiempos de coagulación*/
+const PREOPERATORIOS = [
+    1, 35, 63, 80
+]
 
 const ESTUDIOS_FRECUENTES = [
     'BIOMETRIA HEMATICA',
@@ -34,7 +44,7 @@ const ESTUDIOS_FRECUENTES = [
     'PRUEBAS DE FUNCIONAMIENTO HEPATICO',
     'GRUPO SANGUINEO Y RH',
     'EXAMEN GENERAL DE ORINA',
-    'ELECTROLITOS SERICOS',
+    'ELECTROLITOS SERICOS 6',
     'TELE DE TÓRAX',
     'ABDOMEN SUPERIOR',
     'CRÁNEO' 
@@ -48,34 +58,6 @@ const optionsEstudios = [
     { value: 'Resonancia magnética', label: 'Resonancia magnética'},
     { value: 'Radiología general', label: 'Radiología general'},
 ];
-
-const FormularioPatologia: React.FC<PropsPatologia> = ({ estancia, medicos }) => {
-    const { data, setData, post, processing, errors } = useForm({
-        user_solicita_id: '', estudio_solicitado: '', biopsia_pieza_quirurgica: '', revision_laminillas: '', estudios_especiales: '', pcr: '', pieza_remitida: '', datos_clinicos: '',
-    });
-    const optionsMedico = medicos.map(medico => ({ value: medico.id.toString(), label: `${medico.nombre} ${medico.apellido_paterno} ${medico.apellido_materno}` }));
-    const handleSubmit = (e: React.FormEvent) => { e.preventDefault(); post(route('solicitudes-patologias.store', { estancia: estancia.id }), { preserveScroll: true }); }
-    return (
-        <form onSubmit={handleSubmit} >
-            <div className="space-y-4 grid grid-cols-1 md:grid-cols-3 gap-6">
-                <InputText id='estudio_solicitado' name='estudio_solicitado' label="Estudio solicitado" value={data.estudio_solicitado} onChange={e => setData('estudio_solicitado', e.target.value)} error={errors.estudio_solicitado} />
-                <InputText id='biopsia_pieza' name='biopsia_pieza' label="Biopsia o pieza quirúrgica" value={data.biopsia_pieza_quirurgica} onChange={e => setData('biopsia_pieza_quirurgica', e.target.value)} error={errors.biopsia_pieza_quirurgica} />
-                <InputText id='laminillas' name='laminillas' label="Revisión de laminillas" value={data.revision_laminillas} onChange={e => setData('revision_laminillas', e.target.value)} error={errors.revision_laminillas} />
-                <InputText id='estudios_especiales' name='estudios_especiales' label="Estudios especiales" value={data.estudios_especiales} onChange={e => setData('estudios_especiales', e.target.value)} error={errors.estudios_especiales} />
-                <InputText id='pcr' name='pcr' label="PCR" value={data.pcr} onChange={e => setData('pcr', e.target.value)} error={errors.pcr} />
-                <InputText id='pieza_remitida' name='pieza_remitida' label="Pieza remitida" value={data.pieza_remitida} onChange={e => setData('pieza_remitida', e.target.value)} error={errors.pieza_remitida} />
-                <InputTextArea label="Datos clínicos" value={data.datos_clinicos} onChange={e => setData('datos_clinicos', e.target.value)} error={errors.datos_clinicos} />
-                <SelectInput label="Medico que solicita" value={data.user_solicita_id} options={optionsMedico} onChange={(value) => setData('user_solicita_id', value as string)} error={errors.user_solicita_id} />
-            </div>
-            <div className="flex justify-end mt-4">
-                <PrimaryButton type="submit" disabled={processing || !data.estudio_solicitado || !data.user_solicita_id || !data.pieza_remitida }>
-                    {processing ? 'Guardando...' : 'Guardar solicitud de patología'}
-                </PrimaryButton>
-            </div>
-        </form>
-    );
-};
-
 
 const SolicitudEstudiosForm: React.FC<Props> = ({ 
     estancia, 
@@ -186,6 +168,14 @@ const SolicitudEstudiosForm: React.FC<Props> = ({
         });
     }
 
+    const handleMedicinaInternaClick = () => {
+        setData('estudios_agregados_ids',MEDICINA_INTERNA)
+    } 
+    
+    const handlePreoperatorioClick = () => {
+        setData('estudios_agregados_ids',PREOPERATORIOS);
+    }
+
     return (
         <div>
             <div className="border-b border-gray-200 mb-6">
@@ -208,8 +198,12 @@ const SolicitudEstudiosForm: React.FC<Props> = ({
                                 <p className="text-sm text-gray-500">{filtro ? 'Mostrando resultados de la búsqueda:' : 'Mostrando estudios frecuentes.'}</p>
                             </div>
                             <div className="w-full md:w-1/3">
-                                <InputText id="filtro" name="filtro" value={filtro} onChange={(e) => setFiltro(e.target.value)} placeholder="🔍 Buscar estudio..." />
+                                <InputText label='' id="filtro" name="filtro" value={filtro} onChange={(e) => setFiltro(e.target.value)} placeholder="🔍 Buscar estudio..." />
                             </div>
+                        </div>
+                        <div className='flex justify-start gap-6 mb-4'>
+                            <Button onClick={handleMedicinaInternaClick}>Perfil de medicina interna</Button>
+                            <Button onClick={handlePreoperatorioClick}>Perfil preoperatorio</Button>
                         </div>
 
                         <div className="space-y-6">

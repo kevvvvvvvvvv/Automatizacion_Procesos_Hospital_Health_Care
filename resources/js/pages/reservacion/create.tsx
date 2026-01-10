@@ -15,7 +15,7 @@ interface Props {
 }
 
 const localizaciones = [
-  { value: "Plan de ayutla", label: "Plan de Ayutla" },
+  { value: "Plan de Ayutla", label: "Plan de Ayutla" },
   { value: "Gustavo Díaz Ordaz", label: "Gustavo Díaz Ordaz" },
 ];
 

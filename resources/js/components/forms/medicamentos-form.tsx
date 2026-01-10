@@ -11,7 +11,7 @@ import Swal from 'sweetalert2';
 
 
 const opcionesViaMedicamento = [
-    // --- Vías Comunes ---
+    
     { value: 'Vía Oral', label: 'Oral' },
     { value: 'Intravenosa', label: 'Intravenosa' },
     { value: 'Intramuscular', label: 'Intramuscular' },
@@ -19,15 +19,17 @@ const opcionesViaMedicamento = [
     { value: 'Sublingual', label: 'Sublingual' },
     { value: 'Rectal', label: 'Rectal' },
 
-    // --- Vías Tópicas/Otras ---
+    
     { value: 'Tópico', label: 'Tópico' },
     { value: 'Oftálmico', label: 'Oftálmico' },
     { value: 'Otológico', label: 'Otológico' },
     { value: 'Nasal', label: 'Nasal' },
     { value: 'Vaginal', label: 'Vaginal' },
+    { value: 'Intratecal', label: 'Intratecal'},
+    { value: 'Intraarticular', label: 'Intraarticular' },
 
-    // --- Vías Respiratorias ---
-    { value: 'Nebulizado', label: 'Nebulizado' },
+    
+    { value: 'Inhalatoria', label: 'Inhalatoria' },
 ];
 
 interface MedicamentoAgregado {

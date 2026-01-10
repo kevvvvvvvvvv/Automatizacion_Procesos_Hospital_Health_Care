@@ -534,13 +534,10 @@
     
     <h3>Gráficas de signos vitales</h3>
     @php
-        // 1. Extraemos las etiquetas (Hora)
         $labels = $notaData->hojaSignos->map(function ($item) {
-            // Formato corto: solo hora y minuto
             return \Carbon\Carbon::parse($item->fecha_hora_registro)->format('H:i');
         })->toArray();
 
-        // 2. Extraemos los datos numéricos (Manejando los nulls)
         $ta_sistolica = $notaData->hojaSignos->pluck('tension_arterial_sistolica')->toArray();
         $ta_diastolica = $notaData->hojaSignos->pluck('tension_arterial_diastolica')->toArray();
         $fc = $notaData->hojaSignos->pluck('frecuencia_cardiaca')->toArray();
@@ -548,8 +545,9 @@
         $temp = $notaData->hojaSignos->pluck('temperatura')->toArray();
         $saturacion = $notaData->hojaSignos->pluck('saturacion_oxigeno')->toArray();
         $glucemia = $notaData->hojaSignos->pluck('glucemia_capilar')->toArray();
+        $talla = $notaData->hojaSignos->pluck('talla')->toArray();
+        $peso = $notaData->hojaSignos->pluck('peso')->toArray();
         
-        // Función auxiliar para generar la URL del gráfico
         function getChartUrl($titulo, $labels, $datasets) {
             $config = [
                 'type' => 'line',
@@ -564,16 +562,16 @@
                         'fontSize' => 14
                     ],
                     'legend' => [
-                        'display' => count($datasets) > 1, // Solo mostrar leyenda si hay más de 1 linea (TA)
+                        'display' => count($datasets) > 1, 
                         'position' => 'bottom'
                     ],
                     'scales' => [
                         'yAxes' => [[
-                            'ticks' => ['beginAtZero' => false] // Para que la gráfica no se aplane si los valores son altos
+                            'ticks' => ['beginAtZero' => false] 
                         ]]
                     ],
                     'plugins' => [
-                        'datalabels' => [ // Muestra el numerito en cada punto
+                        'datalabels' => [
                             'display' => true,
                             'align' => 'top',
                             'backgroundColor' => '#eee',
@@ -583,31 +581,13 @@
                 ]
             ];
             
-            // Codificar a JSON y luego a URL
             return 'https://quickchart.io/chart?c=' . urlencode(json_encode($config));
         }
     @endphp
 
-    @php
-        // Mapa de valores según la lógica médica estándar (5 = Mejor, 1 = Peor)
-        $valoresConciencia = [
-            'Alerta' => 5,
-            'Letárgico' => 4,
-            'Obnubilado' => 3,
-            'Estuporoso' => 2,
-            'Coma' => 1,
-        ];
-
-        // Transformamos la colección: Si dice "Alerta" guarda un 5, si dice "Coma" guarda un 1
-        $dataConciencia = $notaData->hojaSignos->map(function ($item) use ($valoresConciencia) {
-            // El operador ?? null evita errores si el campo viene vacío o con un texto raro
-            return $valoresConciencia[$item->estado_conciencia] ?? null; 
-        })->toArray();
-    @endphp
-
     <div class="graficas-container">
     <div class="grafica-item">
-        <img class="grafica-img" src="{{ getChartUrl('Tensión Arterial (mmHg)', $labels, [
+        <img class="grafica-img" src="{{ getChartUrl('Tensión arterial (mmHg)', $labels, [
             [
                 'label' => 'Sistólica',
                 'data' => $ta_sistolica,
@@ -626,7 +606,7 @@
     </div>
 
     <div class="grafica-item">
-        <img class="grafica-img" src="{{ getChartUrl('Frecuencia Cardíaca (lpm)', $labels, [
+        <img class="grafica-img" src="{{ getChartUrl('Frecuencia cardíaca (latidos por minuto)', $labels, [
             [
                 'label' => 'FC',
                 'data' => $fc,
@@ -650,7 +630,7 @@
     </div>
 
     <div class="grafica-item">
-        <img class="grafica-img" src="{{ getChartUrl('Saturación O2 (%)', $labels, [
+        <img class="grafica-img" src="{{ getChartUrl('Saturación de oxígeno (%)', $labels, [
             [
                 'label' => 'SatO2',
                 'data' => $saturacion,
@@ -662,7 +642,7 @@
     </div>
 
     <div class="grafica-item">
-        <img class="grafica-img" src="{{ getChartUrl('Glucemia (mg/dL)', $labels, [
+        <img class="grafica-img" src="{{ getChartUrl('Glucemia capilar (mg/dL)', $labels, [
             [
                 'label' => 'Glucosa',
                 'data' => $glucemia,
@@ -674,7 +654,7 @@
     </div>
 
     <div class="grafica-item">
-        <img class="grafica-img" src="{{ getChartUrl('Frecuencia Respiratoria (rpm)', $labels, [
+        <img class="grafica-img" src="{{ getChartUrl('Frecuencia respiratoria (rpm)', $labels, [
             [
                 'label' => 'FR',
                 'data' => $fr,
@@ -685,21 +665,59 @@
         ]) }}">
     </div>
 
+    <div class="grafica-item">
+        <img class="grafica-img" src="{{ getChartUrl('Talla (centímetros)', $labels, [
+            [
+                'label' => 'Talla',
+                'data' => $talla,
+                'borderColor' => '#4C2C69', // Morado
+                'fill' => false,
+                'spanGaps' => true
+            ]
+        ]) }}">
+    </div>
+
+    <div class="grafica-item">
+        <img class="grafica-img" src="{{ getChartUrl('Peso (Kilogramos)', $labels, [
+            [
+                'label' => 'Peso',
+                'data' => $peso,
+                'borderColor' => '#8C2929', // Terracota
+                'fill' => false,
+                'spanGaps' => true
+            ]
+        ]) }}">
+    </div>
+
     <table>
         <thead>
             <tr>
-                <tr>
-                    <th>Tensión arterial</th>
-                    <th></th>
-                </tr>
+                <th>Fecha/Hora registro</th>
+                <th>Tensión arterial</th>
                 <th>Frecuencia cardíaca</th>
+                <th>Frecuencia respiratoria</th>
                 <th>Temperatura</th>
-                <th>Saturación O2 (%)</th>
+                <th>Saturación de oxígeno</th>
                 <th>Glucemia capilar (mg/dL)</th>
-                <th></th>
+                <th>Peso</th>
+                <th>Talla</th>
             </tr>
         </thead>
         <tbody>
+            @if ($notaData->hojaSignos->isEmpty())
+                <tr>
+                    <th colspan="9" class="empty-cell">No se han registrado signos.</th>
+                </tr>
+            @else
+                @foreach ($notaData->hojaSignos as $signos)
+                    <tr>
+                        <td>{{$signos->created_at ?? ''}}</td>
+
+                        <td>{{$signos->tension_arterial_sistolica}}/{{$signos->tension_arterial_diastolica}}</td>
+                        <td></td>
+                    </tr>
+                @endforeach
+            @endif
 
         </tbody>
     </table>
