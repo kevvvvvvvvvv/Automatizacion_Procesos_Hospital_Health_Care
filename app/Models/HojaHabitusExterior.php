@@ -9,6 +9,7 @@ class HojaHabitusExterior extends Model
 {
     protected $fillable = [
         'hoja_enfermeria_id',
+        'sexo',
         'condicion_llegada',
         'facies',
         'constitucion',
@@ -19,6 +20,9 @@ class HojaHabitusExterior extends Model
         'movimientos',
         'higiene',
         'edad_aparente',
+        'orientacion',
+        'lenguaje',
+        'olores_ruidos',
     ];
 
     public function hojaEnfermeria(): BelongsTo

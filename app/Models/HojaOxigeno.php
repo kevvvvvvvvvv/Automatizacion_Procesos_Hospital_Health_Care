@@ -13,7 +13,8 @@ class HojaOxigeno extends Model
 {
     protected $fillable = [
         'id',
-        'estancia_id',
+        'itemable_type',
+        'itemable_id',
         'user_id_inicio',
         'user_id_fin',
         'hora_inicio',
@@ -25,10 +26,9 @@ class HojaOxigeno extends Model
 
     protected $appends = ['total_consumido'];
 
-
-    public function estancia(): BelongsTo
+    public function itemable()
     {
-        return $this->belongsTo(Estancia::class);
+        return $this->morphTo();
     }
 
     public function userInicio():BelongsTo

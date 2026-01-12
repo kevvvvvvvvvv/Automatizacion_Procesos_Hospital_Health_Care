@@ -135,9 +135,6 @@ export interface Estancia {
     familiar_responsable_id: number | null;
     estancia_anterior_id: number | null;
 
-    //hoja_sondas_cateters: HojaSondaCateter[];
-    hoja_oxigenos:HojaOxigeno[];
-
     paciente: Paciente;
 
     created_at: string;
@@ -251,6 +248,7 @@ export interface HojaEnfermeria {
     hoja_signos: HojaSignos[] | null;
     solicitud_dietas: SolicitudDieta[] | null;
     sondas_cateteres: HojaSondaCateter[] | null;
+    hoja_oxigenos: HojaOxigeno[] | null;
 }
 
 export interface HojaEnfermeriaQuirofano {
@@ -263,6 +261,7 @@ export interface HojaEnfermeriaQuirofano {
     hora_fin_paciente: string;
     hoja_insumos_basicos: HojaInsumosBasicos[] 
     personal_empleados: PersonalEmpleado[];
+    hoja_oxigenos: HojaOxigeno[]
 }
 
 export interface HojaInsumosBasicos {

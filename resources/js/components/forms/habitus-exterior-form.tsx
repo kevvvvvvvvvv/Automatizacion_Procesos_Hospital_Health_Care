@@ -102,14 +102,59 @@ const higieneOptions = [
 ];
 
 const edadAparenteOptions = [
-    { value: 'igual', label: 'Igual a la cronológica' },
-    { value: 'mayor', label: 'Mayor a la cronológica (Se ve más viejo)' },
-    { value: 'menor', label: 'Menor a la cronológica (Se ve más joven)' },
+    { value: 'primera_decada', label: 'Paciente que cursa la primera década de la vida (0-10 años)' },
+    { value: 'segunda_decada', label: 'Paciente que cursa la segunda década de la vida (11-20 años)' },
+    { value: 'tercera_decada', label: 'Paciente que cursa la tercera década de la vida (21-30 años)' },
+    { value: 'cuarta_decada', label: 'Paciente que cursa la cuarta década de la vida (31-40 años)' },
+    { value: 'quinta_decada', label: 'Paciente que cursa la quinta década de la vida (41-50 años)' },
+    { value: 'sexta_decada', label: 'Paciente que cursa la sexta década de la vida (51-60 años)' },
+    { value: 'septima_decada', label: 'Paciente que cursa la séptima década de la vida (61-70 años)' },
+    { value: 'octava_decada', label: 'Paciente que cursa la octava década de la vida (71-80 años)' },
+    { value: 'novena_decada', label: 'Paciente que cursa la novena década de la vida (81-90 años)' },
+    { value: 'decima_mas', label: 'Paciente que cursa la décima década de la vida o más (91+ años)' }
 ];
+
+const sexoOptions = [
+    { value: 'masculino', label: 'Masculino' },
+    { value: 'femenino', label: 'Femenino' },
+    { value: 'indeterminado', label: 'Indeterminado / Ambiguo (Intersexual)' }
+];
+
+const orientacionOptions = [
+    { value: 'orientado_tres_esferas', label: 'Orientado (Tiempo, Lugar y Persona)' },
+    { value: 'desorientado_tiempo', label: 'Desorientado en Tiempo' },
+    { value: 'desorientado_lugar', label: 'Desorientado en Lugar' },
+    { value: 'desorientado_persona', label: 'Desorientado en Persona' },
+    { value: 'desorientado_global', label: 'Desorientación Global' }
+];
+
+const lenguajeOptions = [
+    { value: 'coherente', label: 'Claro y Coherente' },
+    { value: 'incoherente', label: 'Incoherente / Confuso' },
+    { value: 'disartria', label: 'Disartria (Dificultad para articular/arrastra palabras)' },
+    { value: 'afasia_motora', label: 'Afasia (Entiende pero no puede expresarse)' },
+    { value: 'afasia_sensitiva', label: 'Afasia (Habla pero no entiende/sin sentido)' },
+    { value: 'mutismo', label: 'Mutismo (No habla)' },
+    { value: 'verborrea', label: 'Verborrea (Habla excesiva/acelerada)' }
+];
+
+const oloresRuidosOptions = [
+    { value: 'ninguno', label: 'Ninguno aparente' },
+    { value: 'halitosis', label: 'Halitosis (Mal aliento)' },
+    { value: 'aliento_etillico', label: 'Aliento etílico (Alcohol)' },
+    { value: 'aliento_cetonico', label: 'Aliento cetónico (Manzana podrida/Diabético)' },
+    { value: 'aliento_uremico', label: 'Aliento urémico / Amoniacal (Renal)' },
+    { value: 'fetal', label: 'Fetor hepático' },
+    { value: 'quejido', label: 'Quejido constante' },
+    { value: 'estridor', label: 'Estridor (Ruido al respirar sin estetoscopio)' },
+    { value: 'sibilancias_audibles', label: 'Sibilancias audibles a distancia' }
+];
+
 
 const HabitusExteriorForm = ({hojasenfermeria}: Props) => {
 
     const { data, setData, post, processing, errors,reset } = useForm({
+        sexo:'',
         condicion_llegada: '',
         facies:  '',
         constitucion: '',
@@ -120,6 +165,9 @@ const HabitusExteriorForm = ({hojasenfermeria}: Props) => {
         movimientos: '',
         higiene: '',
         edad_aparente: '',
+        orientacion: '',
+        lenguaje: '',
+        olores_ruidos: '',
     });
 
     const {data: dataObservaciones, setData: setDataObservaciones, put: putObservaciones, reset: resetObservaciones, errors: errorsObservaiones } = useForm({
@@ -162,11 +210,19 @@ const HabitusExteriorForm = ({hojasenfermeria}: Props) => {
 
                 <div className='grid md:grid-cols-3 grid-cols-1 gap-2'>
                     <SelectInput
-                        label='Condición de llegada'
-                        options={condicionLlegadaOptions}
-                        value={data.condicion_llegada}
-                        onChange={(e) => setData('condicion_llegada', e)}
-                        error={errors.condicion_llegada}
+                        label='Sexo'
+                        options={sexoOptions}
+                        value={data.sexo}
+                        onChange={(e) => setData('sexo', e)}
+                        error={errors.sexo}
+                    />
+
+                    <SelectInput
+                        label='Actitud'
+                        options={posturaOptions}
+                        value={data.postura}
+                        onChange={(e) => setData('postura', e)}
+                        error={errors.postura}
                     />
 
                     <SelectInput
@@ -178,7 +234,7 @@ const HabitusExteriorForm = ({hojasenfermeria}: Props) => {
                     />
 
                     <SelectInput
-                        label='Constitución'
+                        label='Somatotipo'
                         options={constitucionOptions}
                         value={data.constitucion}
                         onChange={(e) => setData('constitucion', e)}
@@ -186,31 +242,7 @@ const HabitusExteriorForm = ({hojasenfermeria}: Props) => {
                     />
 
                     <SelectInput
-                        label='Actitud/Postura'
-                        options={posturaOptions}
-                        value={data.postura}
-                        onChange={(e) => setData('postura', e)}
-                        error={errors.postura}
-                    />
-
-                    <SelectInput
-                        label='Integridad de la piel'
-                        options={pielOptions}
-                        value={data.piel}
-                        onChange={(e) => setData('piel', e)}
-                        error={errors.piel}
-                    />
-
-                    <SelectInput
-                        label='Estado de conciencia'
-                        options={estadoConciencaOptions} 
-                        value={data.estado_conciencia}
-                        onChange={(e) => setData('estado_conciencia', e)}
-                        error={errors.estado_conciencia}
-                    />
-
-                    <SelectInput
-                        label='Edad Aparente'
+                        label='Edad aparente'
                         options={edadAparenteOptions}
                         value={data.edad_aparente}
                         onChange={(e) => setData('edad_aparente', e)}
@@ -218,7 +250,7 @@ const HabitusExteriorForm = ({hojasenfermeria}: Props) => {
                     />
 
                     <SelectInput
-                        label='Marcha (Forma de caminar)'
+                        label='Marcha'
                         options={marchaOptions}
                         value={data.marcha}
                         onChange={(e) => setData('marcha', e)}
@@ -226,7 +258,7 @@ const HabitusExteriorForm = ({hojasenfermeria}: Props) => {
                     />
 
                     <SelectInput
-                        label='Movimientos Anormales'
+                        label='Movimientos anormales'
                         options={movimientosOptions}
                         value={data.movimientos}
                         onChange={(e) => setData('movimientos', e)}
@@ -234,11 +266,59 @@ const HabitusExteriorForm = ({hojasenfermeria}: Props) => {
                     />
 
                     <SelectInput
-                        label='Vestido y Aliño'
+                        label='Vestido y aliño'
                         options={higieneOptions}
                         value={data.higiene}
                         onChange={(e) => setData('higiene', e)}
                         error={errors.higiene}
+                    />
+
+                    <SelectInput
+                        label='Características de la piel'
+                        options={pielOptions}
+                        value={data.piel}
+                        onChange={(e) => setData('piel', e)}
+                        error={errors.piel}
+                    />
+
+                    <SelectInput
+                        label='Orientación'
+                        options={orientacionOptions}
+                        value={data.orientacion}
+                        onChange={(e) => setData('orientacion', e)}
+                        error={errors.orientacion}
+                    />
+
+                    <SelectInput
+                        label='Estado de conciencia'
+                        options={estadoConciencaOptions}
+                        value={data.estado_conciencia}
+                        onChange={(e) => setData('estado_conciencia', e)}
+                        error={errors.estado_conciencia}
+                    />
+
+                    <SelectInput
+                        label='Lenguaje'
+                        options={lenguajeOptions}
+                        value={data.lenguaje}
+                        onChange={(e) => setData('lenguaje', e)}
+                        error={errors.lenguaje}
+                    />
+
+                    <SelectInput
+                        label='Olores y ruidos anormales'
+                        options={oloresRuidosOptions}
+                        value={data.olores_ruidos}
+                        onChange={(e) => setData('olores_ruidos', e)}
+                        error={errors.olores_ruidos}
+                    />
+
+                    <SelectInput
+                        label='Condición de llegada'
+                        options={condicionLlegadaOptions}
+                        value={data.condicion_llegada}
+                        onChange={(e) => setData('condicion_llegada', e)}
+                        error={errors.condicion_llegada}
                     />
 
                 </div>

@@ -35,7 +35,7 @@ const MEDICINA_INTERNA = [
 
 /* perfil preo-operatorio sencillos y clásicos: biometría, química de 6 y electrolitos de 6, tiempos de coagulación*/
 const PREOPERATORIOS = [
-    1, 35, 63, 80
+    1, 35, 80
 ]
 
 const ESTUDIOS_FRECUENTES = [

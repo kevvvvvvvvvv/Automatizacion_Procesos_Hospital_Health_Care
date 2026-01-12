@@ -22,6 +22,7 @@ class HojaHabitusExteriorRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'sexo' => 'required',
             'condicion_llegada' => 'required',
             'facies' => 'required',
             'constitucion' => 'required',
@@ -31,13 +32,17 @@ class HojaHabitusExteriorRequest extends FormRequest
             'marcha' => 'required',
             'movimientos' => 'required',
             'higiene' => 'required',
-            'edad_aparente' => 'required'
+            'edad_aparente' => 'required',
+            'orientacion' => 'required',
+            'lenguaje' => 'required',
+            'olores_ruidos' => 'required'
         ];
     }
 
     public function messages(): array 
     {
         return [
+            'sexo.required' => 'El sexo es obligatorio.',
             'condicion_llegada.required' => 'La condición de llegada del paciente es obligatoria.',
             'facies.required' => 'Debe indicar el tipo de facies.',
             'constitucion.required' => 'La constitución física es obligatoria.',
@@ -47,7 +52,10 @@ class HojaHabitusExteriorRequest extends FormRequest
             'marcha.required' => 'Debe describir la marcha o locomoción.',
             'movimientos.required' => 'Debe indicar si existen movimientos anormales.',
             'higiene.required' => 'El estado de higiene es obligatorio.',
-            'edad_aparente.required' => 'La edad aparente es obligatoria.'
+            'edad_aparente.required' => 'La edad aparente es obligatoria.',
+            'orientacion.required' => 'La orientacion es obligatoria',
+            'lenguaje.required' => 'El lenguaje es obligatorio.',
+            'olores_ruidos.required' => 'Los olores y ruidos anormales son obligatorios.',
         ];
     }
 }

@@ -10,13 +10,13 @@
             size: A4;
             margin-top: 5.5cm;
             margin-bottom: 1.5cm;
-            margin-left: 1cm;
-            margin-right: 1cm;
+            margin-left: 0.3cm;
+            margin-right: 0.3cm;
 
             @bottom-right {
                 content: "Página " counter(page) " de " counter(pages);
                 font-family: Calibri, Arial, sans-serif;
-                font-size: 9pt;
+                font-size: 8pt;
                 color: #888;
             }
         }
@@ -28,14 +28,14 @@
         body {
             font-family: Calibri, Arial, sans-serif; 
             margin: 0; 
-            font-size: 10.5pt; 
+            font-size: 9pt; 
             color: #333;
             line-height: 1.4;
         }
 
         h1 {
             text-align: center;
-            font-size: 18pt;
+            font-size: 16pt;
             margin-bottom: 20px;
         }
 
@@ -44,7 +44,7 @@
             margin-bottom: 8px;
             border-bottom: 1px solid #ccc;
             padding-bottom: 3px;
-            font-size: 12pt;
+            font-size: 11pt;
             page-break-after: avoid;
         }
 
@@ -224,32 +224,198 @@
 <body>
     <h1>Hoja de enfermería de servicio hospitalario</h1>
 
-    <h3>Habitus exterior</h3>
+    @php
+        $catalogos = [
+            'sexo' => [
+                'masculino' => 'Masculino',
+                'femenino' => 'Femenino',
+                'indeterminado' => 'Indeterminado / Ambiguo'
+            ],
+            'condicion_llegada' => [
+                'ambulatorio' => 'Ambulatorio (Caminando)',
+                'silla_ruedas' => 'Silla de ruedas',
+                'camilla' => 'Camilla',
+                'muletas_baston' => 'Con muletas / Bastón / Andadera',
+                'apoyo_familiar' => 'Con apoyo de terceros/familiar',
+                'brazos' => 'En brazos (Pediátrico)'
+            ],
+            'postura' => [
+                'libremente_escogida' => 'Libremente escogida',
+                'instintiva' => 'Instintiva',
+                'forzada' => 'Forzada',
+                'pasiva' => 'Pasiva'
+            ],
+            'facies' => [
+                'no_caracteristica' => 'No característica (Normal)',
+                'algica' => 'Álgica',
+                'palida' => 'Pálida',
+                'cianotica' => 'Cianótica',
+                'icterica' => 'Ictérica',
+                'febril' => 'Febril / Rubicunda',
+                'ansiosa' => 'Ansiosa / Angustiada',
+                'depresiva' => 'Depresiva',
+                'caquetica' => 'Caquéctica',
+                'edematosa' => 'Edematosa / Renal',
+                'paralisis_facial' => 'Parálisis facial / Asimétrica',
+                'lupica' => 'Lúpica',
+                'hipertiroidea' => 'Hipertiroidea',
+                'acromegalica' => 'Acromegálica'
+            ],
+            'constitucion' => [
+                'media' => 'Media (Eutrófico)',
+                'delgada' => 'Delgada (Hipotrófico)',
+                'caquetica' => 'Caquéctica',
+                'robusta' => 'Robusta (Sobrepeso)',
+                'obesa' => 'Obesa'
+            ],
+            'edad_aparente' => [
+                'primera_decada' => 'Cursando su primera década', 
+                'segunda_decada' => 'Cursando su segunda década',
+                'tercera_decada' => 'Cursando su tercera década',
+                'cuarta_decada' => 'Cursando su cuarta década',
+                'quinta_decada' => 'Cursando su quinta década',
+                'sexta_decada' => 'Cursando su sexta década',
+                'septima_decada' => 'Cursando su séptima década',
+                'octava_decada' => 'Cursando su octava década',
+                'novena_decada' => 'Cursando su novena década',
+                'decima_mas' => 'Cursando su décima década o más',
+                'igual' => 'Igual a cronológica',
+                'mayor' => 'Mayor a cronológica',
+                'menor' => 'Menor a cronológica'
+            ],
+            'marcha' => [
+                'normal' => 'Eubásica / Normal',
+                'claudicante' => 'Claudicante',
+                'ataxica' => 'Atáxica',
+                'espastica' => 'Espástica',
+                'parkinsoniana' => 'Parkinsoniana',
+                'no_valorable' => 'No valorable'
+            ],
+            'movimientos' => [
+                'ninguno' => 'Ninguno',
+                'temblor' => 'Temblores',
+                'tics' => 'Tics',
+                'convulsiones' => 'Convulsiones',
+                'fasciculaciones' => 'Fasciculaciones',
+                'corea' => 'Corea',
+                'distonia' => 'Distonía'
+            ],
+            'higiene' => [
+                'adecuado' => 'Limpio y adecuado',
+                'desalinado' => 'Desaliñado',
+                'mala_higiene' => 'Mala higiene'
+            ],
+            'piel' => [
+                'integra' => 'Íntegra / Hidratada',
+                'deshidratada' => 'Deshidratada',
+                'diaforetica' => 'Diaforética',
+                'palida_fria' => 'Pálida y fría',
+                'con_heridas' => 'Con heridas',
+                'con_hematomas' => 'Con hematomas',
+                'con_exantema' => 'Con exantema',
+                'edematosa' => 'Edematosa',
+                'marmorea' => 'Marmórea',
+                'cianotica_distal' => 'Cianótica distal'
+            ],
+            'orientacion' => [
+                'orientado_tres_esferas' => 'Orientado (x3)',
+                'desorientado_tiempo' => 'Desorientado Tiempo',
+                'desorientado_lugar' => 'Desorientado Lugar',
+                'desorientado_persona' => 'Desorientado Persona',
+                'desorientado_global' => 'Desorientación Global'
+            ],
+            'estado_conciencia' => [
+                'alerta' => 'Alerta',
+                'agitado' => 'Agitado',
+                'letárgico' => 'Letárgico',
+                'obnubilado' => 'Obnubilado',
+                'estuporoso' => 'Estuporoso',
+                'coma' => 'Coma'
+            ],
+            'lenguaje' => [
+                'coherente' => 'Coherente',
+                'incoherente' => 'Incoherente',
+                'disartria' => 'Disartria',
+                'afasia_motora' => 'Afasia motora',
+                'afasia_sensitiva' => 'Afasia sensitiva',
+                'mutismo' => 'Mutismo',
+                'verborrea' => 'Verborrea'
+            ],
+            'olores_ruidos' => [
+                'ninguno' => 'Ninguno',
+                'halitosis' => 'Halitosis',
+                'aliento_etillico' => 'Aliento etílico',
+                'aliento_cetonico' => 'Aliento cetónico',
+                'aliento_uremico' => 'Aliento urémico',
+                'fetal' => 'Fetor hepático',
+                'quejido' => 'Quejido',
+                'estridor' => 'Estridor',
+                'sibilancias_audibles' => 'Sibilancias'
+            ]
+        ];
+    @endphp
+    <h3>1. Habitus exterior</h3>
     <table>
-        <thead> 
-            <th></th>
+        <thead>
+            <tr>
+                <th>Fecha</th>
+                <th>Datos generales</th>
+                <th>Aspecto físico</th>
+                <th>Neurológico y motor</th>
+                <th>Otros hallazgos</th>
+            </tr>
         </thead>
         <tbody>
-            @if ($notaData->hojaHabitusExterior->isEmpty())
+            @if (empty($notaData->hojaHabitusExterior) || (is_object($notaData->hojaHabitusExterior) && $notaData->hojaHabitusExterior->isEmpty()))
                 <tr>
                     <td colspan="5" class="empty-cell">
-                        No se han registrado escalas de valoración.
+                        No se han registrado evaluaciones de habitus exterior.
                     </td>
-                </tr>                
+                </tr>
             @else
-                @foreach ($notaData->hojaHabitusExterior as $habitus)
+                @foreach ($notaData->hojaHabitusExterior as $habitus)   
+                    @php
+                        $h = is_array($habitus) ? (object)$habitus : $habitus;
+                        $fecha = is_string($h->created_at) ? \Carbon\Carbon::parse($h->created_at) : $h->created_at;
+                    @endphp
                     <tr>
-                        <td></td>
-                        <td></td>
+                        <td>
+                            {{ $fecha->format('d/m/Y') }}<br>
+                            <small style="color: #666;">{{ $fecha->format('H:i') }} hrs</small>
+                        </td>
+                        <td>
+                            <strong>Condición de llegada:</strong> {{ $catalogos['condicion_llegada'][$h->condicion_llegada] ?? $h->condicion_llegada }}<br>
+                            <strong>Sexo:</strong> {{ $catalogos['sexo'][$h->sexo] ?? $h->sexo }}<br>
+                            <strong>Edad aparente:</strong> {{ $catalogos['edad_aparente'][$h->edad_aparente] ?? $h->edad_aparente }}
+                        </td>
+
+                        <td>
+                            <strong>Somatotipo:</strong> {{ $catalogos['constitucion'][$h->constitucion] ?? $h->constitucion }}<br>
+                            <strong>Facies:</strong> {{ $catalogos['facies'][$h->facies] ?? $h->facies }}<br>
+                            <strong>Características de la piel:</strong> {{ $catalogos['piel'][$h->piel] ?? $h->piel }}<br>
+                            <strong>Vestido y aliño:</strong> {{ $catalogos['higiene'][$h->higiene] ?? $h->higiene }}
+                        </td>
+
+                        <td>
+                            <strong>Conciencia:</strong> {{ $catalogos['estado_conciencia'][$h->estado_conciencia] ?? $h->estado_conciencia }}<br>
+                            <strong>Orientación:</strong> {{ $catalogos['orientacion'][$h->orientacion] ?? $h->orientacion }}<br>
+                            <strong>Actitud:</strong> {{ $catalogos['postura'][$h->postura] ?? $h->postura }}<br>
+                            <strong>Marcha:</strong> {{ $catalogos['marcha'][$h->marcha] ?? $h->marcha }}
+                        </td>
+                        
+                        <td>
+                            <strong>Movimientos anormales:</strong> {{ $catalogos['movimientos'][$h->movimientos] ?? $h->movimientos }}<br>
+                            <strong>Lenguaje:</strong> {{ $catalogos['lenguaje'][$h->lenguaje] ?? $h->lenguaje }}<br>
+                            <strong>Olores y ruidos anormales:</strong> {{ $catalogos['olores_ruidos'][$h->olores_ruidos] ?? $h->olores_ruidos }}
+                        </td>
                     </tr>
                 @endforeach
             @endif
-
         </tbody>
     </table>
 
 
-    <h3>Escalas y valoración del dolor (localización y escala)</h3>
+    <h3>2. Escalas y valoración del dolor (localización y escala): </h3>
     <table>
         <thead>
             <tr>
@@ -320,7 +486,7 @@
     </table>
 
 
-    <h3>Ministración de medicamentos</h3>
+    <h3>3. Ministración de medicamentos</h3>
     <table>
         <thead>
             <tr>
@@ -365,7 +531,7 @@
         </tbody>
     </table>
 
-    <h3>Procedimientos realizados</h3>
+    <h3>4. Procedimientos realizados</h3>
 
     <h4>Dieta</h4>
     <table>
@@ -563,6 +729,67 @@
         </tbody>
     </table>
 
+    <h4>Administración de oxígeno</h4>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 10%;">Flujo (L/min)</th>
+                <th style="width: 15%;">Inicio</th>
+                <th style="width: 15%;">Fin</th>
+                <th style="width: 10%;">Total</th>
+                <th style="width: 25%;">Personal que inició</th>
+                <th style="width: 25%;">Personal que finalizó</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if ($notaData->hojaOxigenos->isEmpty())
+                <tr>
+                    {{-- IMPORTANTE: Cambié el colspan a 6 porque ahora son 6 columnas --}}
+                    <td colspan="6" class="empty-cell">No se ha registrado administración de oxígeno.</td>
+                </tr>
+            @else
+                @foreach ($notaData->hojaOxigenos as $oxigeno)
+                    <tr>   
+                        {{-- 1. Flujo --}}
+                        <td style="text-align: center;">{{ $oxigeno->litros_minuto }}</td>
+
+                        {{-- 2. Hora Inicio --}}
+                        <td style="font-size: 0.9em;">{{ $oxigeno->hora_inicio }}</td>
+
+                        {{-- 3. Hora Fin --}}
+                        @if (!$oxigeno->hora_fin)
+                            <td class="empty-data" style="font-style: italic; color: #666; font-size: 0.9em;">
+                                En curso
+                            </td>
+                        @else
+                            <td style="font-size: 0.9em;">{{ $oxigeno->hora_fin }}</td>
+                        @endif
+
+                        {{-- 4. Total Consumido (Nuevo) --}}
+                        <td style="text-align: center; font-weight: bold;">
+                            {{ $oxigeno->total_consumido ?? 0 }} L
+                        </td>
+
+                        {{-- 5. Personal Inicio (Nuevo) --}}
+                        {{-- Accedemos a las propiedades del objeto userInicio --}}
+                        <td style="font-size: 0.85em;">
+                            {{ $oxigeno->userInicio->nombre ?? '' }} {{ $oxigeno->userInicio->apellido_paterno ?? '' }}
+                        </td>
+
+                        {{-- 6. Personal Fin (Nuevo) --}}
+                        <td style="font-size: 0.85em;">
+                            @if ($oxigeno->userFin)
+                                {{ $oxigeno->userFin->nombre }} {{ $oxigeno->userFin->apellido_paterno }}
+                            @else
+                                <span style="color: #aaa;">-</span>
+                            @endif
+                        </td>
+                    </tr>
+                @endforeach
+            @endif
+        </tbody>
+    </table>
+
     @php
         $medicamentosMap = [
             'tranquilizantes' => 'Tranquilizantes / Sedantes',
@@ -593,7 +820,38 @@
         ];
     @endphp
 
-    <h3>Nivel de riesgo de caídas</h3>
+
+    @php
+        $ultimoRegistro = $notaData->hojaRiesgoCaida->last();
+        
+        $textoRiesgo = 'Sin registro';
+        $estiloSemaforo = 'background-color: #eee; color: #333;'; 
+
+        if ($ultimoRegistro) {
+            $puntos = $ultimoRegistro->puntaje_total;
+
+            if ($puntos == 0) {
+                $textoRiesgo = 'Bajo riesgo';
+                $estiloSemaforo = 'background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb;'; // Verde
+            } elseif ($puntos >= 1 && $puntos <= 2) {
+                $textoRiesgo = 'Riesgo mediano';
+                $estiloSemaforo = 'background-color: #fff3cd; color: #856404; border: 1px solid #ffeeba;'; // Amarillo/Naranja
+            } else {
+                $textoRiesgo = 'Alto riesgo';
+                $estiloSemaforo = 'background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb;'; // Rojo
+            }
+        }
+    @endphp
+
+    
+    <h3>
+        5. Nivel de riesgo de caídas: 
+        <span style="font-size: 0.8em; padding: 4px 8px; border-radius: 4px; font-weight: normal; {{ $estiloSemaforo }}">
+            {{ $textoRiesgo }} 
+            @if($ultimoRegistro) ({{ $ultimoRegistro->puntaje_total }} pts) @endif
+        </span>
+    </h3>
+    
     <table>
         <thead>
             <tr> 
@@ -608,53 +866,53 @@
             </tr>
         </thead>
         <tbody>
-        @if ($notaData->hojaRiesgoCaida->isEmpty())
-            <tr>
-                <td colspan="8" class="empty-cell">No se han registrado escalas de valoración.</td>
-            </tr>
-        @else  
-            @foreach ($notaData->hojaRiesgoCaida as $riesgo)  
+            @if ($notaData->hojaRiesgoCaida->isEmpty())
                 <tr>
-                    <td>{{ $riesgo->created_at }}</td>
-                    <td>{{ $riesgo->caidas_previas ? 'Sí' : 'No' }}</td>
-                    <td>{{ ucfirst($riesgo->estado_mental) }}</td>
-                    <td>{{ $deambulacionMap[$riesgo->deambulacion] ?? $riesgo->deambulacion }}</td>
-                    <td>{{ $riesgo->edad_mayor_70 ? 'Sí' : 'No' }}</td>
-                    <td>
-                        @if($riesgo->medicamentos)
-                            @foreach ($riesgo->medicamentos as $medicamento)
-                                <div>• {{ $medicamentosMap[$medicamento] ?? $medicamento }}</div>
-                            @endforeach
-                        @else
-                            Sin datos
-                        @endif
-                    </td>
-                    <td>
-                        @if($riesgo->deficits)
-                            @foreach ($riesgo->deficits as $deficit)
-                                <div>• {{ $deficitsMap[$deficit] ?? $deficit }}</div>
-                            @endforeach
-                        @else  
-                            Sin datos
-                        @endif
-                    </td>
-                    <td>{{ $riesgo->puntaje_total }}</td>
+                    <td colspan="8" class="empty-cell">No se han registrado escalas de valoración.</td>
                 </tr>
-            
-            @endforeach
-        @endif
-    </tbody>
+            @else  
+                @foreach ($notaData->hojaRiesgoCaida as $riesgo)  
+                    <tr>
+                        <td>{{ $riesgo->created_at }}</td>
+                        <td>{{ $riesgo->caidas_previas ? 'Sí' : 'No' }}</td>
+                        <td>{{ ucfirst($riesgo->estado_mental) }}</td>
+                        <td>{{ $deambulacionMap[$riesgo->deambulacion] ?? $riesgo->deambulacion }}</td>
+                        <td>{{ $riesgo->edad_mayor_70 ? 'Sí' : 'No' }}</td>
+                        <td>
+                            @if($riesgo->medicamentos)
+                                @foreach ($riesgo->medicamentos as $medicamento)
+                                    <div>• {{ $medicamentosMap[$medicamento] ?? $medicamento }}</div>
+                                @endforeach
+                            @else
+                                Sin datos
+                            @endif
+                        </td>
+                        <td>
+                            @if($riesgo->deficits)
+                                @foreach ($riesgo->deficits as $deficit)
+                                    <div>• {{ $deficitsMap[$deficit] ?? $deficit }}</div>
+                                @endforeach
+                            @else  
+                                Sin datos
+                            @endif
+                        </td>
+                        <td>{{ $riesgo->puntaje_total }}</td>
+                    </tr>
+                
+                @endforeach
+            @endif
+        </tbody>
     </table>
     
     
-    <h3>Observaciones</h3>
+    <h3>6. Observaciones</h3>
     @empty($notaData->observaciones)
         <p>Sin nada que reportar.</p>
     @else
         <p>{!! nl2br(e($notaData->observaciones)) !!}</p>
     @endempty
     
-    <h3>Gráficas de signos vitales</h3>
+    <h3>7. Gráficas de signos vitales</h3>
     @php
         $labels = $notaData->hojaSignos->map(function ($item) {
             return \Carbon\Carbon::parse($item->fecha_hora_registro)->format('H:i');
@@ -828,7 +1086,7 @@
         <tbody>
             @if ($notaData->hojaSignos->isEmpty())
                 <tr>
-                    <th colspan="9" class="empty-cell">No se han registrado signos.</th>
+                    <td colspan="9" class="empty-cell">No se han registrado signos.</td>
                 </tr>
             @else
                 @foreach ($notaData->hojaSignos as $signos)
@@ -849,7 +1107,6 @@
                     </tr>
                 @endforeach
             @endif
-
         </tbody>
     </table>
 
