@@ -13,9 +13,8 @@ return new class extends Migration
     {
         Schema::create('hoja_oxigenos', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('estancia_id')
-                ->constrained('estancias')
-                ->onDelete('cascade'); 
+            
+            $table->morphs('itemable');
             
             $table->foreignId('user_id_inicio')
                 ->constrained('users')

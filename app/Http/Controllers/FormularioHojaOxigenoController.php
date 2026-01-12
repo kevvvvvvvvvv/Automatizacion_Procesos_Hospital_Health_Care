@@ -16,12 +16,13 @@ use Illuminate\Support\Facades\Auth;
 
 class FormularioHojaOxigenoController extends Controller
 {
-    public function store(HojaOxigenoRequest $request, Estancia $estancia){
+    public function store(HojaOxigenoRequest $request){
 
         try{
             HojaOxigeno::create([
+                'itemable_id' => $request->itemable_id,
+                'itemable_type' => $request->itemable_type,
                 'hora_inicio' => now(),
-                'estancia_id' => $estancia->id,
                 'litros_minuto' =>$request->litros_minuto,
                 'user_id_inicio' => Auth::id(),
             ]);

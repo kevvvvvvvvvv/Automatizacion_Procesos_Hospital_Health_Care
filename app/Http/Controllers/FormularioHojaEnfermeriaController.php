@@ -92,8 +92,8 @@ class FormularioHojaEnfermeriaController extends Controller
             'hojasTerapiaIV.detalleSoluciones',
             'hojaMedicamentos.productoServicio',
             'hojaMedicamentos.aplicaciones',
-            'formularioInstancia.estancia.hojaOxigenos.userInicio',
-            'formularioInstancia.estancia.hojaOxigenos.userFin',
+            'hojaOxigenos.userInicio',
+            'hojaOxigenos.userFin',
             'hojaEscalaValoraciones',
             'hojaControlLiquidos',
             'sondasCateteres.productoServicio',
@@ -220,6 +220,8 @@ class FormularioHojaEnfermeriaController extends Controller
             'hojaEscalaValoraciones.valoracionDolor',
             'hojaRiesgoCaida',
             'hojaHabitusExterior',
+            'hojaOxigenos.userInicio',
+            'hojaOxigenos.userFin',
         );
 
         $headerData = [

@@ -22,6 +22,8 @@ class HojaOxigenoRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'itemable_type' => 'nullable | string',
+            'itemable_id' => 'nullable | numeric',
             'litros_minuto' => 'nullable | numeric',
             'hora_fin'     => 'nullable',
         ];

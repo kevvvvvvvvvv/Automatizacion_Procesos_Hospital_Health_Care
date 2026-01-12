@@ -1,4 +1,4 @@
-import { Estancia, HojaOxigeno } from '@/types';
+import {  HojaOxigeno,  HojaEnfermeria, HojaEnfermeriaQuirofano } from '@/types';
 import React from 'react';
 import { useForm, router } from '@inertiajs/react';
 import { route } from 'ziggy-js';
@@ -8,20 +8,23 @@ import PrimaryButton from '@/components/ui/primary-button';
 import CounterTime from '@/components/counter-time';
 
 interface Props {
-    estancia: Estancia;
+    modelo: HojaEnfermeria | HojaEnfermeriaQuirofano;
+    tipo: string;
 }
 
-const ServiciosEspecialesForm: React.FC<Props> = ({ estancia }) => {
+const ServiciosEspecialesForm: React.FC<Props> = ({ modelo, tipo }) => {
     
     const { data, setData, post, reset, errors, processing } = useForm({
         litros_minuto: '',
         hora_inicio: '',
-        hora_fin: '',    
+        hora_fin: '',   
+        itemable_id: modelo.id,
+        itemable_type: tipo, 
     });
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        post(route('hojasoxigenos.store',{estancia: estancia.id }), {
+        post(route('hojasoxigenos.store'), {
             preserveScroll: true,
             onSuccess: () => reset(),
         });
@@ -72,14 +75,14 @@ const ServiciosEspecialesForm: React.FC<Props> = ({ estancia }) => {
                             </tr>
                         </thead>
                         <tbody>
-                            {(estancia.hoja_oxigenos ?? []).length === 0 ? (
+                            {(modelo.hoja_oxigenos ?? []).length === 0 ? (
                                 <tr className='text-center'>
                                     <td colSpan={3} className='px-4 py-4 text-sm text-gray-500 text-center'>
                                         No hay aplicaciones de oxígeno registradas
                                     </td>
                                 </tr>
                             ) : (
-                                (estancia.hoja_oxigenos ?? []).map((oxi: HojaOxigeno) => (
+                                (modelo.hoja_oxigenos ?? []).map((oxi: HojaOxigeno) => (
                                     <tr key={oxi.id}>
                                         <td className="px-4 py-4 text-sm text-gray-900">{oxi.hora_inicio}</td>
                                         <td>

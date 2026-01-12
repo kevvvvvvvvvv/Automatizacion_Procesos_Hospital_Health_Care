@@ -65,6 +65,11 @@ class HojaEnfermeria extends Model
         return $this->hasMany(HojaHabitusExterior::class);
     }
 
+    public function hojaOxigenos(): MorphMany
+    {
+        return $this->morphMany(HojaOxigeno::class,'itemable');
+    }
+
     public function solicitudesDieta(): HasMany
     {
         return $this->hasMany(SolicitudDieta::class);

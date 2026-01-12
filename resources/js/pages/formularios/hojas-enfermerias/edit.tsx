@@ -246,7 +246,8 @@ const Create: CreateComponent = ({
                         />
             case 'servicios_especiales':
                 return <ServiciosEspecialesForm
-                            estancia={estancia}
+                            modelo={hojaenfermeria}
+                            tipo="App\Models\HojaEnfermeria"
                         />
             case 'observaciones':
                 return <HabitusExteriorForm
