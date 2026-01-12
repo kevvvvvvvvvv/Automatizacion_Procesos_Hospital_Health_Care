@@ -96,7 +96,7 @@ const Generalidades: React.FC<GeneralidadesProps> = ({ data, setData, errors }) 
         <textarea
           id="resumen_del_interrogatorio"
           name="resumen_del_interrogatorio"
-          value={data.resumen_del_interrogatorio ?? ''}
+          value={getValue(data.resumen_del_interrogatorio)}
           onChange={(e) => setData('resumen_del_interrogatorio', e.target.value)}
           placeholder="Resumen de la historia clínica..."
           rows={3}
