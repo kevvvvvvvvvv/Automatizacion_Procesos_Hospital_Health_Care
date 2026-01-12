@@ -225,6 +225,30 @@
     <h1>Hoja de enfermería de servicio hospitalario</h1>
 
     <h3>Habitus exterior</h3>
+    <table>
+        <thead> 
+            <th></th>
+        </thead>
+        <tbody>
+            @if ($notaData->hojaHabitusExterior->isEmpty())
+                <tr>
+                    <td colspan="5" class="empty-cell">
+                        No se han registrado escalas de valoración.
+                    </td>
+                </tr>                
+            @else
+                @foreach ($notaData->hojaHabitusExterior as $habitus)
+                    <tr>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                @endforeach
+            @endif
+
+        </tbody>
+    </table>
+
+
     <h3>Escalas y valoración del dolor (localización y escala)</h3>
     <table>
         <thead>

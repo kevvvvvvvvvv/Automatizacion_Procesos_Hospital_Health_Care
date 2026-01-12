@@ -18,7 +18,16 @@ return new class extends Migration
                 ->constrained('hoja_enfermerias')
                 ->onDelete('cascade');
 
-            //$table->string();
+            $table->string('condicion_llegada');
+            $table->string('facies');
+            $table->string('constitucion');
+            $table->string('postura');
+            $table->string('piel');
+            $table->string('estado_conciencia');
+            $table->string('marcha');
+            $table->string('movimientos');
+            $table->string('higiene');
+            $table->string('edad_aparente');
 
             $table->timestamps();
         });
