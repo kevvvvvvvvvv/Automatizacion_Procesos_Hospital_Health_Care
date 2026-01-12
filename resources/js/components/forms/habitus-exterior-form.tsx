@@ -109,125 +109,146 @@ const edadAparenteOptions = [
 
 const HabitusExteriorForm = ({hojasenfermeria}: Props) => {
 
-    const { data, setData, put, processing, errors } = useForm({
-        observaciones: hojasenfermeria.observaciones || '',
-        habitus_exterior: { 
-            condicion_llegada: '',
-            facies:  '',
-            constitucion: '',
-            postura:  '',
-            piel: '',
-            estado_conciencia: '',
-            marcha: '',
-            movimientos: '',
-            higiene: '',
-            edad_aparente: ''
-        }
+    const { data, setData, post, processing, errors,reset } = useForm({
+        condicion_llegada: '',
+        facies:  '',
+        constitucion: '',
+        postura:  '',
+        piel: '',
+        estado_conciencia: '',
+        marcha: '',
+        movimientos: '',
+        higiene: '',
+        edad_aparente: '',
     });
 
-    const updateHabitus = (field: string, value: string) => {
-        setData('habitus_exterior', {
-            ...data.habitus_exterior, 
-            [field]: value          
+    const {data: dataObservaciones, setData: setDataObservaciones, put: putObservaciones, reset: resetObservaciones, errors: errorsObservaiones } = useForm({
+        observaciones: hojasenfermeria.observaciones || '',
+    });
+
+    const handleObservacionesUpdate = (e: React.FormEvent) => {
+        e.preventDefault();
+        putObservaciones(route('hojasenfermerias.update', { hojasenfermeria: hojasenfermeria.id }),{
+            onSuccess: () =>resetObservaciones()
         });
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleHabitusExteriorSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        put(route('hojasenfermerias.update', { hojasenfermeria: hojasenfermeria.id }));
+        post(route('hojas-habitus-exterior.store', { hojasenfermeria: hojasenfermeria.id }),{
+            onSuccess: () => reset()
+        });
     };
 
     return (
-        <form onSubmit={handleSubmit}>
+        <>
+            <form onSubmit={handleObservacionesUpdate}>
 
-            <InputTextArea
-                id='observaciones'
-                label='Observaciones'
-                value={data.observaciones}
-                onChange={e => setData('observaciones', e.target.value)}
-                error={errors.observaciones}
-            />
-
-            <div className='grid md:grid-cols-3 grid-cols-1 gap-2'>
-                <SelectInput
-                    label='Condición de llegada'
-                    options={condicionLlegadaOptions}
-                    value={data.habitus_exterior.condicion_llegada}
-                    onChange={(e) => updateHabitus('condicion_llegada', e)}
-                    error={errors['habitus_exterior.condicion_llegada']}
+                <InputTextArea
+                    id='observaciones'
+                    label='Observaciones'
+                    value={dataObservaciones.observaciones}
+                    onChange={e => setDataObservaciones('observaciones', e.target.value)}
+                    error={errorsObservaiones.observaciones}
                 />
 
-                <SelectInput
-                    label='Facies'
-                    options={faciesOptions}
-                    value={data.habitus_exterior.facies}
-                    onChange={(e) => updateHabitus('facies', e)}
-                />
+                <div className="mt-4 flex justify-end">
+                    <PrimaryButton type='submit' disabled={processing}>
+                        {processing ? 'Guardando...' : 'Guardar'}
+                    </PrimaryButton>
+                </div>
+            </form>
+            <form onSubmit={handleHabitusExteriorSubmit}>
 
-                <SelectInput
-                    label='Constitución'
-                    options={constitucionOptions}
-                    value={data.habitus_exterior.constitucion}
-                    onChange={(e) => updateHabitus('constitucion', e)}
-                />
+                <div className='grid md:grid-cols-3 grid-cols-1 gap-2'>
+                    <SelectInput
+                        label='Condición de llegada'
+                        options={condicionLlegadaOptions}
+                        value={data.condicion_llegada}
+                        onChange={(e) => setData('condicion_llegada', e)}
+                        error={errors.condicion_llegada}
+                    />
 
-                <SelectInput
-                    label='Actitud/Postura'
-                    options={posturaOptions}
-                    value={data.habitus_exterior.postura}
-                    onChange={(e) => updateHabitus('postura', e)}
-                />
+                    <SelectInput
+                        label='Facies'
+                        options={faciesOptions}
+                        value={data.facies}
+                        onChange={(e) => setData('facies', e)}
+                        error={errors.facies}
+                    />
 
-                <SelectInput
-                    label='Integridad de la piel'
-                    options={pielOptions}
-                    value={data.habitus_exterior.piel}
-                    onChange={(e) => updateHabitus('piel', e)}
-                />
+                    <SelectInput
+                        label='Constitución'
+                        options={constitucionOptions}
+                        value={data.constitucion}
+                        onChange={(e) => setData('constitucion', e)}
+                        error={errors.constitucion}
+                    />
 
-                <SelectInput
-                    label='Estado de conciencia'
-                    options={estadoConciencaOptions} 
-                    value={data.habitus_exterior.estado_conciencia}
-                    onChange={(e) => updateHabitus('estado_conciencia', e)}
-                />
+                    <SelectInput
+                        label='Actitud/Postura'
+                        options={posturaOptions}
+                        value={data.postura}
+                        onChange={(e) => setData('postura', e)}
+                        error={errors.postura}
+                    />
 
-                <SelectInput
-                    label='Edad Aparente'
-                    options={edadAparenteOptions}
-                    value={data.habitus_exterior.edad_aparente}
-                    onChange={(e) => updateHabitus('edad_aparente', e)}
-                />
+                    <SelectInput
+                        label='Integridad de la piel'
+                        options={pielOptions}
+                        value={data.piel}
+                        onChange={(e) => setData('piel', e)}
+                        error={errors.piel}
+                    />
 
-                <SelectInput
-                    label='Marcha (Forma de caminar)'
-                    options={marchaOptions}
-                    value={data.habitus_exterior.marcha}
-                    onChange={(e) => updateHabitus('marcha', e)}
-                />
+                    <SelectInput
+                        label='Estado de conciencia'
+                        options={estadoConciencaOptions} 
+                        value={data.estado_conciencia}
+                        onChange={(e) => setData('estado_conciencia', e)}
+                        error={errors.estado_conciencia}
+                    />
 
-                <SelectInput
-                    label='Movimientos Anormales'
-                    options={movimientosOptions}
-                    value={data.habitus_exterior.movimientos}
-                    onChange={(e) => updateHabitus('movimientos', e)}
-                />
+                    <SelectInput
+                        label='Edad Aparente'
+                        options={edadAparenteOptions}
+                        value={data.edad_aparente}
+                        onChange={(e) => setData('edad_aparente', e)}
+                        error={errors.edad_aparente}
+                    />
 
-                <SelectInput
-                    label='Vestido y Aliño'
-                    options={higieneOptions}
-                    value={data.habitus_exterior.higiene}
-                    onChange={(e) => updateHabitus('higiene', e)}
-                />
+                    <SelectInput
+                        label='Marcha (Forma de caminar)'
+                        options={marchaOptions}
+                        value={data.marcha}
+                        onChange={(e) => setData('marcha', e)}
+                        error={errors.marcha}
+                    />
 
-            </div>
-            <div className="mt-4 flex justify-end">
-                <PrimaryButton type='submit' disabled={processing}>
-                    {processing ? 'Guardando...' : 'Guardar'}
-                </PrimaryButton>
-            </div>
+                    <SelectInput
+                        label='Movimientos Anormales'
+                        options={movimientosOptions}
+                        value={data.movimientos}
+                        onChange={(e) => setData('movimientos', e)}
+                        error={errors.movimientos}
+                    />
 
-        </form>
+                    <SelectInput
+                        label='Vestido y Aliño'
+                        options={higieneOptions}
+                        value={data.higiene}
+                        onChange={(e) => setData('higiene', e)}
+                        error={errors.higiene}
+                    />
+
+                </div>
+                <div className="mt-4 flex justify-end">
+                    <PrimaryButton type='submit' disabled={processing}>
+                        {processing ? 'Guardando...' : 'Guardar'}
+                    </PrimaryButton>
+                </div>
+            </form>
+        </>
     )
 }
 

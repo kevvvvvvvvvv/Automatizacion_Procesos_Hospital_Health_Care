@@ -219,6 +219,7 @@ class FormularioHojaEnfermeriaController extends Controller
             'solicitudesDieta.dieta.categoriaDieta',
             'hojaEscalaValoraciones.valoracionDolor',
             'hojaRiesgoCaida',
+            'hojaHabitusExterior',
         );
 
         $headerData = [

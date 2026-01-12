@@ -60,6 +60,11 @@ class HojaEnfermeria extends Model
         return $this->hasMany(HojaRiesgoCaida::class);
     }
 
+    public function hojaHabitusExterior(): HasMany
+    {
+        return $this->hasMany(HojaHabitusExterior::class);
+    }
+
     public function solicitudesDieta(): HasMany
     {
         return $this->hasMany(SolicitudDieta::class);
