@@ -123,12 +123,27 @@ class NotasEgresoController extends Controller
         ]);
     }
 
-    public function update(paciente $paciente, Estancia $estancia){
+    public function update(paciente $paciente, Estancia $estancia, NotaEgresoRequest $request, NotaEgreso $notasegreso){
+        $validateData = $request->validated();
+        $notasegreso->update($validateData);
 
+        return redirect()->route('notasegresos.show', [
+            'notasegreso' => $notasegreso->id,
+        ])->with('success', 'Noya de egrso actualizada'); 
     }
 
-    public function edit(paciente $paciente, Estancia $estancia){
-
+    public function edit( NotaEgreso $notasegreso){
+       
+        $notasegreso->load('formularioInstancia.estancia.paciente',
+        'formularioInstancia.user'
+        
+    );
+     //dd($notasegreso->toArray());
+    return Inertia::render('formularios/notaegreso/edit', [
+        'egreso' => $notasegreso,
+        'paciente' => $notasegreso->formularioInstancia->estancia->paciente,
+        'estancia' => $notasegreso->formularioInstancia->estancia,
+    ]);
     }
 
 

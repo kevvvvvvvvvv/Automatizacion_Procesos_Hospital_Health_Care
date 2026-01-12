@@ -5,6 +5,7 @@ import { notasEgresos, Paciente, Estancia, User } from '@/types';
 
 import InfoCard from '@/components/ui/info-card';
 import InfoField from '@/components/ui/info-field';
+import estancias from '@/routes/estancias';
 
 interface ShowNotaEgresoProps {
   notaEgreso?: notasEgresos & {
@@ -24,7 +25,8 @@ const ShowNotaEgreso = (props: ShowNotaEgresoProps) => {
 
    if (!notaEgreso || !paciente || !estancia) {
     return (
-      <MainLayout>
+      <MainLayout
+      >
         <Head title="Nota de egreso" />
         <p className="text-red-600">
           No se pudieron cargar los datos de la nota de egreso.
@@ -44,7 +46,10 @@ const ShowNotaEgreso = (props: ShowNotaEgresoProps) => {
   };
 
   return (
-    <MainLayout>
+    <MainLayout
+    pageTitle='Nota de egreso'
+      link='estancias.show'
+      linkParams={estancia.id}>
       <Head title={`Nota de Egreso ${notaEgreso.id}`} />
 
       <InfoCard

@@ -301,7 +301,7 @@ export const InterconsultaForm = ({
             name="tratamiento"
             value={data.tratamiento}
             onChange={(e) => setData('tratamiento', e.target.value)}
-            placeholder="Tratamiento recomendado y pronóstico..."
+            placeholder="Tratamiento recomendado y pronóstico..35."
             rows={4}
             className={`${textAreaClasses} ${errors.tratamiento ? 'border-red-500' : 'border-gray-600'}`}
             autoComplete="off"
