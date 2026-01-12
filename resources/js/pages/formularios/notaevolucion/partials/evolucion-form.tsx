@@ -1,21 +1,15 @@
 import React from 'react';
-import { useForm, Head } from '@inertiajs/react';
-import { route } from 'ziggy-js';
+import { useForm } from '@inertiajs/react';
 import { CatalogoEstudio, Estancia, Paciente, ProductoServicio, notasEvoluciones } from '@/types';  
-
-import InputText from '@/components/ui/input-text';
 import PrimaryButton from '@/components/ui/primary-button';
 import FormLayout from '@/components/form-layout';
-import PacienteCard from '@/components/paciente-card';
-import MainLayout from '@/layouts/MainLayout';
 import Generalidades from '@/components/forms/generalidades';
-
 import TratamientoDietasForm from '@/components/forms/tratamiento-dietas-form';
 import TratamientoSolucionesForm from '@/components/forms/tratamiento-soluciones-form';
 import TratamientoMedicamentosForm from '@/components/forms/tratamiento-medicamentos-form';
 import TratamientoLaboratoriosForm from '@/components/forms/tratamiento-laboratorios-form';
 import TratamientoMedidasGeneralesForm from '@/components/forms/tratamiento-medidas-generales-form';
-import estancia from '@/routes/estancia';
+
 
 type Props = {
   paciente: Paciente;
@@ -46,10 +40,14 @@ export const EvolucionForm =({
     temp: evolucion?.temp || '',
     peso: evolucion?.peso || '',
     talla: evolucion?.talla || '',
+    exploracion_fisica: evolucion?.exploracion_fisica || '',
+    resumen_del_interrogatorio: evolucion?.resumen_del_interrogatorio  || '',
     resultados_relevantes: evolucion?.resultados_relevantes || '',
-    diagnostico_problema_clinico: evolucion?.diagnostico_problema_clinico || '',
+    diagnostico_o_problemas_clinicos: evolucion?.diagnostico_o_problemas_clinicos || '',
     pronostico: evolucion?.pronostico || '',
     resultado_estudios: evolucion?.resultado_estudios || '',
+    tratamiento: evolucion?.tratamiento || '',
+    plan_de_estudio: evolucion?.plan_de_estudio || '',
     manejo_dieta:  evolucion?.manejo_dieta || '',
     manejo_soluciones:  evolucion?.manejo_soluciones || '',
     manejo_medicamentos:  evolucion?.manejo_medicamentos || '',

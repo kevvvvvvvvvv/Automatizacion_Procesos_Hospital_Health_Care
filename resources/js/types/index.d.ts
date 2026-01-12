@@ -528,6 +528,7 @@ export interface Preoperatoria {
     plan_de_estudio: string;
     pronostico: string;
     fecha_cirugia: string;
+
     diagnostico_preoperatorio: string;
     plan_quirurgico: string;
     tipo_intervencion_quirurgica: string;
@@ -607,6 +608,7 @@ export interface notasEgresos {
     factores_riesgo: string;
     pronostico: string;
     defuncion: string;
+    formulario_instancia: FormularioInstancia;
 }
 export interface notasEvoluciones {
   id: number;
@@ -616,10 +618,14 @@ export interface notasEvoluciones {
   fr: string;  
   temp: string;  
   peso: string;  
-  talla: string;  
+  talla: string; 
+  resultado_estudios: string;
+  exploracion_fisica:string;
+  resumen_del_interrogatorio: string; 
   resultados_relevantes: string;
-  diagnostico_problema_clinico: string;
+  diagnostico_o_problemas_clinicos: string;
   pronostico: string;
+  plan_de_estudio:string;
   tratamiento: string;
   resultado_estudios:string;
   manejo_dieta: string;

@@ -7,7 +7,7 @@ import InfoCard from '@/components/ui/info-card';
 import InfoField from '@/components/ui/info-field';
 
 interface ShowNotaEvolucionProps{
-    notaevolucion: notasEvoluciones & {
+    notasevolucione: notasEvoluciones & {
         formularioInstancia?: {
             user?: User;
             estancia: Estancia & {paciente:Paciente};
@@ -17,7 +17,7 @@ interface ShowNotaEvolucionProps{
     estancia: Estancia;
 }
 
-const Show = ({notaevolucion, paciente, estancia}: ShowNotaEvolucionProps) => {
+const Show = ({notasevolucione, paciente, estancia}: ShowNotaEvolucionProps) => {
    
 
     const dateOptions: Intl.DateTimeFormatOptions = {
@@ -29,8 +29,8 @@ const Show = ({notaevolucion, paciente, estancia}: ShowNotaEvolucionProps) => {
   };
 
   return (
-    <MainLayout>
-        <Head title={`Nota de Evolución ${notaevolucion.id}` }/>
+    <>
+        <Head title={`Nota de Evolución ` }/>
 
         <InfoCard
         title={`Nota de evolución de: ${paciente.nombre} ${paciente.apellido_paterno} ${paciente.apellido_materno}`}>
@@ -40,7 +40,7 @@ const Show = ({notaevolucion, paciente, estancia}: ShowNotaEvolucionProps) => {
           </h2>
            <InfoField 
             label="Evaluación y actualización"
-            value={notaevolucion.evolucion_actualizacion}/>
+            value={notasevolucione.evolucion_actualizacion}/>
         </div>
         <h2 className='text-lg font-semibold text-gray-800 mb-2'>
             Signos Vitales
@@ -50,19 +50,19 @@ const Show = ({notaevolucion, paciente, estancia}: ShowNotaEvolucionProps) => {
         
             <InfoField
             label= "Tensión Arterial"
-            value= {notaevolucion.ta || 'N/A'}/>
+            value= {notasevolucione.ta || 'N/A'}/>
             <InfoField
             label= "Frecuencia cardiaca"
-            value= {notaevolucion.fc || 'N/A'}/>
+            value= {notasevolucione.fc || 'N/A'}/>
             <InfoField
             label= "Frecuencia respiratoria"
-            value= {notaevolucion.fr || 'N/A'}/>
+            value= {notasevolucione.fr || 'N/A'}/>
             <InfoField
             label= "Temperatura"
-            value= {notaevolucion.temp || 'N/A'}/>
+            value= {notasevolucione.temp || 'N/A'}/>
             <InfoField
             label= "Peso"
-            value= {notaevolucion.peso || 'N/A'}/>
+            value= {notasevolucione.peso || 'N/A'}/>
            
         </div>
         
@@ -72,37 +72,50 @@ const Show = ({notaevolucion, paciente, estancia}: ShowNotaEvolucionProps) => {
         </h2>
              <InfoField
             label= "Resultados Relevantes"
-            value = {notaevolucion.resultados_relevantes || 'N/A'}/>
+            value = {notasevolucione.resultado_estudios || 'N/A'}/>
             <InfoField
             label= "diagnostico y problemas clinicos"
-            value = {notaevolucion.diagnostico_problema_clinico || 'N/A'}/>
+            value = {notasevolucione.diagnostico_o_problemas_clinicos || 'N/A'}/>
             <InfoField
             label= "Pronostico"
-            value = {notaevolucion.pronostico || 'N/A'}/>
+            value = {notasevolucione.pronostico || 'N/A'}/>
         </div>
         <div className="space-y-2 mb-6">
             <h2 className='text-lg font-semibold text-gray-800 mb-2'>
            Tratamnmiento e Indicaciones médicas</h2>
             <InfoField
             label="Plan de dieta"
-            value = {notaevolucion.manejo_dieta || 'N/A'}/>
+            value = {notasevolucione.manejo_dieta || 'N/A'}/>
             <InfoField
             label="Plan de soliciones"
-            value = {notaevolucion.manejo_soluciones || 'N/A'}/>
+            value = {notasevolucione.manejo_soluciones || 'N/A'}/>
             <InfoField
             label = "Plan de medicamentos"
-            value = {notaevolucion.manejo_medicamentos || 'N/A'}/>
+            value = {notasevolucione.manejo_medicamentos || 'N/A'}/>
             <InfoField
             label = "Plan de estudios"
-            value = {notaevolucion.manejo_laboratorios || 'N/A'}/>
+            value = {notasevolucione.manejo_laboratorios || 'N/A'}/>
             <InfoField
             label = "Plan de medidas generales"
-            value = {notaevolucion.manejo_medidas_generales || 'N/A'}/>  
+            value = {notasevolucione.manejo_medidas_generales || 'N/A'}/>  
         </div>
            
 
         </InfoCard>
-    </MainLayout>
+    </>
   )
 }
+Show.layout = (page: React.ReactElement) => {
+  const { estancia, paciente } = page.props as ShowNotaEvolucionProps;
+
+  return (
+    <MainLayout
+      pageTitle={`Detalles de nota de evolucion de ${paciente.nombre} ${paciente.apellido_paterno} ${paciente.apellido_materno}`}
+        
+      
+    >
+      {page}
+    </MainLayout>
+  );
+};
 export default Show;
