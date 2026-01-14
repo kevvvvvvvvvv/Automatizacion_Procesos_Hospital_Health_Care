@@ -28,7 +28,7 @@
         body {
             font-family: Calibri, Arial, sans-serif; 
             margin: 0; 
-            font-size: 9pt; 
+            font-size: 7pt; 
             color: #333;
             line-height: 1.4;
         }
@@ -52,7 +52,7 @@
             margin-top: 10px;
             margin-bottom: 8px;
             padding-bottom: 3px;
-            font-size: 10pt;
+            font-size: 7pt;
         }
 
         p {
@@ -111,7 +111,7 @@
             width: 100%;
             border-collapse: collapse; 
             margin-bottom: 20px;
-            font-size: 9.5pt;
+            font-size: 7pt;
         }
 
         thead th {
@@ -121,7 +121,7 @@
             text-align: left;
             padding: 8px;
             font-weight: bold;
-            font-size: 9pt;
+            font-size: 8pt;
             text-transform: uppercase;
         }
 
@@ -131,6 +131,7 @@
             border-bottom: 1px solid #ddd; 
             vertical-align: top; 
             color: #444;
+            font-size: 7pt;
         }
 
         tbody tr:nth-child(even) {
@@ -153,7 +154,7 @@
         .fecha-item {
             display: block;
             margin-bottom: 2px;
-            font-size: 8.5pt;
+            font-size: 7pt;
         }
 
 
@@ -162,7 +163,7 @@
         
         .dato-valor {
             font-weight: bold;
-            font-size: 10pt;
+            font-size: 7pt;
             color: #000;
         }
         
@@ -178,7 +179,7 @@
         .score-valor { font-weight: bold; color: #333; }
         .sin-dato {
             color: #ccc;
-            font-size: 20px; 
+            font-size: 7pt; 
         }        
         .w-20{
             width: 20%;
@@ -193,11 +194,16 @@
             padding: 2px 4px; 
             margin: 0;
             line-height: 1;
-            font-size: 9pt; 
+            /*font-size: 8pt;*/ 
         }
+        
         table td p {
             margin: 0;
             padding: 0;
+        }
+
+        span {
+            font-size: 7pt;
         }
 
         .graficas-container {
