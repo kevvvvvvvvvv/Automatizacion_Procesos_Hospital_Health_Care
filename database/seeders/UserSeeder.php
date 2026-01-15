@@ -165,7 +165,6 @@ class UserSeeder extends Seeder
             'cedula_profesional' => '8765432'
         ]);
 
-        //Rol de cada usuario
         $user = User::create([
             'curp' => 'HEGE040302HMRMFA2',
             'nombre' => 'Efrain ',

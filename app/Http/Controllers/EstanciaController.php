@@ -24,7 +24,7 @@ class EstanciaController extends Controller
     public function create(Paciente $paciente)
     {
         $paciente->load('estancias','familiarResponsables');
-        $habitaciones = Habitacion::where('estado', 'Libre')->get();
+        $habitaciones = Habitacion::where('estado', 'Libre')->where('tipo','Habitación')->get();
 
         return Inertia::render('estancias/create', [
             'habitaciones' => $habitaciones,
