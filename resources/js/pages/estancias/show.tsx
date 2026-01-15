@@ -1,11 +1,11 @@
 import React from 'react';
-import { Head, Link } from '@inertiajs/react';
+import { Head, Link, usePage } from '@inertiajs/react';
 import { Plus,ChevronDown, Pencil, Eye } from 'lucide-react'; 
 import { Menu } from '@headlessui/react';
 import { route } from 'ziggy-js';
 import { Printer } from 'lucide-react'; 
 import MainLayout from '@/layouts/MainLayout';
-import { Estancia, Paciente, User, FormularioInstancia, Habitacion, FamiliarResponsable, Consentimiento} from '@/types'; 
+import { Estancia, Paciente, User, FormularioInstancia, Habitacion, FamiliarResponsable, Consentimiento, PageProps} from '@/types'; 
 import InfoCard from '@/components/ui/info-card';
 import InfoField from '@/components/ui/info-field';
 import { usePermission } from '@/hooks/use-permission';
@@ -33,7 +33,7 @@ interface ShowEstanciaProps {
 const Show = ({ estancia }: ShowEstanciaProps) => {
     
     const { can, hasRole } = usePermission();
-
+    const { auth } = usePage<PageProps>().props;
     const { paciente, creator, updater, formulario_instancias } = estancia;
 
     const dateOptions: Intl.DateTimeFormatOptions = {
@@ -332,7 +332,7 @@ const Show = ({ estancia }: ShowEstanciaProps) => {
                                     </p>
                                 </div>
                                 <div className="flex items-center space-x-2">
-                                    
+                                    {(formulario.user_id === auth.user.id || hasRole('administrador')) && (
                                     <Link
                                         href={route(`${formulario.catalogo.route_prefix}.edit`, formulario.id)}
                                         className="p-2 text-blue-500 hover:bg-blue-100 hover:text-blue-700 rounded-full transition"
@@ -340,6 +340,7 @@ const Show = ({ estancia }: ShowEstanciaProps) => {
                                     > 
                                         <Pencil size={18} />
                                     </Link>
+                                    )}
 
                                     <Link 
                                         href={route(`${formulario.catalogo.route_prefix}.show`, formulario.id)}
