@@ -43,8 +43,6 @@ class NotaUrgenciaController extends Controller
 
     public function store(Paciente $paciente, Estancia $estancia, NotaUrgenciaRequest $request)
 {
-    // Agrega esto para ver si llega aquí y qué datos recibe
-    //\Log::info('Datos validados:', $request->validated());
     
     $validatedData = $request->validated();
     
@@ -94,6 +92,8 @@ class NotaUrgenciaController extends Controller
     public function edit(Paciente $paciente, Estancia $estancia, NotaUrgencia $notasurgencia)
 {
     $notasurgencia->load('formularioInstancia.user', 'formularioInstancia.estancia.paciente');
+    $estancia = $notasurgencia->formularioInstancia->estancia;
+    $paciente = $estancia->paciente;
     
     return Inertia::render('formularios/notaurgencia/edit', [
         'paciente' => $paciente,

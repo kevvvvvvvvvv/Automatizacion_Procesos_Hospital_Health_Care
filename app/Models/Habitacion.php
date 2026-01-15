@@ -22,7 +22,7 @@ class Habitacion extends Model
 
     public function estancias():HasOne
     {
-        return $this->hasOne(Estancia::class.'habitacion_id');
+        return $this->hasOne(Estancia::class, 'habitacion_id');
     }
 
     public function estanciaActiva()
@@ -35,4 +35,15 @@ class Habitacion extends Model
     {
         return $this->hasMany(ReservacionHorario::class);
     }
+    public function formularioInstancia()
+{
+    // Ajusta esto según tu base de datos. 
+    // Si 'formulario_instancia' es otra tabla que tiene el id de estancia:
+    return $this->hasOne(FormularioInstancia::class, 'estancia_id');
+}
+
+public function paciente()
+{
+    return $this->belongsTo(Paciente::class, 'paciente_id');
+}
 }

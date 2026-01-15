@@ -1,6 +1,4 @@
 
-
-import React from 'react';
 import { Head } from '@inertiajs/react';
 import MainLayout from '@/layouts/MainLayout';
 import { NotaPreAnestesica, Paciente, Estancia, User } from '@/types';
@@ -22,7 +20,6 @@ interface ShowNotaPreanestesicaProps {
 const Show = ({ notaPreanestesica, paciente, estancia }: ShowNotaPreanestesicaProps) => {
   const { formularioInstancia } = notaPreanestesica;
 
-  console.log('notaPreanestesica desde Inertia:', notaPreanestesica);
 
   const dateOptions: Intl.DateTimeFormatOptions = {
     year: 'numeric',
@@ -33,7 +30,11 @@ const Show = ({ notaPreanestesica, paciente, estancia }: ShowNotaPreanestesicaPr
   };
 
   return (
-    <MainLayout>
+    <MainLayout
+    pageTitle={`Vista de nota preanestesica`}
+    link="estancias.show"
+      
+      linkParams={estancia.id} >
       <Head title={`Nota Preanestésica ${notaPreanestesica.id}`} />
 
       <InfoCard

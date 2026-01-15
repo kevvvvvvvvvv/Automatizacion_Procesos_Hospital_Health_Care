@@ -71,7 +71,7 @@ return (
             <option value="">Seleccione una opción</option>
             <option value="curacion">Curación</option>
             <option value="mejoria">Mejoría</option>
-            <option value="alta_voluntaria">Alta voluntaria</option>
+            <option value="alta voluntaria">Alta voluntaria</option>
             <option value="defuncion">Defunción</option>
             <option value="otro">Otros</option>
         </select>
