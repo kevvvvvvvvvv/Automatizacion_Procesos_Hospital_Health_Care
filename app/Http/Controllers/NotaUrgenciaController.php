@@ -94,6 +94,8 @@ class NotaUrgenciaController extends Controller
     public function edit(Paciente $paciente, Estancia $estancia, NotaUrgencia $notasurgencia)
 {
     $notasurgencia->load('formularioInstancia.user', 'formularioInstancia.estancia.paciente');
+    $estancia = $notasurgencia->formularioInstancia->estancia;
+    $paciente = $estancia->paciente;
     
     return Inertia::render('formularios/notaurgencia/edit', [
         'paciente' => $paciente,
