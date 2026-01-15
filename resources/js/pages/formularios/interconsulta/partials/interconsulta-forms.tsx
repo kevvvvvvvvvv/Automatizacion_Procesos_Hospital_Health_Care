@@ -141,7 +141,7 @@ export const InterconsultaForm = ({
         <h2 className="text-xl font-semibold text-gray-800 mt-6 mb-4 col-span-full">Signos Vitales</h2>
         <InputText
           id="ta"
-          label="T.A. (Tensión Arterial)"
+          label="Tensión arterial"
           name="ta"
           value={data.ta?.toString() || ''}
           onChange={(e) => setData('ta', e.target.value)}
@@ -150,7 +150,7 @@ export const InterconsultaForm = ({
         />
         <InputText
           id="fc"
-          label="FC (Frecuencia Cardíaca)"
+          label="Frecuencia cardíaca"
           name="fc"
           type="number"
           value={data.fc?.toString() || ''}
@@ -160,7 +160,7 @@ export const InterconsultaForm = ({
         />
         <InputText
           id="fr"
-          label="FR (Frecuencia Respiratoria)"
+          label="Frecuencia respiratoria)"
           name="fr"
           type="number"
           value={data.fr?.toString() || ''}
@@ -170,7 +170,7 @@ export const InterconsultaForm = ({
         />
         <InputText
           id="temp"
-          label="TEMP (Temperatura)"
+          label="Temperatura"
           name="temp"
           type="number"
           value={data.temp?.toString() || ''}
