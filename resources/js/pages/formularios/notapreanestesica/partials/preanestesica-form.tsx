@@ -61,19 +61,7 @@ export const Preanestesicaform = ({
             </PrimaryButton>
           }
         >
-          {/* Bloque general de errores */}
-          {Object.keys(errors).length > 0 && (
-            <div className="col-span-full mb-4 rounded-md bg-red-50 p-4">
-              <h3 className="text-sm font-semibold text-red-800">
-                Por favor corrige los siguientes campos:
-              </h3>
-              <ul className="mt-2 list-disc pl-5 text-sm text-red-700">
-                {Object.entries(errors).map(([field, message]) => (
-                  <li key={field}>{message as string}</li>
-                ))}
-              </ul>
-            </div>
-          )}
+          
 
           {/* Generalidades (signos vitales, resumen, etc.) */}
           <Generalidades data={data} setData={setData} errors={errors} />

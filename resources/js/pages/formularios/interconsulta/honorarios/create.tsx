@@ -30,7 +30,10 @@ const CreateHonorario: React.FC<Props> = ({ paciente, estancia, interconsulta })
   };
 
   return (
-    <>
+    <MainLayout
+    pageTitle='Honorarios'
+    link='interconsultas.show'
+    linkParams={interconsulta.id}>
       <PacienteCard paciente={paciente} estancia={estancia} />
       <Head title="Crear Honorario" />
 
@@ -68,14 +71,10 @@ const CreateHonorario: React.FC<Props> = ({ paciente, estancia, interconsulta })
           )}
         </div>
       </FormLayout>
-    </>
+    </MainLayout>
   );
 };
 
-CreateHonorario.layout = (page: React.ReactElement) => {
-  return (
-    <MainLayout pageTitle="Creación de Honorario" children={page} />
-  );
-};
+
 
 export default CreateHonorario;

@@ -43,8 +43,6 @@ class NotaUrgenciaController extends Controller
 
     public function store(Paciente $paciente, Estancia $estancia, NotaUrgenciaRequest $request)
 {
-    // Agrega esto para ver si llega aquí y qué datos recibe
-    //\Log::info('Datos validados:', $request->validated());
     
     $validatedData = $request->validated();
     
