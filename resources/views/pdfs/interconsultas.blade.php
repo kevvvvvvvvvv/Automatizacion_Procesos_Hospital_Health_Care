@@ -113,12 +113,12 @@
         <p><strong>Resultado de estudios de los servicios auxiliares de diagnóstico y tratamiento: </strong>{{$notaData['resultados_relevantes_del_estudio_diagnostico']}}</p>
         <p><strong>Diagnóstico(s) o problemas clínicos: </strong>{{$notaData['diagnostico_o_problemas_clinicos']}}</p>
         <p><strong>Plan de estudio  (indicaciones médicas, vía, dosis, periodicidad): </strong>{{$notaData['plan_de_estudio']}}</p>
-        <p><string>Tratamiento: </strong>{{$notaData['tratamiento']}}</p>
+        <p><strong>Tratamiento: </strong>{{$notaData['tratamiento']}}</p>
         <p><strong>Pronóstico: </strong>{{$notaData['pronostico']}}</p>
-        <p><strong>Motivo de la atención de la interconsulta</strong>{{$notaData['motivo_de_la_atencion_o_interconsulta']}}</p>
-        <P><strong>Criterio Diagnostico</strong>{{$notaData['criterio:diagnostico']}}</P>
-        <p><strong>Plan de estudio</strong>{{$notaData['plan_de_estudio']}}</p>
-        <p><strong>Sugerencia diagnostica</strong>{{$notaData['sugerencia_diagnostica']}}</p>    
+        <p><strong>Motivo de la atención de la interconsulta: </strong>{{$notaData['motivo_de_la_atencion_o_interconsulta']}}</p>
+        <P><strong>Criterio Diagnostico: </strong>{{$notaData['criterio:diagnostico']}}</P>
+        <p><strong>Plan de estudio: </strong>{{$notaData['plan_de_estudio']}}</p>
+        <p><strong>Sugerencia diagnostica: </strong>{{$notaData['sugerencia_diagnostica']}}</p>    
         </div>
          @if(isset($medico))
             <div class="signature-section">
