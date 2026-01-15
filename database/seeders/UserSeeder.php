@@ -278,7 +278,7 @@ class UserSeeder extends Seeder
             'password' => Hash::make('12345678'),
         ]);
 
-        $userCarlos->assignRole('enfermera(o)');
+        $userLuz->assignRole('enfermera(o)');
 
         // 5. Lic America Jaimes Barcenas
         $userAmerica = User::create([
