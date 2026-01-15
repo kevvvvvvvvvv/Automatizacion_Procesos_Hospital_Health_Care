@@ -219,5 +219,95 @@ class UserSeeder extends Seeder
         ]);
 
         $userLaboratorio->assignRole('técnico de laboratorio');
+
+        // 1. Dr Juan Manuel Ahumada Trujillo
+        $userJuan = User::create([
+            'curp' => 'AHTJ800101HDFRRN02', 
+            'nombre' => 'Juan Manuel',
+            'apellido_paterno' => 'Ahumada',
+            'apellido_materno' => 'Trujillo',
+            'sexo' => 'Masculino',
+            'fecha_nacimiento' => '1980-01-01',
+            'telefono' => '7771002030',
+            'email' => 'juan.ahumada@test.com',
+            'password' => Hash::make('12345678'),
+        ]);
+
+        $userJuan->assignRole('medico especialista');
+
+        // 2. Dr Fidel Humberto Ortiz Espinoza
+        $userFidel = User::create([
+            'curp' => 'OIEF820520HDFRRN03', 
+            'nombre' => 'Fidel Humberto',
+            'apellido_paterno' => 'Ortiz',
+            'apellido_materno' => 'Espinoza',
+            'sexo' => 'Masculino',
+            'fecha_nacimiento' => '1982-05-20',
+            'telefono' => '7772003040',
+            'email' => 'fidel.ortiz@test.com',
+            'password' => Hash::make('12345678'),
+        ]);
+
+        $userFidel->assignRole('medico especialista');
+
+        // 3. Dr Carlos Gabriel Juarez Tapia
+        $userCarlos = User::create([
+            'curp' => 'JUTC850815HDFRRN04', 
+            'nombre' => 'Carlos Gabriel',
+            'apellido_paterno' => 'Juarez',
+            'apellido_materno' => 'Tapia',
+            'sexo' => 'Masculino',
+            'fecha_nacimiento' => '1985-08-15',
+            'telefono' => '7773004050',
+            'email' => 'carlos.juarez@test.com',
+            'password' => Hash::make('12345678'),
+        ]);
+
+        $userCarlos->assignRole('medico especialista');
+
+        // 4. Técnica Luz Morales
+        $userLuz = User::create([
+            'curp' => 'MOLX900210MDFRRN05', 
+            'nombre' => 'Luz',
+            'apellido_paterno' => 'Morales',
+            'apellido_materno' => '',
+            'sexo' => 'Femenino',
+            'fecha_nacimiento' => '1990-02-10',
+            'telefono' => '7774005060',
+            'email' => 'luz.morales@test.com',
+            'password' => Hash::make('12345678'),
+        ]);
+
+        $userCarlos->assignRole('enfermera(o)');
+
+        // 5. Lic America Jaimes Barcenas
+        $userAmerica = User::create([
+            'curp' => 'JABA930725MDFRRN06', 
+            'nombre' => 'America',
+            'apellido_paterno' => 'Jaimes',
+            'apellido_materno' => 'Barcenas',
+            'sexo' => 'Femenino',
+            'fecha_nacimiento' => '1993-07-25',
+            'telefono' => '7775006070',
+            'email' => 'america.jaimes@test.com',
+            'password' => Hash::make('12345678'),
+        ]);
+
+        $userAmerica->assignRole('administrador');
+
+        // 6. Josué Ortiz López 
+        $userJosue = User::create([
+            'curp' => 'OILJ951130HDFRRN07',
+            'nombre' => 'Josué',
+            'apellido_paterno' => 'Ortiz',
+            'apellido_materno' => 'López',
+            'sexo' => 'Masculino',
+            'fecha_nacimiento' => '1995-11-30',
+            'telefono' => '7776007080',
+            'email' => 'josue.ortiz@test.com',
+            'password' => Hash::make('12345678'),
+        ]);
+
+        $userJosue->assignRole('administrador');
     }
 }
