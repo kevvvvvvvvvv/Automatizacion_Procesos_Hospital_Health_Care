@@ -54,7 +54,7 @@ const Show = ({ traslado, paciente, estancia }: ShowTrasladoProps) => {
                     value={traslado.peso ?? 'N/A'}
                   />
                   <InfoField
-                    label="Talla (m)"
+                    label="Talla (cm)"
                     value={traslado.talla ?? 'N/A'}
                   />
                 </div>
