@@ -58,15 +58,15 @@ export const InterconsultaForm = ({
             <PacienteCard paciente={paciente} estancia={estancia} />
 
              <FormLayout
-        title="Registrar nueva interconsulta"
-        onSubmit={handleSubmit}
-        actions={<PrimaryButton type="submit" disabled={processing}>{processing ? 'Creando...' : 'Crear Interconsulta'}</PrimaryButton>}
-             >
+                title="Registrar nueva interconsulta"
+                onSubmit={handleSubmit}
+                actions={<PrimaryButton type="submit" disabled={processing}>{processing ? 'Creando...' : 'Crear Interconsulta'}</PrimaryButton>}
+            >
         {/* Sección 2: Motivo y Exploración */}
-        <h2 className="text-xl font-semibold text-gray-800 mt-6 mb-4 col-span-full">Motivo y Exploración</h2>
+        <h2 className="text-xl font-semibold text-gray-800 mt-6 mb-4 col-span-full">Motivo y exploración</h2>
         <div className="col-span-full md:col-span-1">
           <label htmlFor="motivo_de_la_atencion_o_interconsulta" className={labelClasses}>
-            Motivo de la Atención o Interconsulta
+            Motivo de la atención o interconsulta
           </label>
           <textarea
             id="motivo_de_la_atencion_o_interconsulta"
@@ -84,7 +84,7 @@ export const InterconsultaForm = ({
         </div>
         <div className="col-span-full md:col-span-1">
           <label htmlFor="resumen_del_interrogatorio" className={labelClasses}>
-            Resumen del Interrogatorio
+            Resumen del interrogatorio
           </label>
           <textarea
             id="resumen_del_interrogatorio"
@@ -328,6 +328,7 @@ export const InterconsultaForm = ({
             <p className="mt-1 text-xs text-red-500">{errors.pronostico}</p>
           )}
         </div>
+        
       </FormLayout>
         </div>
     );

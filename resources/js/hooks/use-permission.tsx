@@ -13,7 +13,6 @@ export const usePermission = () => {
         const userRoles = user.roles || [];
         const userPermissions = user.permissions || [];
 
-        // El rol 'admin' siempre tiene acceso total
         if (userRoles.includes('administrador')) {
             return true;
         }

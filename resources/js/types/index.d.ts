@@ -82,9 +82,8 @@ export interface User {
     created_at: string; 
     updated_at: string;
 
-
-
     permissions?: string[]; 
+    roles?: string[];
 };
 
 export interface CredencialEmpleado{
