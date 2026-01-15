@@ -60,7 +60,7 @@ class ReservacionQuirofanoController extends Controller
                 ->pluck('total', 'ubicacion')
                 ->toArray(),
         ]);
-    }
+    } 
 public function store(ReservacionQuirofanoRequest $request)
 {
     $data = $request->validated();
@@ -89,9 +89,6 @@ public function store(ReservacionQuirofanoRequest $request)
             return back()->withErrors(['horarios' => 'No hay quirófanos disponibles.']);
         }
 
-        /* ======================================================
-           3. Persistencia de Datos - REVISA LOS NOMBRES AQUÍ
-        ========================================================= */
         $reservacion = new ReservacionQuirofano();
         
         $reservacion->habitacion_id    = $habitacionAsignada;

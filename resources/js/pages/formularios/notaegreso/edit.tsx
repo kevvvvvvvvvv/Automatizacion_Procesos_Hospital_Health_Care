@@ -14,7 +14,7 @@ type Props = {
 };
 
 const Edit = ({paciente, estancia, egreso}: Props) =>{
-    console.log("informacion", estancia)
+    
     const handleEdit = (form : any) => {
         form.put(route('notasegresos.update', {
             paciente:  paciente.id,

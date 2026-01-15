@@ -13,6 +13,12 @@ class ReservacionQuirofanoRequest extends FormRequest
 public function rules(): array
 {
    return [
+        'paciente' => ['required'],
+        'tratante' => ['required'],
+        'procedimiento' => ['required'],
+        'tiempo_estimado' => ['required'],
+        'medico_operacion' => ['required'],
+        
         'fecha' => ['required'],
         'horarios' => ['required', 'array'],
     ];

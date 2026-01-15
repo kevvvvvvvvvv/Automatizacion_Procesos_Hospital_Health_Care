@@ -15,25 +15,13 @@ interface Props {
 
 
 const CreateNotaPreanestesica: React.FC<Props> = ({ paciente, estancia, preanestesica}) => {
-  const {
-    data,
-    setData,
-    errors,
-    post,
-    processing,
-  } = useForm({
-    
-  });
- 
-
-  const handleSubmit = (form : any) => {
-    form.post(
-      route('pacientes.estancias.notaspreanestesicas.store', {
-        paciente: paciente.id,
-        estancia: estancia.id,
-      })
-    );
-  };
+  const handleEdit = (form : any) => {
+  form.put(
+    route('notaspreanestesicas.update', {
+      notaspreanestesica: preanestesica.id // Cambiado de 'preanestesica' a 'notaspreanestesica'
+    })
+  );
+};
 
  
   return (
@@ -41,14 +29,14 @@ const CreateNotaPreanestesica: React.FC<Props> = ({ paciente, estancia, preanest
       <Head title="Nota Preanestésica" />
 
       <MainLayout
-      pageTitle={`Creación de nota preanestesica`}
+      pageTitle={`Edición de nota preanestesica`}
       link="estancias.show"
       
       linkParams={estancia.id} >
         <PacienteCard paciente={paciente} estancia={estancia} />
       <Preanestesicaform
 
-        onSubmit={handleSubmit}
+        onSubmit={handleEdit}
         paciente={paciente}
         estancia={estancia}
         preanestesica={preanestesica}
