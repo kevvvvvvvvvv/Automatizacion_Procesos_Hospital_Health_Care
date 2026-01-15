@@ -59,9 +59,11 @@ class UserSeeder extends Seeder
             'fecha_nacimiento' => '1982-07-10',
             'colaborador_responsable_id' => $userJuan->id,
             'telefono' => '7774441234', 
-            'email' => 'enfermeraauxiliar@hospital.com',
-            'password' => Hash::make('password123'),
+            'email' => 'enfermeraauxiliar@test.com',
+            'password' => Hash::make('12345678'),
         ]);
+
+        $userCarlos->assignRole('enfermera(o)');
 
        
         User::create([

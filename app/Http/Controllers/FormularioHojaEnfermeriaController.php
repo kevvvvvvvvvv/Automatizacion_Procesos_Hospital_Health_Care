@@ -20,18 +20,32 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Routing\Controllers\Middleware;
 
 use App\Services\PdfGeneratorService;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Routing\Controllers\HasMiddleware;
 
-class FormularioHojaEnfermeriaController extends Controller
+class FormularioHojaEnfermeriaController extends Controller implements HasMiddleware
 {
+    use AuthorizesRequests;
+
     protected $pdfGenerator;
+
+    public static function middleware(): array
+    {
+        $permission = \Spatie\Permission\Middleware\PermissionMiddleware::class;
+        return [
+            new Middleware($permission . ':consultar hojas enfermerias', only: ['index', 'show']),
+            new Middleware($permission . ':crear hojas enfermerias', only: ['create', 'store']),
+            new Middleware($permission . ':eliminar hojas enfermerias', only: ['destroy']),
+        ];
+    }
 
     public function __construct(PdfGeneratorService $pdfGenerator)
     {
         $this->pdfGenerator = $pdfGenerator;
     }
-
 
     public function create(Paciente $paciente, Estancia $estancia)
     {
