@@ -65,6 +65,13 @@ class RoleAndPermissionSeeder extends Seeder
         ]);
         
         $roleEnfermera->syncPermissions([
+            'consultar pacientes',
+            'crear pacientes',
+            'editar pacientes',
+
+            'consultar estancias',
+            'crear estancias',
+
             'consultar hojas enfermerias',
             'crear hojas enfermerias',
         ]);

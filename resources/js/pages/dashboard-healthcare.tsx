@@ -89,7 +89,6 @@ export default function Dashboard() {
                     />)}
                 </div>
                 <div>
-                    
                      <CardButton
                         icon={MdCalendarMonth}
                         text="Reservar"
@@ -98,11 +97,13 @@ export default function Dashboard() {
                 </div>     
 
                 <div>
+                    {can('consultar dietas') && (
                      <CardButton
                         icon={FaBowlFood}
                         text="Dietas"
                         onClick={() => router.visit(route('dietas.index'))}
                     />
+                    )}
                 </div>                   
             </MainLayout>
         </>
