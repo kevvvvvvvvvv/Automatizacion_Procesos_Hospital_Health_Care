@@ -43,6 +43,7 @@ class RoleAndPermissionSeeder extends Seeder
             'detalles ventas' => ['consultar','eliminar','editar','crear'],
             'hojas' => ['crear', 'consultar', 'editar', 'eliminar',], 
             'hojas enfermerias' => ['crear', 'consultar', 'eliminar'], // Solo se puede editar el documento que una persona creó
+            'documentos medicos' => ['crear', 'consultar'],
 
         ];
 
@@ -87,6 +88,21 @@ class RoleAndPermissionSeeder extends Seeder
             'crear productos y servicios',
             'editar productos y servicios',
             'eliminar productos y servicios',
+        ]);
+
+        $roleMedicoEspecialista->syncPermissions([
+            'consultar pacientes',
+            'crear pacientes',
+            'editar pacientes',
+
+            'crear estancias',
+            'editar estancias',
+            'consultar estancias',
+
+            'consultar hojas enfermerias',
+            
+            'consultar documentos medicos',
+            'crear documentos medicos',
         ]);
     }
 }
