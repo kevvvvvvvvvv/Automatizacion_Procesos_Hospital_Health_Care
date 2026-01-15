@@ -63,7 +63,9 @@ const Show = ({notasevolucione, paciente, estancia}: ShowNotaEvolucionProps) => 
             <InfoField
             label= "Peso"
             value= {notasevolucione.peso || 'N/A'}/>
-           
+           <InfoField
+            label= "Talla"
+            value= {notasevolucione.talla || 'N/A'}/>
         </div>
         
         <div className="space-y-2 mb-6">
@@ -111,8 +113,8 @@ Show.layout = (page: React.ReactElement) => {
   return (
     <MainLayout
       pageTitle={`Detalles de nota de evolucion de ${paciente.nombre} ${paciente.apellido_paterno} ${paciente.apellido_materno}`}
-        
-      
+      link='estancias.show'
+      linkParams={estancia.id}    
     >
       {page}
     </MainLayout>

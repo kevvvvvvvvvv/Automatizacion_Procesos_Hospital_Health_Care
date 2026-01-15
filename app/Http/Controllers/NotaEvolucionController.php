@@ -72,7 +72,7 @@ class NotaEvolucionController extends Controller
         }
     }
 
-      public function show(Paciente $paciente, Estancia $estancia, NotaEvolucion $notasevolucione)
+      public function show( NotaEvolucion $notasevolucione)
 {
     $notasevolucione->load([
         'formularioInstancia.estancia.paciente',
@@ -81,8 +81,8 @@ class NotaEvolucionController extends Controller
     
     return Inertia::render('formularios/notaevolucion/show', [
 
-        'paciente' => $paciente, // El paciente que llega por parámetro
-        'estancia' => $estancia, // ¡Asegúrate de que esta línea exista!
+        'paciente' => $notasevolucione->formularioInstancia->estancia->paciente, // El paciente que llega por parámetro
+        'estancia' => $notasevolucione->formularioinstancia->estancia, // ¡Asegúrate de que esta línea exista!
                 'notasevolucione' => $notasevolucione,
     ]);
 }
