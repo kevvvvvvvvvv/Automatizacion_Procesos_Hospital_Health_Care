@@ -38,4 +38,9 @@ class HojaEnfermeriaQuirofano extends Model
         return $this->morphMany(PersonalEmpleado::class, 'itemable');
     }
 
+    public function hojaOxigenos(): MorphMany
+    {
+        return $this->morphMany(HojaOxigeno::class, 'itemable');
+    }
+
 }
