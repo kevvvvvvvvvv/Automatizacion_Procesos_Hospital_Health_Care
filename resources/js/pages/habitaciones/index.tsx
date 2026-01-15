@@ -14,7 +14,7 @@ import {
 } from '@tanstack/react-table';
 import AddButton from '@/components/ui/add-button';
 import { Habitacion } from '@/types';
-import { Pencil } from 'lucide-react';
+import { Eye, Pencil } from 'lucide-react';
 
 type IndexProps = {
   habitaciones: Habitacion[];
@@ -82,6 +82,14 @@ const Index = ({ habitaciones }: IndexProps) => {
               }}
             >
               <Pencil size={18} />
+
+            </Link>
+            <Link 
+            href={route('habitaciones.show', row.original.id)}
+            className=''
+            title='Ver detalles'
+            onClick={(e)=>{ e.stopPropagation();}}>
+              <Eye size={18}/>
             </Link>
           </div>
         ),

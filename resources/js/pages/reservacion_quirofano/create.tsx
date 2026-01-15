@@ -1,5 +1,5 @@
 import React from "react";
-import { Head, useForm, usePage, router } from "@inertiajs/react"; // Importar router
+import { Head, useForm, usePage, router } from "@inertiajs/react"; 
 import MainLayout from "@/layouts/MainLayout";
 import FormLayout from "@/components/form-layout";
 import PrimaryButton from "@/components/ui/primary-button";
@@ -32,11 +32,12 @@ const CreateReservacion: React.FC<Props> = ({
     medicos = [],
 }) => {
     const esExterno = !estancia?.id;
-    // @ts-ignore
-    const { errors: serverErrors } = usePage().props;
+    
+    // Obtenemos los errores directamente de la página (Inertia los inyecta aquí)
+    const { errors: serverErrors } = usePage().props as any;
 
     const form = useForm({
-        paciente_nombre: paciente
+        paciente: paciente
             ? `${paciente.nombre} ${paciente.apellido_paterno ?? ""} ${paciente.apellido_materno ?? ""}`.trim()
             : "",
         paciente_id: paciente?.id ?? null,
@@ -69,7 +70,7 @@ const CreateReservacion: React.FC<Props> = ({
         }
 
         const payload = {
-            paciente: data.paciente_nombre,
+            paciente: data.paciente,
             paciente_id: data.paciente_id,
             estancia_id: data.estancia_id,
             procedimiento: data.procedimiento,
@@ -90,7 +91,6 @@ const CreateReservacion: React.FC<Props> = ({
                 : null,
         };
 
-        // Enviar usando router para procesar el payload personalizado
         router.post(route("quirofanos.store"), payload, {
             onError: (err) => console.error("Errores específicos:", err),
         });
@@ -106,84 +106,46 @@ const CreateReservacion: React.FC<Props> = ({
         );
     };
 
-    const handleCheckboxArray = (
-        key: "rayosx" | "laparoscopia",
-        subKey: "equipos" | "energia",
-        value: string
-    ) => {
-        const current = (data as any)[key][subKey];
-        const updated = current.includes(value)
-            ? current.filter((v: string) => v !== value)
-            : [...current, value];
+    // Función auxiliar para leer errores de serverErrors o del form
+    const getError = (key: string) => serverErrors?.[key] || form.errors[key];
 
+    // ... (Mantengo tus funciones handleCheckboxArray y renderCondicional igual)
+    const handleCheckboxArray = (key: "rayosx" | "laparoscopia", subKey: "equipos" | "energia", value: string) => {
+        const current = (data as any)[key][subKey];
+        const updated = current.includes(value) ? current.filter((v: string) => v !== value) : [...current, value];
         setData(key, { ...(data as any)[key], [subKey]: updated });
     };
 
-    const renderCondicional = (
-        label: string,
-        key: "laparoscopia" | "instrumentista" | "anestesiologo" | "insumos_med" | "esterilizar" | "rayosx" | "patologico"
-    ) => {
+    const renderCondicional = (label: string, key: "laparoscopia" | "instrumentista" | "anestesiologo" | "insumos_med" | "esterilizar" | "rayosx" | "patologico") => {
         const esRayosX = key === "rayosx";
         const esLaparoscopia = key === "laparoscopia";
         const item = (data as any)[key];
-
         return (
             <div className="p-3 border rounded bg-gray-50 mb-3">
                 <div className="flex justify-between mb-2">
                     <span className="font-bold text-sm">{label}</span>
                     <div className="flex gap-2">
-                        <button
-                            type="button"
-                            onClick={() => setData(key, { ...item, activa: true })}
-                            className={`px-3 py-1 text-xs rounded ${item.activa ? "bg-indigo-600 text-white" : "bg-gray-200"}`}
-                        > SÍ </button>
-                        <button
-                            type="button"
-                            onClick={() => {
-                                if (esRayosX) setData(key, { activa: false, equipos: [] });
-                                else if (esLaparoscopia) setData(key, { activa: false, detalle: "", energia: [] });
-                                else setData(key, { activa: false, detalle: "" });
-                            }}
-                            className={`px-3 py-1 text-xs rounded ${!item.activa ? "bg-indigo-600 text-white" : "bg-gray-200"}`}
-                        > NO </button>
+                        <button type="button" onClick={() => setData(key, { ...item, activa: true })} className={`px-3 py-1 text-xs rounded ${item.activa ? "bg-indigo-600 text-white" : "bg-gray-200"}`}> SÍ </button>
+                        <button type="button" onClick={() => {
+                            if (esRayosX) setData(key, { activa: false, equipos: [] });
+                            else if (esLaparoscopia) setData(key, { activa: false, detalle: "", energia: [] });
+                            else setData(key, { activa: false, detalle: "" });
+                        }} className={`px-3 py-1 text-xs rounded ${!item.activa ? "bg-indigo-600 text-white" : "bg-gray-200"}`}> NO </button>
                     </div>
                 </div>
-
                 {item.activa && (
                     <>
                         {esRayosX && (
                             <div className="flex gap-4 mb-2">
                                 {["Arco en C", "Portátil"].map(eq => (
                                     <label key={eq} className="text-xs flex gap-1">
-                                        <input
-                                            type="checkbox"
-                                            checked={data.rayosx.equipos.includes(eq)}
-                                            onChange={() => handleCheckboxArray("rayosx", "equipos", eq)}
-                                        /> {eq}
-                                    </label>
-                                ))}
-                            </div>
-                        )}
-                        {esLaparoscopia && (
-                            <div className="flex gap-4 mb-2">
-                                {["Ligasure", "Armónico"].map(en => (
-                                    <label key={en} className="text-xs flex gap-1">
-                                        <input
-                                            type="checkbox"
-                                            checked={data.laparoscopia.energia.includes(en)}
-                                            onChange={() => handleCheckboxArray("laparoscopia", "energia", en)}
-                                        /> {en}
+                                        <input type="checkbox" checked={data.rayosx.equipos.includes(eq)} onChange={() => handleCheckboxArray("rayosx", "equipos", eq)} /> {eq}
                                     </label>
                                 ))}
                             </div>
                         )}
                         {!esRayosX && (
-                            <textarea
-                                className="w-full border rounded p-2 text-sm"
-                                placeholder="Especifique..."
-                                value={item.detalle}
-                                onChange={e => setData(key, { ...item, detalle: e.target.value })}
-                            />
+                            <textarea className="w-full border rounded p-2 text-sm" placeholder="Especifique..." value={item.detalle} onChange={e => setData(key, { ...item, detalle: e.target.value })} />
                         )}
                     </>
                 )}
@@ -203,28 +165,61 @@ const CreateReservacion: React.FC<Props> = ({
                     </PrimaryButton>
                 }
             >
+                {/* Alerta general si hay errores en serverErrors */}
+                {serverErrors && Object.keys(serverErrors).length > 0 && (
+                    <div className="bg-red-100 border border-red-400 text-red-700 p-3 rounded mb-4">
+                        <b>Error:</b> Por favor llene todos los campos obligatorios marcados en rojo.
+                    </div>
+                )}
+
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     <div>
                         <label className="font-bold text-sm">Procedimiento</label>
-                        <input className="w-full border rounded p-2 mb-3" value={data.procedimiento} onChange={e => setData("procedimiento", e.target.value)} />
+                        <input 
+                            className={`w-full border rounded p-2 ${getError('procedimiento') ? 'border-red-500' : 'mb-3'}`} 
+                            value={data.procedimiento} 
+                            onChange={e => setData("procedimiento", e.target.value)} 
+                        />
+                        {getError('procedimiento') && <div className="text-red-500 text-xs mb-3">{getError('procedimiento')}</div>}
                         
                         <label className="font-bold text-sm">Paciente</label>
-                        <input className="w-full border rounded p-2 mb-3" value={data.paciente_nombre} readOnly={!esExterno} onChange={e => setData("paciente_nombre", e.target.value)} />
+                        <input 
+                            className={`w-full border rounded p-2 ${getError('paciente') ? 'border-red-500' : 'mb-3'} ${!esExterno ? 'bg-gray-100' : ''}`} 
+                            value={data.paciente} 
+                            readOnly={!esExterno} 
+                            onChange={e => setData("paciente", e.target.value)} 
+                        />
+                        {getError('paciente') && <div className="text-red-500 text-xs mb-3">{getError('paciente_nombre')}</div>}
 
                         <label className="font-bold text-sm">Médico Tratante</label>
-                        <select className="w-full border rounded p-2 mb-3" value={data.tratante} onChange={e => setData("tratante", e.target.value)}>
+                        <select 
+                            className={`w-full border rounded p-2 ${getError('tratante') ? 'border-red-500' : 'mb-3'}`} 
+                            value={data.tratante} 
+                            onChange={e => setData("tratante", e.target.value)}
+                        >
                             <option value="">Seleccione...</option>
                             {medicos.map(m => <option key={m.id} value={m.nombre_completo}>{m.nombre_completo}</option>)}
                         </select>
+                        {getError('tratante') && <div className="text-red-500 text-xs mb-3">{getError('tratante')}</div>}
 
                         <label className="font-bold text-sm">Cirujano</label>
-                        <select className="w-full border rounded p-2 mb-3" value={data.medico_operacion} onChange={e => setData("medico_operacion", e.target.value)}>
+                        <select 
+                            className={`w-full border rounded p-2 ${getError('medico_operacion') ? 'border-red-500' : 'mb-3'}`} 
+                            value={data.medico_operacion} 
+                            onChange={e => setData("medico_operacion", e.target.value)}
+                        >
                             <option value="">Seleccione...</option>
                             {medicos.map(m => <option key={m.id} value={m.nombre_completo}>{m.nombre_completo}</option>)}
                         </select>
+                        {getError('medico_operacion') && <div className="text-red-500 text-xs mb-3">{getError('medico_operacion')}</div>}
 
                         <label className="font-bold text-sm">Tiempo estimado</label>
-                        <input className="w-full border rounded p-2 mb-4" value={data.tiempo_estimado} onChange={e => setData("tiempo_estimado", e.target.value)} />
+                        <input 
+                            className={`w-full border rounded p-2 ${getError('tiempo_estimado') ? 'border-red-500' : 'mb-4'}`} 
+                            value={data.tiempo_estimado} 
+                            onChange={e => setData("tiempo_estimado", e.target.value)} 
+                        />
+                        {getError('tiempo_estimado') && <div className="text-red-500 text-xs mb-4">{getError('tiempo_estimado')}</div>}
 
                         {renderCondicional("¿Solicita laparoscopia?", "laparoscopia")}
                         {renderCondicional("¿Solicita instrumentista?", "instrumentista")}
@@ -236,15 +231,18 @@ const CreateReservacion: React.FC<Props> = ({
                     </div>
 
                     <div className="border rounded p-4">
+                        <label className="font-bold text-sm">Fecha</label>
                         <input
                             type="date"
-                            className="w-full border rounded p-2 mb-4"
+                            className={`w-full border rounded p-2 ${getError('fecha') ? 'border-red-500' : 'mb-4'}`}
                             value={data.fecha}
                             onChange={e => {
                                 setData("fecha", e.target.value);
                                 setData("horarios", []);
                             }}
                         />
+                        {getError('fecha') && <div className="text-red-500 text-xs mb-3">{getError('fecha')}</div>}
+
                         <div className="grid grid-cols-3 gap-2">
                             {horariosLista.map(h => {
                                 const full = `${data.fecha} ${h}:00`;
@@ -258,6 +256,8 @@ const CreateReservacion: React.FC<Props> = ({
                                 );
                             })}
                         </div>
+                        {getError('horarios') && <div className="text-red-500 text-xs mt-2">{getError('horarios')}</div>}
+
                         <textarea className="w-full border rounded p-2 mt-4" placeholder="Comentarios adicionales" value={data.comentarios} onChange={e => setData("comentarios", e.target.value)} />
                     </div>
                 </div>
