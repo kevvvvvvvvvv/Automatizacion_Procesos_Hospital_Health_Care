@@ -81,7 +81,7 @@ class FormularioHojaFrontalController extends Controller
 
     public function edit(Paciente $paciente, Estancia $estancia, HojaFrontal $hojaFrontal)
     {
-        $medicos = User::where('cargo_id','2')->get();
+        $medicos = User::all();
 
         return Inertia::render('formularios/hojas-frontales/edit', [
             'paciente' => $paciente,
