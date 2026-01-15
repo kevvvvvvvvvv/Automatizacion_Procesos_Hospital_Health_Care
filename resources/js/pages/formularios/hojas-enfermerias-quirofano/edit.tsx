@@ -105,7 +105,9 @@ const CreateHojaEnfermeriaQuirofano:CreateComponent = ({paciente, estancia, hoja
         </div>
 
             <ServiciosEspecialesForm
-                estancia={estancia}/>
+                modelo={hoja}
+                tipo='App\Models\HojaEnfermeriaQuirofano'
+            />
         </>
     )
 

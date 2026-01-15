@@ -259,9 +259,9 @@ export interface HojaEnfermeriaQuirofano {
     hora_fin_cirugia: string;
     hora_fin_anestesia: string;
     hora_fin_paciente: string;
-    hoja_insumos_basicos: HojaInsumosBasicos[] 
+    hoja_insumos_basicos: HojaInsumosBasicos[];
     personal_empleados: PersonalEmpleado[];
-    hoja_oxigenos: HojaOxigeno[]
+    hoja_oxigenos: HojaOxigeno[] | null;
 }
 
 export interface HojaInsumosBasicos {
