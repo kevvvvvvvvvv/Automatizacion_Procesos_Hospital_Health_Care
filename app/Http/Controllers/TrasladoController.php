@@ -45,7 +45,6 @@ class TrasladoController extends Controller
     {
         
         $validatedData = $request->validated();
-        $traslado->update($validatedData);
         DB::beginTransaction();
         $formularioInstancia = FormularioInstancia::create([
             'fecha_hora' => now(),
