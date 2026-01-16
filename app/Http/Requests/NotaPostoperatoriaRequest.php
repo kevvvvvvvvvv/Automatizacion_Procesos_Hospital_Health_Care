@@ -31,8 +31,8 @@ class NotaPostoperatoriaRequest extends FormRequest
             'talla' => 'required|integer|min:0',    // Talla 
             'resumen_del_interrogatorio' => 'required|string',
             'exploracion_fisica'         => 'required|string',
-            'resultado_estudios'               => 'nullable|string',
-            'tratamiento'                      => 'nullable|string',
+            'resultado_estudios'               => 'required|string',
+            'tratamiento'                      => 'required|string',
             'diagnostico_o_problemas_clinicos' => 'required|string',
             'plan_de_estudio'                  => 'required|string',
             'pronostico'                       => 'required|string',

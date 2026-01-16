@@ -18,27 +18,27 @@ return new class extends Migration
                 ->references('id')
                 ->on('formulario_instancias')
                 ->onDelete('cascade');
-             $table->string('ta')->nullable();
-            $table->integer('fc')->nullable();
-            $table->integer('fr')->nullable();
-            $table->decimal('peso', 8, 2)->nullable();
-            $table->decimal('talla', 4, 2)->nullable();
-            $table->decimal('temp', 4, 2)->nullable();
+             $table->string('ta');
+            $table->integer('fc');
+            $table->integer('fr');
+            $table->decimal('peso', 8, 2);
+            $table->integer('talla');
+            $table->decimal('temp', 4, 2);
             
-            $table->text('resultado_estudios')->nullable();
-            $table->text('tratamiento')->nullable();
-            $table->text('resumen_del_interrogatorio')->nullable();
-            $table->text('exploracion_fisica')->nullable();
-            $table->text('diagnostico_o_problemas_clinicos')->nullable();
-            $table->text('plan_de_estudio')->nullable();
-            $table->text('pronostico')->nullable();
+            $table->text('resultado_estudios');
+            $table->text('tratamiento');
+            $table->text('resumen_del_interrogatorio');
+            $table->text('exploracion_fisica');
+            $table->text('diagnostico_o_problemas_clinicos');
+            $table->text('plan_de_estudio');
+            $table->text('pronostico');
    
-            $table->string('unidad_medica_envia')->nullable();
-            $table->string('unidad_medica_recibe')->nullable();
-            $table->text('motivo_translado')->nullable();
-            $table->text('impresion_diagnostica')->nullable();
+            $table->string('unidad_medica_envia');
+            $table->string('unidad_medica_recibe');
+            $table->text('motivo_translado');
+            $table->text('impresion_diagnostica');
         
-            $table->string('terapeutica_empleada')->nullable();
+            $table->string('terapeutica_empleada');
             $table->timestamps();
         });
     }

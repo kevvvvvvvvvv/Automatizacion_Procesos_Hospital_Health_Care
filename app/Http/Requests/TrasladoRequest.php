@@ -20,7 +20,7 @@ class TrasladoRequest extends FormRequest
             'fr'   => ['required', 'numeric'],
             'temp' => ['required', 'numeric'],
             'peso' => ['required', 'numeric'],
-            'talla'=> ['required', 'numeric'],
+            'talla'=> ['required', 'integer'],
 
             // ---- Consulta / Exploración (Todos obligatorios ahora) ----
             'resultado_estudios'               => ['required', 'string'],
