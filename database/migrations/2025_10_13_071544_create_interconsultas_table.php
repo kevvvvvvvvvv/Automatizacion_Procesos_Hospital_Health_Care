@@ -18,23 +18,23 @@ return new class extends Migration
                 ->references('id')
                 ->on('formulario_instancias')
                 ->onDelete('cascade'); 
-            $table->text('criterio_diagnostico')->nullable(); 
-            $table->text('plan_de_estudio')->nullable();
-            $table->text('sugerencia_diagnostica')->nullable();
-            $table->string('ta')->nullable(); 
-            $table->integer('fc')->nullable();
-            $table->integer('fr')->nullable();
-            $table->decimal('temp', 5, 2)->nullable(); 
-            $table->decimal('peso', 6, 2)->nullable();
-            $table->decimal('talla', 4, 2)->nullable();
-            $table->text('motivo_de_la_atencion_o_interconsulta')->nullable();
-            $table->text('resumen_del_interrogatorio')->nullable();
-            $table->text('exploracion_fisica')->nullable();
-            $table->text('estado_mental')->nullable();
-            $table->text('resultados_relevantes_del_estudio_diagnostico')->nullable();
-            $table->text('diagnostico_o_problemas_clinicos')->nullable();
-            $table->text('tratamiento')->nullable();
-            $table->text('pronostico')->nullable();
+            $table->text('criterio_diagnostico'); 
+            $table->text('plan_de_estudio');
+            $table->text('sugerencia_diagnostica');
+            $table->string('ta'); 
+            $table->integer('fc');
+            $table->integer('fr');
+            $table->decimal('temp', 5, 2); 
+            $table->decimal('peso', 6, 2);
+            $table->integer('talla');
+            $table->text('motivo_de_la_atencion_o_interconsulta');
+            $table->text('resumen_del_interrogatorio');
+            $table->text('exploracion_fisica');
+            $table->text('estado_mental');
+            $table->text('resultados_relevantes_del_estudio_diagnostico');
+            $table->text('diagnostico_o_problemas_clinicos');
+            $table->text('tratamiento');
+            $table->text('pronostico');
             $table->timestamps(); 
         });
     }

@@ -116,7 +116,7 @@
         <p><strong>Tratamiento: </strong>{{$notaData['tratamiento']}}</p>
         <p><strong>Pronóstico: </strong>{{$notaData['pronostico']}}</p>
         <p><strong>Motivo de la atención de la interconsulta: </strong>{{$notaData['motivo_de_la_atencion_o_interconsulta']}}</p>
-        <P><strong>Criterio Diagnostico: </strong>{{$notaData['criterio:diagnostico']}}</P>
+        <P><strong>Criterio Diagnostico: </strong>{{$notaData['criterio_diagnostico']}}</P>
         <p><strong>Plan de estudio: </strong>{{$notaData['plan_de_estudio']}}</p>
         <p><strong>Sugerencia diagnostica: </strong>{{$notaData['sugerencia_diagnostica']}}</p>    
         </div>

@@ -190,7 +190,7 @@ export const InterconsultaForm = ({
         />
         <InputText
           id="talla"
-          label="Talla (m)"
+          label="Talla (cm)"
           name="talla"
           type="number"
           value={data.talla?.toString() || ''}

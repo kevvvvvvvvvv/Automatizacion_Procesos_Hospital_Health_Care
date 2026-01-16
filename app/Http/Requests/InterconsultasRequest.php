@@ -26,7 +26,7 @@ class InterconsultasRequest extends FormRequest
             'fr'    => ['required', 'integer', 'min:0'],
             'temp'  => ['required', 'numeric', 'min:20'],
             'peso'  => ['required', 'numeric', 'min:0'],
-            'talla' => ['required', 'numeric', 'min:0'],
+            'talla' => ['required', 'integer', 'min:0'],
 
             // --- Información Clínica (Ahora Requeridos) ---
             'criterio_diagnostico'                          => ['required', 'string'],
