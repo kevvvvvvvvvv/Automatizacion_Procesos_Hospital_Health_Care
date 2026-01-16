@@ -107,12 +107,12 @@ export const Urgenciaform = ({
                 />
                 <InputText
                   id="talla"
-                  label="Talla (m)"
+                  label="Talla (cm)"
                   name="talla"
                   type="number"
                   value={data.talla?.toString() || ''}
                   onChange={(e) => setData('talla', e.target.value)}
-                  placeholder="Ej: 1.75"
+                  placeholder="Ej: 175"
                   error={errors.talla}
                 />
             {/* Sección 1: Motivo de Consulta */}
@@ -206,6 +206,10 @@ export const Urgenciaform = ({
                 rows={4}
             autoComplete="off"
             />
+
+            {errors.tratamiento && (
+                <div className="text-red-600 text-sm mt-1">{errors.tratamiento}</div>
+            )}
         </div>
         <div className="mb-4">
             <label htmlFor="pronostico" className={labelClasses}>Pronóstico</label>
@@ -218,6 +222,9 @@ export const Urgenciaform = ({
                 rows={4}
             autoComplete="off"
             />
+            {errors.pronostico && (
+                <div className="text-red-600 text-sm mt-1">{errors.pronostico}</div>
+            )}
         </div>
       </FormLayout>
         </>

@@ -259,7 +259,7 @@ const Show = ({ estancia }: ShowEstanciaProps) => {
                                                     active ? 'bg-blue-500 text-white' : 'text-gray-900'
                                                 } group flex rounded-md items-center w-full px-2 py-2 text-sm`}
                                             >
-                                                Añadir nota de evoluciòn
+                                                Añadir nota de evolución
                                              
                                             </Link>
                                         )}

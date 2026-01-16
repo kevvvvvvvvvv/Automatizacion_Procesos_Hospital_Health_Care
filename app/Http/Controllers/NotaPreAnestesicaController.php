@@ -137,7 +137,7 @@ class NotaPreAnestesicaController extends Controller
         ];
 
         $viewData = [
-            'preanestesica' => $notaspreanestesica,
+            'notaData' => $notaspreanestesica,
             'paciente' => $paciente,
             'medico' => $medico,
         ];
@@ -146,7 +146,7 @@ class NotaPreAnestesicaController extends Controller
             'pdfs.nota-preanestesica',
             $viewData,
             $headerData,    
-            'nota-egreso-',
+            'nota-preanestesica-',
             $estancia->folio,
         );
 
