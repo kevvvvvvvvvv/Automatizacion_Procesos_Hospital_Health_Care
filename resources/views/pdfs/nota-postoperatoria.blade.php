@@ -114,7 +114,6 @@
 
 
         <div class="section-content">
-            <p><strong>Evolución y actualización del cuadro clínico (en su caso, incluir abuso y dependencia del tabaco, del alcohol y de otras sustancias psicoactivas): </strong> {{ $notaData->evolucion_actualizacion ?? 'Sin datos.' }}</p>
             <p><strong>Resumen del interrogatorio: </strong> {{ $notaData->resumen_del_interrogatorio ?? 'Sin datos.' }}</p>
             <p><strong>Exploración física: </strong> {{ $notaData->exploracion_fisica ?? 'Sin datos.' }}</p>
             <p><strong>Resultados relevantes de los estudios de los servicios auxiliares de diagnóstico y tratamiento que hayan sido solicitados previamente: </strong> {{ $notaData->resultado_estudios ?? 'Sin datos.' }}</p>

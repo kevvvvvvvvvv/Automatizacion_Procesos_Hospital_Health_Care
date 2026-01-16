@@ -19,7 +19,7 @@ class PreoperatoriaRequest extends FormRequest
             'fc'    => ['required', 'numeric'],
             'fr'    => ['required', 'numeric'],
             'peso'  => ['required', 'numeric'],
-            'talla' => ['required', 'numeric'],
+            'talla' => ['required', 'integer'],
             'temp'  => ['required', 'numeric'],
 
             // --- Estudios y exploración (Ahora obligatorios) ---
@@ -57,7 +57,7 @@ class PreoperatoriaRequest extends FormRequest
             'peso.required' => 'El peso es obligatorio.',
             'peso.numeric'  => 'El peso debe ser un número.',
             'talla.required'=> 'La talla es obligatoria.',
-            'talla.numeric' => 'La talla debe ser un número.',
+            'talla.integer' => 'La talla debe ser un número.',
             'temp.required' => 'La temperatura es obligatoria.',
             'temp.numeric'  => 'La temperatura debe ser un número.',
 
