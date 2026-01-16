@@ -18,20 +18,20 @@ return new class extends Migration
                 ->references('id')
                 ->on('formulario_instancias')
                 ->onDelete('cascade');
-            $table->string('ta')->nullable();
-            $table->integer('fc')->nullable();
-            $table->integer('fr')->nullable();
-            $table->float('temp')->nullable();
-            $table->float('peso')->nullable();
-            $table->float('talla')->nullable();
-            $table->string('motivo_atencion')->nullable();
-            $table->string('resumen_interrogatorio')->nullable();
-            $table->string('exploracion_fisica')->nullable();
-            $table->string('estado_mental')->nullable();
-            $table->string('resultados_relevantes')->nullable();
-            $table->string('diagnostico_problemas_clinicos')->nullable();
-            $table->string('tratamiento')->nullable();
-            $table->string('pronostico')->nullable();
+            $table->string('ta');
+            $table->integer('fc');
+            $table->integer('fr');
+            $table->float('temp');
+            $table->float('peso');
+            $table->integer('talla');
+            $table->string('motivo_atencion');
+            $table->string('resumen_interrogatorio');
+            $table->string('exploracion_fisica');
+            $table->string('estado_mental');
+            $table->string('resultados_relevantes');
+            $table->string('diagnostico_problemas_clinicos');
+            $table->string('tratamiento');
+            $table->string('pronostico');
             $table->timestamps();
         });
     }

@@ -231,7 +231,6 @@
         <p><strong>Resultado de estudios de los servicios auxiliares de diagnóstico y tratamiento: </strong>{{$notaData['resultado_estudios']}}</p>
         <p><strong>Diagnóstico(s) o problemas clínicos: </strong>{{$notaData['diagnostico_o_problemas_clinicos']}}</p>
         <p><strong>Plan de estudio y/o Tratamiento (indicaciones médicas, vía, dosis, periodicidad): </strong>{{$notaData['plan_de_estudio']}}</p>
-        <p><strong>Tratamiento</strong>{{$notaData['tratamiento']}}</p>
         <p><strong>Pronóstico: </strong>{{$notaData['pronostico']}}</p>
 
         <p><strong>Técnica anestésica utilizada: </strong>{{$notaData['tecnica_anestesica']}}</p>

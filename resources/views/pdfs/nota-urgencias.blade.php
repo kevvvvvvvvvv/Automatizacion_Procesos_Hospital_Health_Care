@@ -171,7 +171,7 @@
         <div class="section-content">
             <p><strong>Motivo de la Atención:</strong> {{ $notaData['motivo_de_la_atencion_o_interconsulta'] ?? 'Sin datos.' }}</p>
             <p><strong>Resumen del Interrogatorio:</strong> {{ $notaData['resumen_del_interrogatorio'] ?? 'Sin datos.' }}</p>
-            <p>{{ $notaData['exploracion_fisica'] ?? 'Sin datos.' }}</p>
+            <p><strong>Exploración física: </strong>{{ $notaData['exploracion_fisica'] ?? 'Sin datos.' }}</p>
             <p><strong>Estado Mental:</strong> {{ $notaData['estado_mental'] ?? 'Sin datos.' }}</p>
         </div>
 

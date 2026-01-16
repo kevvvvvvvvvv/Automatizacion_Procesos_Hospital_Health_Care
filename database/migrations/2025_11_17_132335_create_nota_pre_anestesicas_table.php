@@ -22,7 +22,7 @@ return new class extends Migration
             $table->integer('fc')->nullable();
             $table->integer('fr')->nullable();
             $table->decimal('peso', 8, 2)->nullable();
-            $table->decimal('talla', 4, 2)->nullable();
+            $table->integer('talla')->nullable();
             $table->decimal('temp', 4, 2)->nullable();
 
             $table->text('tratamiento')->nullable();

@@ -25,7 +25,7 @@ class NotaPreanestesicaRequest extends FormRequest
             'fc'    => ['required', 'numeric'],
             'fr'    => ['required', 'numeric'],
             'peso'  => ['required', 'numeric'],
-            'talla' => ['required', 'numeric'],
+            'talla' => ['required', 'integer'],
             'temp'  => ['required', 'numeric'],
 
             // ---- Estudios y Exploración (Todos Requeridos) ----
