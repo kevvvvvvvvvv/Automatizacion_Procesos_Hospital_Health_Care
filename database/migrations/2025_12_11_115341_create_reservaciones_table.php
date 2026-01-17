@@ -17,10 +17,10 @@ return new class extends Migration
         $table->enum('localizacion', ['Plan de Ayutla', 'Gustavo Díaz Ordaz']);
         $table->date('fecha');
 
-        // número total de bloques de 30 min
+
         $table->integer('horas');
-        // En la migración de reservaciones
-        $table->decimal('pago')->nullable();
+
+        $table->decimal('pago_total')->nullable();
         $table->enum('estatus', ['pendiente', 'pagado', 'cancelado'])->default('pendiente');
 
 

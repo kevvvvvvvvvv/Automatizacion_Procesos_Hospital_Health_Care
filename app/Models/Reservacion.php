@@ -13,6 +13,7 @@ class Reservacion extends Model
         'horas',
         'estatus',
         'user_id',
+        'pago_total',
         'stripe_payment_id'
     ];
 
