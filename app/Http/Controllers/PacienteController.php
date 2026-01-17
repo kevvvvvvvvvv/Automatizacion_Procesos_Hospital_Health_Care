@@ -38,54 +38,60 @@ class PacienteController extends Controller implements HasMiddleware
     }
 
     public function store(Request $request)
-    {
-        try {
-            $validatedData = $request->validate([
-                'paciente.curp' => 'required|string|max:18|unique:pacientes,curp',
-                'paciente.nombre' => 'required|string|max:100',
-                'paciente.apellido_paterno' => 'required|string|max:100',
-                'paciente.apellido_materno' => 'required|string|max:100',
-                'paciente.sexo' => 'required|string|in:Masculino,Femenino',
-                'paciente.fecha_nacimiento' => 'required|date',
-                'paciente.calle' => 'required|string|max:100',
-                'paciente.numero_exterior' => 'required|string|max:50',
-                'paciente.numero_interior' => 'nullable|string|max:50',
-                'paciente.colonia' => 'required|string|max:100',
-                'paciente.municipio' => 'required|string|max:100',
-                'paciente.estado' => 'required|string|max:100',
-                'paciente.pais' => 'required|string|max:100',
-                'paciente.cp' => 'required|string|max:10',
-                'paciente.telefono' => 'required|string|max:20',
-                'paciente.estado_civil' => 'required|string|in:Soltero(a),Casado(a),Divorciado(a),Viudo(a),Union libre',
-                'paciente.ocupacion' => 'required|string|max:100',
-                'paciente.lugar_origen' => 'required|string|max:100',
-                'paciente.nombre_padre' => 'nullable|string|max:100',
-                'paciente.nombre_madre' => 'nullable|string|max:100',
-            ]);
-
-            $pacienteData = $validatedData['paciente'];  
-            $paciente = Paciente::create($pacienteData);  
-
-            if ($request->has('responsable')) {
-                $validatedResponsable = $request->validate([
-                    'responsable.nombre_completo' => 'required|string|max:100',
-                    'responsable.parentesco' => 'required|string|max:100',
+    { 
+        return \DB::transaction(function() use ($request) {
+            try {
+                $validatedData = $request->validate([
+                    'paciente.curp' => 'required|string|max:18|unique:pacientes,curp',
+                    'paciente.nombre' => 'required|string|max:100',
+                    'paciente.apellido_paterno' => 'required|string|max:100',
+                    'paciente.apellido_materno' => 'required|string|max:100',
+                    'paciente.sexo' => 'required|string|in:Masculino,Femenino',
+                    'paciente.fecha_nacimiento' => 'required|date',
+                    'paciente.calle' => 'required|string|max:100',
+                    'paciente.numero_exterior' => 'required|string|max:50',
+                    'paciente.numero_interior' => 'nullable|string|max:50',
+                    'paciente.colonia' => 'required|string|max:100',
+                    'paciente.municipio' => 'required|string|max:100',
+                    'paciente.estado' => 'required|string|max:100',
+                    'paciente.pais' => 'required|string|max:100',
+                    'paciente.cp' => 'required|string|max:10',
+                    'paciente.telefono' => 'required|string|max:20',
+                    'paciente.estado_civil' => 'required|string|in:Soltero(a),Casado(a),Divorciado(a),Viudo(a),Union libre',
+                    'paciente.ocupacion' => 'required|string|max:100',
+                    'paciente.lugar_origen' => 'required|string|max:100',
+                    'paciente.nombre_padre' => 'nullable|string|max:100',
+                    'paciente.nombre_madre' => 'nullable|string|max:100',
                 ]);
+
+                $pacienteData = $validatedData['paciente'];  
+                $paciente = Paciente::create($pacienteData); 
+                if ($request->has('responsables')) {
+                    $validatedResponsables = $request->validate([
+                        'responsables' => 'array', 
+                        'responsables.*.nombre_completo' => 'required|string|max:100',
+                        'responsables.*.parentesco' => 'required|string|max:100',
+                    ]);
+                    
+                    foreach ($validatedResponsables['responsables'] as $responsableData) {
+                        FamiliarResponsable::create([
+                            'paciente_id' => $paciente->id,
+                            'nombre_completo' => $responsableData['nombre_completo'],
+                            'parentesco' => $responsableData['parentesco'],
+                        ]);
+                    }
+                }
                 
-                FamiliarResponsable::create([
-                    'paciente_id' => $paciente->id,
-                    'nombre_completo' => $validatedResponsable['responsable']['nombre_completo'],
-                    'parentesco' => $validatedResponsable['responsable']['parentesco'],
-                ]);
+                return redirect()->route('pacientes.index')
+                                ->with('success', 'Paciente registrado correctamente.');
+
+            } catch (\Illuminate\Validation\ValidationException $e) {
+                throw $e; 
+            } catch (\Exception $e) {
+                \Log::error($e->getMessage()); 
+                return back()->with('error', 'Error interno: Intenta de nuevo.');
             }
-            
-            return redirect()->route('pacientes.index')->with('success', 'Paciente registrado correctamente.');
-        } catch (\Illuminate\Validation\ValidationException $e) {
-            return back()->withErrors($e->errors())->withInput();
-        } catch (\Exception $e) {
-            \Log::error($e->getMessage()); 
-            return back()->with('error', 'Error interno: Intenta de nuevo. Revisa los logs para más detalles.');
-        }
+        });
     }
     
 
