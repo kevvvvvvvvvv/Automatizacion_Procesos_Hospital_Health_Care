@@ -21,4 +21,9 @@ class HabitacionPrecio extends Model
     {
         return $this->belongsTo(Habitacion::class);
     }
+
+    public function reservacionHorario(): HasOne
+    {
+        return $this->hasOne(ReservacionHorario::class);
+    }
 }

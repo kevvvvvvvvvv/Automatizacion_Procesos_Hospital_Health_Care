@@ -18,9 +18,9 @@ return new class extends Migration
                 ->constrained('reservaciones')
                 ->cascadeOnDelete();
 
-        $table->foreignId('habitacion_id')
-            ->constrained('habitaciones')
-            ->cascadeOnDelete();
+        $table->foreignId('habitacion_precio_id')
+            ->constrained('habitacion_precios')
+            ->onDelete('cascade');
 
         // Bloque exacto (ej: 2025-12-15 09:30:00)
         $table->dateTime('fecha_hora');
