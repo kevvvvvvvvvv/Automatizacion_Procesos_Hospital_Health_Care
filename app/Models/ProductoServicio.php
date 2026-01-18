@@ -5,6 +5,30 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
+/**
+ * @property int $id
+ * @property string $tipo
+ * @property string $subtipo
+ * @property string $codigo_prestacion
+ * @property string $nombre_prestacion
+ * @property string $importe
+ * @property int|null $cantidad
+ * @property string $iva
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\DetalleVenta> $detallesVenta
+ * @property-read int|null $detalles_venta_count
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductoServicio newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductoServicio newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductoServicio query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductoServicio whereCantidad($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductoServicio whereCodigoPrestacion($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductoServicio whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductoServicio whereImporte($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductoServicio whereIva($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductoServicio whereNombrePrestacion($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductoServicio whereSubtipo($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductoServicio whereTipo($value)
+ * @mixin \Eloquent
+ */
 class ProductoServicio extends Model
 {
     public const IVA = 1.16;
