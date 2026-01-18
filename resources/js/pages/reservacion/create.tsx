@@ -1,166 +1,170 @@
-import React from "react";
-import MainLayout from "@/layouts/MainLayout";
-import SelectInput from "@/components/ui/input-select";
+import React, { useState } from "react";
 import { useForm } from "@inertiajs/react";
-import FormLayout from "@/components/form-layout";
-import PrimaryButton from "@/components/ui/primary-button";
-import { Reservacion } from "@/types";
+import { Habitacion, HabitacionPrecio, Reservacion } from "@/types";
 import { route } from "ziggy-js";
 
-interface Props {
-  reservacion?: Reservacion | null;
-  limitesDinamicos: Record<string, number>;
-  ocupacionActual: Record<string, number>;
-  horariosSeleccionados?: string[]; 
+import MainLayout from "@/layouts/MainLayout";
+import SelectInput from "@/components/ui/input-select";
+import FormLayout from "@/components/form-layout";
+import PrimaryButton from "@/components/ui/primary-button";
+import InputDate from "@/components/ui/input-date";
+
+interface Ubicacion {
+    ubicacion: string;
 }
 
-const localizaciones = [
-  { value: "Plan de Ayutla", label: "Plan de Ayutla" },
-  { value: "Gustavo Díaz Ordaz", label: "Gustavo Díaz Ordaz" },
-];
-
 const generarHorarios = () => {
-  const horarios: string[] = [];
-  for (let h = 8; h < 22; h++) {
-    for (let m = 0; m < 60; m += 30) {
-      horarios.push(`${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`);
+    const slots = [];
+    let actual = new Date(); 
+    actual.setHours(9, 0, 0);
+
+    let fin = new Date();
+    fin.setHours(23, 0, 0); 
+
+    while (actual <= fin) { 
+        const horaFormateada = actual.toTimeString().slice(0, 8);
+        slots.push(horaFormateada);
+        actual.setMinutes(actual.getMinutes() + 30);
     }
-  }
-  return horarios;
+    return slots;
 };
 
-const horariosLista = generarHorarios();
+const listaHorarios = generarHorarios();
+
+interface Props {
+    reservacion?: Reservacion | null;
+    limitesDinamicos: Record<string, number>;
+    ocupacionActual: Record<string, number>;
+    horariosSeleccionados?: string[]; 
+    ubicaciones: Ubicacion[];
+    habitaciones: Habitacion[];
+}
 
 const CreateReservacion: React.FC<Props> = ({
-  reservacion,
-  limitesDinamicos,
-  ocupacionActual,
-  horariosSeleccionados = []
+    ubicaciones = [],
+    habitaciones = [],
+    reservacion,
+    horariosSeleccionados = []
 }) => {
-  const isEdit = !!reservacion;
-  const hoy = new Date().toISOString().split("T")[0];
+    const [localizacionData, localizacionSetData] = useState('');
+    const [consultoriosData, consultoriosSetData] = useState<Habitacion[]>();
 
-  const { data, setData, post, put, processing } = useForm({
-    localizacion: reservacion?.localizacion ?? "",
-    fecha: reservacion?.fecha ?? hoy,
-    // PASO 1: Aquí se cargan los horarios actuales de la reservación
-    horarios: isEdit ? horariosSeleccionados : [] as string[],
-  });
+    const habitacionesFiltradas = habitaciones.filter(h => h.ubicacion === localizacionData);
 
-  const toggleHorario = (hora: string) => {
-    if (!data.fecha || !data.localizacion) return;
+    const localizaciones = ubicaciones.map((u)=>({value: u.ubicacion, label: u.ubicacion}));
 
-    const horarioCompleto = `${data.fecha} ${hora}:00`;
-    const llaveOcupacion = `${data.localizacion}|${horarioCompleto}`;
+    const isEdit = !!reservacion;
+    const hoy = new Date().toISOString().split("T")[0];
 
-    // Ocupados por OTROS (el controlador ya restó los tuyos)
-    const ocupadosEnBD = ocupacionActual[llaveOcupacion] ?? 0;
-    const yaSeleccionadoEnFormulario = data.horarios.includes(horarioCompleto);
-    const limite = limitesDinamicos[data.localizacion] ?? 0;
+    const { data, setData, post, put, processing } = useForm({
+        habiacion_precios_id: [] as HabitacionPrecio[],
+        fecha: reservacion?.fecha ?? hoy,
+        horarios: isEdit ? horariosSeleccionados : [] as string[],
+    });
 
-    if (yaSeleccionadoEnFormulario) {
-      // PASO 2: Si haces clic en uno azul, se quita (se "deselecciona")
-      setData("horarios", data.horarios.filter((h) => h !== horarioCompleto));
-    } else {
-      // PASO 3: Si haces clic en uno vacío, se agrega (si hay cupo)
-      if (ocupadosEnBD < limite) {
-        setData("horarios", [...data.horarios, horarioCompleto]);
-      } else {
-        alert("Este horario ya no está disponible.");
-      }
-    }
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (data.horarios.length < 1) {
-      alert("Debes seleccionar al menos un horario");
-      return;
-    }
-
-    if (isEdit) {
-
-      put(route("reservaciones.update", reservacion.id));
-    } else {
-
-      post(route("reservaciones.store"));
-    }
-  };
-
-  return (
-    <MainLayout pageTitle="Reservación" link="reservaciones.index">
-      <FormLayout
-        title={isEdit ? "Editar reservación" : "Registrar reservación"}
-        onSubmit={handleSubmit}
-        actions={
-          <PrimaryButton type="submit" disabled={processing}>
-            {processing ? "Guardando..." : "Guardar"}
-          </PrimaryButton>
+    const toggleHorario = (hora: string) => {
+        const yaSeleccionado = data.horarios.includes(hora);
+        
+        if (yaSeleccionado) {
+            setData("horarios", data.horarios.filter((h) => h !== hora));
+        } else {
+            setData("horarios", [...data.horarios, hora]);
         }
-      >
-        <div className="space-y-6">
-          <SelectInput
-            label="Localización"
-            value={data.localizacion}
-            onChange={(val: string) => setData("localizacion", val)}
-            options={localizaciones}
-          />
+    };
 
-          {data.localizacion && (
-            <input
-              type="date"
-              className="w-full border rounded-md px-3 py-2"
-              value={data.fecha}
-              onChange={(e) => setData("fecha", e.target.value)}
-            />
-          )}
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        if (data.horarios.length < 1) {
+        alert("Debes seleccionar al menos un horario");
+        return;
+        }
 
-          {data.fecha && data.localizacion && (
-            <div>
-              <h3 className="font-semibold text-gray-700 mb-2">Horarios disponibles</h3>
-              <ul className="grid grid-cols-3 md:grid-cols-6 gap-2">
-                {horariosLista.map((hora) => {
-                  const horarioCompleto = `${data.fecha} ${hora}:00`;
-                  const seleccionado = data.horarios.includes(horarioCompleto);
-                  const llaveOcupacion = `${data.localizacion}|${horarioCompleto}`;
-                  const ocupadosEnBD = ocupacionActual[llaveOcupacion] ?? 0;
-                  
-                  const limite = limitesDinamicos[data.localizacion] ?? 0;
-                  const totalParaMostrar = ocupadosEnBD + (seleccionado ? 1 : 0);
-                  const estaLleno = totalParaMostrar >= limite && limite > 0;
-                  const bloqueado = estaLleno && !seleccionado;
+        if (isEdit) {
 
-                  return (
-                    <li key={hora}>
-                      <button
-                        key={hora}
-                        type="button"
-                        disabled={bloqueado}
-                        onClick={() => toggleHorario(hora)}
-                        className={`w-full px-3 py-2 rounded-md border text-sm transition flex flex-col items-center ${
-                          seleccionado
-                            ? "bg-indigo-600 text-white border-indigo-600"
-                            : bloqueado
-                            ? "bg-red-50 text-red-400 border-red-200 cursor-not-allowed"
-                            : "bg-white hover:bg-indigo-50 border-gray-300"
-                        }`}
-                      >
-                        <span className="font-medium">{hora}</span>
-                        <span className="text-[10px] mt-1">
-                          {totalParaMostrar >= limite && limite > 0 ? 'No disponible' : `${totalParaMostrar}/${limite}`}
-                        </span>
-                        
-                      </button>
-                    </li>
-                  );
-                })}
-              </ul>
-            </div>
-          )}
-        </div>
-      </FormLayout>
-    </MainLayout>
-  );
+        put(route("reservaciones.update", reservacion.id));
+        } else {
+
+        post(route("reservaciones.store"));
+        }
+    };
+
+    return (
+        <MainLayout pageTitle="Reservación" link="reservaciones.index">
+            <FormLayout
+                title={isEdit ? "Editar reservación" : "Registrar reservación"}
+                onSubmit={handleSubmit}
+                actions={
+                <PrimaryButton type="submit" disabled={processing}>
+                    {processing ? "Guardando..." : "Guardar"}
+                </PrimaryButton>
+                }
+            >
+                <div className="space-y-6">
+                <SelectInput
+                    label="Localización"
+                    value={localizacionData}
+                    onChange={(val) => localizacionSetData(val)}
+                    options={localizaciones}
+                />
+
+                {localizacionData && (
+                    <InputDate
+                        type="date"
+                        className="w-full border rounded-md px-3 py-2"
+                        value={data.fecha}
+                        onChange={(e) => setData("fecha", e.target.value)}
+                    />
+                )}
+
+                {data.fecha && localizacionData && (
+                    <div>
+                        <h3 className="font-semibold text-gray-700 mb-2">Horarios disponibles</h3>
+                        <ul className="grid grid-cols-3 md:grid-cols-6 gap-2">
+                            {listaHorarios.map((hora)=>{
+                                const claveBusqueda = `${localizacionData}|${data.fecha} ${hora}`;
+
+                                // B. Obtenemos los datos (Usamos nombres consistentes)
+                                const limite = limitesDinamicos[localizacionData] || 0; 
+                                const ocupados = ocupacionActual[claveBusqueda] || 0;   
+
+                                // C. Lógica de estado
+                                const bloqueado = ocupados >= limite;           
+                                const seleccionado = data.horarios.includes(hora); 
+                                                            
+                                return (
+                                    <li key={hora}>
+                                        <button
+                                            type="button"
+                                            disabled={bloqueado} 
+                                            onClick={() => toggleHorario(hora)}
+                                            className={`w-full px-3 py-2 rounded-md border text-sm transition flex flex-col items-center 
+                                            ${seleccionado
+                                                ? "bg-indigo-600 text-white border-indigo-600"
+                                                : bloqueado
+                                                    ? "bg-red-50 text-red-400 border-red-200 cursor-not-allowed"
+                                                    : "bg-white hover:bg-indigo-50 border-gray-300 text-gray-700"
+                                            }`}
+                                        >
+                                            {/* Muestra "09:00" */}
+                                            <span className="font-medium">{hora.slice(0, 5)}</span>
+                                            
+                                            <span className="text-[10px] mt-1">
+                                                {bloqueado && limite > 0 
+                                                    ? 'Agotado' 
+                                                    : `${ocupados} / ${limite}`
+                                                }
+                                            </span>
+                                        </button>
+                                    </li>
+                                );
+                            })}
+                        </ul>
+                    </div>
+                )}
+                </div>
+            </FormLayout>
+        </MainLayout>
+    );
 };
 
 export default CreateReservacion;

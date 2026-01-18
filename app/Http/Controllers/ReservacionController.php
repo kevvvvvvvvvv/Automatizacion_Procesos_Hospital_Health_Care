@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 use Laravel\Cashier\Exceptions\IncompletePayment;
 
 use App\Http\Requests\ReservacionRequest;
+use App\Models\HabitacionPrecio;
 use Illuminate\Support\Facades\Redirect;
 
 class ReservacionController extends Controller
@@ -48,7 +49,6 @@ class ReservacionController extends Controller
 
     public function show(Reservacion $reservacione)
     {
-
         $reservacione->load(['user', 'horarios.habitacion']);
         return Inertia::render('reservacion/show', [
             'reservacion' => $reservacione,
@@ -57,31 +57,45 @@ class ReservacionController extends Controller
         ]);
     }
    
-    public function create()
+    public function create(Request $request)
     {
-        $limitesPorSede = Habitacion::where('tipo', 'Consultorio')
+        // 1. Capturamos la fecha de la URL (o usamos HOY por defecto)
+        $fechaSeleccionada = $request->input('fecha', now()->format('Y-m-d'));
+
+        // 2. Tu Consulta SQL Optimizada (Left Join) filtrando por esa fecha
+        $disponibilidad = \App\Models\HabitacionPrecio::select(
+                'habitaciones.ubicacion',
+                'habitacion_precios.horario_inicio',
+                DB::raw('count(*) as disponibles')
+            )
+            ->join('habitaciones', 'habitacion_precios.habitacion_id', '=', 'habitaciones.id')
+            // Left Join filtrado por la fecha seleccionada
+            ->leftJoin('reservacion_horarios', function($join) use ($fechaSeleccionada) {
+                $join->on('reservacion_horarios.habitacion_precio_id', '=', 'habitacion_precios.id')
+                    ->where('reservacion_horarios.fecha', '=', $fechaSeleccionada);
+            })
+            ->where('habitaciones.tipo', 'Consultorio')
+            ->whereNull('reservacion_horarios.id') // Solo los que NO tienen reserva
+            ->groupBy('habitaciones.ubicacion', 'habitacion_precios.horario_inicio')
+            ->get();
+
+        // 3. Formateamos para que React lo entienda fácil: "Centro|09:00:00" => Disponibles
+        $mapaDisponibilidad = $disponibilidad->mapWithKeys(function ($item) {
+            $clave = $item->ubicacion . '|' . $item->horario_inicio;
+            return [$clave => $item->disponibles];
+        });
+
+        // 4. Los límites totales (esto no cambia por fecha, es fijo de la infraestructura)
+        $limitesPorSede = \App\Models\Habitacion::where('tipo', 'Consultorio')
             ->select('ubicacion', DB::raw('count(*) as total'))
             ->groupBy('ubicacion')
-            ->get()
             ->pluck('total', 'ubicacion');
-
-
-            $ocupacionActual = ReservacionHorario::join('habitaciones', 'reservacion_horarios.habitacion_id', '=', 'habitaciones.id')
-                ->select(
-                    'habitaciones.ubicacion', 
-                    'reservacion_horarios.fecha_hora', 
-                    DB::raw('count(*) as ocupados')
-                )
-                ->groupBy('habitaciones.ubicacion', 'reservacion_horarios.fecha_hora')
-                ->get()
-                ->mapWithKeys(function ($item) {
-                    $fechaFormateada = \Carbon\Carbon::parse($item->fecha_hora)->format('Y-m-d H:i:s');
-                    return [$item->ubicacion . '|' . $fechaFormateada => $item->ocupados];
-                });
 
         return Inertia::render('reservacion/create', [
             'limitesDinamicos' => $limitesPorSede,
-            'ocupacionActual'  => $ocupacionActual
+            'ocupacionActual'  => $mapaDisponibilidad, // Enviamos la disponibilidad ya calculada
+            'fechaSeleccionada'=> $fechaSeleccionada, // Devolvemos la fecha para que el input no se resetee
+            'ubicaciones'      => \App\Models\Habitacion::select('ubicacion')->distinct()->get(),
         ]);
     }
 

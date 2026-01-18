@@ -118,6 +118,8 @@ export interface Habitacion {
     estancia_activa?: { 
         paciente?: Paciente
     };
+
+    habitacion_precios: HabitacionPrecio[];
 }
 
 export interface Estancia {
@@ -767,6 +769,7 @@ export interface Consentimiento{
     created_at?: string;
     updated_at?: string;
 }
+
 export interface Reservacion{
     id: number;
     localizacion: string;
@@ -778,11 +781,24 @@ export interface Reservacion{
     created_at: string;
     update_at:string;
 }
+
 export interface ReservacionHorarios{
     reservacion_id: number;
     habitacion_id: number;
     fecha_hora: string;
 }
+
+export interface HabitacionPrecio{
+    id: number;
+    horario_inicio: string;
+    horario_fin: string;
+    precio: number;
+    habitacion_id;
+    
+    habitacion: Habitacion;
+}
+
+
 export interface ReservacionQuirofano {
     id: number;
     habitacion_id: number | null; 

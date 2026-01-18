@@ -6,6 +6,32 @@ use Illuminate\Database\Eloquent\Model;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * @property int $id
+ * @property int $producto_servicio_id
+ * @property string|null $fecha_instalacion
+ * @property string|null $fecha_caducidad
+ * @property int $user_id
+ * @property string|null $observaciones
+ * @property int $hoja_enfermeria_id
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\HojaEnfermeria $hojaEnfermeria
+ * @property-read \App\Models\ProductoServicio $productoServicio
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|HojaSondaCateter newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|HojaSondaCateter newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|HojaSondaCateter query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|HojaSondaCateter whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|HojaSondaCateter whereFechaCaducidad($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|HojaSondaCateter whereFechaInstalacion($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|HojaSondaCateter whereHojaEnfermeriaId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|HojaSondaCateter whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|HojaSondaCateter whereObservaciones($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|HojaSondaCateter whereProductoServicioId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|HojaSondaCateter whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|HojaSondaCateter whereUserId($value)
+ * @mixin \Eloquent
+ */
 class HojaSondaCateter extends Model
 {
     protected $table = 'hoja_sonda_cateters';

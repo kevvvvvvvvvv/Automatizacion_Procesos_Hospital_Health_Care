@@ -4,6 +4,20 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @property int $id
+ * @property string $nombre_formulario
+ * @property string $nombre_tabla_fisica
+ * @property string $route_prefix
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|FormularioCatalogo newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|FormularioCatalogo newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|FormularioCatalogo query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|FormularioCatalogo whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|FormularioCatalogo whereNombreFormulario($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|FormularioCatalogo whereNombreTablaFisica($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|FormularioCatalogo whereRoutePrefix($value)
+ * @mixin \Eloquent
+ */
 class FormularioCatalogo extends Model
 {
     /**
