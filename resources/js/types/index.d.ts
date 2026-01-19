@@ -772,20 +772,26 @@ export interface Consentimiento{
 
 export interface Reservacion{
     id: number;
-    localizacion: string;
     fecha: string;
-    horarios: string;
-    horas: number;
-    habitaciones_id: number;
     user_id: number;
+    stripe_payment_id: number;
+    estatus: string;
+    pago_total: number;
+
+    user: User;
+    horarios: ReservacionHorarios[];
     created_at: string;
     update_at:string;
 }
 
 export interface ReservacionHorarios{
+    id: number;
     reservacion_id: number;
-    habitacion_id: number;
-    fecha_hora: string;
+    habitacion_precio_id: number;
+    fecha: string;
+
+    reservacion: Reservacion[];
+    habitacion_precio: HabitacionPrecio;
 }
 
 export interface HabitacionPrecio{

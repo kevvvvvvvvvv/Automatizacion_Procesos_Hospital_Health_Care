@@ -12,26 +12,21 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('reservaciones', function (Blueprint $table) {
-        $table->id();
+            $table->id();
 
-        $table->enum('localizacion', ['Plan de Ayutla', 'Gustavo Díaz Ordaz']);
-        $table->date('fecha');
+            $table->date('fecha');
 
+            $table->decimal('pago_total')->nullable();
+            $table->enum('estatus', ['pendiente', 'pagado', 'cancelado'])->default('pendiente');
 
-        $table->integer('horas');
+            $table->foreignId('user_id')
+                ->constrained('users')
+                ->cascadeOnDelete();
+            
+            $table->string('stripe_payment_id')->nullable();
 
-        $table->decimal('pago_total')->nullable();
-        $table->enum('estatus', ['pendiente', 'pagado', 'cancelado'])->default('pendiente');
-
-
-        $table->foreignId('user_id')
-            ->constrained('users')
-            ->cascadeOnDelete();
-        
-        $table->string('stripe_payment_id')->nullable();
-
-        $table->timestamps();
-    });
+            $table->timestamps();
+        });
 
     }
     

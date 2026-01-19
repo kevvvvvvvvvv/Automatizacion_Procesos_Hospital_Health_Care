@@ -20,28 +20,11 @@ class ReservacionRequest extends FormRequest
      */
     public function rules(): array
     {
-        $localizacionesPermitidas = ['Plan de Ayutla', 'Gustavo Díaz Ordaz'];
-
         return [
-            'localizacion' => [
-                'required', 
-                'string', 
-                Rule::in($localizacionesPermitidas)
-            ],
-            'fecha' => [
-                'required', 
-                'date',
-                'after_or_equal:today' 
-            ],
-            'horarios' => [
-                'required', 
-                'array', 
-                'min:1' 
-            ],
-            'horarios.*' => [
-                'required', 
-                'date_format:Y-m-d H:i:s', 
-            ],
+            'localizacion' => ['required','string',],
+            'fecha' => ['required','date','after_or_equal:today'],
+            'horarios' => ['required','array','min:1'],
+            'horarios.*' => ['required', 'date_format:H:i:s'],
         ];
     }
 
