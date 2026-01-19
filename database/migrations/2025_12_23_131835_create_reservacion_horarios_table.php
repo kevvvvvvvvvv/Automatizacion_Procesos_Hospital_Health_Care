@@ -22,7 +22,7 @@ return new class extends Migration
                 ->constrained('habitacion_precios')
                 ->onDelete('cascade');
 
-            $table->dateTime('fecha_hora');
+            $table->date('fecha');
 
             $table->timestamps();
         });

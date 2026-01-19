@@ -31,15 +31,15 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Reservacion whereStripePaymentId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Reservacion whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Reservacion whereUserId($value)
+ * @property string|null $pago_total
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Reservacion wherePagoTotal($value)
  * @mixin \Eloquent
  */
 class Reservacion extends Model
 {
      protected $table = 'reservaciones';
     protected $fillable = [
-        'localizacion',
         'fecha',
-        'horas',
         'estatus',
         'user_id',
         'pago_total',

@@ -1,6 +1,6 @@
-import React, { useState } from "react";
-import { useForm } from "@inertiajs/react";
-import { Habitacion, HabitacionPrecio, Reservacion } from "@/types";
+import React from "react"; 
+import { useForm, router } from "@inertiajs/react"; 
+import { Reservacion } from "@/types";
 import { route } from "ziggy-js";
 
 import MainLayout from "@/layouts/MainLayout";
@@ -13,12 +13,21 @@ interface Ubicacion {
     ubicacion: string;
 }
 
+interface Props {
+    reservacion?: Reservacion | null;
+    limitesDinamicos: Record<string, number>; 
+    ocupacionActual: Record<string, number>;  
+    horariosSeleccionados?: string[];         
+    ubicaciones: Ubicacion[];                
+    fechaSeleccionada?: string;               
+}
+
 const generarHorarios = () => {
     const slots = [];
-    let actual = new Date(); 
+    const actual = new Date(); 
     actual.setHours(9, 0, 0);
 
-    let fin = new Date();
+    const fin = new Date();
     fin.setHours(23, 0, 0); 
 
     while (actual <= fin) { 
@@ -31,40 +40,52 @@ const generarHorarios = () => {
 
 const listaHorarios = generarHorarios();
 
-interface Props {
-    reservacion?: Reservacion | null;
-    limitesDinamicos: Record<string, number>;
-    ocupacionActual: Record<string, number>;
-    horariosSeleccionados?: string[]; 
-    ubicaciones: Ubicacion[];
-    habitaciones: Habitacion[];
-}
 
-const CreateReservacion: React.FC<Props> = ({
+const CreateReservacion: React.FC<Props> = ({ 
+    reservacion, 
+    limitesDinamicos, 
+    ocupacionActual, 
+    horariosSeleccionados = [], 
     ubicaciones = [],
-    habitaciones = [],
-    reservacion,
-    horariosSeleccionados = []
+    fechaSeleccionada 
 }) => {
-    const [localizacionData, localizacionSetData] = useState('');
-    const [consultoriosData, consultoriosSetData] = useState<Habitacion[]>();
-
-    const habitacionesFiltradas = habitaciones.filter(h => h.ubicacion === localizacionData);
-
-    const localizaciones = ubicaciones.map((u)=>({value: u.ubicacion, label: u.ubicacion}));
-
+    
     const isEdit = !!reservacion;
-    const hoy = new Date().toISOString().split("T")[0];
+    const fechaInicial = fechaSeleccionada || reservacion?.fecha || new Date().toISOString().split("T")[0];
 
-    const { data, setData, post, put, processing } = useForm({
-        habiacion_precios_id: [] as HabitacionPrecio[],
-        fecha: reservacion?.fecha ?? hoy,
+    const { data, setData, post, put, processing, errors } = useForm({
+        localizacion:  '', 
+        fecha: fechaInicial,
         horarios: isEdit ? horariosSeleccionados : [] as string[],
     });
 
+    const localizacionesOptions = ubicaciones.map((u)=>({value: u.ubicacion, label: u.ubicacion}));
+
+    const handleFechaChange = (date: Date | null) => {
+        if (!date) return; 
+
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        
+        const nuevaFecha = `${year}-${month}-${day}`;
+        
+        setData('fecha', nuevaFecha);
+
+        router.get(
+            route(isEdit ? 'reservaciones.edit' : 'reservaciones.create', isEdit && reservacion ? reservacion.id : undefined),
+            { fecha: nuevaFecha }, 
+            {
+                preserveState: true,
+                replace: true,
+                only: ['ocupacionActual', 'fechaSeleccionada'] 
+            }
+        );
+    };
+
+
     const toggleHorario = (hora: string) => {
         const yaSeleccionado = data.horarios.includes(hora);
-        
         if (yaSeleccionado) {
             setData("horarios", data.horarios.filter((h) => h !== hora));
         } else {
@@ -74,17 +95,20 @@ const CreateReservacion: React.FC<Props> = ({
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
+        
+        if (!data.localizacion) {
+            alert("Selecciona una localización");
+            return;
+        }
         if (data.horarios.length < 1) {
-        alert("Debes seleccionar al menos un horario");
-        return;
+            alert("Debes seleccionar al menos un horario");
+            return;
         }
 
         if (isEdit) {
-
-        put(route("reservaciones.update", reservacion.id));
+            put(route("reservaciones.update", reservacion.id));
         } else {
-
-        post(route("reservaciones.store"));
+            post(route("reservaciones.store"));
         }
     };
 
@@ -94,73 +118,70 @@ const CreateReservacion: React.FC<Props> = ({
                 title={isEdit ? "Editar reservación" : "Registrar reservación"}
                 onSubmit={handleSubmit}
                 actions={
-                <PrimaryButton type="submit" disabled={processing}>
-                    {processing ? "Guardando..." : "Guardar"}
-                </PrimaryButton>
+                    <PrimaryButton type="submit" disabled={processing}>
+                        {processing ? "Guardando..." : "Guardar"}
+                    </PrimaryButton>
                 }
             >
                 <div className="space-y-6">
-                <SelectInput
-                    label="Localización"
-                    value={localizacionData}
-                    onChange={(val) => localizacionSetData(val)}
-                    options={localizaciones}
-                />
-
-                {localizacionData && (
-                    <InputDate
-                        type="date"
-                        className="w-full border rounded-md px-3 py-2"
-                        value={data.fecha}
-                        onChange={(e) => setData("fecha", e.target.value)}
+                    <SelectInput
+                        label="Localización"
+                        value={data.localizacion}
+                        onChange={(val) => setData('localizacion', val)}
+                        options={localizacionesOptions}
+                        error={errors.localizacion} 
                     />
-                )}
 
-                {data.fecha && localizacionData && (
-                    <div>
-                        <h3 className="font-semibold text-gray-700 mb-2">Horarios disponibles</h3>
-                        <ul className="grid grid-cols-3 md:grid-cols-6 gap-2">
-                            {listaHorarios.map((hora)=>{
-                                const claveBusqueda = `${localizacionData}|${data.fecha} ${hora}`;
+                    {data.localizacion && (
+                        <InputDate
+                            name=""
+                            id=""
+                            className="w-full border rounded-md px-3 py-2"
+                            value={data.fecha}
+                            onChange={handleFechaChange} 
+                        />
+                    )}
 
-                                // B. Obtenemos los datos (Usamos nombres consistentes)
-                                const limite = limitesDinamicos[localizacionData] || 0; 
-                                const ocupados = ocupacionActual[claveBusqueda] || 0;   
-
-                                // C. Lógica de estado
-                                const bloqueado = ocupados >= limite;           
-                                const seleccionado = data.horarios.includes(hora); 
-                                                            
-                                return (
-                                    <li key={hora}>
-                                        <button
-                                            type="button"
-                                            disabled={bloqueado} 
-                                            onClick={() => toggleHorario(hora)}
-                                            className={`w-full px-3 py-2 rounded-md border text-sm transition flex flex-col items-center 
-                                            ${seleccionado
-                                                ? "bg-indigo-600 text-white border-indigo-600"
-                                                : bloqueado
-                                                    ? "bg-red-50 text-red-400 border-red-200 cursor-not-allowed"
-                                                    : "bg-white hover:bg-indigo-50 border-gray-300 text-gray-700"
-                                            }`}
-                                        >
-                                            {/* Muestra "09:00" */}
-                                            <span className="font-medium">{hora.slice(0, 5)}</span>
-                                            
-                                            <span className="text-[10px] mt-1">
-                                                {bloqueado && limite > 0 
-                                                    ? 'Agotado' 
-                                                    : `${ocupados} / ${limite}`
-                                                }
-                                            </span>
-                                        </button>
-                                    </li>
-                                );
-                            })}
-                        </ul>
-                    </div>
-                )}
+                    {data.fecha && data.localizacion && (
+                        <div>
+                            <h3 className="font-semibold text-gray-700 mb-2">Horarios disponibles</h3>
+                            <ul className="grid grid-cols-3 md:grid-cols-6 gap-2">
+                                {listaHorarios.map((hora) => {
+                                    const claveBusqueda = `${data.localizacion}|${hora}`;
+                                    const limite = limitesDinamicos[data.localizacion] || 0; 
+                                    const ocupados = ocupacionActual[claveBusqueda] || 0;   
+                                    const bloqueado = ocupados >= limite;           
+                                    const seleccionado = data.horarios.includes(hora); 
+                                                                
+                                    return (
+                                        <li key={hora}>
+                                            <button
+                                                type="button"
+                                                disabled={bloqueado} 
+                                                onClick={() => toggleHorario(hora)}
+                                                className={`w-full px-3 py-2 rounded-md border text-sm transition flex flex-col items-center 
+                                                ${seleccionado
+                                                    ? "bg-indigo-600 text-white border-indigo-600"
+                                                    : bloqueado
+                                                        ? "bg-red-50 text-red-400 border-red-200 cursor-not-allowed"
+                                                        : "bg-white hover:bg-indigo-50 border-gray-300 text-gray-700"
+                                                }`}
+                                            >
+                                                <span className="font-medium">{hora.slice(0, 5)}</span>
+                                                
+                                                <span className="text-[10px] mt-1">
+                                                    {bloqueado && limite > 0 
+                                                        ? 'Agotado' 
+                                                        : `${ocupados} / ${limite}` 
+                                                    }
+                                                </span>
+                                            </button>
+                                        </li>
+                                    );
+                                })}
+                            </ul>
+                        </div>
+                    )}
                 </div>
             </FormLayout>
         </MainLayout>

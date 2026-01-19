@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * @property int $id
@@ -21,6 +22,11 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ReservacionHorario whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ReservacionHorario whereReservacionId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ReservacionHorario whereUpdatedAt($value)
+ * @property int $habitacion_precio_id
+ * @property string $fecha
+ * @property-read \App\Models\HabitacionPrecio $habitacionPrecio
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ReservacionHorario whereFecha($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ReservacionHorario whereHabitacionPrecioId($value)
  * @mixin \Eloquent
  */
 class ReservacionHorario extends Model
@@ -28,7 +34,7 @@ class ReservacionHorario extends Model
     protected $fillable = [
         'reservacion_id',
         'habitacion_precio_id',
-        'fecha_hora',
+        'fecha',
     ];
 
 

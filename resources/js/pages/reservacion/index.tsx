@@ -14,29 +14,8 @@ import {
 } from "@tanstack/react-table";
 import AddButton from "@/components/ui/add-button";
 import { Pencil } from "lucide-react";
-import { User } from '@/types';
+import { Reservacion } from "@/types";
 
-
-type Habitacion = {
-    identificador: string;
-    tipo: string;
-};
-
-type ReservacionHorario = {
-    fecha_hora: string;
-    habitacion: Habitacion | null;
-};
-
-type Reservacion = {
-    id: number;
-    localizacion: string;
-    fecha: string;
-    horas: number;
-    horarios: ReservacionHorario[];
-    estatus: string;
-    user: User | null; 
-    stripe_payment_id:string;
-};
 
 interface Props {
     reservaciones: Reservacion[];
@@ -54,57 +33,40 @@ const Index = ({ reservaciones }: Props) => {
         accessorKey: "fecha",
         header: "Fecha",
         cell: ({ row }) =>
-            new Date(row.original.fecha).toLocaleDateString("es-MX"),
+            new Date(row.original.created_at).toLocaleDateString("es-MX"),
         },
         {
-        id: "horario",
-        header: "Horario",
-        cell: ({ row }) =>
-            row.original.horarios.length
-            ? new Date(row.original.horarios[0].fecha_hora).toLocaleString("es-MX")
-            : "—",
+            id: "user_id",
+            header: "Reservado por",
+            cell: ({ row }) => {
+                const user = row.original.user;
+                const nombreCompleto = user 
+                    ? `${user.nombre} ${user.apellido_paterno || ''} ${user.apellido_materno || ''}`.trim() 
+                    : null;
+                return (
+                    <span className="font-medium text-gray-700">
+                        {nombreCompleto || "N/A"}
+                    </span>
+                );
+            },
         },
         {
-        id: "localizacion",
-        header: "Hubicacion",
-        cell: ({row}) =>
-            row.original.localizacion ?? "No encontrado",
-        },
-        {
-        id: "consultorio",
-        header: "Consultorio",
-        cell: ({ row }) =>
-            row.original.horarios[0]?.habitacion?.identificador ?? "No asignado",
-        },
-        {
-        id: "usuario",
-        header: "Reservado por",
-        cell: ({ row }) => {
-            const user = row.original.user;
-            return (
-            <span className="font-medium text-gray-700">
-                {user ? ( user.nombre || "Sin nombre") : "N/A"}
-            </span>
-            );
-        },
-        },
-        {
-        id: "Estatus",
+        id: "estatus",
         header: "Estatus",
         cell: ({row}) =>
-            row.original.estatus ?? "No encontrado",
+            row.original.estatus.toUpperCase() ?? "No encontrado",
         },
         {
             id: 'stripe_payment_id',
             header: 'Código de pago',
-            cell: ({row}) => row.original.stripe_payment_id
+            cell: ({row}) => row.original.stripe_payment_id ? row.original.stripe_payment_id : 'No se ha registrado un pago'
         },
         {
         id: "acciones",
         header: "Acciones",
-        cell: ({ row }) => (
+        cell: ({row}) => (
             <Link
-                href={route("reservaciones.edit", reservaciones)}
+                href={route("reservaciones.show",row.original.id )}
                 onClick={(e) => e.stopPropagation()}
                 className="p-2 text-blue-600 hover:bg-blue-100 rounded-full"
             >
