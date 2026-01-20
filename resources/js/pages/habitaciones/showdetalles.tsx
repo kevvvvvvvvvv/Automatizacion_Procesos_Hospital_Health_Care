@@ -32,7 +32,7 @@ const Show = ({ habitacion, paciente, estancia, nota, checklistInicial }: Props)
                     <h2 className="text-xl font-bold mb-4">Checklist de Plan</h2>
                     <PlanPostoperatorioChecklist 
                         nota={nota} 
-                        checklistInicial={checklistInicial} 
+                       
                     />
                 </div>
              )}

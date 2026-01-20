@@ -885,3 +885,8 @@ export interface ChecklistItemData {
     section_id: string;
     task_index: number;
 }
+export interface hojaFrontal {
+    medico_id: number;
+    medico: User;
+    notas:string;
+}
