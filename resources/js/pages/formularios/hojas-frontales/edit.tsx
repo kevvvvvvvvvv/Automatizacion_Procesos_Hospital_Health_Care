@@ -6,6 +6,7 @@ import PrimaryButton from '@/components/ui/primary-button';
 import TextareaInput from '@/components/ui/input-text-area';
 import { route } from 'ziggy-js';
 import { FormularioCatalogo, User, Paciente, Estancia } from '@/types';
+import estancia from '@/routes/estancia';
 
 interface HojaFrontal {
   id: number;
@@ -42,6 +43,8 @@ const Edit = ({ medicos, paciente, estancia, hojaFrontal }: EditFormularioProps)
   };
 
   return (
+    <MainLayout 
+    pageTitle='Hoja Frontal'>
     <form onSubmit={handleSubmit} className="space-y-6 max-w-2xl mx-auto">
 
       <Head title="Editar Formulario" />
@@ -70,13 +73,10 @@ const Edit = ({ medicos, paciente, estancia, hojaFrontal }: EditFormularioProps)
         {processing ? 'Actualizando...' : 'Guardar Cambios'}
       </PrimaryButton>
     </form>
+    </MainLayout>
   );
 };
 
-Edit.layout = (page: React.ReactElement) => {
-    return (
-        <MainLayout pageTitle="Editar Hoja Frontal" children={page} />
-    );
-};
+
 
 export default Edit;

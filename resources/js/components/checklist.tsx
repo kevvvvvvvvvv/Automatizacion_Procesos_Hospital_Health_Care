@@ -1,196 +1,98 @@
-import React, { useState, useMemo } from 'react';
-import { ChecklistItemData, NotaPostoperatoria, notasEvoluciones } from '@/types';
-import axios from 'axios';
-import { route } from 'ziggy-js' 
+import React, { useMemo } from 'react';
+import { NotaPostoperatoria, notasEvoluciones } from '@/types';
 
-interface ChecklistSectionProps {
+interface PlanSectionProps {
     title: string;
-    sectionId: string; 
-    tasks: string[]; 
-    completedTasks: Set<string>; 
-    onCheckChange: (taskId: string, isChecked: boolean) => void;
+    tasks: string[];
+    icon: React.ReactNode;
 }
 
-const ChecklistSection: React.FC<ChecklistSectionProps> = ({ 
-    title, 
-    sectionId, 
-    tasks, 
-    completedTasks, 
-    onCheckChange 
-}) => {
-    const [isOpen, setIsOpen] = useState(false);
-
-    const completedCount = tasks.filter((_, idx) => completedTasks.has(`${sectionId}-${idx}`)).length;
-    const totalCount = tasks.length;
-    const isComplete = totalCount > 0 && completedCount === totalCount;
-    const isEmpty = totalCount === 0;
-
-    let pillColorClass = "bg-gray-100 text-gray-500"; 
-    if (isComplete) pillColorClass = "bg-green-100 text-green-700 border border-green-200";
-    else if (completedCount > 0) pillColorClass = "bg-blue-50 text-blue-600 border border-blue-100";
+const PlanSection: React.FC<PlanSectionProps> = ({ title, tasks, icon }) => {
+    const isEmpty = tasks.length === 0;
 
     return (
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden transition-all duration-300 hover:shadow-md">
-
-            <button 
-                onClick={() => setIsOpen(!isOpen)}
-                className="w-full flex items-center justify-between p-4 bg-white hover:bg-gray-50 transition-colors text-left group"
-            >
-                <div className="flex flex-col">
-                    <span className="font-semibold text-gray-800 text-base group-hover:text-blue-600 transition-colors">
-                        {title}
-                    </span>
+        <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden h-full">
+            <div className="flex items-center gap-3 p-4 border-b border-gray-50 bg-gray-50/50">
+                <div className="p-2 bg-white rounded-lg shadow-sm text-blue-600">
+                    {icon}
                 </div>
+                <h3 className="font-bold text-gray-800 text-base">{title}</h3>
+            </div>
 
-                <div className="flex items-center gap-3">
-                    {!isEmpty && (
-                        <span className={`px-3 py-1 rounded-full text-xs font-semibold tracking-wide transition-colors ${pillColorClass}`}>
-                            {isComplete ? 'Completado' : `${completedCount}/${totalCount}`}
-                        </span>
-                    )}
-                    <div className={`p-1 rounded-full transition-transform duration-300 ${isOpen ? 'bg-gray-100 rotate-180' : ''}`}>
-                        <svg className="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                        </svg>
+            <div className="p-4">
+                {isEmpty ? (
+                    <div className="p-3 bg-gray-50 rounded-lg text-sm text-gray-400 text-center italic">
+                        Sin indicaciones registradas
                     </div>
-                </div>
-            </button>
-
-            {isOpen && (
-                <div className="p-4 pt-0 border-t border-gray-50 animate-fadeIn">
-                    {isEmpty ? (
-                        <div className="mt-3 p-3 bg-gray-50 rounded-lg text-xs text-gray-400 text-center italic">
-                            Sin indicaciones
-                        </div>
-                    ) : (
-                        <ul className="space-y-1 mt-2">
-                            {tasks.map((taskText, index) => {
-                                const taskId = `${sectionId}-${index}`;
-                                const isChecked = completedTasks.has(taskId);
-
-                                return (
-                                    <li key={taskId}>
-                                        <label 
-                                            htmlFor={taskId} 
-                                            className={`flex items-start p-2 rounded-lg cursor-pointer transition-all duration-200 ${isChecked ? 'bg-gray-50' : 'hover:bg-blue-50'}`}
-                                        >
-                                            <div className="relative flex items-center mt-0.5">
-                                                <input
-                                                    id={taskId}
-                                                    type="checkbox"
-                                                    className="peer h-4 w-4 cursor-pointer appearance-none rounded border border-gray-300 shadow-sm checked:border-blue-500 checked:bg-blue-500 hover:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-200 focus:ring-offset-0"
-                                                    checked={isChecked}
-                                                    onChange={(e) => onCheckChange(taskId, e.target.checked)}
-                                                />
-                                                <svg className="pointer-events-none absolute h-3 w-3 left-0.5 top-0.5 text-white opacity-0 peer-checked:opacity-100" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="3">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                                                </svg>
-                                            </div>
-
-                                            <span className={`ml-3 text-sm leading-snug transition-colors ${isChecked ? 'text-gray-400 line-through' : 'text-gray-700'}`}>
-                                                {taskText}
-                                            </span>
-                                        </label>
-                                    </li>
-                                );
-                            })}
-                        </ul>
-                    )}
-                </div>
-            )}
+                ) : (
+                    <ul className="space-y-3">
+                        {tasks.map((taskText, index) => (
+                            <li key={index} className="flex items-start gap-3 group">
+                                <div className="mt-1.5 h-1.5 w-1.5 rounded-full bg-blue-400 flex-shrink-0 group-hover:scale-125 transition-transform" />
+                                <span className="text-sm leading-relaxed text-gray-700">
+                                    {taskText}
+                                </span>
+                            </li>
+                        ))}
+                    </ul>
+                )}
+            </div>
         </div>
     );
 };
 
-
 interface Props {
-    nota: NotaPostoperatoria | notasEvoluciones |null | undefined;
-    checklistInicial?: ChecklistItemData[];
+    nota: NotaPostoperatoria | notasEvoluciones | null | undefined;
 }
 
 const parseTasksFromText = (text: string | null | undefined): string[] => {
-    if (!text || text.trim() === '') {
-        return [];
-    }
+    if (!text || text.trim() === '') return [];
+    
     return text.split('\n')
                .map(line => line.trim()) 
                .filter(line => line.length > 0) 
                .map(line => line.replace(/^•\s*/, '')); 
 };
 
-const PlanPostoperatorioChecklist: React.FC<Props> = ({ nota, checklistInicial = [] }) => {
-
-    const [completedTasks, setCompletedTasks] = useState(() => {
-        const initialSet = new Set<string>();
-        if (checklistInicial) {
-            checklistInicial.forEach(item => {
-                initialSet.add(`${item.section_id}-${item.task_index}`);
-            });
-        }
-        return initialSet;
-    });
-    
-    const handleCheckChange = async (taskId: string, isChecked: boolean) => {
-        if(!nota) return;
-         setCompletedTasks(prev => {
-                const newSet = new Set(prev);
-                if (isChecked) {
-                    newSet.add(taskId);
-                } else {
-                    newSet.delete(taskId);
-                }
-             return newSet;
-         });
-
-         const [sectionId, indexStr] = taskId.split('-');
-         await axios.post(route('checklist.toggle'), {
-             nota_id: nota.id,
-            nota_type: nota.model_type,
-             section_id: sectionId,
-             task_index: parseInt(indexStr),
-             is_completed: isChecked
-         });
-    };
-
+const PlanPostoperatorioVista: React.FC<Props> = ({ nota }) => {
     const solucionesTasks = useMemo(() => parseTasksFromText(nota?.manejo_soluciones), [nota?.manejo_soluciones]);
     const medicamentosTasks = useMemo(() => parseTasksFromText(nota?.manejo_medicamentos), [nota?.manejo_medicamentos]);
     const laboratoriosTasks = useMemo(() => parseTasksFromText(nota?.manejo_laboratorios), [nota?.manejo_laboratorios]);
 
     if (!nota) {
-        return <div className="text-center text-gray-500">No se han cargado instrucciones.</div>;
+        return (
+            <div className="p-8 text-center bg-gray-50 rounded-xl border-2 border-dashed border-gray-200">
+                <p className="text-gray-500 font-medium">No hay información de plan postoperatorio disponible.</p>
+            </div>
+        );
     }
 
     return (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
-            
-            
-            <ChecklistSection
-                title="Plan de soluciones"
-                sectionId="soluciones"
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <PlanSection 
+                title="Plan de Soluciones" 
                 tasks={solucionesTasks}
-                completedTasks={completedTasks}
-                onCheckChange={handleCheckChange}
+                icon={
+                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+                    </svg>
+                }
             />
             
-            <ChecklistSection
-                title="Plan de medicamentos"
-                sectionId="medicamentos"
+            <PlanSection 
+                title="Plan de Medicamentos" 
                 tasks={medicamentosTasks}
-                completedTasks={completedTasks}
-                onCheckChange={handleCheckChange}
+                icon={
+                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+                    </svg>
+                }
             />
 
             
-            {/*
-            <ChecklistSection
-                title="Laboratorios y gabinetes"
-                sectionId="laboratorios"
-                tasks={laboratoriosTasks}
-                completedTasks={completedTasks}
-                onCheckChange={handleCheckChange}
-            />*/}
+           
         </div>
     );
 };
 
-export default PlanPostoperatorioChecklist;
+export default PlanPostoperatorioVista;

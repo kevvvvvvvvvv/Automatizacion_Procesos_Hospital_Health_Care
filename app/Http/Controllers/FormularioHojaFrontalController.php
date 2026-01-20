@@ -111,6 +111,19 @@ class FormularioHojaFrontalController extends Controller
         return Redirect::route('estancias.show', ['estancia' => $estancia])
             ->with('success', 'Hoja frontal actualizada exitosamente.');
     }
+    public function show(HojaFrontal $hojaFrontal){
+        $hojaFrontal->load([
+            'formularioInstancia.estancia.paciente',
+            'formularioInstancia.user',
+            'medico',
+        ]);
+        return Inertia::render('formularios/hojas-frontales/show', [
+            'paciente' => $hojaFrontal->formularioInstancia->estancia->paciente,
+            'estancia' => $hojaFrontal->formularioInstancia->estancia,
+            'hojaFrontal' => $hojaFrontal,
+        ]);
+
+    }
 
     public function generarPDF(HojaFrontal $hojafrontal)
     {
