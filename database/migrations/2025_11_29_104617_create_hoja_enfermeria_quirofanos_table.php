@@ -18,6 +18,9 @@ return new class extends Migration
                 ->references('id')
                 ->on('formulario_instancias')
                 ->onDelete('cascade');
+            
+            $table->json('anestesia')->nullable();
+            $table->json('servicios_especiales')->nullable();
 
             $table->datetime('hora_inicio_cirugia')->nullable();
             $table->datetime('hora_inicio_anestesia')->nullable();

@@ -41,7 +41,7 @@ const CreateHojaEnfermeriaQuirofano:CreateComponent = ({paciente, estancia, hoja
     const [activeSection, setActiveSection] = useState<SeccionHoja>('general');
 
     const NavigationTabs = () => (
-        <nav className="mb-6 mt-12">
+        <nav className="mb-6">
             <div className="border-b border-gray-200">
                 <div className="flex flex-wrap -mb-px gap-x-6 gap-y-2" aria-label="Tabs">
                     {secciones.map((seccion) => (
@@ -67,47 +67,48 @@ const CreateHojaEnfermeriaQuirofano:CreateComponent = ({paciente, estancia, hoja
 
     const Servicios = () => (
         <>
-        <div className='grid grid-cols-1 md:grid-cols-3 pb-15'>
-            <div>
-                <h3 className='pb-3 text-xl font-bold'>
-                    Equipo de laparoscopía
-                </h3>
+            <div className='grid grid-cols-1 md:grid-cols-3 mb-5 p-6 rounded-lg shadow-sm border'>
+                <div>
+                    <h3 className='pb-3 text-xl font-bold'>
+                        Equipo de laparoscopía
+                    </h3>
 
-                <Checkbox
-                    id="torre"
-                    label="Torre"
-                />
+                    <Checkbox
+                        id="torre"
+                        label="Torre"
+                    />
 
-                <Checkbox
-                    id="armonico"
-                    label="Armonico"
-                />    
+                    <Checkbox
+                        id="armonico"
+                        label="Armonico"
+                    />    
 
-                <Checkbox
-                    id="ligashure"
-                    label="Ligashure"
-                />
+                    <Checkbox
+                        id="ligashure"
+                        label="Ligashure"
+                    />
 
-               <Checkbox
-                    id="grapas_extras"
-                    label="Grapas extras"
-                />   
+                    <Checkbox
+                        id="grapas_extras"
+                        label="Grapas extras"
+                    />   
 
-                <Checkbox
-                    id="bolsa_endo"
-                    label="Bolsa endo"
-                />
-                <Checkbox
-                    id="arco_c"
-                    label="Arco en C"
-                />   
+                    <Checkbox
+                        id="bolsa_endo"
+                        label="Bolsa endo"
+                    />
+                    <Checkbox
+                        id="arco_c"
+                        label="Arco en C"
+                    />   
+                </div>
             </div>
-        </div>
-
-            <ServiciosEspecialesForm
-                modelo={hoja}
-                tipo='App\Models\HojaEnfermeriaQuirofano'
-            />
+            <div className='border shadow-sm rounded-lg p-6'>
+                <ServiciosEspecialesForm
+                    modelo={hoja}
+                    tipo='App\Models\HojaEnfermeriaQuirofano'
+                />
+            </div>
         </>
     )
 
@@ -115,14 +116,17 @@ const CreateHojaEnfermeriaQuirofano:CreateComponent = ({paciente, estancia, hoja
         switch (activeSection) {
             case 'general':
                 return <GeneralesForm
-                        hoja={hoja}/>
+                            hoja={hoja}
+                        />
             case 'insumos':
                 return <InsumosBasicosForm
-                        hoja={hoja}
-                        materiales={insumos}/>
+                            hoja={hoja}
+                            materiales={insumos}
+                        />
             case 'pieza_patologica':
                 return <EnvioPieza
-                        hoja={hoja}/>
+                            hoja={hoja}
+                        />
             case 'servicios_especiales':
                 return <Servicios/>
             case 'personal':
@@ -146,9 +150,8 @@ const CreateHojaEnfermeriaQuirofano:CreateComponent = ({paciente, estancia, hoja
                 estancia={estancia}
             />
 
-            <NavigationTabs/>
-
-            <div className='mt-4'>
+            <div className='mt-4 bg-white p-6 border rounded-lg shadow-sm'>
+                <NavigationTabs/>
                 {renderActiveSection()}
             </div>
         </>
