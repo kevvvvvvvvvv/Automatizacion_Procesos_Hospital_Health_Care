@@ -310,5 +310,62 @@ class UserSeeder extends Seeder
         ]);
 
         $userJosue->assignRole('administrador');
+
+        $userErika = User::create([
+            'curp' => 'FORE900101MDFRRN01', 
+            'nombre' => 'Erika',
+            'apellido_paterno' => 'Flores',
+            'apellido_materno' => 'Rodriguez',
+            'sexo' => 'Femenino',
+            'fecha_nacimiento' => '1990-01-01', 
+            'telefono' => '7772329969',
+            'email' => 'erika.flores@test.com',
+            'password' => Hash::make('12345678'),
+        ]);
+
+        $userErika->assignRole('medico');
+
+        $userAzamar = User::create([
+            'curp' => 'VARA920202HDFRRN02', 
+            'nombre' => 'Azamar Aaron',
+            'apellido_paterno' => 'Vargas',
+            'apellido_materno' => 'Radilla',
+            'sexo' => 'Masculino',
+            'fecha_nacimiento' => '1992-02-02', 
+            'telefono' => '7774608751',
+            'email' => 'azamar.vargas@test.com',
+            'password' => Hash::make('12345678'),
+        ]);
+
+        $userAzamar->assignRole('medico');
+
+        $userDiego = User::create([
+            'curp' => 'EABD950303HDFRRN03', 
+            'nombre' => 'Diego Enrique',
+            'apellido_paterno' => 'Erazo',
+            'apellido_materno' => 'Barreto',
+            'sexo' => 'Masculino',
+            'fecha_nacimiento' => '1995-03-03', 
+            'telefono' => '7773895596',
+            'email' => 'diego.erazo@test.com',
+            'password' => Hash::make('12345678'),
+        ]);
+
+        $userDiego->assignRole('medico');
+
+        $userRodolfo = User::create([
+            'curp' => 'PEGR880404HDFRRN04', 
+            'nombre' => 'Rodolfo',
+            'apellido_paterno' => 'Pérez',
+            'apellido_materno' => 'Gutiérrez',
+            'sexo' => 'Masculino',
+            'fecha_nacimiento' => '1988-04-04', 
+            'telefono' => '7772583877',
+            'email' => 'rodolfo.perez@test.com',
+            'password' => Hash::make('12345678'),
+        ]);
+
+        $userRodolfo->assignRole('medico');
+
     }
 }
