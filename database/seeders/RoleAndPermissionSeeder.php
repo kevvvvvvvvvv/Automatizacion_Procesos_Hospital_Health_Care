@@ -111,5 +111,20 @@ class RoleAndPermissionSeeder extends Seeder
             'consultar documentos medicos',
             'crear documentos medicos',
         ]);
+        
+        $roleMedico->syncPermissions([
+            'consultar pacientes',
+            'crear pacientes',
+            'editar pacientes',
+
+            'crear estancias',
+            'editar estancias',
+            'consultar estancias',
+
+            'consultar hojas enfermerias',
+            
+            'consultar documentos medicos',
+            'crear documentos medicos',
+        ]);
     }
 }
