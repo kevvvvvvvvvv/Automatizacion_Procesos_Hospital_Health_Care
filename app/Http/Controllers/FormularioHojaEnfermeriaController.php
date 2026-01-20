@@ -249,8 +249,6 @@ class FormularioHojaEnfermeriaController extends Controller implements HasMiddle
             'medico'=> $hojasenfermeria->formularioInstancia->user,
         ];
 
-        //dd($hojasenfermeria->toArray());
-
         return $this->pdfGenerator->generateStandardPdf(
             'pdfs.hoja-enfermeria',
             $viewData,

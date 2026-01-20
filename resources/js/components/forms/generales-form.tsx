@@ -1,26 +1,15 @@
-import React from 'react';
-import { router } from '@inertiajs/react';
+import React, { useEffect, useRef } from 'react';
+import { router, useForm } from '@inertiajs/react';
 import { route } from 'ziggy-js';
 import Swal from 'sweetalert2';
 
 import PrimaryButton from '@/components/ui/primary-button';
 import ContadorTiempo from '@/components/counter-time'; 
 import Checkbox from '../ui/input-checkbox';
-
-interface HojaQuirofano {
-    id: number;
-
-    hora_inicio_paciente?: string | null;
-    hora_inicio_anestesia?: string | null;
-    hora_inicio_cirugia?: string | null;
-
-    hora_fin_paciente?: string | null;
-    hora_fin_anestesia?: string | null;
-    hora_fin_cirugia?: string | null;
-}
+import { HojaEnfermeriaQuirofano } from '@/types';
 
 interface Props {
-    hoja: HojaQuirofano;
+    hoja: HojaEnfermeriaQuirofano;
 }
 
 const parseFechaMySQL = (fecha: string | null | undefined) => {
@@ -40,26 +29,22 @@ const formatTimeStatic = (isoString: string | null) => {
     return new Date(fecha).toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' });
 };
 
-interface HojaQuirofano {
-    id: number;
-    hora_inicio_paciente?: string | null;
-    hora_fin_paciente?: string | null;
-    
-    hora_inicio_anestesia?: string | null;
-    hora_fin_anestesia?: string | null;
-
-    hora_inicio_cirugia?: string | null;
-    hora_fin_cirugia?: string | null;
-}
-
 interface Props {
-    hoja: HojaQuirofano;
+    hoja: HojaEnfermeriaQuirofano;
 }
 
 const TiemposQuirofanoForm: React.FC<Props> = ({ hoja }) => {
 
-const handleRegistrarTiempo = (campo: string, esInicio: boolean = true, tituloEtapa: string) => {    
-    const accion = esInicio ? 'Iniciar' : 'Finalizar';
+    const { data, setData, put} = useForm({
+        anestesia: {
+            anestesia_general: hoja.anestesia?.anestesia_general ?? false,
+            anestesia_local: hoja.anestesia?.anestesia_local ?? false,
+            bloqueo: hoja.anestesia?.bloqueo ?? false,
+        }
+    });
+
+    const handleRegistrarTiempo = (campo: string, esInicio: boolean = true, tituloEtapa: string) => {    
+        const accion = esInicio ? 'Iniciar' : 'Finalizar';
         
         Swal.fire({
             title: `¿${accion} ${tituloEtapa}?`,
@@ -168,9 +153,32 @@ const handleRegistrarTiempo = (campo: string, esInicio: boolean = true, tituloEt
         );
     };
 
+    const isMounted = useRef(false);
+
+    useEffect(()=>{
+        if(!isMounted.current) {
+            isMounted.current = true;
+            return;
+        }
+
+        put(route('hojasenfermeriasquirofanos.update',{hojasenfermeriasquirofano: hoja.id}),{
+            preserveScroll: true,
+            preserveState: true,
+        });
+    },[data.anestesia]);
+
+    const handleCheckboxChange = (field: string, value: boolean ) => {
+        setData('anestesia',{
+            ...data.anestesia,
+            [field]:value
+        });
+    };
+
+
+
     return (
         <>
-            <div className='border shadow-sm rounded-lg p-6 mb-4'>
+            <form onSubmit={(e)=>e.preventDefault()} className='border shadow-sm rounded-lg p-6 mb-4'>
                 <h3 className="text-lg font-semibold text-gray-800 border-b pb-2">
                     Anestesia
                 </h3>
@@ -179,18 +187,24 @@ const handleRegistrarTiempo = (campo: string, esInicio: boolean = true, tituloEt
                     <Checkbox
                         id="anestesia_general"
                         label="Anestesía general"
+                        checked={data.anestesia.anestesia_general}
+                        onChange={(e)=>handleCheckboxChange('anestesia_general',e.target.checked)}
                     />
                     <Checkbox
                         id="anestesia_local"
                         label="Anestesía local"
+                        checked={data.anestesia.anestesia_local}
+                        onChange={e=>handleCheckboxChange('anestesia_local',e.target.checked)}
                     />
 
                     <Checkbox
                         id="bloqueo"
-                        label="Anestesía bloqueo "
+                        label="Anestesía bloqueo"
+                        checked={data.anestesia.bloqueo}
+                        onChange={e=>handleCheckboxChange('bloqueo',e.target.checked)}
                     />
                 </div>
-            </div>
+            </form>
 
 
             <div className='border shadow-sm p-6 rounded-lg'>
