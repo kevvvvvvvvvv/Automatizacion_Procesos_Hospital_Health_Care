@@ -167,6 +167,12 @@ class ReservacionController extends Controller
         if ($reservacione->created_at->diffInMinutes(now()) > 10) {
             return response()->json(['message' => 'El tiempo de pago ha expirado.'], 422);
         }
+        if ($reservacione->created_at->diffInMinutes(now()) > 10) {
+            // Si el proceso automático aún no la borra, pero el usuario intenta pagar, 
+            // la borramos en ese momento y lanzamos error.
+            $reservacione->delete(); 
+            return response()->json(['message' => 'El tiempo de pago ha expirado.'], 422);
+        }
 
         $request->validate(['payment_method' => 'required|string']);
 

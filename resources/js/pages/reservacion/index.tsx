@@ -13,7 +13,7 @@ import {
     SortingState,
 } from "@tanstack/react-table";
 import AddButton from "@/components/ui/add-button";
-import { Pencil } from "lucide-react";
+import { Eye, Pencil } from "lucide-react";
 import { Reservacion } from "@/types";
 
 
@@ -70,7 +70,7 @@ const Index = ({ reservaciones }: Props) => {
                 onClick={(e) => e.stopPropagation()}
                 className="p-2 text-blue-600 hover:bg-blue-100 rounded-full"
             >
-                <Pencil size={18} />
+                <Eye size={18} />
             </Link>
         ),
         },
