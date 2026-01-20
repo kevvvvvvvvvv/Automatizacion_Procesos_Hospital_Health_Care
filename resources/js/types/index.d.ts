@@ -260,6 +260,22 @@ export interface HojaEnfermeriaQuirofano {
     hora_fin_cirugia: string;
     hora_fin_anestesia: string;
     hora_fin_paciente: string;
+
+    servicios_especiales: {
+        torre: boolean;
+        armonico: boolean;
+        ligashure: boolean;
+        grapas_extras: boolean;
+        bolsa_endo: boolean;
+        arco_c: boolean;
+    };
+
+    anestesia: {
+        anestesia_general: boolean;
+        anestesia_local: boolean;
+        bloqueo: boolean;
+    }
+
     hoja_insumos_basicos: HojaInsumosBasicos[];
     personal_empleados: PersonalEmpleado[];
     hoja_oxigenos: HojaOxigeno[] | null;

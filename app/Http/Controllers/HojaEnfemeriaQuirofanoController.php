@@ -19,9 +19,31 @@ use App\Models\FormularioInstancia;
 use App\Models\HojaEnfermeriaQuirofano;
 use App\Models\ProductoServicio;
 use App\Models\User;
+use App\Services\PdfGeneratorService;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 
-class HojaEnfemeriaQuirofanoController extends Controller
+class HojaEnfemeriaQuirofanoController extends Controller implements HasMiddleware
 {
+    use AuthorizesRequests;
+    protected $pdfGenerator;
+
+    public static function middleware(): array
+    {
+        $permission = \Spatie\Permission\Middleware\PermissionMiddleware::class;
+        return [
+            new Middleware($permission . ':consultar hojas enfermerias', only: ['index', 'show']),
+            new Middleware($permission . ':crear hojas enfermerias', only: ['create', 'store']),
+            new Middleware($permission . ':eliminar hojas enfermerias', only: ['destroy']),
+        ];
+    }
+
+    public function __construct(PdfGeneratorService $pdfGenerator)
+    {
+        $this->pdfGenerator = $pdfGenerator; 
+    }
+
     public function create(Paciente $paciente, Estancia $estancia)
     {
 
@@ -87,16 +109,42 @@ class HojaEnfemeriaQuirofanoController extends Controller
                 ...$validatedData
             ]);
 
-            return Redirect::route('hojasenfermeriasquirofanos.edit', $hojasenfermeriasquirofano->id)->with('success','Se ha registrado la hora.');
+            return Redirect::route('hojasenfermeriasquirofanos.edit', $hojasenfermeriasquirofano->id)->with('success','Se ha actualizado la hoja de enfermería en quirófano.');
         }catch(\Exception $e){
-            Log::error('Error al registrar la hora: ' . $e->getMessage());
-            return Redirect::back()->with('error','Error al registrar la hora.');
+            Log::error('Error al actualizar la hoja de enfermería en quirófano: ' . $e->getMessage());
+            return Redirect::back()->with('error','Error al actualizar la hoja de enfermería en quirófano.');
         }
 
     }
 
-    public function generarPDF()
+    public function generarPDF(HojaEnfermeriaQuirofano $hojasenfermeriasquirofano)
     {
+        $hojasenfermeriasquirofano->load(
+            'formularioInstancia.estancia.paciente',
+            'hojaInsumosBasicos.productoServicio',
+            'hojaOxigenos.userInicio',
+            'hojaOxigenos.userFin',
+            'personalEmpleados'
+        );
+
+        $headerData = [
+            'historiaclinica' => $hojasenfermeriasquirofano,
+            'paciente' => $hojasenfermeriasquirofano->formularioInstancia->estancia->paciente,
+            'estancia' => $hojasenfermeriasquirofano->formularioInstancia->estancia,
+        ];
+
+        $viewData = [
+            'notaData' => $hojasenfermeriasquirofano,
+            'medico' => $hojasenfermeriasquirofano->formularioInstancia->user
+        ];
+
+        return $this->pdfGenerator->generateStandardPdf(
+            'pdfs.hoja-enfermeria-quirofano',
+            $viewData,
+            $headerData,
+            'hoja-enfermeria-',
+            $hojasenfermeriasquirofano->formularioInstancia->estancia->id
+        );
 
     }
 
