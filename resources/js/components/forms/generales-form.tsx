@@ -110,7 +110,7 @@ const handleRegistrarTiempo = (campo: string, esInicio: boolean = true, tituloEt
         const colorActual = inicio ? estilos[color as keyof typeof estilos] : estilos.gray;
 
         return (
-            <div className={`flex flex-col items-center p-4 border rounded-lg transition-colors ${colorActual}`}>
+            <div className={`flex flex-col items-center p-4 border rounded-lg transition-colors ${colorActual} bg-white`}>
                 <h4 className="font-bold mb-3 text-center">{titulo}</h4>
 
                 {!habilitado ? (
@@ -169,69 +169,70 @@ const handleRegistrarTiempo = (campo: string, esInicio: boolean = true, tituloEt
     };
 
     return (
-        <div className="bg-white p-6 rounded-lg shadow-sm border mb-6">
-            <h3 className="text-lg font-semibold mb-4 text-gray-800 border-b pb-2">
-                Anestesia
-            </h3>
+        <>
+            <div className='border shadow-sm rounded-lg p-6 mb-4'>
+                <h3 className="text-lg font-semibold text-gray-800 border-b pb-2">
+                    Anestesia
+                </h3>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <Checkbox
-                    id="anestesia_general"
-                    label="Anestesía general"
-                />
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-2">
+                    <Checkbox
+                        id="anestesia_general"
+                        label="Anestesía general"
+                    />
+                    <Checkbox
+                        id="anestesia_local"
+                        label="Anestesía local"
+                    />
 
-                <Checkbox
-                    id="anestesia_local"
-                    label="Anestesía local"
-                />
-
-                <Checkbox
-                    id="bloqueo"
-                    label="Anestesía bloqueo "
-                />
+                    <Checkbox
+                        id="bloqueo"
+                        label="Anestesía bloqueo "
+                    />
+                </div>
             </div>
 
 
+            <div className='border shadow-sm p-6 rounded-lg'>
+                <h3 className="text-lg font-semibold mb-4 text-gray-800 border-b pb-2">
+                    Control de tiempos quirúrgicos
+                </h3>
 
-            <h3 className="text-lg font-semibold mb-4 text-gray-800 border-b pb-2">
-                Control de tiempos quirúrgicos
-            </h3>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    
+                    <TarjetaTiempo 
+                        titulo="Paciente en quirófano"
+                        color="blue"
+                        inicio={hoja.hora_inicio_paciente}
+                        fin={hoja.hora_fin_paciente}
+                        campoInicio="hora_inicio_paciente"
+                        campoFin="hora_fin_paciente"
+                    />
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                
-                <TarjetaTiempo 
-                    titulo="Paciente en quirófano"
-                    color="blue"
-                    inicio={hoja.hora_inicio_paciente}
-                    fin={hoja.hora_fin_paciente}
-                    campoInicio="hora_inicio_paciente"
-                    campoFin="hora_fin_paciente"
-                />
+                    <TarjetaTiempo 
+                        titulo="Anestesia"
+                        color="green"
+                        inicio={hoja.hora_inicio_anestesia}
+                        fin={hoja.hora_fin_anestesia}
+                        campoInicio="hora_inicio_anestesia"
+                        campoFin="hora_fin_anestesia"
+                        habilitado={!!hoja.hora_inicio_paciente}
+                        mensajeBloqueo="Requiere ingreso de paciente"
+                    />
 
-                <TarjetaTiempo 
-                    titulo="Anestesia"
-                    color="green"
-                    inicio={hoja.hora_inicio_anestesia}
-                    fin={hoja.hora_fin_anestesia}
-                    campoInicio="hora_inicio_anestesia"
-                    campoFin="hora_fin_anestesia"
-                    habilitado={!!hoja.hora_inicio_paciente}
-                    mensajeBloqueo="Requiere ingreso de paciente"
-                />
-
-                <TarjetaTiempo 
-                    titulo="Cirugía"
-                    color="red"
-                    inicio={hoja.hora_inicio_cirugia}
-                    fin={hoja.hora_fin_cirugia}
-                    campoInicio="hora_inicio_cirugia"
-                    campoFin="hora_fin_cirugia"
-                    habilitado={!!hoja.hora_inicio_anestesia}
-                    mensajeBloqueo="Requiere inicio de anestesia"
-                />
-
+                    <TarjetaTiempo 
+                        titulo="Cirugía"
+                        color="red"
+                        inicio={hoja.hora_inicio_cirugia}
+                        fin={hoja.hora_fin_cirugia}
+                        campoInicio="hora_inicio_cirugia"
+                        campoFin="hora_fin_cirugia"
+                        habilitado={!!hoja.hora_inicio_anestesia}
+                        mensajeBloqueo="Requiere inicio de anestesia"
+                    />
+                </div>
             </div>
-        </div>
+        </>
     );
 };
 

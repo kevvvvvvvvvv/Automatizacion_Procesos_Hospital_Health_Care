@@ -46,12 +46,21 @@ class HojaEnfermeriaQuirofano extends Model
     public $incrementing = false;
     protected $fillable = [
         'id',
+
+        'anestesia',
+        'servicios_especiales',
+
         'hora_inicio_cirugia',
         'hora_inicio_anestesia',
         'hora_inicio_paciente',
         'hora_fin_cirugia',
         'hora_fin_anestesia',
         'hora_fin_paciente'
+    ];
+
+    protected $casts = [
+        'anestesia' => 'array',
+        'servicios_especiales' => 'array'
     ];
 
     public function formularioInstancia(): BelongsTo
