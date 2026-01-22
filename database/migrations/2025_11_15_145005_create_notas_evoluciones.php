@@ -20,8 +20,8 @@ return new class extends Migration
                 ->onDelete('cascade'); 
             $table->text('evolucion_actualizacion');  
             $table->string('ta');
-            $table->string('fc');  
-            $table->string('fr'); 
+            $table->integer('fc');  
+            $table->integer('fr'); 
             $table->decimal('temp', 5, 2)->nullable();  
             $table->decimal('peso', 5, 2)->nullable(); 
             $table->decimal('talla', 5, 2)->nullable();  
@@ -34,11 +34,11 @@ return new class extends Migration
             $table->text('plan_de_estudio')->nullable();
             $table->text('pronostico')->nullable();
             
-            $table->string('manejo_dieta')->nullable();
-            $table->string('manejo_soluciones')->nullable(); 
-            $table->string('manejo_medicamentos')->nullable(); 
-            $table->string('manejo_laboratorios')->nullable(); 
-            $table->string('manejo_medidas_generales')->nullable();
+            $table->text('manejo_dieta')->nullable();
+            $table->text('manejo_soluciones')->nullable(); 
+            $table->text('manejo_medicamentos')->nullable(); 
+            $table->text('manejo_laboratorios')->nullable(); 
+            $table->text('manejo_medidas_generales')->nullable();
 
             $table->timestamps(); 
         });
