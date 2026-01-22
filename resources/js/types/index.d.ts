@@ -41,7 +41,21 @@ export interface SharedData {
     updated_at: string;
     [key: string]: unknown; 
 }*/
-
+export interface Doctor {
+    id: number;
+    nombre: string;
+    apellido_paterno: string;
+    apellido_materno?: string | null;
+    curp?: string;
+    sexo?: string;
+    fecha_nacimiento?: string;
+    cargo_id?: number | string;
+    colaborador_responsable_id?: number | string;
+    email: string;
+    password: string;
+    password_confirmation: string;
+    professional_qualifications?: { titulo: string; cedula?: string }[];
+}
 export interface Paciente {
     id: number;
     curp: string;
