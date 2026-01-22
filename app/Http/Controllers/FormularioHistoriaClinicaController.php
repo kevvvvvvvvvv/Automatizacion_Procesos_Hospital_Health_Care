@@ -17,6 +17,8 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redirect;
 use Spatie\Browsershot\Browsershot;
 use Spatie\LaravelPdf\Facades\Pdf;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Redis;
 
 class FormularioHistoriaClinicaController extends Controller
 {
@@ -42,10 +44,8 @@ class FormularioHistoriaClinicaController extends Controller
     public function store(HistoriaClinicaRequest $request, Paciente $paciente, Estancia $estancia)
     {
         $validatedData = $request->validated();
-
         try {
             DB::beginTransaction();
-
             $formulario = FormularioInstancia::create([
                 'fecha_hora' => now(),
                 'estancia_id' => $estancia->id,
@@ -58,26 +58,17 @@ class FormularioHistoriaClinicaController extends Controller
                 return redirect()->back()->with('error', 'Error crítico al crear la instancia del formulario.');
             }
 
+            $datosHistoria = Arr::except($validatedData, ['respuestas']);
+
             $historiaClinica = HistoriaClinica::firstOrCreate(
                 ['id' => $formulario->id], 
-                [ 
-                    'padecimiento_actual'       => $validatedData['padecimiento_actual'],
-                    'tension_arterial'          => $validatedData['tension_arterial'],
-                    'frecuencia_cardiaca'       => $validatedData['frecuencia_cardiaca'],
-                    'frecuencia_respiratoria'   => $validatedData['frecuencia_respiratoria'],
-                    'temperatura'               => $validatedData['temperatura'],
-                    'peso'                      => $validatedData['peso'],
-                    'talla'                     => $validatedData['talla'],
-                    'resultados_previos'        => $validatedData['resultados_previos'],
-                    'diagnostico'               => $validatedData['diagnostico'],
-                    'pronostico'                => $validatedData['pronostico'],
-                    'indicacion_terapeutica'    => $validatedData['indicacion_terapeutica'],
-                ]
+                $datosHistoria 
             );
+
             if (!$historiaClinica || !$historiaClinica->id) {
                 DB::rollBack();
-                Log::error('Fallo al crear/obtener HistoriaClinica para Formulario ID: ' . $formulario->id);
-                return redirect()->back()->with('error', 'Error crítico al crear/obtener la historia clínica.');
+                Log::error('Fallo al crear HistoriaClinica para Formulario ID: ' . $formulario->id);
+                return redirect()->back()->with('error', 'Error crítico al crear la historia clínica.');
             }
 
             $hcId = $historiaClinica->id;
@@ -93,11 +84,11 @@ class FormularioHistoriaClinicaController extends Controller
             }
             
             DB::commit();
-
+            return Redirect::route('estancias.show',$estancia->id);
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('Error en store HistoriaClinica: ' . $e->getMessage() . ' en ' . $e->getFile() . ':' . $e->getLine()); // Log más detallado
-            return redirect()->back()->with('error', 'Error Detallado: ' . $e->getMessage());
+            Log::error('Error al registrar la historia clínica: ' . $e->getMessage() . ' en ' . $e->getFile() . ':' . $e->getLine());
+            return redirect()->back()->with('error', 'Error al registrar la historia clínica: ' . $e->getMessage());
         }
 
         return redirect()->route('estancias.show', ['estancia' => $estancia->id])

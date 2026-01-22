@@ -111,7 +111,7 @@ class NotaEvolucionController extends Controller
             NotaEvolucionRequest $request, 
             Paciente $paciente, 
             Estancia $estancia, 
-            NotaEvolucion $notasevolucione // <--- Cambia $notaEvolucion por $notasevolucione si es necesario
+            NotaEvolucion $notasevolucione 
         ) {
             $validateData = $request->validated();
             $notasevolucione->update($validateData);
