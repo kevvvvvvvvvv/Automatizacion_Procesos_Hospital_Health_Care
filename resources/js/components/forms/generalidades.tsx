@@ -102,7 +102,7 @@ const Generalidades: React.FC<GeneralidadesProps> = ({ data, setData, errors }) 
           value={data.exploracion_fisica}
           onChange={(e) => setData('exploracion_fisica', e.target.value)}
           placeholder="Hallazgos de la exploración..."
-          rows={4}
+          rows={3}
           error={errors.exploracion_fisica}
       />
 
@@ -157,7 +157,7 @@ const Generalidades: React.FC<GeneralidadesProps> = ({ data, setData, errors }) 
           value={data.pronostico}
           onChange={(e) => setData('pronostico', e.target.value)}
           placeholder="Describa el pronóstico al egreso"
-          rows={4}
+          rows={3}
           error={errors.pronostico}
       />
     </>
