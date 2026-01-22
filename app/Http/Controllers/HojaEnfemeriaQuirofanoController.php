@@ -138,6 +138,8 @@ class HojaEnfemeriaQuirofanoController extends Controller implements HasMiddlewa
             'medico' => $hojasenfermeriasquirofano->formularioInstancia->user
         ];
 
+        //dd($hojasenfermeriasquirofano->toArray());
+
         return $this->pdfGenerator->generateStandardPdf(
             'pdfs.hoja-enfermeria-quirofano',
             $viewData,

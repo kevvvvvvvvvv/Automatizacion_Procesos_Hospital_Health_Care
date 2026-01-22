@@ -14,11 +14,17 @@ use App\Models\RespuestaFormulario;
 use App\Models\FormularioInstancia;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Redirect;
 use Spatie\Browsershot\Browsershot;
 use Spatie\LaravelPdf\Facades\Pdf;
 
 class FormularioHistoriaClinicaController extends Controller
 {
+    public function show()
+    {
+        return Redirect::back()->with('error','La opción de mostrar no esta habilitada por el momento.');
+    }
+
     public function create(Paciente $paciente, Estancia $estancia)
     {
         $preguntas = CatalogoPregunta::where('formulario_catalogo_id', 2)
@@ -32,14 +38,7 @@ class FormularioHistoriaClinicaController extends Controller
         ]);
     }
 
-    /**
-     * Guarda una nueva historia clínica en la base de datos.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Paciente  $paciente
-     * @param  \App\Models\Estancia  $estancia
-     * @return \Illuminate\Http\RedirectResponse
-     */
+
     public function store(HistoriaClinicaRequest $request, Paciente $paciente, Estancia $estancia)
     {
         $validatedData = $request->validated();
@@ -54,7 +53,6 @@ class FormularioHistoriaClinicaController extends Controller
                 'user_id' => Auth::id(),
             ]);
 
-            Log::info('FormularioInstancia creado con ID: ' . ($formulario ? $formulario->id : 'FALLÓ'));
             if (!$formulario || !$formulario->id) {
                 DB::rollBack();
                 return redirect()->back()->with('error', 'Error crítico al crear la instancia del formulario.');
@@ -76,7 +74,6 @@ class FormularioHistoriaClinicaController extends Controller
                     'indicacion_terapeutica'    => $validatedData['indicacion_terapeutica'],
                 ]
             );
-            Log::info('HistoriaClinica obtenida/creada con ID: ' . ($historiaClinica ? $historiaClinica->id : 'FALLÓ'));
             if (!$historiaClinica || !$historiaClinica->id) {
                 DB::rollBack();
                 Log::error('Fallo al crear/obtener HistoriaClinica para Formulario ID: ' . $formulario->id);
@@ -84,12 +81,9 @@ class FormularioHistoriaClinicaController extends Controller
             }
 
             $hcId = $historiaClinica->id;
-            Log::info('ID a usar para RespuestaFormulario: ' . $hcId);
-
 
             foreach ($validatedData['respuestas'] as $preguntaId => $detalles) {
                 if (!empty($detalles['respuesta']) || !empty($detalles['campos']) || !empty($detalles['items'])) {
-                    Log::info("Intentando crear Respuesta para HC ID: {$hcId}, Pregunta ID: {$preguntaId}");
                     RespuestaFormulario::create([
                         'historia_clinica_id'   => $hcId, 
                         'catalogo_pregunta_id'  => $preguntaId,
@@ -111,7 +105,7 @@ class FormularioHistoriaClinicaController extends Controller
     }
 
     public function edit(){
-
+        return Redirect::back()->with('error','La opción de editar no esta habilitada por el momento.');
     }
 
     public function update(){
