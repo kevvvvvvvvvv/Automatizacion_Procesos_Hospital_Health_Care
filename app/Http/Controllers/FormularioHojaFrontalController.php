@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\HojaFrontalRequest;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Models\FormularioCatalogo;
@@ -23,7 +24,6 @@ use Spatie\Browsershot\Browsershot;
 class FormularioHojaFrontalController extends Controller
 {
     public function create(Paciente $paciente, Estancia $estancia){
-        //$medicos = User::role('medico')->get();
         $medicos = User::all();
 
         return Inertia::render('formularios/hojas-frontales/create',[
@@ -32,7 +32,7 @@ class FormularioHojaFrontalController extends Controller
                                 'medicos' => $medicos,]);
     }
 
-    public function store(Paciente $paciente, Estancia $estancia, Request $request, VentaService $ventaService){
+    public function store(Paciente $paciente, Estancia $estancia, HojaFrontalRequest $request, VentaService $ventaService){
         DB::beginTransaction();
         try{
 
@@ -91,13 +91,9 @@ class FormularioHojaFrontalController extends Controller
         ]);
     }
 
-    public function update(Request $request, Paciente $paciente, Estancia $estancia, HojaFrontal $hojaFrontal)
+    public function update(HojaFrontalRequest $request, Paciente $paciente, Estancia $estancia, HojaFrontal $hojaFrontal)
     {
-        $validatedData = $request->validate([
-            'medico_id' => 'required|exists:users,id',
-            'notas' => 'nullable|string',
-        ]);
-
+        $validatedData = $request->validated();
         $hojaFrontal->update($validatedData);
 
         if ($hojaFrontal->formularioInstancia) {

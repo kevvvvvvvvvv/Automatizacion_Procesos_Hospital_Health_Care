@@ -45,9 +45,7 @@ class NotaEvolucionController extends Controller
 
     public function store(NotaEvolucionRequest $request, Paciente $paciente, Estancia $estancia)
     {
-        //dd($request->toArray());
         $validateData = $request->validated();
-       //dd($request->toArray());
         DB::beginTransaction();
         try {
             $formularioInstancia = FormularioInstancia::create([
