@@ -28,15 +28,16 @@ const CreateTranslado: React.FC<Props> = ({ paciente, estancia, traslado }) => {
 
   return (
     <MainLayout
-    pageTitle={`Creación de nota de traslado`}
+      pageTitle={`Registro de nota de traslado`}
       link="estancias.show"
-      
-      linkParams={estancia.id} >
+      linkParams={estancia.id} 
+    >
+      <Head title="Registro de nota de traslado" />
       <PacienteCard
         paciente={paciente}
         estancia={estancia}
       />
-      <Head title="Crear Traslado" />
+      
       <TrasladoForm 
         paciente={paciente}
         estancia = {estancia}
@@ -45,7 +46,6 @@ const CreateTranslado: React.FC<Props> = ({ paciente, estancia, traslado }) => {
         submitLabel='Crear nota de traslado'
 
       />
-      
       
     </MainLayout>
   );
