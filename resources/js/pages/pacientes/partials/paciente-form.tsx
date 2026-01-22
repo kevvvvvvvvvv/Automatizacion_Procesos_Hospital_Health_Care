@@ -7,10 +7,11 @@ import { Paciente } from '@/types';
 import FormLayout from '@/components/form-layout';
 import InputField from "@/components/ui/input-text";
 import PrimaryButton from '@/components/ui/primary-button';
+import { FaPlusMinus } from "react-icons/fa6";
 
 interface Props {
-    paciente?: Paciente; // Opcional si es creación
-    onSubmit?: (form: any) => void;
+    paciente?: Paciente; 
+    onSubmit: (form: any) => void;
     submitLabel?: string;
 }
 
@@ -20,8 +21,7 @@ export const PacienForm = ({
     submitLabel = 'Guardar'
 }: Props) => {
 
-    // 1. Configuración de useForm de Inertia
-    const { data, setData, processing, errors } = useForm({
+    const form = useForm({
         curp: paciente?.curp || "",
         nombre: paciente?.nombre || "",
         apellido_paterno: paciente?.apellido_paterno || "",
@@ -42,19 +42,20 @@ export const PacienForm = ({
         lugar_origen: paciente?.lugar_origen || "",
         nombre_padre: paciente?.nombre_padre || "",
         nombre_madre: paciente?.nombre_madre || "",
-        
+
+        responsables: paciente?.familiar_responsables || []
     });
 
-    // 2. Estados locales para Responsables
+    const {data, setData, errors, processing} = form;
+
     const initialResponsableState = { nombre_completo: "", parentesco: "" };
     const [responsable, setResponsable] = useState(initialResponsableState);
     const [familiares, setFamiliares] = useState<any[]>([]);
 
-    // Opciones para selects
     const sexos = ["Masculino", "Femenino"];
     const estadosCivil = ["Soltero(a)", "Casado(a)", "Divorciado(a)", "Viudo(a)", "Unión libre"];
 
-    // 3. Manejadores de eventos
+
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
         setData(name as any, value);
@@ -67,7 +68,8 @@ export const PacienForm = ({
 
     const addFamiliar = () => {
         if (!responsable.nombre_completo || !responsable.parentesco) return;
-        setFamiliares([...familiares, responsable]);
+        const nuevosResponsables = [...data.responsables, responsable];
+        setData('responsables', nuevosResponsables);
         setResponsable(initialResponsableState);
     };
 
@@ -77,13 +79,8 @@ export const PacienForm = ({
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        // Enviamos todo el paquete a la ruta de pacientes
-        router.post('/pacientes', {
-            ...data,
-            responsables: familiares
-        });
+        onSubmit(form);
     };
-
     return (
 <FormLayout title='Registrar paciente'
         onSubmit={handleSubmit}
@@ -106,6 +103,7 @@ export const PacienForm = ({
                 onChange={handleChange}
                 required
                 maxLength={18}
+                error={errors.curp}
             />
             <InputField
                 id="nombre"
@@ -115,6 +113,7 @@ export const PacienForm = ({
                 onChange={handleChange}
                 required
                 maxLength={100}
+                error={errors.nombre}
             />
             <InputField
                 id="apellido_paterno"
@@ -124,6 +123,7 @@ export const PacienForm = ({
                 onChange={handleChange}
                 required
                 maxLength={100}
+                error={errors.apellido_paterno}
             />
             <InputField
                 id="apellido_materno"
@@ -133,6 +133,7 @@ export const PacienForm = ({
                 onChange={handleChange}
                 required
                 maxLength={100}
+                error={errors.apellido_materno}
             />
             <div className="flex flex-col">
                 <label htmlFor="sexo" className="mb-1 font-medium">Sexo</label>
@@ -158,6 +159,7 @@ export const PacienForm = ({
                 onChange={handleChange}
                 required
                 type="date"
+                error={errors.fecha_nacimiento}
             />
             </div>
        
@@ -173,6 +175,7 @@ export const PacienForm = ({
                 onChange={handleChange}
                 required
                 maxLength={100}
+                error={errors.calle}
             />
             <InputField
                 id="numero_exterior"
@@ -182,6 +185,7 @@ export const PacienForm = ({
                 onChange={handleChange}
                 required
                 maxLength={50}
+                error={errors.numero_exterior}
             />
             <InputField
                 id="numero_interior"
@@ -190,6 +194,7 @@ export const PacienForm = ({
                 value={data.numero_interior}
                 onChange={handleChange}
                 maxLength={50}
+                error={errors.numero_interior}
             />
             <InputField
                 id="colonia"
@@ -208,6 +213,7 @@ export const PacienForm = ({
                 onChange={handleChange}
                 required
                 maxLength={100}
+                error={errors.municipio}
             />
             <InputField
                 id="estado"
@@ -217,6 +223,7 @@ export const PacienForm = ({
                 onChange={handleChange}
                 required
                 maxLength={100}
+                error={errors.estado}
             />
             <InputField
                 id="pais"
@@ -226,6 +233,7 @@ export const PacienForm = ({
                 onChange={handleChange}
                 required
                 maxLength={100}
+                error={errors.pais}
             />
             <InputField
                 id="cp"
@@ -235,6 +243,7 @@ export const PacienForm = ({
                 onChange={handleChange}
                 required
                 maxLength={10}
+                error={errors.cp}
             />
             </div>
         
@@ -250,6 +259,7 @@ export const PacienForm = ({
                 onChange={handleChange}
                 required
                 maxLength={20}
+                error={errors.estado_civil}
             />
             <div className="flex flex-col">
                 <label htmlFor="estado_civil" className="mb-1 font-medium">Estado Civil</label>
@@ -275,6 +285,7 @@ export const PacienForm = ({
                 onChange={handleChange}
                 required
                 maxLength={100}
+                error={errors.ocupacion}
             />
             </div>
         
@@ -290,6 +301,7 @@ export const PacienForm = ({
                 onChange={handleChange}
                 required
                 maxLength={100}
+                error={errors.lugar_origen}
             />
             <InputField
                 id="nombre_padre"
@@ -298,6 +310,7 @@ export const PacienForm = ({
                 value={data.nombre_padre}
                 onChange={handleChange}
                 maxLength={100}
+                error={errors.nombre_padre}
             />
             <InputField
                 id="nombre_madre"
@@ -306,6 +319,7 @@ export const PacienForm = ({
                 value={data.nombre_madre}
                 onChange={handleChange}
                 maxLength={100}
+                error={errors.nombre_madre}
             />
             
             </div>
@@ -317,14 +331,14 @@ export const PacienForm = ({
                         label="Nombre del Familiar"
                         name="nombre_completo"
                         value={responsable.nombre_completo}
-                        onChange={handleChange}
+                        onChange={handleResponsableChange}
                     />
                     <InputField
                         id="parentesco"
                         label="Parentesco"
                         name="parentesco"
                         value={responsable.parentesco}
-                        onChange={handleChange}
+                       onChange={handleResponsableChange}
                     />
                     <button
                         type="button"
@@ -336,42 +350,45 @@ export const PacienForm = ({
                 </div>
 
                 {/* TABLA DE FAMILIARES */}
-                <div className="mt-6">
-                    <table className="w-full border-collapse bg-white rounded-lg overflow-hidden shadow-sm border border-gray-200">
-                        <thead className="bg-gray-100">
-                            <tr>
-                                <th className="px-4 py-2 text-left text-sm font-bold text-gray-700 border-b">Nombre Completo</th>
-                                <th className="px-4 py-2 text-left text-sm font-bold text-gray-700 border-b">Parentesco</th>
-                                <th className="px-4 py-2 text-center text-sm font-bold text-gray-700 border-b w-20">Acción</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {familiares.length > 0 ? (
-                                familiares.map((f, index) => (
-                                    <tr key={index} className="border-b hover:bg-gray-50">
-                                        <td className="px-4 py-2 text-sm">{f.nombre_completo}</td>
-                                        <td className="px-4 py-2 text-sm">{f.parentesco}</td>
-                                        <td className="px-4 py-2 text-center">
-                                            <button
-                                                type="button"
-                                                onClick={() => removeFamiliar(index)}
-                                                className="text-red-500 hover:text-red-700"
-                                            >
-                                                <Trash2 size={18} />
-                                            </button>
-                                        </td>
-                                    </tr>
-                                ))
-                            ) : (
-                                <tr>
-                                    <td colSpan={3} className="px-4 py-4 text-center text-gray-400 text-sm italic">
-                                        No se han agregado familiares responsables aún.
-                                    </td>
-                                </tr>
-                            )}
-                        </tbody>
-                    </table>
-                </div>
+{/* TABLA DE FAMILIARES */}
+<div className="mt-6">
+    <table className="w-full border-collapse bg-white rounded-lg overflow-hidden shadow-sm border border-gray-200">
+        <thead className="bg-gray-100">
+            <tr>
+                <th className="px-4 py-2 text-left text-sm font-bold text-gray-700 border-b">Nombre Completo</th>
+                <th className="px-4 py-2 text-left text-sm font-bold text-gray-700 border-b">Parentesco</th>
+                <th className="px-4 py-2 text-center text-sm font-bold text-gray-700 border-b w-20">Acción</th>
+            </tr>
+        </thead>
+        <tbody>
+            {/* CAMBIO AQUÍ: Usamos data.responsables */}
+            {data.responsables.length > 0 ? (
+                data.responsables.map((f: any, index: number) => (
+                    <tr key={index} className="border-b hover:bg-gray-50">
+                        <td className="px-4 py-2 text-sm">{f.nombre_completo}</td>
+                        <td className="px-4 py-2 text-sm">{f.parentesco}</td>
+                        <td className="px-4 py-2 text-center">
+                            <button
+                                type="button"
+                                // Asegúrate que removeFamiliar use setData('responsables', ...)
+                                onClick={() => removeFamiliar(index)} 
+                                className="text-red-500 hover:text-red-700"
+                            >
+                                <Trash2 size={18} />
+                            </button>
+                        </td>
+                    </tr>
+                ))
+            ) : (
+                <tr>
+                    <td colSpan={3} className="px-4 py-4 text-center text-gray-400 text-sm italic">
+                        No se han agregado familiares responsables aún.
+                    </td>
+                </tr>
+            )}
+        </tbody>
+    </table>
+</div>
             </FormLayout>
     );
 };

@@ -64,8 +64,18 @@ export interface Paciente {
     lugar_origen: string;
     nombre_padre: string;
     nombre_madre: string;
+
     estancias: Estancia[];
+    familiar_responsables: FamiliarResponsable[];
+
     age: number;
+}
+
+export interface FamiliarResponsable {
+    id?: number;           
+    paciente_id?: number;  
+    nombre_completo: string;
+    parentesco: string;
 }
 
 export interface User {

@@ -1,18 +1,13 @@
-import {  useForm } from '@inertiajs/react';
-import React, { useState } from "react";
+import React  from "react";
 import MainLayout from '@/layouts/MainLayout';
 import { Head } from '@inertiajs/react';
 import { route } from 'ziggy-js';
-import Paciente from '@/types';
 
-import PrimaryButton from '@/components/ui/primary-button';
 import { PacienForm}  from './partials/paciente-form';
-
-
 
 const PacienteCreate: React.FC = ()  => {
     const handleSubmit = (form: any)=>{
-        form.post(route('pacientes.store', {        }))
+        form.post(route('pacientes.store'));
     };
 
   return (

@@ -10,9 +10,8 @@ interface Props {
 }
 
 const Edit = ({ paciente }: Props) => {
-    // IMPORTANTE: Asegúrate de que 'route' esté disponible o usa la función global
+
     const handleEdit = (form: any) => {
-        // El segundo parámetro debe ser el ID del paciente para la ruta update
         form.put(route('pacientes.update', {paciente:paciente.id}));
     };
 

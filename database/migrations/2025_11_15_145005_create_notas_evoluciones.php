@@ -18,7 +18,7 @@ return new class extends Migration
                 ->references('id')
                 ->on('formulario_instancias')
                 ->onDelete('cascade'); 
-            $table->string('evolucion_actualizacion');  
+            $table->text('evolucion_actualizacion');  
             $table->string('ta');
             $table->string('fc');  
             $table->string('fr'); 

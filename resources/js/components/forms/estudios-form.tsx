@@ -169,7 +169,7 @@ const SolicitudEstudiosForm: React.FC<Props> = ({
     }
 
     const handleMedicinaInternaClick = () => {
-        setData('estudios_agregados_ids',MEDICINA_INTERNA)
+        setData('estudios_agregados_ids', MEDICINA_INTERNA)
     } 
     
     const handlePreoperatorioClick = () => {
@@ -202,8 +202,8 @@ const SolicitudEstudiosForm: React.FC<Props> = ({
                             </div>
                         </div>
                         <div className='flex justify-start gap-6 mb-4'>
-                            <Button onClick={handleMedicinaInternaClick}>Perfil de medicina interna</Button>
-                            <Button onClick={handlePreoperatorioClick}>Perfil preoperatorio</Button>
+                            <Button type='button' onClick={handleMedicinaInternaClick}>Perfil de medicina interna</Button>
+                            <Button type='button' onClick={handlePreoperatorioClick}>Perfil preoperatorio</Button>
                         </div>
 
                         <div className="space-y-6">
