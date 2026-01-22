@@ -22,63 +22,82 @@ class NotaPostanestesicaRequest extends FormRequest
     public function rules(): array
     {
         return [
+            // ---- Signos Vitales ----
             'ta'    => ['required', 'string', 'max:20'], 
-            'fc'    => ['required', 'integer', 'min:0', 'max:300'], 
-            'fr'    => ['required', 'integer', 'min:0', 'max:100'], 
+            'fc'    => ['required', 'integer', 'between:0,300'], 
+            'fr'    => ['required', 'integer', 'between:0,100'], 
             'temp'  => ['required', 'numeric', 'between:30,45'],    
-            'peso'  => ['required', 'numeric', 'min:0.1', 'max:500'], 
-            'talla' => ['required', 'integer', 'min:10', 'max:300'],  
+            'peso'  => ['required', 'numeric', 'between:0.1,600'], 
+            'talla' => ['required', 'integer', 'between:20,300'],  
 
-            // Campos de texto (Clínicos)
-            'resumen_del_interrogatorio'     => ['required', 'string', 'max:1000'],
-            'exploracion_fisica'             => ['required', 'string', 'max:1000'],
-            'plan_de_estudio'                => ['required', 'string', 'max:1000'],
-            'resultado_estudios'             => ['required', 'string', 'max:1000'],
-            'diagnostico_o_problemas_clinicos' => ['required', 'string', 'max:1000'],
-            'pronostico'                     => ['required', 'string', 'max:255'],
+            // ---- Campos Clínicos (Text - Max 10000) ----
+            'resumen_del_interrogatorio'     => ['required', 'string', 'min:5', 'max:10000'],
+            'exploracion_fisica'             => ['required', 'string', 'min:5', 'max:10000'],
+            'resultado_estudios'             => ['required', 'string', 'min:5', 'max:10000'],
+            'diagnostico_o_problemas_clinicos' => ['required', 'string', 'min:5', 'max:10000'],
+            'plan_de_estudio'                => ['required', 'string', 'min:5', 'max:10000'],
+            'pronostico'                     => ['required', 'string', 'min:5', 'max:10000'],
 
-            // Campos de Anestesia
-            'tecnica_anestesica'     => ['required', 'string', 'max:255'],
-            'farmacos_administrados' => ['required', 'string', 'max:1000'],
-            'duracion_anestesia'     => ['required', 'date_format:H:i:s'],
-            'incidentes_anestesia'   => ['required', 'string', 'max:1000'], 
-            'balance_hidrico'        => ['required', 'string', 'max:255'],
-            'estado_clinico'         => ['required', 'string', 'max:255'], 
-            'plan_manejo'            => ['required', 'string', 'max:1000'],
+            // ---- Campos de Anestesia (Text - Max 10000) ----
+            'tecnica_anestesica'     => ['required', 'string', 'min:5', 'max:10000'],
+            'farmacos_administrados' => ['required', 'string', 'min:5', 'max:10000'],
+            'incidentes_anestesia'   => ['required', 'string', 'min:5', 'max:10000'], 
+            'balance_hidrico'        => ['required', 'string', 'min:5', 'max:10000'],
+            'estado_clinico'         => ['required', 'string', 'min:5', 'max:10000'], 
+            'plan_manejo'            => ['required', 'string', 'min:5', 'max:10000'],
+
+            // Formato de hora (acepta HH:MM o HH:MM:SS)
+            'duracion_anestesia'     => ['required', 'date_format:H:i,H:i:s'],
         ];
     }
 
+    public function attributes(): array
+    {
+        return [
+            // Signos Vitales
+            'ta'    => 'tensión arterial',
+            'fc'    => 'frecuencia cardíaca',
+            'fr'    => 'frecuencia respiratoria',
+            'temp'  => 'temperatura',
+            'peso'  => 'peso',
+            'talla' => 'talla',
+
+            // Clínicos
+            'resumen_del_interrogatorio'       => 'resumen del interrogatorio',
+            'exploracion_fisica'               => 'exploración física',
+            'resultado_estudios'               => 'resultados de estudios',
+            'diagnostico_o_problemas_clinicos' => 'diagnóstico y problemas clínicos',
+            'plan_de_estudio'                  => 'plan de estudio',
+            'pronostico'                       => 'pronóstico',
+
+            // Anestesia
+            'tecnica_anestesica'     => 'técnica anestésica',
+            'farmacos_administrados' => 'fármacos administrados',
+            'duracion_anestesia'     => 'duración de la anestesia',
+            'incidentes_anestesia'   => 'incidentes durante la anestesia',
+            'balance_hidrico'        => 'balance hídrico',
+            'estado_clinico'         => 'estado clínico',
+            'plan_manejo'            => 'plan de manejo',
+        ];
+    }
 
     public function messages(): array
     {
         return [
-            'id.required' => 'El identificador del formulario es obligatorio.',
-            'id.exists'   => 'El formulario referenciado no existe.',
+            // Mensajes Generales
+            'required' => 'El campo :attribute es obligatorio.',
+            'string'   => 'El campo :attribute debe ser texto.',
+            'numeric'  => 'El campo :attribute debe ser un número.',
+            'integer'  => 'El campo :attribute debe ser un número entero.',
             
-            'ta.required' => 'La tensión arterial es obligatoria.',
-            'fc.required' => 'La frecuencia cardiaca es obligatoria.',
-            'fc.integer'  => 'La frecuencia cardiaca debe ser un número entero.',
-            'fr.required' => 'La frecuencia respiratoria es obligatoria.',
-            'fr.integer'  => 'La frecuencia respiratoria debe ser un número entero.',
-            'temp.required' => 'La temperatura es obligatoria.',
-            'peso.required' => 'El peso es obligatorio.',
-            'talla.required'=> 'La talla es obligatoria.',
+            // Mensajes de Rango y Longitud
+            'between' => 'El campo :attribute debe estar entre :min y :max.',
+            'min'     => 'El campo :attribute es muy corto (mínimo :min caracteres).',
+            'max'     => 'El campo :attribute es demasiado extenso (máximo :max caracteres).',
 
-            'resumen_del_interrogatorio.required' => 'El resumen del interrogatorio es obligatorio.',
-            'exploracion_fisica.required'         => 'La exploración física es obligatoria.',
-            'plan_de_estudio.required'            => 'El plan de estudio es obligatorio.',
-            'resultado_estudios.required'         => 'El resultado de estudios de los servicios es requerido',
-            'diagnostico_o_problemas_clinicos.required' => 'El diagnóstico o problemas clínicos son obligatorios.',
-            'pronostico.required'                 => 'El pronóstico es obligatorio.',
-
-            'tecnica_anestesica.required'     => 'La técnica anestésica es obligatoria.',
-            'farmacos_administrados.required' => 'Los fármacos administrados son obligatorios.',
-            'duracion_anestesia.required'     => 'La duración de la anestesia es obligatoria.',
-            'duracion_anestesia.date_format'  => 'La duración debe tener el formato HH:MM:SS.',
-            'balance_hidrico.required'        => 'El balance hídrico es obligatorio.',
-            'incidentes_anestesia.required'   => 'Los incidentes de la anestesia es requeridos',
-            'estado_clinico.required'         => 'El estado clínico es obligatorio.',
-            'plan_manejo.required'            => 'El plan de manejo es obligatorio.',
+            // Mensajes Específicos
+            'duracion_anestesia.date_format' => 'La duración debe tener el formato de hora (HH:MM).',
+            'ta.max' => 'La tensión arterial debe ser breve (ej. 120/80).',
         ];
     }
 }

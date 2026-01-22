@@ -65,13 +65,14 @@ const NotaPostanestesicaForm: NotaPostanestesicaComponent = ({ paciente, estanci
             <Head title={nota ? 'Editar Nota Post-Anestésica' : 'Crear Nota Post-Anestésica'} />
             
             <FormLayout 
-                title=''
+                title={nota ? 'Edición nota post-anestésica' : 'Registro nota post-anestésica'}
                 onSubmit={handleSubmit}
                 actions={
                     <PrimaryButton type="submit" disabled={processing}>
                         {processing ? 'Guardando...' : (nota ? 'Actualizar Nota' : 'Crear nota postanestésica')}
                     </PrimaryButton>
                 }
+                
             >
 
                 <Generalidades
