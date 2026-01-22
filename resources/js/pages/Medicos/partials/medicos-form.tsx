@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Head, useForm, router, Link } from '@inertiajs/react';
 import MainLayout from '@/layouts/MainLayout';
 import { route } from 'ziggy-js';
-
+import { Doctor } from '@/types';
 import BackButton from '@/components/ui/back-button';
 import InputText from '@/components/ui/input-text';
 import InputDate from '@/components/ui/input-date';
@@ -10,7 +10,7 @@ import SelectInput from '@/components/ui/input-select';
 import PrimaryButton from '@/components/ui/primary-button';
 
 type Props = {
-  doctor: {
+    doctor: {
     id: number;
     nombre: string;
     apellido_paterno: string;
@@ -25,6 +25,9 @@ type Props = {
   };
   cargos?: { id: number; nombre: string }[];
   usuarios?: { id: number; nombre_completo: string }[];
+
+  onSubmit: ( form:any ) => void;
+  submitlLabel?: string;
 };
 
 type DoctorFormData = {
@@ -41,6 +44,29 @@ type DoctorFormData = {
   password_confirmation: string;
   professional_qualifications: { titulo: string; cedula?: string }[];
 };
+export const MedicoForm = ({
+    doctor,
+    onSubmit,
+    submitlLabel
+}: Props) =>{ 
+    const form = useForm ({
+    nombre: doctor?.nombre || 'N/A',
+    apellido_paterno: doctor?.apellido_paterno || 'N/A',
+    apellido_materno: doctor?.apellido_materno || 'N/A',
+    curp: doctor?.curp || 'N/A',
+    sexo: doctor?.sexo || 'N/A',
+    fecha_nacimiento: doctor?.fecha_nacimiento || 'N/A',
+    cargo_id: doctor?.cargo_id || 'N/A',
+    colaborador_responsable_id: doctor?.colaborador_responsable_id || 'N/A',
+    email: doctor?.email || 'N/A',
+    password: '',  // Vacío por default (opcional)
+    password_confirmation: '',
+    x: doctor?.professional_qualifications || 'N/A',
+    professional_qualifications: doctor?.professional_qualifications || 'N/A',
+});
+
+  // Inicializa useForm con datos del doctor (password vacío)
+  const { data, setData, processing, errors, setError, clearErrors } = form;
 
 const optionsSexo = [
   { value: '', label: 'Seleccionar' },
@@ -124,22 +150,6 @@ const EditDoctor: React.FC<Props> = ({ doctor, cargos = [], usuarios = [] }) => 
     setNewCedula('');
   };
 
-  // Inicializa useForm con datos del doctor (password vacío)
-  const { data, setData, put, processing, errors, setError, clearErrors } = useForm<DoctorFormData>({
-    nombre: doctor.nombre || '',
-    apellido_paterno: doctor.apellido_paterno || '',
-    apellido_materno: doctor.apellido_materno || '',
-    curp: doctor.curp || '',
-    sexo: doctor.sexo || '',
-    fecha_nacimiento: doctor.fecha_nacimiento || '',
-    cargo_id: doctor.cargo_id?.toString() || '',
-    colaborador_responsable_id: doctor.colaborador_responsable_id?.toString() || '',
-    email: doctor.email || '',
-    password: '',  // Vacío por default (opcional)
-    password_confirmation: '',
-    professional_qualifications: qualifications,  // Inicializado con datos precargados
-  });
-
   // Actualiza qualifications en data cuando cambie el estado local
   useEffect(() => {
     setData('professional_qualifications', qualifications);
@@ -168,7 +178,7 @@ const EditDoctor: React.FC<Props> = ({ doctor, cargos = [], usuarios = [] }) => 
 
     clearErrors();  // Limpia errores previos
 
-    put(route('doctores.update', doctor.id));
+    onSubmit(form);
   };
 
   return (
@@ -177,7 +187,7 @@ const EditDoctor: React.FC<Props> = ({ doctor, cargos = [], usuarios = [] }) => 
       <div className="p-4 md:p-8">
         <div className="flex justify-between items-center mb-6">
           <div className="flex items-center space-x-4">
-
+            
           </div>
           <h1 className="flex-1 text-center text-3xl font-bold text-black">
             Editar Doctor
@@ -207,16 +217,7 @@ const EditDoctor: React.FC<Props> = ({ doctor, cargos = [], usuarios = [] }) => 
               error={errors.nombre}
             />
 
-            <InputText
-              id="apellido_paterno"
-              name="apellido_paterno"
-              label="Apellido Paterno *"
-              value={data.apellido_paterno}
-              onChange={(e) => setData('apellido_paterno', e.target.value)}
-              placeholder="Ej: Pérez"
-              required
-              error={errors.apellido_paterno}
-            />
+          
 
             <InputText
               id="apellido_materno"
@@ -273,7 +274,7 @@ const EditDoctor: React.FC<Props> = ({ doctor, cargos = [], usuarios = [] }) => 
                 onChange={(value) => setData('cargo_id', value)}
                 error={errors.cargo_id}
                 placeholder="Seleccionar Cargo"
-
+                
               />
             </div>
 
@@ -441,8 +442,5 @@ const EditDoctor: React.FC<Props> = ({ doctor, cargos = [], usuarios = [] }) => 
   );
 };
 
-EditDoctor.layout = (page: React.ReactElement) => (
-  <MainLayout pageTitle="Editar Doctor" children={page} />
-);
+};
 
-export default EditDoctor;
