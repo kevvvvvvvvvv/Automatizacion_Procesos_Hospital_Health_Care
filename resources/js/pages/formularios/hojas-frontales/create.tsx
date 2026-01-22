@@ -43,7 +43,7 @@ const Create = ({ medicos, paciente, estancia }: CreateFormularioProps) => {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6 max-w-2xl mx-auto">
-      <Head title="Crear Formulario" />
+      <Head title="Registro hoja frontal" />
 
       <SelectInput
         label="Médico Asignado"
@@ -53,8 +53,6 @@ const Create = ({ medicos, paciente, estancia }: CreateFormularioProps) => {
         error={errors.medico_id}
         placeholder="Selecciona un médico..."
       />
-
-
 
       <TextareaInput
         id="notas"

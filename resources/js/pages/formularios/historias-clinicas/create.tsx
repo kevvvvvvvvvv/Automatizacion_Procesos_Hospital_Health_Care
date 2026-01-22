@@ -422,7 +422,7 @@ Create.layout = (page: React.ReactElement) => {
 
   return (
     <MainLayout
-      pageTitle={`Creación de Historia Clínica`}
+      pageTitle={`Registro historia clínica`}
       link="estancias.show"
       linkParams={estancia.id} 
     >
