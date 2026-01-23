@@ -97,32 +97,42 @@ class HabitacionSeeder extends Seeder
 
         Habitacion::create([
             'identificador' => 'Suit 2',
+            'tipo' => 'Habitación',
             'estado' => 'Libre',
             'piso' => 'Planta Baja',
+            'ubicacion' => 'Plan de Ayutla',
         ]);
 
         Habitacion::create([
             'identificador' => 'Suit 3',
+            'tipo' => 'Habitación',
             'estado' => 'Libre',
             'piso' => 'Planta Baja',
+            'ubicacion' => 'Plan de Ayutla',
         ]);
 
         Habitacion::create([
             'identificador' => 'Suit 4',
+            'tipo' => 'Habitación',
             'estado' => 'Libre',
             'piso' => 'Planta Baja',
+            'ubicacion' => 'Plan de Ayutla',
         ]);
 
         Habitacion::create([
             'identificador' => 'Suit 5',
+            'tipo' => 'Habitación',
             'estado' => 'Libre',
             'piso' => 'Planta Baja',
+            'ubicacion' => 'Plan de Ayutla',
         ]);
 
         Habitacion::create([
             'identificador' => 'Suit 6',
+            'tipo' => 'Habitación',
             'estado' => 'Libre',
             'piso' => 'Planta Baja',
+            'ubicacion' => 'Plan de Ayutla',
         ]);
 
          Habitacion::create([
