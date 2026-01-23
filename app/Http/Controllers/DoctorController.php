@@ -230,8 +230,6 @@ class DoctorController extends Controller implements HasMiddleware
 
         $doctor->update($updateData);
 
-        Log::info('Doctor actualizado:', ['id' => $id, 'data' => $updateData]);
-
         return redirect()->route('doctores.index')
             ->with('success', 'Doctor actualizado exitosamente.');
     }
