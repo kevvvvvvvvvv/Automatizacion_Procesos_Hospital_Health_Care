@@ -49,7 +49,7 @@ class NotaPostoperatoriaRequest extends FormRequest
             'hallazgos_transoperatorios' => ['required', 'string', 'min:5', 'max:10000'],
             'reporte_conteo'             => ['required', 'string', 'min:5', 'max:10000'],
             'incidentes_accidentes'      => ['required', 'string', 'min:5', 'max:10000'],
-            'cuantificacion_sangrado'    => ['required', 'string', 'min:1', 'max:10000'],
+            'cuantificacion_sangrado'    => ['required', 'string', 'max:10000'], 
             'hallazgos_importancia'      => ['required', 'string', 'min:5', 'max:10000'],
 
             'estado_postquirurgico'    => ['required', 'string', 'min:5', 'max:10000'],
@@ -73,7 +73,7 @@ class NotaPostoperatoriaRequest extends FormRequest
             'estudios_especiales'      => ['nullable', 'string', 'max:255'],
             'pcr'                      => ['nullable', 'string', 'max:255'],
             'pieza_remitida'           => ['nullable', 'string', 'max:255'],
-            'datos_clinicos'           => ['nullable', 'string', 'max:10000'], 
+            'datos_clinicos'           => ['nullable', 'string', 'max:10000'],
             'empresa_enviar'           => ['nullable', 'string', 'max:255'],
         ];
     }
@@ -81,7 +81,6 @@ class NotaPostoperatoriaRequest extends FormRequest
     public function attributes(): array
     {
         return [
-            // Signos Vitales
             'ta'    => 'tensión arterial',
             'fc'    => 'frecuencia cardíaca',
             'fr'    => 'frecuencia respiratoria',
@@ -89,50 +88,48 @@ class NotaPostoperatoriaRequest extends FormRequest
             'peso'  => 'peso',
             'talla' => 'talla',
 
-            // Tiempos
             'hora_inicio_operacion'  => 'hora de inicio',
             'hora_termino_operacion' => 'hora de término',
 
-            // Detalles Operación
             'diagnostico_preoperatorio'      => 'diagnóstico preoperatorio',
             'operacion_planeada'             => 'operación planeada',
             'operacion_realizada'            => 'operación realizada',
             'diagnostico_postoperatorio'     => 'diagnóstico postoperatorio',
             'descripcion_tecnica_quirurgica' => 'descripción de técnica quirúrgica',
+            'hallazgos_transoperatorios'     => 'hallazgos transoperatorios',
             'cuantificacion_sangrado'        => 'cuantificación de sangrado',
+            'hallazgos_importancia'          => 'hallazgos de importancia',
 
-            // Arrays
-            'ayudantes_agregados.*.cargo'               => 'cargo del ayudante',
+            'ayudantes_agregados.*.cargo'                => 'cargo del ayudante',
             'transfusiones_agregadas.*.tipo_transfusion' => 'tipo de transfusión',
             'transfusiones_agregadas.*.cantidad'         => 'cantidad de transfusión',
+
+            'estudio_solicitado' => 'estudio de patología solicitado',
+            'pieza_remitida'     => 'pieza remitida',
         ];
     }
 
     public function messages(): array
     {
         return [
-            // Genéricos
             'required' => 'El campo :attribute es obligatorio.',
             'string'   => 'El campo :attribute debe ser texto.',
-            'numeric'  => 'El campo :attribute debe ser un número.',
+            'numeric'  => 'El campo :attribute debe ser numérico.',
             'integer'  => 'El campo :attribute debe ser un número entero.',
             'date'     => 'El campo :attribute debe ser una fecha válida.',
-            'array'    => 'El campo :attribute debe ser una lista válida.',
+            'exists'   => 'El valor seleccionado en :attribute no es válido.',
 
-            // Rangos y Límites
             'between' => 'El campo :attribute debe estar entre :min y :max.',
-            'min'     => 'El campo :attribute es muy corto (mínimo :min caracteres).',
+            'min'     => 'El campo :attribute debe ser más detallado (mínimo :min caracteres).',
             'max'     => 'El campo :attribute es demasiado extenso (máximo :max caracteres).',
 
-            // Lógica de fechas
             'hora_termino_operacion.after_or_equal' => 'La hora de término no puede ser anterior a la hora de inicio.',
 
-            // Arrays (Ayudantes y Transfusiones)
-            'ayudantes_agregados.*.ayudante_id.exists' => 'El ayudante seleccionado no es válido.',
-            'ayudantes_agregados.*.cargo.required'     => 'Debe especificar el cargo del ayudante.',
-            
-            'transfusiones_agregadas.*.tipo_transfusion.required' => 'Especifique el tipo de transfusión.',
-            'transfusiones_agregadas.*.cantidad.required'         => 'Especifique la cantidad de la transfusión.',
+            'ayudantes_agregados.*.ayudante_id.required' => 'Debe seleccionar un ayudante.',
+            'ayudantes_agregados.*.cargo.required'       => 'Debe especificar el cargo del ayudante.',
+
+            'transfusiones_agregadas.*.tipo_transfusion.required' => 'Especifique el tipo de sangre/transfusión.',
+            'transfusiones_agregadas.*.cantidad.required'         => 'Especifique la cantidad transfundida.',
         ];
     }
 }

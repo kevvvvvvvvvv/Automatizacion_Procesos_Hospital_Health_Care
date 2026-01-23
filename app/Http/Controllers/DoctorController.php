@@ -239,9 +239,7 @@ class DoctorController extends Controller implements HasMiddleware
     {
         $doctor = User::findOrFail($id);
         $doctor->delete();
-
-        Log::info('Doctor eliminado:', ['id' => $id]);
-
+        
         return redirect()->route('doctores.index')
             ->with('success', 'Doctor eliminado exitosamente.');
     }
