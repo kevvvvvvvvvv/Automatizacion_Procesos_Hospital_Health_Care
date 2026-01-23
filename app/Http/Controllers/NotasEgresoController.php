@@ -16,6 +16,7 @@ use App\Models\FormularioCatalogo;
 use App\Services\PdfGeneratorService;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Log;
+use App\Models\Habitacion;
 
 
 /**
@@ -69,7 +70,8 @@ class NotasEgresoController extends Controller
      * @param Estancia $estancia Modelo de la estancia.
      * @return RedirectResponse Redirección a la vista de la estancia o atrás en caso de error.
      */
-    public function store(NotaEgresoRequest $request ,paciente $paciente, Estancia $estancia){
+    public function store(NotaEgresoRequest $request, Paciente $paciente, Estancia $estancia)
+    {
         $validateData = $request->validated();
 
         if ($validateData['motivo_egreso'] === 'otro') {
@@ -78,26 +80,50 @@ class NotasEgresoController extends Controller
         unset($validateData['motivo_egreso_otro']);
 
         DB::beginTransaction();
-        try{
+        try {
+            // 1. Crear la instancia del formulario
             $formularioInstancia = FormularioInstancia::create([
-                'fecha_hora' => now(),  
+                'fecha_hora' => now(),
                 'estancia_id' => $estancia->id,
-                'formulario_catalogo_id' => FormularioCatalogo::ID_NOTA_EGRESO, 
+                'formulario_catalogo_id' => FormularioCatalogo::ID_NOTA_EGRESO,
                 'user_id' => Auth::id(),
             ]);
+
+            // 2. Crear el detalle de la nota
             $notaEgreso = NotaEgreso::create([
                 'id' => $formularioInstancia->id,
                 ...$validateData
             ]);
+
+            // ==========================================================
+            // LÓGICA AGREGADA: Actualizar Estancia y Liberar Habitación
+            // ==========================================================
+
+            // A. Liberar la habitación ocupada (si existe alguna)
+            if ($estancia->habitacion_id) {
+                Habitacion::where('id', $estancia->habitacion_id)
+                    ->update(['estado' => 'Libre']);
+            }
+
+            // B. Actualizar la fecha de egreso en la estancia
+            // Nota: Usamos now() para que coincida con la creación de la nota.
+            // Si tienes un campo 'fecha_alta' en el $request, úsalo en su lugar.
+            $estancia->update([
+                'fecha_egreso' => now(), 
+            ]);
+
+            // ==========================================================
+
             DB::commit();
-                    
+
             return redirect()->route('estancias.show', [
                 'estancia' => $estancia->id,
-            ])->with('success', 'Nota de egreso creada exitosamente.');
-        } catch(\Exception $e) {
+            ])->with('success', 'Nota de egreso creada, habitación liberada y estancia cerrada.');
+
+        } catch (\Exception $e) {
             DB::rollBack();
             Log::error('Error al crear la nota de egreso: ' . $e->getMessage());
-            return Redirect::back()->with('error', 'Error al crear nota de egreso.'); 
+            return Redirect::back()->with('error', 'Error al crear nota de egreso.');
         }
     }
 
