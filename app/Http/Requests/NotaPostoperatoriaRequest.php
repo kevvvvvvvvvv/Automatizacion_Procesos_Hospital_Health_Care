@@ -21,6 +21,8 @@ class NotaPostoperatoriaRequest extends FormRequest
      */
     public function rules(): array
     {
+        $detonantesPatologia = 'biopsia_pieza_quirurgica,revision_laminillas,estudios_especiales,pcr,datos_clinicos,empresa_enviar';
+
         return [
             'ta'    => ['required', 'string', 'max:20'], 
             'fc'    => ['required', 'integer', 'between:0,300'],
@@ -67,12 +69,22 @@ class NotaPostoperatoriaRequest extends FormRequest
             'transfusiones_agregadas.*.tipo_transfusion' => ['required', 'string', 'max:255'],
             'transfusiones_agregadas.*.cantidad'         => ['required', 'string', 'max:255'],
 
-            'estudio_solicitado'       => ['nullable', 'string', 'max:255'],
+            'estudio_solicitado' => [
+                'nullable',
+                'required_with:pieza_remitida,' . $detonantesPatologia, 
+                'string',
+                'max:255'
+            ],
+            'pieza_remitida' => [
+                'nullable',
+                'required_with:estudio_solicitado,' . $detonantesPatologia,
+                'string',
+                'max:255'
+            ],
             'biopsia_pieza_quirurgica' => ['nullable', 'string', 'max:255'],
             'revision_laminillas'      => ['nullable', 'string', 'max:255'],
             'estudios_especiales'      => ['nullable', 'string', 'max:255'],
             'pcr'                      => ['nullable', 'string', 'max:255'],
-            'pieza_remitida'           => ['nullable', 'string', 'max:255'],
             'datos_clinicos'           => ['nullable', 'string', 'max:10000'],
             'empresa_enviar'           => ['nullable', 'string', 'max:255'],
         ];
@@ -130,6 +142,9 @@ class NotaPostoperatoriaRequest extends FormRequest
 
             'transfusiones_agregadas.*.tipo_transfusion.required' => 'Especifique el tipo de sangre/transfusión.',
             'transfusiones_agregadas.*.cantidad.required'         => 'Especifique la cantidad transfundida.',
+
+            'estudio_solicitado.required_with' => 'Si ha indicado una pieza remitida, debe especificar qué estudio solicita.',
+            'pieza_remitida.required_with' => 'Si ha solicitado un estudio de patología, es obligatorio especificar la pieza remitida.',
         ];
     }
 }

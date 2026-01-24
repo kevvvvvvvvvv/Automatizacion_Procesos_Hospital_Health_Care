@@ -1,21 +1,20 @@
 import React from 'react';
 import { useForm } from '@inertiajs/react';
 import { route } from 'ziggy-js';
-import { HojaEnfermeriaQuirofano } from '@/types'; 
+import { HojaEnfermeriaQuirofano,User } from '@/types'; 
 import Swal from 'sweetalert2';
 
-// Componentes UI
 import InputText from '@/components/ui/input-text';
 import InputTextArea from '@/components/ui/input-text-area';
 import PrimaryButton from '@/components/ui/primary-button';
 
 interface EnvioPiezaProps {
     hoja: HojaEnfermeriaQuirofano; 
+    medicos: User[];
 }
 
-const EnvioPieza: React.FC<EnvioPiezaProps> = ({ hoja }) => {
-    
-    // 1. Estado Interno del Formulario (Independiente del Padre)
+const EnvioPieza: React.FC<EnvioPiezaProps> = ({ hoja, medicos }) => {
+
     const { data, setData, post, processing, errors, reset } = useForm({
         estudio_solicitado: '',
         biopsia_pieza_quirurgica: '',
@@ -30,7 +29,6 @@ const EnvioPieza: React.FC<EnvioPiezaProps> = ({ hoja }) => {
     const handleSend = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
 
-        // 2. Validación básica en frontend
         if (!data.estudio_solicitado || !data.pieza_remitida || !data.datos_clinicos) {
             Swal.fire({
                 title: 'Campos Incompletos',
@@ -41,11 +39,10 @@ const EnvioPieza: React.FC<EnvioPiezaProps> = ({ hoja }) => {
             return;
         }
 
-        // 3. Enviar usando el método post() de useForm
         post(route('solicitudes-patologia.store', { hojasenfermeria: hoja.id }), {
             preserveScroll: true,
             onSuccess: () => {
-                reset(); // Limpia el formulario al terminar
+                reset(); 
                 Swal.fire({
                     title: 'Éxito',
                     text: 'La solicitud de patología ha sido enviada correctamente.',
@@ -145,7 +142,6 @@ const EnvioPieza: React.FC<EnvioPiezaProps> = ({ hoja }) => {
                     error={errors.empresa_enviar}
                 />
 
-                {/* Botón de acción directa */}
                 <div className="flex justify-end mt-4">
                     <PrimaryButton 
                         type="button" 
