@@ -130,6 +130,11 @@ class FormularioNotaPostoperatorioController extends Controller
                 ...$datosNota
             ]);
 
+            $solicitud->update([
+                'itemable_id'   => $nota->id,
+                'itemable_type' => $nota->getMorphClass(),
+            ]);
+
             if (!empty($validatedData['ayudantes_agregados'])) {
                 $ayudantes = array_map(function ($item) {
                     return [
