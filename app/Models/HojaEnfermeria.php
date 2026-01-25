@@ -128,5 +128,8 @@ class HojaEnfermeria extends Model
         return $this->hasMany(HojaSondaCateter::class);
     }
 
-
+    public function solicitudPatologia(): MorphMany
+    {
+        return $this->morphMany(SolicitudPatologia::class,'itemable');
+    }
 }
