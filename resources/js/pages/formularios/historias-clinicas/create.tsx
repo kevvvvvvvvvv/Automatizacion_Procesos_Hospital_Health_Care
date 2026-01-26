@@ -46,6 +46,7 @@ interface FormData {
     tension_arterial: string;
     frecuencia_cardiaca: number | string;
     frecuencia_respiratoria: number | string;
+    saturacion_oxigeno: number;
     temperatura: number | string;
     peso: number | string;
     talla: number | string;
@@ -99,6 +100,7 @@ const Create: CreateComponent = ({ preguntas, paciente, estancia }) => {
         tension_arterial: '',
         frecuencia_cardiaca: '',
         frecuencia_respiratoria: '',
+        saturacion_oxigeno: '',
         temperatura: '',
         peso: '',
         talla: '',
@@ -330,6 +332,17 @@ const Create: CreateComponent = ({ preguntas, paciente, estancia }) => {
                     onChange={(e) => setData('frecuencia_respiratoria', e.target.value)}
                     error={errors.frecuencia_respiratoria}
                 />
+
+                <InputText
+                    id="saturacion_oxigeno"
+                    name="saturacion_oxigeno"
+                    label="Saturación de oxígeno (%)"
+                    type="number"
+                    value={String(data.saturacion_oxigeno)}
+                    onChange={(e) => setData('saturacion_oxigeno',Number( e.target.value))}
+                    error={errors.saturacion_oxigeno}
+                />
+
                 <InputText
                     id="temperatura"
                     name="temperatura"
