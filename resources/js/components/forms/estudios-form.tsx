@@ -8,6 +8,8 @@ import Checkbox from '@/components/ui/input-checkbox';
 import InputText from '@/components/ui/input-text';
 import SelectInput from '@/components/ui/input-select';
 import Button from '../button';
+import NavegationTab from '@/components/navegation-tab';
+import EnvioPiezaForm from '@/components/forms/envio-piezas-form';
 
 interface Props {
     estancia: Estancia;
@@ -67,6 +69,11 @@ const SolicitudEstudiosForm: React.FC<Props> = ({
     modeloId,      
     modeloTipo,
 }) => {
+
+    const tabs = [
+        {id: 'estudios', label: 'Solicitar estudios'},
+        {id: 'patologia', label: 'Solicitar patología'}
+    ];
     
     const [activeTab, setActiveTab] = useState<'estudios' | 'patologia'>('estudios');
     const [filtro, setFiltro] = useState('');
@@ -178,12 +185,12 @@ const SolicitudEstudiosForm: React.FC<Props> = ({
 
     return (
         <div>
-            <div className="border-b border-gray-200 mb-6">
-                <nav className="-mb-px flex space-x-6">
-                    <button type="button" onClick={() => setActiveTab('estudios')} className={`py-3 px-1 border-b-2 font-medium text-sm ${activeTab === 'estudios' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700'}`}>Solicitar estudios</button>
-                    <button type="button" onClick={() => setActiveTab('patologia')} className={`py-3 px-1 border-b-2 font-medium text-sm ${activeTab === 'patologia' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700'}`}>Solicitar patología</button>
-                </nav>
-            </div>
+
+            <NavegationTab
+                tabs={tabs}
+                activeTab={activeTab}
+                onTabChange={setActiveTab}
+            />
 
             {activeTab === 'estudios' && (
                 <form onSubmit={handleSubmitEstudios} className="space-y-6">
@@ -342,7 +349,12 @@ const SolicitudEstudiosForm: React.FC<Props> = ({
                 </form>
             )}
 
-            {activeTab === 'patologia' && <div className="bg-white p-6 rounded-lg shadow-md"><FormularioPatologia estancia={estancia} medicos={medicos} /></div>}
+            {activeTab === 'patologia' && 
+                <div className="bg-white p-6 rounded-lg shadow-md">
+                    <EnvioPiezaForm medicos={medicos} />
+                </div>
+            
+            }
             
             <div className="mt-12">
                 <h3 className="text-lg font-semibold mb-4 text-gray-800 border-b pb-2">Historial de solicitudes anteriores</h3>
