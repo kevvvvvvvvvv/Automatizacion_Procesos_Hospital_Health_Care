@@ -259,7 +259,7 @@ export const PacienForm = ({
                 onChange={handleChange}
                 required
                 maxLength={20}
-                error={errors.estado_civil}
+                error={errors.telefono}
             />
             <div className="flex flex-col">
                 <label htmlFor="estado_civil" className="mb-1 font-medium">Estado Civil</label>
