@@ -23,6 +23,14 @@
             box-sizing: border-box;
         }
 
+        h3 {
+            margin-top: 15px;
+            margin-bottom: 8px;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 3px;
+            page-break-after: avoid;
+        }
+
         body {
             font-family: Calibri, Arial, sans-serif;
             margin: 0;
@@ -35,16 +43,6 @@
             font-size: 16pt;
             margin-bottom: 15px;
             color: #000;
-        }
-
-        h3 {
-            background-color: #f2f2f2;
-            padding: 5px;
-            margin-top: 15px;
-            margin-bottom: 5px;
-            border-bottom: 2px solid #ccc;
-            font-size: 11pt;
-            text-transform: uppercase;
         }
 
         /* Tabla para datos generales (sin bordes visibles) */
@@ -115,58 +113,107 @@
             margin: 0;
             line-height: 1.4;
         }
+
+        .empty-cell {
+            text-align: center;
+            font-style: italic;
+            color: #777;
+            padding: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse; 
+            margin-bottom: 20px;
+        }
+
+        thead th {
+            background-color: #f0f0f0;
+            color: #222;
+            border-bottom: 2px solid #444;
+            text-align: left;
+            padding: 8px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+
+        tbody td {
+            padding: 8px 6px; 
+            border-bottom: 1px solid #ddd; 
+            vertical-align: top; 
+            color: #444;
+        }
+
+        tbody tr:nth-child(even) {
+            background-color: #fcfcfc;
+        }
+
+
+        tr {
+            page-break-inside: avoid;
+        }
+
+        table td, 
+        table th {
+            padding: 2px 4px; 
+            margin: 0;
+            line-height: 1;
+        }
     </style>
 </head>
 
 <body>
     <h1>Hoja de enfermería en quirófano</h1>
-    
-    <div style="text-align: right; font-size: 8pt; margin-bottom: 10px;">
-        <strong>Fecha:</strong> {{ date('d/m/Y', strtotime($notaData['created_at'])) }}
-    </div>
 
-    <h3>Tiempos Quirúrgicos</h3>
+    <h3>Tiempos quirúrgicos</h3>
     <table class="info-table">
         <tr>
-            <td><strong>Inicio Anestesia:</strong> {{ $notaData['hora_inicio_anestesia'] ?? '--:--' }}</td>
-            <td><strong>Fin Anestesia:</strong> {{ $notaData['hora_fin_anestesia'] ?? '--:--' }}</td>
-            <td><strong>Inicio Cirugía:</strong> {{ $notaData['hora_inicio_cirugia'] ?? '--:--' }}</td>
+            <td><strong>Inicio anestesia:</strong> {{ $notaData['hora_inicio_anestesia'] ?? '--:--' }}</td>
+            <td><strong>Inicio cirugía:</strong> {{ $notaData['hora_inicio_cirugia'] ?? '--:--' }}</td>
+            <td><strong>Ingreso paciente:</strong> {{ $notaData['hora_inicio_paciente'] ?? '--:--' }}</td>
         </tr>
         <tr>
-            <td><strong>Fin Cirugía:</strong> {{ $notaData['hora_fin_cirugia'] ?? '--:--' }}</td>
-            <td><strong>Ingreso Paciente:</strong> {{ $notaData['hora_inicio_paciente'] ?? '--:--' }}</td>
-            <td><strong>Salida Paciente:</strong> {{ $notaData['hora_fin_paciente'] ?? '--:--' }}</td>
+            <td><strong>Fin anestesia:</strong> {{ $notaData['hora_fin_anestesia'] ?? '--:--' }}</td>
+            <td><strong>Fin cirugía:</strong> {{ $notaData['hora_fin_cirugia'] ?? '--:--' }}</td>
+            <td><strong>Salida paciente:</strong> {{ $notaData['hora_fin_paciente'] ?? '--:--' }}</td>
         </tr>
     </table>
 
     <div class="clearfix">
         <div style="width: 48%; float: left; margin-right: 2%;">
-            <h3>Tipo de Anestesia</h3>
+            <h3>Tipo de anestesia</h3>
             <div>
-                @foreach($notaData['anestesia'] as $key => $valor)
+                @foreach(($notaData['anestesia'] ?? []) as $key => $valor)
                     <div style="margin-bottom: 3px;">
                         <span class="check-box {{ $valor ? 'checked' : '' }}"></span>
                         {{ ucfirst(str_replace('_', ' ', $key)) }}
                     </div>
                 @endforeach
+                @if(empty($notaData['servicios_especiales']))
+                    <p><em>No hay anestesias registradas.</em></p>
+                @endif
             </div>
         </div>
 
         <div style="width: 48%; float: left;">
-            <h3>Servicios Especiales</h3>
+            <h3>Servicios especiales</h3>
             <div>
-                @foreach($notaData['servicios_especiales'] as $key => $valor)
+                @foreach(($notaData['servicios_especiales'] ?? []) as $key => $valor)
                     <div style="margin-bottom: 3px;">
                         <span class="check-box {{ $valor ? 'checked' : '' }}"></span>
                         {{ ucfirst(str_replace('_', ' ', $key)) }}
                     </div>
                 @endforeach
+                @if(empty($notaData['servicios_especiales']))
+                    <p><em>No hay servicios registrados.</em></p>
+                @endif
             </div>
         </div>
     </div>
 
-    <h3>Personal en Sala</h3>
-    <table class="list-table">
+    <h3>Personal en quirófano</h3>
+    <table>
         <thead>
             <tr>
                 <th>Cargo / Función</th>
@@ -178,20 +225,19 @@
                 <tr>
                     <td>{{ ucfirst($personal['cargo']) }}</td>
                     <td>
-                        {{-- Accedemos a la relación 'user' dentro del array --}}
                         {{ $personal['user']['name'] ?? 'ID: ' . $personal['user_id'] }} 
                         {{ $personal['user']['apellido_paterno'] ?? '' }}
                         {{ $personal['user']['apellido_materno'] ?? '' }}
                     </td>
                 </tr>
             @empty
-                <tr><td colspan="2" class="text-center">No se registró personal</td></tr>
+                <tr><td colspan="2" class="empty-cell">No se registró personal</td></tr>
             @endforelse
         </tbody>
     </table>
 
-    <h3>Control de Oxígeno</h3>
-    <table class="list-table">
+    <h3>Control de oxígeno</h3>
+    <table>
         <thead>
             <tr>
                 <th>Hora Inicio</th>
@@ -211,12 +257,43 @@
                     <td>{{ $oxigeno['user_inicio']['name'] ?? 'N/A' }}</td>
                 </tr>
             @empty
-                <tr><td colspan="5" class="text-center">No se registró consumo de oxígeno</td></tr>
+                <tr><td colspan="5" class="empty-cell">No se registró consumo de oxígeno</td></tr>
             @endforelse
         </tbody>
     </table>
 
-        @if(isset($medico))
+    <h3>Medicamentos utilizados</h3>
+    <table>
+        <thead>
+            <tr>
+                <th style='width:30%'>Fecha/Hora registro</th>
+                <th style='width:10%'>ID Medicamento</th>
+                <th style='width:50%'>Nombre del medicamento</th>
+                <th style='width:10%'>Cantidad (unidades)</th>
+               
+            </tr>
+        </thead>
+        <tbody>
+            @if ($notaData['hojaInsumosBasicos']->isEmpty())
+                <tr>
+                    <td colspan="3" class='empty-cell'>No se han registrado medicamentos.</td>
+                </tr>
+            @else
+                @foreach ($notaData['hojaInsumosBasicos'] as $insumos)
+                        <tr>
+                            <td>{{$insumos->created_at}}</td>
+                            <td>{{$insumos->producto_servicio_id}}</td>
+                            <td>{{$insumos['productoServicio']->nombre_prestacion}}</td>
+                            <td>{{$insumos->cantidad}}</td>
+                            
+                        </tr>                        
+                @endforeach
+
+            @endif
+        </tbody>
+    </table>
+
+    @if(isset($medico))
         <div class="signature-section">
             <div class="signature-line"></div>
             <p style="font-size: 9pt; color: #555;">Nombre completo, cédula profesional y firma del médico</p>
