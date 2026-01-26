@@ -30,7 +30,8 @@ class HistoriaClinicaRequest extends FormRequest
 
             'tension_arterial'        => ['required', 'string', 'min:5', 'max:20'], 
             'frecuencia_cardiaca'     => ['required', 'integer', 'between:0,300'],
-            'frecuencia_respiratoria' => ['required', 'integer', 'between:0,100'], 
+            'frecuencia_respiratoria' => ['required', 'integer', 'between:0,100'],
+            'saturacion_oxigeno'      => ['nullable', 'integer', 'between:0,100'], 
             'temperatura'             => ['required', 'numeric', 'between:30,45'], 
             'peso'                    => ['required', 'numeric', 'between:0.1,600'], 
             'talla'                   => ['required', 'integer', 'between:20,300'], 
@@ -38,60 +39,40 @@ class HistoriaClinicaRequest extends FormRequest
         ];
     }
 
+    public function attributes(): array
+    {
+        return [
+            'padecimiento_actual'     => 'padecimiento actual',
+            'tension_arterial'        => 'tensión arterial',
+            'frecuencia_cardiaca'     => 'frecuencia cardíaca',
+            'frecuencia_respiratoria' => 'frecuencia respiratoria',
+            'temperatura'             => 'temperatura',
+            'peso'                    => 'peso',
+            'talla'                   => 'talla',
+            'resultados_previos'      => 'resultados previos',
+            'diagnostico'             => 'diagnóstico',
+            'pronostico'              => 'pronóstico',
+            'indicacion_terapeutica'  => 'indicación terapéutica',
+            'respuestas'              => 'respuestas',
+            'saturacion_oxigeno'      => 'saturación de oxígeno',
+        ];
+    }
+
     public function messages(): array
     {
         return [
-            // Padecimiento Actual
-            'padecimiento_actual.required' => 'El padecimiento actual es obligatorio.',
-            'padecimiento_actual.min'      => 'El padecimiento actual debe tener al menos 5 caracteres.',
-            'padecimiento_actual.max'      => 'El padecimiento actual es demasiado extenso.',
-
-            // Tensión Arterial
-            'tension_arterial.required' => 'La tensión arterial es obligatoria.',
-            'tension_arterial.max'      => 'La tensión arterial no debe exceder los 20 caracteres.',
-            'tension_arterial.min'      => 'La tensión arterial parece incompleta (ej. 120/80).',
-
-            // Frecuencia Cardíaca
-            'frecuencia_cardiaca.required' => 'La frecuencia cardíaca es obligatoria.',
-            'frecuencia_cardiaca.integer'  => 'La frecuencia cardíaca debe ser un número entero.',
-            'frecuencia_cardiaca.between'  => 'La frecuencia cardíaca debe estar entre 0 y 300 lpm.',
-
-            // Frecuencia Respiratoria
-            'frecuencia_respiratoria.required' => 'La frecuencia respiratoria es obligatoria.',
-            'frecuencia_respiratoria.integer'  => 'La frecuencia respiratoria debe ser un número entero.',
-            'frecuencia_respiratoria.between'  => 'La frecuencia respiratoria debe estar entre 0 y 100 rpm.',
-
-            // Temperatura
-            'temperatura.required' => 'La temperatura es obligatoria.',
-            'temperatura.numeric'  => 'La temperatura debe ser un valor numérico.',
-            'temperatura.between'  => 'La temperatura debe estar en un rango válido (30°C - 45°C).',
-
-            // Peso
-            'peso.required' => 'El peso es obligatorio.',
-            'peso.numeric'  => 'El peso debe ser un valor numérico.',
-            'peso.between'  => 'El peso debe ser un valor lógico (entre 0.1kg y 600kg).',
-
-            // Talla
-            'talla.required' => 'La talla es obligatoria.',
-            'talla.integer'  => 'La talla debe ser un número entero (cm).',
-            'talla.between'  => 'La talla debe estar entre 20 cm y 300 cm.',
-
-            // Textos largos (Resultados, Diagnóstico, Pronóstico, Indicaciones)
-            'resultados_previos.required'      => 'Los resultados previos son obligatorios.',
-            'resultados_previos.min'           => 'Describa los resultados previos con más detalle.',
+            'required' => 'El campo :attribute es obligatorio.',
+            'integer'  => 'El campo :attribute debe ser un número entero.',
+            'numeric'  => 'El campo :attribute debe ser un valor numérico.',
+            'array'    => 'El formato de :attribute no es válido.',
             
-            'diagnostico.required'             => 'El diagnóstico es obligatorio.',
-            'diagnostico.min'                  => 'El diagnóstico debe ser más descriptivo.',
+            'between'  => 'El campo :attribute debe estar entre :min y :max.',
+            'min'      => 'El campo :attribute debe tener al menos :min caracteres.',
+            'max'      => 'El campo :attribute no debe exceder los :max caracteres.',
             
-            'pronostico.required'              => 'El pronóstico es obligatorio.',
-            'pronostico.min'                   => 'El pronóstico debe ser más descriptivo.',
-            
-            'indicacion_terapeutica.required'  => 'La indicación terapéutica es obligatoria.',
-            'indicacion_terapeutica.min'       => 'La indicación terapéutica debe ser más detallada.',
-
-            // Respuestas
-            'respuestas.required' => 'Es necesario proporcionar las respuestas del formulario.',
-            'respuestas.array'    => 'El formato de las respuestas no es válido.',
+            'tension_arterial.min' => 'La tensión arterial parece incompleta (ej. 120/80).',
+            'peso.between'         => 'El peso debe ser un valor lógico (entre 0.1kg y 600kg).',
+            'talla.between'        => 'La talla debe estar entre 20 cm y 300 cm.',
         ];
     }
 }
