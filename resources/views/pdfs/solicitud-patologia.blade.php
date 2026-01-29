@@ -4,18 +4,28 @@
     <meta charset="UTF-8">
     <title>Expediente Clínico - Hoja Frontal</title>
     <style>
-        @page {
+       @page {
             size: A4;
-            margin: 0;
+            margin-top: 5cm;
+            margin-bottom: 1.5cm;
+            margin-left: 1.2cm;
+            margin-right: 1.2cm;
+
+            @bottom-right {
+                content: "Página " counter(page) " de " counter(pages);
+                font-family: Calibri, Arial, sans-serif;
+                font-size: 9pt;
+                color: #888;
+            }
         }
 
         body {
-            font-family: Arial, sans-serif;
-            margin: 2.5cm 2cm; 
-            font-size: 11pt;
+            font-family: Calibri, Arial, sans-serif;
+            margin: 0;
+            font-size: 10.5pt;
             color: #333;
+            line-height: 1.4;
         }
-
 
         .header {
             display: flex;
@@ -147,29 +157,23 @@
             font-size: 12px;
         }
 
+        h1 {
+            text-align: center;
+            font-size: 18pt;
+            margin-bottom: 20px;
+        }
+
     </style>
 </head>
 <body>
 
-    <header class="header">
-        <img src="{{ public_path('images/Logo_HC_1.png') }}" alt="Logo Hospital" class="logo">
-        <div class="hospital-info">
-            <p><strong>1</strong></p>
-            <p><strong>CALLE PLAN DE AYUTLA NÚMERO 13 COLONIA REFORMA</strong></p>
-            <p><strong>CUERNAVACA, MORELOS, CÓDIGO POSTAL 62260 TÉLEFONO 777 323 0371</strong></p>
-            <p>Licencia sanitaria número 23-AM-17-007-0002</p>
-            <p>Responsable Sanitario Dr. Juan Manuel Ahumada Trujillo.</p>
-        </div>
-    </header>
 
-    <main>
-        <div class="main-title">
-            <h1>Envio de pieza patológica</h1>
-        </div>
+
+        <h1>Envio de pieza patológica</h1>
         <div>
             <p><strong>Contenedores enviados: </strong></p>
             <p><strong>Estudio solicitado: </strong>{{$notaData['estudio_solicitado']}}</p>
-            <p><strong></strong>{{$notaData['biopsia_pieza_quirurgica']}}</p>
+            <p><strong>Biopsia o pieza quirúrgica: </strong>{{$notaData['biopsia_pieza_quirurgica']}}</p>
             <p><strong>Revision de laminillas: </strong>{{$notaData['revision_laminillas']}}</p>
             <p><strong>Estudios especiales: </strong>{{$notaData['estudios_especiales']}}</p>
             <p><strong>PCR: </strong>{{$notaData['pcr']}}</p>
@@ -179,7 +183,7 @@
             <p><strong>Resultados: </strong>{{$notaData['resultados']}}</p>
             <p><strong>Detalles: </strong></p>
         </div>
-    </main>
+
 
 </body>
 </html>
