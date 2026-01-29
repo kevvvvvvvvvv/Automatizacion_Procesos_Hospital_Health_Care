@@ -29,6 +29,7 @@ return new class extends Migration
             $table->integer('cantidad_minima')->nullable();
 
             $table->string('proveedor')->nullable();
+            $table->date('fecha_caducidad')->nullable();
 
             $table->decimal('iva',8,2)->default(16);
             $table->timestamps();

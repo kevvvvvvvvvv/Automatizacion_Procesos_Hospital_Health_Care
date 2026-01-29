@@ -24,7 +24,6 @@ return new class extends Migration
             $table->string('nombre_comercial');
             $table->string('gramaje');
             $table->boolean('fraccion');
-            $table->date('fecha_caducidad')->nullable();
             
             $table->timestamps();
         });
