@@ -22,12 +22,7 @@ return new class extends Migration
             $table->string('categoria');
             $table->string('especificacion');
             $table->string('categoria_unitaria');
-            $table->integer('cantidad_existente');
-            $table->integer('cantidad_maxima')->nullable();
-            $table->integer('cantidad_minima')->nullable();
-            $table->string('proveedor')->nullable();
-            $table->decimal('precio_compra')->nullable();
-            $table->decimal('precio_venta'); 
+            
             $table->timestamps();
         });
     }
