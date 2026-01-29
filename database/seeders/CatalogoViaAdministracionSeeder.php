@@ -16,3 +16,4 @@ class CatalogoViaAdministracionSeeder extends Seeder
         
     }
 }
+    

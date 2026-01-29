@@ -7,21 +7,20 @@ use Illuminate\Support\Facades\DB;
 use League\Csv\Reader;
 use Carbon\Carbon;
 
+use App\Models\ProductoServicio;
+
 class ProductoServicioSeeder extends Seeder
 {
     public function run(): void
     {
-        // 1. LIMPIEZA (FUERA DE LA TRANSACCIÓN)
         DB::statement('SET FOREIGN_KEY_CHECKS=0;');
         DB::table('medicamentos')->truncate();
         DB::table('insumos')->truncate();
         DB::table('producto_servicios')->truncate();
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
-        // 2. INSERCIÓN (DENTRO DE LA TRANSACCIÓN)
         DB::transaction(function () {
             
-            // --- A. IMPORTAR SERVICIOS ---
             $pathServicios = database_path('seeders/data/servicios.csv');
             
             if (file_exists($pathServicios)) {
@@ -49,15 +48,14 @@ class ProductoServicioSeeder extends Seeder
 
             if (file_exists($pathMedicamentos)) {
                 $this->command->info('Importando Medicamentos y Generando Catálogo de Vías...');
-                $csv = $this->leerCsv($pathMedicamentos, ','); // <--- Ojo con tu delimitador
+                $csv = $this->leerCsv($pathMedicamentos, ','); 
 
                 foreach ($csv->getRecords() as $recordRaw) {
-                    // Limpieza de llaves del CSV
+                    
                     $record = array_combine(array_map('trim', array_keys($recordRaw)), $recordRaw);
 
                     if (empty($record['nombre_comercial'])) continue;
 
-                    // A. INSERTAR PADRE (ProductoServicio)
                     $padreId = DB::table('producto_servicios')->insertGetId([
                         'tipo'              => 'INSUMOS',
                         'subtipo'           => 'MEDICAMENTOS',
@@ -66,11 +64,11 @@ class ProductoServicioSeeder extends Seeder
                         'nombre_prestacion' => $record['excipiente_activo_gramaje'] ?? $record['nombre_comercial'],
                         'importe'           => $this->limpiarMoneda($record['importe'] ?? 0),
                         'cantidad'          => (int)($record['cantidad'] ?? 0),
+                        'iva'               => 0,
                         'created_at'        => now(),
                         'updated_at'        => now(),
                     ]);
 
-                    // B. DATOS DEL HIJO (Medicamento)
                     $esFraccion = (in_array(strtoupper(trim($record['fraccion'] ?? '')), ['SI', 'S', '1']));
                     
                     $fechaCaducidad = null;
@@ -80,7 +78,6 @@ class ProductoServicioSeeder extends Seeder
                         } catch (\Exception $e) { $fechaCaducidad = null; }
                     }
 
-                    // C. INSERTAR HIJO (Medicamentos)
                     DB::table('medicamentos')->insert([
                         'id' => $padreId,
                         'excipiente_activo_gramaje' => $record['excipiente_activo_gramaje'] ?? 'S/D',
@@ -93,24 +90,15 @@ class ProductoServicioSeeder extends Seeder
                         'updated_at' => now(),
                     ]);
 
-                    // -------------------------------------------------------
-                    // D. LA MAGIA: PROCESAR VÍAS DE ADMINISTRACIÓN
-                    // -------------------------------------------------------
                     
-                    // 1. Obtener el texto crudo: ej "Oral, Intravenoso"
                     $viasRaw = $record['via_administracion'] ?? 'NO ESPECIFICADA';
-                    
-                    // 2. Separar por comas (explode) para tener un array
                     $listaVias = explode(',', $viasRaw); 
 
                     foreach ($listaVias as $viaNombre) {
-                        // 3. Limpiar la palabra individual
                         $viaLimpia = $this->normalizarVia($viaNombre);
 
                         if (empty($viaLimpia)) continue;
 
-                        // 4. Buscar o Crear en el Catálogo (Evita duplicados)
-                        // Esto llena tu tabla 'catalogo_via_administracions' automáticamente
                         $catalogo = DB::table('catalogo_via_administracions')
                                     ->where('via_administracion', $viaLimpia)
                                     ->first();
@@ -125,7 +113,6 @@ class ProductoServicioSeeder extends Seeder
                             $catalogoId = $catalogo->id;
                         }
 
-                        // 5. Crear la relación en la tabla Pivote
                         DB::table('medicamento_vias')->insert([
                             'medicamento_id' => $padreId,
                             'catalogo_via_administracion_id' => $catalogoId,
@@ -136,41 +123,29 @@ class ProductoServicioSeeder extends Seeder
                 }
             }
 
-            // ---------------------------------------------------------
-            // PARTE 3: IMPORTAR INSUMOS
-            // ---------------------------------------------------------
             $pathInsumos = database_path('seeders/data/insumos.csv');
 
             if (file_exists($pathInsumos)) {
                 $this->command->info('Importando Insumos...');
-                // Ajusta el delimitador (',' o ';') según tu archivo
                 $csv = $this->leerCsv($pathInsumos, ','); 
 
                 foreach ($csv->getRecords() as $recordRaw) {
-                    
-                    // 1. LIMPIEZA DE LLAVES (Quita espacios invisibles)
+
                     $record = array_combine(
                         array_map('trim', array_keys($recordRaw)),
                         $recordRaw
                     );
 
-                    // Validación básica: Si no tiene categoría o especificación, saltamos
                     if (empty($record['categoria']) && empty($record['especificacion'])) continue;
-
-                    // 2. CONSTRUIR NOMBRE DEL PRODUCTO
-                    // A veces los insumos no tienen "Nombre Comercial". 
-                    // Si el CSV trae nombre úsalo, si no, lo armamos: "Jeringa - 5ml"
                     $nombreInsumo = $record['nombre'] ?? ($record['categoria'] . ' ' . $record['especificacion']);
 
-                    // 3. INSERTAR PADRE (ProductoServicios)
                     $padreId = DB::table('producto_servicios')->insertGetId([
-                        'tipo'              => 'INSUMOS', // Tipo general
-                        'subtipo'           => 'GENERAL', // O lo que prefieras
-                        'codigo_prestacion' => $record['codigo'] ?? null, // Si tienes código en el CSV
+                        'tipo'              => 'INSUMOS', 
+                        'subtipo'           => 'GENERAL', 
+                        'codigo_prestacion' => $record['codigo'] ?? null, 
                         'codigo_barras'     => $record['codigo_barras'] ?? null,
                         'nombre_prestacion' => $nombreInsumo,
                         
-                        // Precios y Stock (Padre)
                         'importe'           => $this->limpiarMoneda($record['importe'] ?? 0.1),
                         'cantidad'          => (int)($record['Cantidad'] ?? 0),
                         
@@ -178,14 +153,12 @@ class ProductoServicioSeeder extends Seeder
                         'updated_at'        => now(),
                     ]);
 
-                    // 4. INSERTAR HIJO (Insumos)
                     DB::table('insumos')->insert([
-                        'id' => $padreId, // <--- Vinculación
-                        
-                        // Campos específicos que me pasaste:
+                        'id' => $padreId, 
+
                         'categoria'          => $record['categoria'] ?? 'General',
                         'especificacion'     => $record['especificacion'] ?? 'S/E',
-                        'categoria_unitaria' => $record['categoria_unitaria'] ?? 'PZA', // Pieza por defecto
+                        'categoria_unitaria' => $record['categoria_unitaria'] ?? 'PZA', 
                         
                         'created_at' => now(),
                         'updated_at' => now(),
@@ -193,6 +166,23 @@ class ProductoServicioSeeder extends Seeder
                 }
             }
         });
+        ProductoServicio::create([
+            'tipo' => 'SERVICIOS',
+            'subtipo' => 'ADMISION',
+            'codigo_prestacion' => '',
+            'nombre_prestacion' => 'LLENADO DE HOJA FRONTAL',
+            'importe' => 0.1,
+            'cantidad' => null,
+        ]);
+
+        ProductoServicio::create([
+            'tipo' => 'SERVICIOS',
+            'subtipo' => 'ESTUDIOS',
+            'codigo_prestacion' => '85121801_01',
+            'nombre_prestacion' => 'SOLICITUD PATOLOGÍA',
+            'importe' => 0.1,
+            'cantidad' => null,
+        ]);
     }
 
     private function leerCsv($path, $delimiter = ',')
@@ -201,7 +191,7 @@ class ProductoServicioSeeder extends Seeder
         stream_filter_append($stream, 'convert.iconv.ISO-8859-1/UTF-8');
         
         $csv = Reader::createFromStream($stream);
-        $csv->setDelimiter($delimiter); // <--- Aquí usamos el que le enviamos
+        $csv->setDelimiter($delimiter); 
         $csv->setHeaderOffset(0);
         
         return $csv;
@@ -215,14 +205,11 @@ class ProductoServicioSeeder extends Seeder
 
     private function normalizarVia($texto)
     {
-        // 1. Convertir a Mayúsculas y quitar espacios
         $texto = strtoupper(trim($texto));
 
-        // 2. Diccionario de Correcciones (MAL ESCRITO => BIEN ESCRITO)
         $correcciones = [
-            // Errores de Género (Masculino -> Femenino)
             'INTRAVENOSO'   => 'INTRAVENOSA',
-            'SUBCUTANEO'    => 'SUBCUTÁNEA', // Corrige género y acento
+            'SUBCUTANEO'    => 'SUBCUTÁNEA', 
             'SUBCUTÁNEO'    => 'SUBCUTÁNEA',
             'OFTÁLMICO'     => 'OFTÁLMICA',
             'OFTALMICO'     => 'OFTÁLMICA',
@@ -231,23 +218,20 @@ class ProductoServicioSeeder extends Seeder
             'TOPICO'        => 'TÓPICA',
             'TÓPICO'        => 'TÓPICA',
             
-            // Faltas de Ortografía / Acentos faltantes
             'SUBCUTANEA'    => 'SUBCUTÁNEA',
             'OFTALMICA'     => 'OFTÁLMICA',
             'DERMICA'       => 'DÉRMICA',
             'CUTANEA'       => 'CUTÁNEA',
             'TOPICA'        => 'TÓPICA',
-            'INTRARTERIAL'  => 'INTRAARTERIAL', // Corrección ortográfica
+            'INTRARTERIAL'  => 'INTRAARTERIAL', 
             'INFILTRACION'  => 'INFILTRACIÓN',
             'INFILTRACION LOCAL'     => 'INFILTRACIÓN LOCAL',
             'INFILTRACION TRONCULAR' => 'INFILTRACIÓN TRONCULAR',
 
         ];
 
-        // 3. Aplicar corrección si existe
         $textoCorregido = $correcciones[$texto] ?? $texto;
 
-        // 4. FILTRO DE BASURA: Si es "REVISAR" o está vacío, retornamos null
         if ($textoCorregido === 'REVISAR' || $textoCorregido === '') {
             return null;
         }
