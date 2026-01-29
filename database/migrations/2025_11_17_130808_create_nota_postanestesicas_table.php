@@ -31,6 +31,7 @@ return new class extends Migration
             $table->string('diagnostico_o_problemas_clinicos');
             $table->string('plan_de_estudio');
             $table->string('pronostico');
+            $table->string('tratamiento');
 
             $table->string('tecnica_anestesica');
             $table->string('farmacos_administrados');

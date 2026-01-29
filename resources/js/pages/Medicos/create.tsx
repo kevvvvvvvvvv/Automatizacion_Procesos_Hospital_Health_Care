@@ -30,47 +30,48 @@ const CreateDoctor: React.FC<Props> = ({ cargos = [], user }) => {
     const [qualifications, setQualifications] = useState<CredencialEmpleado[]>(
         user?.credenciales || []
     );
-
-    const [localCargos, setLocalCargos] = useState(cargos);
+    
+    
     const [newTitulo, setNewTitulo] = useState('');
     const [newCedula, setNewCedula] = useState('');
     const [editingIndex, setEditingIndex] = useState<number | null>(null);
 
 
-    const handleAddOrUpdateQualification = () => {
-        if (!newTitulo.trim()) {
-            alert('El título es requerido.');
-            return;
-        }
+   const handleAddOrUpdateQualification = () => {
+    if (!newTitulo.trim()) {
+        alert('El título es requerido.');
+        return;
+    }
 
-        const newQual = {
-            titulo: newTitulo.trim(),
-            cedula: newCedula.trim() || '',
-        };
-
-        let updatedQualifications;
-
-        if (editingIndex !== null) {
-            updatedQualifications = [...qualifications];
-            updatedQualifications[editingIndex] = newQual;
-            setEditingIndex(null);
-        } else {
-            updatedQualifications = [...qualifications, newQual];
-        }
-
-        setQualifications(updatedQualifications);
-        setData('professional_qualifications', updatedQualifications); // Sync con Inertia
-
-        setNewTitulo('');
-        setNewCedula('');
+    const newQual = {
+        titulo: newTitulo.trim(),
+        // CAMBIO: Usa 'cedula_profesional' en lugar de 'cedula'
+        cedula_profesional: newCedula.trim() || '', 
     };
+
+    let updatedQualifications;
+    if (editingIndex !== null) {
+        updatedQualifications = [...qualifications];
+        updatedQualifications[editingIndex] = newQual;
+        setEditingIndex(null);
+    } else {
+        updatedQualifications = [...qualifications, newQual];
+    }
+
+    setQualifications(updatedQualifications);
+    setData('professional_qualifications', updatedQualifications);
+
+    setNewTitulo('');
+    setNewCedula('');
+};
 
     const handleEditQualification = (index: number) => {
-        const qual = qualifications[index];
-        setNewTitulo(qual.titulo);
-        setNewCedula(qual.cedula_profesional);
-        setEditingIndex(index);
-    };
+    const qual = qualifications[index];
+    setNewTitulo(qual.titulo);
+    // CAMBIO: Asegúrate de usar la propiedad que viene de tu base de datos/modelo
+    setNewCedula(qual.cedula_profesional || ''); 
+    setEditingIndex(index);
+};
 
     const handleRemoveQualification = (index: number) => {
         const updatedQualifications = qualifications.filter((_, i) => i !== index);
@@ -103,9 +104,9 @@ const CreateDoctor: React.FC<Props> = ({ cargos = [], user }) => {
         password: '',
         password_confirmation: '',
         telefono: user?.telefono || '',
-        professional_qualifications: user?.credenciales || '',  
+        professional_qualifications: user?.credenciales || [], 
     });
-
+    console.log("", data.professional_qualifications);
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         

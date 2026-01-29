@@ -30,7 +30,7 @@ class UserRequest extends FormRequest
             'fecha_nacimiento' => 'required|date',
             'cargo_id' => 'required', 
             'colaborador_responsable_id' => 'nullable|exists:users,id', 
-            'email' => 'required|email|unique:users,email',
+            'email' => 'required|email|email',
             'password' => 'required|min:8|confirmed', 
             'telefono' => 'required',
 
@@ -49,13 +49,15 @@ class UserRequest extends FormRequest
             'apellido_paterno.required' => 'El apellido paterno es obligatorio.',
             'apellido_paterno.max' => 'El apellido paterno no puede tener más de 100 caracteres.',
             
+            'apellido_materno.required' => 'El apellido materno es obligatorio.',
             'apellido_materno.max' => 'El apellido materno no puede tener más de 100 caracteres.',
-
+    
+            'curp.required' => 'La CURP es oblogatorio',
             'curp.unique' => 'Esta CURP ya se encuentra registrada en el sistema.',
             'curp.max' => 'La CURP no debe exceder los 18 caracteres.',
 
             'sexo.in' => 'La opción de sexo seleccionada no es válida.',
-            
+            'sexo.required' => 'El sexo es oblogatorio',
             'fecha_nacimiento.required' => 'La fecha de nacimiento es obligatoria.',
             'fecha_nacimiento.date' => 'El formato de la fecha de nacimiento no es válido.',
             'telefono.required' => 'El teléfono es requerido.',
@@ -69,7 +71,6 @@ class UserRequest extends FormRequest
             // --- Cuenta de Usuario ---
             'email.required' => 'El correo electrónico es obligatorio.',
             'email.email' => 'Debes ingresar un correo electrónico válido.',
-            'email.unique' => 'Este correo electrónico ya está registrado por otro usuario.',
 
             'password.required' => 'La contraseña es obligatoria.',
             'password.min' => 'La contraseña debe tener al menos 8 caracteres.',

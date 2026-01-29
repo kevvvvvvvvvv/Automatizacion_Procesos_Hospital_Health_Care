@@ -36,7 +36,7 @@ class NotaPostanestesicaRequest extends FormRequest
             'resultado_estudios'             => ['required', 'string', 'max:1000'],
             'diagnostico_o_problemas_clinicos' => ['required', 'string', 'max:1000'],
             'pronostico'                     => ['required', 'string', 'max:255'],
-
+            'tratamiento'                    => ['required', 'string', 'max:255'],
             // Campos de Anestesia
             'tecnica_anestesica'     => ['required', 'string', 'max:255'],
             'farmacos_administrados' => ['required', 'string', 'max:1000'],
@@ -70,6 +70,7 @@ class NotaPostanestesicaRequest extends FormRequest
             'resultado_estudios.required'         => 'El resultado de estudios de los servicios es requerido',
             'diagnostico_o_problemas_clinicos.required' => 'El diagnóstico o problemas clínicos son obligatorios.',
             'pronostico.required'                 => 'El pronóstico es obligatorio.',
+            'tratamiento.required'                => 'El tratamiento es obliogatorio',
 
             'tecnica_anestesica.required'     => 'La técnica anestésica es obligatoria.',
             'farmacos_administrados.required' => 'Los fármacos administrados son obligatorios.',
