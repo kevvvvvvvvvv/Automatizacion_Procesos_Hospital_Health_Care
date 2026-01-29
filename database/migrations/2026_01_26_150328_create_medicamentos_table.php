@@ -20,17 +20,11 @@ return new class extends Migration
                 ->onDelete('cascade');
 
             $table->text('excipiente_activo_gramaje');
-            $table->decimal('volument_total');
+            $table->decimal('volumen_total');
             $table->string('nombre_comercial');
             $table->string('gramaje');
             $table->boolean('fraccion');
             $table->date('fecha_caducidad')->nullable();
-            $table->integer('cantidad_existente');
-            $table->integer('cantidad_maxima')->nullable();
-            $table->integer('cantidad_minima')->nullable();
-            $table->string('proveedor')->nullable();
-            $table->decimal('precio_compra')->nullable();
-            $table->decimal('precio_venta'); 
             
             $table->timestamps();
         });

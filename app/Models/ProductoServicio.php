@@ -46,8 +46,6 @@ class ProductoServicio extends Model
         'iva'
     ];
 
-    public $timestamps = false;
-
     public function detallesVenta()
     {
         return $this->morphMany(DetalleVenta::class, 'itemable');
