@@ -20,9 +20,9 @@ return new class extends Migration
                 ->onDelete('cascade');
             
             $table->date('fecha_cirugia');
-            $table->string('diagnostico_preoperatorio');
-            $table->string('plan_quirurgico');
-            $table->string('tipo_intervencion_quirurgica');
+            $table->text('diagnostico_preoperatorio');
+            $table->text('plan_quirurgico');
+            $table->text('tipo_intervencion_quirurgica');
              $table->string('ta');
             $table->integer('fc');
             $table->integer('fr');
@@ -39,7 +39,7 @@ return new class extends Migration
             $table->text('tratamiento');
    
             $table->string('riesgo_quirurgico');
-            $table->string('cuidados_plan_preoperatorios');
+            $table->text('cuidados_plan_preoperatorios');
 
             $table->timestamps();
        

@@ -50,6 +50,7 @@ class HistoriaClinica extends Model
         'tension_arterial',
         'frecuencia_cardiaca',
         'frecuencia_respiratoria',
+        'saturacion_oxigeno',
         'temperatura',
         'peso',
         'talla',

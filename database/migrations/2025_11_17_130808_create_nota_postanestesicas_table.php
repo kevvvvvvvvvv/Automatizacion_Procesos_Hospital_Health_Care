@@ -33,13 +33,20 @@ return new class extends Migration
             $table->string('pronostico');
             $table->string('tratamiento');
 
-            $table->string('tecnica_anestesica');
-            $table->string('farmacos_administrados');
+            $table->text('resumen_del_interrogatorio');
+            $table->text('exploracion_fisica');
+            $table->text('resultado_estudios');
+            $table->text('diagnostico_o_problemas_clinicos');
+            $table->text('plan_de_estudio');
+            $table->text('pronostico');
+
+            $table->text('tecnica_anestesica');
+            $table->text('farmacos_administrados');
             $table->time('duracion_anestesia');
-            $table->string('incidentes_anestesia');
-            $table->string('balance_hidrico');
-            $table->string('estado_clinico');
-            $table->string('plan_manejo');
+            $table->text('incidentes_anestesia');
+            $table->text('balance_hidrico');
+            $table->text('estado_clinico');
+            $table->text('plan_manejo');
 
             $table->timestamps();
         });

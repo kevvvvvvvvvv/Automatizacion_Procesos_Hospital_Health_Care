@@ -32,7 +32,7 @@ return new class extends Migration
             $table->string('pieza_remitida');
             
             $table->text('datos_clinicos')->nullable(); 
-            $table->text('empresa_enviar')->nullable();
+            $table->string('empresa_enviar')->nullable();
 
             $table->text('resultados')->nullable();
             $table->timestamps();

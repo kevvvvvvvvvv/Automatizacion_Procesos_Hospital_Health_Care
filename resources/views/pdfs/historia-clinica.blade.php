@@ -7,7 +7,7 @@
     <style>
         @page {
             size: A4;
-            margin-top: 5cm; 
+            margin-top: 5.5cm; 
             margin-bottom: 1.5cm;
             margin-left: 1cm;
             margin-right: 1cm;
@@ -180,8 +180,9 @@
             </div>
             <p style="line-height: 1.4; margin: 0; margin-bottom: 10px;">
                 <strong>Tensión arterial:</strong> {{$historiaclinica['tension_arterial']}} mm Hg | 
-                <strong>Frecuencia cardiaca:</strong> {{$historiaclinica['frecuencia_cardiaca']}} x min | 
-                <strong>Frecuencia respiratoria:</strong> {{$historiaclinica['frecuencia_respiratoria']}} x min | 
+                <strong>Frecuencia cardiaca:</strong> {{$historiaclinica['frecuencia_cardiaca']}} por minuto | 
+                <strong>Frecuencia respiratoria:</strong> {{$historiaclinica['frecuencia_respiratoria']}} por minuto | 
+                <strong>Saturación de oxígeno:</strong>{{$historiaclinica['saturacion_oxigeno']}}% |
                 <strong>Temperatura:</strong> {{$historiaclinica['temperatura']}} °C | 
                 <strong>Peso:</strong> {{$historiaclinica['peso']}} kg | 
                 <strong>Talla:</strong> {{$historiaclinica['talla']}} cm
