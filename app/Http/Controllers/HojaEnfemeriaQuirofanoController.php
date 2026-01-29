@@ -124,7 +124,8 @@ class HojaEnfemeriaQuirofanoController extends Controller implements HasMiddlewa
             'hojaInsumosBasicos.productoServicio',
             'hojaOxigenos.userInicio',
             'hojaOxigenos.userFin',
-            'personalEmpleados'
+            'personalEmpleados',
+            'hojaInsumosBasicos.productoServicio',
         );
 
         $headerData = [
@@ -142,7 +143,7 @@ class HojaEnfemeriaQuirofanoController extends Controller implements HasMiddlewa
             'pdfs.hoja-enfermeria-quirofano',
             $viewData,
             $headerData,
-            'hoja-enfermeria-',
+            'hoja-enfermeria-quirofano',
             $hojasenfermeriasquirofano->formularioInstancia->estancia->id
         );
 

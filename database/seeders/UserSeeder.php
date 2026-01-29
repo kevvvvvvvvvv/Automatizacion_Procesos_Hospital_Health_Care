@@ -367,5 +367,19 @@ class UserSeeder extends Seeder
 
         $userRodolfo->assignRole('medico');
 
+        $userGabriel = User::create([
+            'curp' => 'GAGL900101HDFRNS05', 
+            'nombre' => 'Gabriel',
+            'apellido_paterno' => 'Gómez',
+            'apellido_materno' => 'López',
+            'sexo' => 'Masculino',
+            'fecha_nacimiento' => '1990-01-01',
+            'email' => 'gabriel@test.com', 
+            'telefono' => '7774441234',
+            'password' => Hash::make('12345678'),
+        ]);
+
+        $userGabriel->assignRole('caja');
+
     }
 }

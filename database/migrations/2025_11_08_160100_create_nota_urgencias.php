@@ -24,14 +24,16 @@ return new class extends Migration
             $table->float('temp');
             $table->float('peso');
             $table->integer('talla');
-            $table->string('motivo_atencion');
-            $table->string('resumen_interrogatorio');
-            $table->string('exploracion_fisica');
-            $table->string('estado_mental');
-            $table->string('resultados_relevantes');
-            $table->string('diagnostico_problemas_clinicos');
-            $table->string('tratamiento');
-            $table->string('pronostico');
+
+            $table->text('motivo_atencion');
+            $table->text('resumen_interrogatorio');
+            $table->text('exploracion_fisica');
+            $table->text('estado_mental');
+            $table->text('resultados_relevantes');
+            $table->text('diagnostico_problemas_clinicos');
+            $table->text('tratamiento');
+            $table->text('pronostico');
+
             $table->timestamps();
         });
     }

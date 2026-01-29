@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Hoja de enfermería en quirófano</title>
+    <title>Hoja de Enfermería en Quirófano</title>
     <style>
         @page {
             size: A4;
@@ -23,6 +23,14 @@
             box-sizing: border-box;
         }
 
+        h3 {
+            margin-top: 15px;
+            margin-bottom: 8px;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 3px;
+            page-break-after: avoid;
+        }
+
         body {
             font-family: Calibri, Arial, sans-serif;
             margin: 0;
@@ -30,104 +38,64 @@
             color: #333;
             line-height: 1.4;
         }
-
-        .header {
-            display: flex; 
-            justify-content: space-between;
-            align-items: center; 
-            padding-bottom: 8px;
-            margin-bottom: 15px; 
-        }
-
-        .header .info-container {
-            flex-basis: 45%; 
-        }
-
-        .header .logo {
-            width: 150px; 
-            display: block; 
-            margin-bottom: 5px;
-        }
-
-        .header .hospital-info { 
-             text-align: left; 
-             font-size: 8pt; 
-             line-height: 1.2;
-        }
-        .header .hospital-info p {
-             margin: 0;
-        }
-
-        .identification-card {
-            
-            padding: 8px 12px; 
-            font-size: 9pt; 
-            width: 55%;
-        }
-        
-        .identification-card h2 {
-            text-align: center;
-            font-size: 10pt;
-            margin: 0 0 8px 0;
-            font-weight: bold;
-        }
-
-        .id-row {
-            display: flex;
-            justify-content: space-between; 
-            margin-bottom: 4px; 
-            align-items: baseline; 
-        }
-
-        .id-field {
-            display: flex;
-            align-items: baseline;
-            margin-right: 7px;
-        }
-        .id-field:last-child {
-            margin-right: 0;
-        }
-
-        .id-label {
-            font-weight: bold;
-            margin-right: 5px;
-            white-space: nowrap; 
-        }
-
-        .id-value {
-            border-bottom: 1px solid #333;
-            flex-grow: 1; 
-            min-width: 50px; 
-        }
-        .id-value.long {
-             min-width: 200px; 
-        }
-        .id-value.short {
-             min-width: 30px; 
-             flex-grow: 0; 
-             width: 50px; 
-        }
-
         h1 {
             text-align: center;
-            font-size: 18pt;
-            margin-bottom: 20px;
+            font-size: 16pt;
+            margin-bottom: 15px;
+            color: #000;
         }
 
-        h2 {
-            margin-top: 15px;
-            margin-bottom: 8px;
-            border-bottom: 1px solid #ccc;
-            padding-bottom: 3px;
-            font-size: 12pt;
-            page-break-after: avoid;
+        /* Tabla para datos generales (sin bordes visibles) */
+        .info-table {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        .info-table td {
+            padding: 3px;
+            vertical-align: top;
         }
 
-        p {
-            margin: 0 0 8px 0;
+        /* Tabla tipo lista (con bordes) para Insumos, Personal, etc. */
+        .list-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 10px;
+            font-size: 9pt;
+        }
+        .list-table th, .list-table td {
+            border: 1px solid #ddd;
+            padding: 6px;
+            text-align: left;
+        }
+        .list-table th {
+            background-color: #e9e9e9;
+            font-weight: bold;
+            text-align: center;
+        }
+        .text-center { text-align: center !important; }
+        .text-right { text-align: right !important; }
+
+        /* Checkboxes visuales */
+        .check-box {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border: 1px solid #333;
+            margin-right: 4px;
+            line-height: 8px;
+            text-align: center;
+            font-size: 8px;
+        }
+        .checked { background-color: #ccc; }
+        .checked::after { content: "X"; font-weight: bold; }
+
+        .clearfix::after {
+            content: "";
+            clear: both;
+            display: table;
         }
 
-        .section-content {
+                .section-content {
             padding-left: 5px;
         }
 
@@ -145,17 +113,185 @@
             margin: 0;
             line-height: 1.4;
         }
+
+        .empty-cell {
+            text-align: center;
+            font-style: italic;
+            color: #777;
+            padding: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse; 
+            margin-bottom: 20px;
+        }
+
+        thead th {
+            background-color: #f0f0f0;
+            color: #222;
+            border-bottom: 2px solid #444;
+            text-align: left;
+            padding: 8px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+
+        tbody td {
+            padding: 8px 6px; 
+            border-bottom: 1px solid #ddd; 
+            vertical-align: top; 
+            color: #444;
+        }
+
+        tbody tr:nth-child(even) {
+            background-color: #fcfcfc;
+        }
+
+
+        tr {
+            page-break-inside: avoid;
+        }
+
+        table td, 
+        table th {
+            padding: 2px 4px; 
+            margin: 0;
+            line-height: 1;
+        }
     </style>
 </head>
 
 <body>
     <h1>Hoja de enfermería en quirófano</h1>
 
+    <h3>Tiempos quirúrgicos</h3>
+    <table class="info-table">
+        <tr>
+            <td><strong>Inicio anestesia:</strong> {{ $notaData['hora_inicio_anestesia'] ?? '--:--' }}</td>
+            <td><strong>Inicio cirugía:</strong> {{ $notaData['hora_inicio_cirugia'] ?? '--:--' }}</td>
+            <td><strong>Ingreso paciente:</strong> {{ $notaData['hora_inicio_paciente'] ?? '--:--' }}</td>
+        </tr>
+        <tr>
+            <td><strong>Fin anestesia:</strong> {{ $notaData['hora_fin_anestesia'] ?? '--:--' }}</td>
+            <td><strong>Fin cirugía:</strong> {{ $notaData['hora_fin_cirugia'] ?? '--:--' }}</td>
+            <td><strong>Salida paciente:</strong> {{ $notaData['hora_fin_paciente'] ?? '--:--' }}</td>
+        </tr>
+    </table>
 
-    <h3>General</h3>
+    <div class="clearfix">
+        <div style="width: 48%; float: left; margin-right: 2%;">
+            <h3>Tipo de anestesia</h3>
+            <div>
+                @foreach(($notaData['anestesia'] ?? []) as $key => $valor)
+                    <div style="margin-bottom: 3px;">
+                        <span class="check-box {{ $valor ? 'checked' : '' }}"></span>
+                        {{ ucfirst(str_replace('_', ' ', $key)) }}
+                    </div>
+                @endforeach
+                @if(empty($notaData['servicios_especiales']))
+                    <p><em>No hay anestesias registradas.</em></p>
+                @endif
+            </div>
+        </div>
 
-    <div class="section-content">
+        <div style="width: 48%; float: left;">
+            <h3>Servicios especiales</h3>
+            <div>
+                @foreach(($notaData['servicios_especiales'] ?? []) as $key => $valor)
+                    <div style="margin-bottom: 3px;">
+                        <span class="check-box {{ $valor ? 'checked' : '' }}"></span>
+                        {{ ucfirst(str_replace('_', ' ', $key)) }}
+                    </div>
+                @endforeach
+                @if(empty($notaData['servicios_especiales']))
+                    <p><em>No hay servicios registrados.</em></p>
+                @endif
+            </div>
+        </div>
     </div>
+
+    <h3>Personal en quirófano</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Cargo / Función</th>
+                <th>Nombre del Personal</th>
+            </tr>
+        </thead>
+        <tbody>
+            @forelse($notaData['personalEmpleados'] as $personal)
+                <tr>
+                    <td>{{ ucfirst($personal['cargo']) }}</td>
+                    <td>
+                        {{ $personal['user']['name'] ?? 'ID: ' . $personal['user_id'] }} 
+                        {{ $personal['user']['apellido_paterno'] ?? '' }}
+                        {{ $personal['user']['apellido_materno'] ?? '' }}
+                    </td>
+                </tr>
+            @empty
+                <tr><td colspan="2" class="empty-cell">No se registró personal</td></tr>
+            @endforelse
+        </tbody>
+    </table>
+
+    <h3>Control de oxígeno</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Hora Inicio</th>
+                <th>Hora Fin</th>
+                <th>Litros/Min</th>
+                <th>Total Consumido</th>
+                <th>Responsable</th>
+            </tr>
+        </thead>
+        <tbody>
+            @forelse($notaData['hojaOxigenos'] as $oxigeno)
+                <tr>
+                    <td class="text-center">{{ date('H:i', strtotime($oxigeno['hora_inicio'])) }}</td>
+                    <td class="text-center">{{ date('H:i', strtotime($oxigeno['hora_fin'])) }}</td>
+                    <td class="text-center">{{ $oxigeno['litros_minuto'] }} L/min</td>
+                    <td class="text-center">{{ $oxigeno['total_consumido'] }}</td>
+                    <td>{{ $oxigeno['user_inicio']['name'] ?? 'N/A' }}</td>
+                </tr>
+            @empty
+                <tr><td colspan="5" class="empty-cell">No se registró consumo de oxígeno</td></tr>
+            @endforelse
+        </tbody>
+    </table>
+
+    <h3>Medicamentos utilizados</h3>
+    <table>
+        <thead>
+            <tr>
+                <th style='width:30%'>Fecha/Hora registro</th>
+                <th style='width:10%'>ID Medicamento</th>
+                <th style='width:50%'>Nombre del medicamento</th>
+                <th style='width:10%'>Cantidad (unidades)</th>
+               
+            </tr>
+        </thead>
+        <tbody>
+            @if ($notaData['hojaInsumosBasicos']->isEmpty())
+                <tr>
+                    <td colspan="3" class='empty-cell'>No se han registrado medicamentos.</td>
+                </tr>
+            @else
+                @foreach ($notaData['hojaInsumosBasicos'] as $insumos)
+                        <tr>
+                            <td>{{$insumos->created_at}}</td>
+                            <td>{{$insumos->producto_servicio_id}}</td>
+                            <td>{{$insumos['productoServicio']->nombre_prestacion}}</td>
+                            <td>{{$insumos->cantidad}}</td>
+                            
+                        </tr>                        
+                @endforeach
+
+            @endif
+        </tbody>
+    </table>
 
     @if(isset($medico))
         <div class="signature-section">
