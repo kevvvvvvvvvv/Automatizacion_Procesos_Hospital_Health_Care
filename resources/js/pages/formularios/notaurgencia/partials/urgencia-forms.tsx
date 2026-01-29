@@ -1,12 +1,14 @@
-import FormLayout from '@/components/form-layout';
-import MainLayout from '@/layouts/MainLayout';
 import React from 'react';
-import PrimaryButton from '@/components/ui/primary-button';
-import InputText from '@/components/ui/input-text';
 import { useForm, Head } from '@inertiajs/react';
 import { route } from 'ziggy-js';
 import { Estancia, Paciente, notaUrgencia } from '@/types';
+
 import PacienteCard from '@/components/paciente-card';
+import FormLayout from '@/components/form-layout';
+import MainLayout from '@/layouts/MainLayout';
+import PrimaryButton from '@/components/ui/primary-button';
+import InputText from '@/components/ui/input-text';
+import InputTextArea from '@/components/ui/input-text-area';
 
 type Props = {
   paciente: Paciente;
@@ -48,15 +50,15 @@ export const Urgenciaform = ({
             <FormLayout
         title="Registro de Nota de Urgencia Inicial"
         onSubmit={handleSubmit}
-        actions={<PrimaryButton type="submit" disabled={processing}>{processing ? 'Creando...' : 'Crear Nota de Urgencia'}</PrimaryButton>}
+        actions={<PrimaryButton type="submit" disabled={processing}>{processing ? 'Guardando...' : 'Guardar'}</PrimaryButton>}
       >
 
         
           {/* Sección 1: Signos Vitales */}
-                <h2 className="text-xl font-semibold text-gray-800 mt-6 mb-4 col-span-full">Signos Vitales</h2>
+                <h2 className="text-xl font-semibold text-gray-800 mt-6 mb-4 col-span-full">Signos vitales</h2>
                 <InputText
                   id="ta"
-                  label="T.A. (Tensión Arterial)"
+                  label="Tensión arterial"
                   name="ta"
                   value={data.ta}
                   onChange={(e) => setData('ta', e.target.value)}
@@ -65,7 +67,7 @@ export const Urgenciaform = ({
                 />
                 <InputText
                   id="fc"
-                  label="FC (Frecuencia Cardíaca)"
+                  label="Frecuencia cardíaca"
                   name="fc"
                   type="number"
                   value={data.fc?.toString() || ''}
@@ -76,7 +78,7 @@ export const Urgenciaform = ({
                 />
                 <InputText
                   id="fr"
-                  label="FR (Frecuencia Respiratoria)"
+                  label="Frecuencia respiratoria"
                   name="fr"
                   type="number"
                   value={data.fr?.toString() || ''}
@@ -87,7 +89,7 @@ export const Urgenciaform = ({
                 />
                 <InputText
                   id="temp"
-                  label="TEMP (Temperatura)"
+                  label="Temperatura"
                   name="temp"
                   type="number"
                   value={data.temp?.toString() || ''}
@@ -115,117 +117,94 @@ export const Urgenciaform = ({
                   placeholder="Ej: 175"
                   error={errors.talla}
                 />
-            {/* Sección 1: Motivo de Consulta */}
-        <div className="mb-4">
-          <label htmlFor="motivo_consulta" className={labelClasses}>Motivo de la atención</label>
-          <textarea
-            id="motivo_consulta"
-            className={textAreaClasses}
-            value={data.motivo_atencion}
-            onChange={e => setData('motivo_atencion', e.target.value)}
-            placeholder="Ingrese el motivo de consulta"
-            rows={4}
-            autoComplete="off"
-          />
-          {errors.motivo_atencion && <div className="text-red-500 text-sm">{errors.motivo_atencion}</div>}
-        </div>
-        <div className="mb-4">
-            <label htmlFor="estado_mental" className={labelClasses}>Estado mental</label>
-            <textarea
-              id="estado_mental"
-              className={textAreaClasses}
-              value={data.estado_mental}
-              onChange={e => setData('estado_mental', e.target.value)}
-              placeholder="Ingrese el estado mental"
-              rows={4}
-            autoComplete="off"
-            />
-            {errors.estado_mental && <div className="text-red-500 text-sm">{errors.estado_mental}</div>}
-        </div>
-        <div className="mb-4">
-            <label htmlFor="resumen_interrogatorio" className={labelClasses}> Resumen del interrogatorio</label>
-            <textarea
-              id="resumen_interrogatorio"
-              className={textAreaClasses}
-              value={data.resumen_interrogatorio}
-              onChange={e => setData('resumen_interrogatorio', e.target.value)}
-              placeholder="Ingrese el resumen clínico"
-              rows={4}
-            autoComplete="off"
-            />
-            {errors.resumen_interrogatorio && <div className="text-red-500 text-sm">{errors.resumen_interrogatorio}</div>}
-        </div>
-        <div className="mb-4">
-            <label htmlFor="exploracion_fisica" className={labelClasses}>Exploración física</label>
-            <textarea
-              id="exploracion_fisica"
-              className={textAreaClasses}
-              value={data.exploracion_fisica}
-              onChange={e => setData('exploracion_fisica', e.target.value)}
-              placeholder="Ingrese la exploración física"
-              rows={4}
-            autoComplete="off"
-            />
-            {errors.exploracion_fisica && <div className="text-red-500 text-sm">{errors.exploracion_fisica}</div>}
-        </div>
-        
-        <div className="mb-4">
-            <label htmlFor="resultados_relevantes" className={labelClasses}>Resultado de estudios de los servicios auxiliares de diagnóstico </label>
-            <textarea
-              id="resultados_relevantes"
-              className={textAreaClasses}
-              value={data.resultados_relevantes}
-              onChange={e => setData('resultados_relevantes', e.target.value)}
-              placeholder="Resultado de estudios de los servicios auxiliares de diagnóstico "
-              rows={4}
-            autoComplete="off"
-            />
-            {errors.resultados_relevantes && <div className="text-red-500 text-sm">{errors.resultados_relevantes}</div>}
-        </div>
-        <div className="mb-4">
-            <label htmlFor="diagnostico_problemas_clinicos" className={labelClasses}>Diagnóstico o problemas clínicos</label>
-            <textarea
-                id="diagnostico_problemas_clinicos"
-                className={textAreaClasses}
-                value={data.diagnostico_problemas_clinicos}
-                onChange={e => setData('diagnostico_problemas_clinicos', e.target.value)}
-                placeholder="Ingrese el diagnóstico y problemas clínicos"
-                rows={4}
-            autoComplete="off"
-            />
-            {errors.diagnostico_problemas_clinicos && <div className="text-red-500 text-sm">{errors.diagnostico_problemas_clinicos}</div>}
-        </div>
-        <div className="mb-4">
-            <label htmlFor="tratamiento" className={labelClasses}>Tratamiento</label>
-            <textarea
-                id="tratamiento"
-                className={textAreaClasses}
-                value={data.tratamiento}
-                onChange={e => setData('tratamiento', e.target.value)}
-                placeholder="Ingrese el tratamiento"
-                rows={4}
-            autoComplete="off"
-            />
 
-            {errors.tratamiento && (
-                <div className="text-red-600 text-sm mt-1">{errors.tratamiento}</div>
-            )}
-        </div>
-        <div className="mb-4">
-            <label htmlFor="pronostico" className={labelClasses}>Pronóstico</label>
-            <textarea
-                id="pronostico"
-                className={textAreaClasses}
-                value={data.pronostico}
-                onChange={e => setData('pronostico', e.target.value)}
-                placeholder="Ingrese el pronóstico"
-                rows={4}
-            autoComplete="off"
-            />
-            {errors.pronostico && (
-                <div className="text-red-600 text-sm mt-1">{errors.pronostico}</div>
-            )}
-        </div>
+                <InputTextArea
+                    label="Motivo de la atención"
+                    id="motivo_consulta"
+                    name="motivo_atencion"
+                    value={data.motivo_atencion}
+                    onChange={(e) => setData('motivo_atencion', e.target.value)}
+                    placeholder="Ingrese el motivo de consulta"
+                    rows={4}
+                    error={errors.motivo_atencion}
+                />
+
+                <InputTextArea
+                    label="Estado mental"
+                    id="estado_mental"
+                    name="estado_mental"
+                    value={data.estado_mental}
+                    onChange={(e) => setData('estado_mental', e.target.value)}
+                    placeholder="Ingrese el estado mental"
+                    rows={4}
+                    error={errors.estado_mental}
+                />
+
+                <InputTextArea
+                    label="Resumen del interrogatorio"
+                    id="resumen_interrogatorio"
+                    name="resumen_interrogatorio"
+                    value={data.resumen_interrogatorio}
+                    onChange={(e) => setData('resumen_interrogatorio', e.target.value)}
+                    placeholder="Ingrese el resumen clínico"
+                    rows={4}
+                    error={errors.resumen_interrogatorio}
+                />
+
+                <InputTextArea
+                    label="Exploración física"
+                    id="exploracion_fisica"
+                    name="exploracion_fisica"
+                    value={data.exploracion_fisica}
+                    onChange={(e) => setData('exploracion_fisica', e.target.value)}
+                    placeholder="Ingrese la exploración física"
+                    rows={4}
+                    error={errors.exploracion_fisica}
+                />
+
+                <InputTextArea
+                    label="Resultado de estudios de los servicios auxiliares de diagnóstico"
+                    id="resultados_relevantes"
+                    name="resultados_relevantes"
+                    value={data.resultados_relevantes}
+                    onChange={(e) => setData('resultados_relevantes', e.target.value)}
+                    placeholder="Resultado de estudios de los servicios auxiliares de diagnóstico"
+                    rows={4}
+                    error={errors.resultados_relevantes}
+                />
+
+                <InputTextArea
+                    label="Diagnóstico o problemas clínicos"
+                    id="diagnostico_problemas_clinicos"
+                    name="diagnostico_problemas_clinicos"
+                    value={data.diagnostico_problemas_clinicos}
+                    onChange={(e) => setData('diagnostico_problemas_clinicos', e.target.value)}
+                    placeholder="Ingrese el diagnóstico y problemas clínicos"
+                    rows={4}
+                    error={errors.diagnostico_problemas_clinicos}
+                />
+
+                <InputTextArea
+                    label="Tratamiento"
+                    id="tratamiento"
+                    name="tratamiento"
+                    value={data.tratamiento}
+                    onChange={(e) => setData('tratamiento', e.target.value)}
+                    placeholder="Ingrese el tratamiento"
+                    rows={4}
+                    error={errors.tratamiento}
+                />
+
+                <InputTextArea
+                    label="Pronóstico"
+                    id="pronostico"
+                    name="pronostico"
+                    value={data.pronostico}
+                    onChange={(e) => setData('pronostico', e.target.value)}
+                    placeholder="Ingrese el pronóstico"
+                    rows={4}
+                    error={errors.pronostico}
+                />  
       </FormLayout>
         </>
     );

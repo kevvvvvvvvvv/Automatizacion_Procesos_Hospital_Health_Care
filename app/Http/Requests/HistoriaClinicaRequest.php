@@ -22,46 +22,57 @@ class HistoriaClinicaRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'padecimiento_actual'       => 'required|string',
-            'tension_arterial'          => 'required|string|max:20',
-            'frecuencia_cardiaca'       => 'required|integer',
-            'frecuencia_respiratoria'   => 'required|integer',
-            'temperatura'               => 'required|numeric',
-            'peso'                      => 'required|numeric',
-            'talla'                     => 'required|integer',
-            'resultados_previos'        => 'required|string',
-            'diagnostico'               => 'required|string',
-            'pronostico'                => 'required|string',
-            'indicacion_terapeutica'    => 'required|string',
-            'respuestas'                => 'required|array',
+            'padecimiento_actual'     => ['required', 'string', 'min:5', 'max:10000'],
+            'resultados_previos'      => ['required', 'string', 'min:5', 'max:10000'],
+            'diagnostico'             => ['required', 'string', 'min:5', 'max:10000'],
+            'pronostico'              => ['required', 'string', 'min:5', 'max:10000'],
+            'indicacion_terapeutica'  => ['required', 'string', 'min:5', 'max:10000'],
+
+            'tension_arterial'        => ['required', 'string', 'min:5', 'max:20'], 
+            'frecuencia_cardiaca'     => ['required', 'integer', 'between:0,300'],
+            'frecuencia_respiratoria' => ['required', 'integer', 'between:0,100'],
+            'saturacion_oxigeno'      => ['nullable', 'integer', 'between:0,100'], 
+            'temperatura'             => ['required', 'numeric', 'between:30,45'], 
+            'peso'                    => ['required', 'numeric', 'between:0.1,600'], 
+            'talla'                   => ['required', 'integer', 'between:20,300'], 
+            'respuestas'              => ['required', 'array'],
+        ];
+    }
+
+    public function attributes(): array
+    {
+        return [
+            'padecimiento_actual'     => 'padecimiento actual',
+            'tension_arterial'        => 'tensión arterial',
+            'frecuencia_cardiaca'     => 'frecuencia cardíaca',
+            'frecuencia_respiratoria' => 'frecuencia respiratoria',
+            'temperatura'             => 'temperatura',
+            'peso'                    => 'peso',
+            'talla'                   => 'talla',
+            'resultados_previos'      => 'resultados previos',
+            'diagnostico'             => 'diagnóstico',
+            'pronostico'              => 'pronóstico',
+            'indicacion_terapeutica'  => 'indicación terapéutica',
+            'respuestas'              => 'respuestas',
+            'saturacion_oxigeno'      => 'saturación de oxígeno',
         ];
     }
 
     public function messages(): array
     {
         return [
+            'required' => 'El campo :attribute es obligatorio.',
+            'integer'  => 'El campo :attribute debe ser un número entero.',
+            'numeric'  => 'El campo :attribute debe ser un valor numérico.',
+            'array'    => 'El formato de :attribute no es válido.',
             
-            'padecimiento_actual.required' => 'El campo de padecimiento actual es obligatorio.',
-            'tension_arterial.required' => 'El campo de tensión arterial es obligatorio.',
-            'frecuencia_cardiaca.required' => 'El campo de frecuencia cardíaca es obligatorio.',
-            'frecuencia_respiratoria.required' => 'El campo de frecuencia respiratoria es obligatorio.',
-            'temperatura.required' => 'El campo de temperatura es obligatorio.',
-            'peso.required' => 'El campo de peso es obligatorio.',
-            'talla.required' => 'El campo de talla es obligatorio.',
-            'diagnostico.required' => 'El campo de diagnóstico es obligatorio.',
-            'pronostico.required' => 'El campo de pronóstico es obligatorio.',
-            'indicacion_terapeutica.required' => 'El campo de indicación terapéutica es obligatorio.',
-            'respuestas.required' => 'Es necesario proporcionar las respuestas del formulario.',
-            'resultados_previos.required' => 'El campo de resultados previos es obligatorio',
-
-            'frecuencia_cardiaca.integer' => 'La frecuencia cardíaca debe ser un número entero.',
-            'frecuencia_respiratoria.integer' => 'La frecuencia respiratoria debe ser un número entero.',
-            'temperatura.numeric' => 'La temperatura debe ser un valor numérico.',
-            'peso.numeric' => 'El peso debe ser un valor numérico.',
-            'talla.integer' => 'La talla debe ser un número entero.',
-            'respuestas.array' => 'El formato de las respuestas no es válido.',
-
-            'tension_arterial.max' => 'La tensión arterial no debe exceder los 20 caracteres.',
+            'between'  => 'El campo :attribute debe estar entre :min y :max.',
+            'min'      => 'El campo :attribute debe tener al menos :min caracteres.',
+            'max'      => 'El campo :attribute no debe exceder los :max caracteres.',
+            
+            'tension_arterial.min' => 'La tensión arterial parece incompleta (ej. 120/80).',
+            'peso.between'         => 'El peso debe ser un valor lógico (entre 0.1kg y 600kg).',
+            'talla.between'        => 'La talla debe estar entre 20 cm y 300 cm.',
         ];
     }
 }

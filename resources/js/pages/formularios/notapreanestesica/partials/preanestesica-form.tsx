@@ -7,6 +7,7 @@ import PacienteCard from '@/components/paciente-card';
 import Generalidades from '@/components/forms/generalidades';
 import { Paciente, Estancia, NotaPreAnestesica } from '@/types';
 import { route } from 'ziggy-js';
+import InputTextArea from '@/components/ui/input-text-area';
 
 interface Props {
   paciente: Paciente;
@@ -45,10 +46,6 @@ export const Preanestesicaform = ({
       e.preventDefault();
       onSubmit(form);
       }
-       const labelClasses = 'block text-sm font-medium text-gray-700 mb-1';
-  const textAreaClasses =
-    'w-full rounded-md shadow-sm border px-3 py-2 focus:outline-none focus:ring focus:ring-indigo-500 focus:border-indigo-500';
-
 
     return(
       <>
@@ -67,147 +64,69 @@ export const Preanestesicaform = ({
           <Generalidades data={data} setData={setData} errors={errors} />
 
           {/* Plan de estudios / tratamiento */}
-          <div className="col-span-full">
-            <label
-              htmlFor="plan_estudios_tratamiento"
-              className={labelClasses}
-            >
-              Plan de estudio y/o Tratamiento (indicaciones médicas, vía,
-              dosis, periodicidad)
-            </label>
-            <textarea
+          <InputTextArea
+              label="Plan de estudio y/o tratamiento (indicaciones médicas, vía, dosis, periodicidad)"
               id="plan_estudios_tratamiento"
               name="plan_estudios_tratamiento"
               value={data.plan_estudios_tratamiento ?? ''}
-              onChange={(e) =>
-                setData('plan_estudios_tratamiento', e.target.value)
-              }
+              onChange={(e) => setData('plan_estudios_tratamiento', e.target.value)}
               placeholder="Describa el plan de estudios y tratamiento..."
               rows={3}
-              className={`${textAreaClasses} ${
-                errors.plan_estudios_tratamiento
-                  ? 'border-red-500'
-                  : 'border-gray-600'
-              }`}
-            />
-            {errors.plan_estudios_tratamiento && (
-              <p className="mt-1 text-xs text-red-500">
-                {errors.plan_estudios_tratamiento}
-              </p>
-            )}
-          </div>
+              className="col-span-full"
+              error={errors.plan_estudios_tratamiento}
+          />
 
           {/* Evaluación clínica */}
-          <div className="col-span-full">
-            <label htmlFor="evaluacion_clinica" className={labelClasses}>
-              Evaluación clínica del paciente
-            </label>
-            <textarea
+          <InputTextArea
+              label="Evaluación clínica del paciente"
               id="evaluacion_clinica"
               name="evaluacion_clinica"
               value={data.evaluacion_clinica ?? ''}
-              onChange={(e) =>
-                setData('evaluacion_clinica', e.target.value)
-              }
+              onChange={(e) => setData('evaluacion_clinica', e.target.value)}
               placeholder="Describa la evaluación clínica preanestésica..."
               rows={3}
-              className={`${textAreaClasses} ${
-                errors.evaluacion_clinica
-                  ? 'border-red-500'
-                  : 'border-gray-600'
-              }`}
-            />
-            {errors.evaluacion_clinica && (
-              <p className="mt-1 text-xs text-red-500">
-                {errors.evaluacion_clinica}
-              </p>
-            )}
-          </div>
+              className="col-span-full"
+              error={errors.evaluacion_clinica}
+          />
 
           {/* Plan anestésico */}
-          <div className="col-span-full">
-            <label htmlFor="plan_anestesico" className={labelClasses}>
-              Plan anestésico, de acuerdo con las condiciones del paciente y la
-              intervención quirúrgica planeada
-            </label>
-            <textarea
+          <InputTextArea
+              label="Plan anestésico, de acuerdo con las condiciones del paciente y la intervención quirúrgica planeada"
               id="plan_anestesico"
               name="plan_anestesico"
               value={data.plan_anestesico ?? ''}
-              onChange={(e) =>
-                setData('plan_anestesico', e.target.value)
-              }
+              onChange={(e) => setData('plan_anestesico', e.target.value)}
               placeholder="Describa el plan anestésico propuesto..."
               rows={3}
-              className={`${textAreaClasses} ${
-                errors.plan_anestesico
-                  ? 'border-red-500'
-                  : 'border-gray-600'
-              }`}
-            />
-            {errors.plan_anestesico && (
-              <p className="mt-1 text-xs text-red-500">
-                {errors.plan_anestesico}
-              </p>
-            )}
-          </div>
+              className="col-span-full"
+              error={errors.plan_anestesico}
+          />
 
           {/* Valoración de riesgos */}
-          <div className="col-span-full">
-            <label htmlFor="valoracion_riesgos" className={labelClasses}>
-              Valoración de riesgos
-            </label>
-            <textarea
+          <InputTextArea
+              label="Valoración de riesgos"
               id="valoracion_riesgos"
               name="valoracion_riesgos"
               value={data.valoracion_riesgos ?? ''}
-              onChange={(e) =>
-                setData('valoracion_riesgos', e.target.value)
-              }
+              onChange={(e) => setData('valoracion_riesgos', e.target.value)}
               placeholder="Describa la valoración de riesgos anestésicos..."
               rows={3}
-              className={`${textAreaClasses} ${
-                errors.valoracion_riesgos
-                  ? 'border-red-500'
-                  : 'border-gray-600'
-              }`}
-            />
-            {errors.valoracion_riesgos && (
-              <p className="mt-1 text-xs text-red-500">
-                {errors.valoracion_riesgos}
-              </p>
-            )}
-          </div>
+              className="col-span-full"
+              error={errors.valoracion_riesgos}
+          />
 
           {/* Indicaciones y recomendaciones */}
-          <div className="col-span-full">
-            <label
-              htmlFor="indicaciones_recomendaciones"
-              className={labelClasses}
-            >
-              Indicaciones y recomendaciones del servicio de anestesiología
-            </label>
-            <textarea
+          <InputTextArea
+              label="Indicaciones y recomendaciones del servicio de anestesiología"
               id="indicaciones_recomendaciones"
               name="indicaciones_recomendaciones"
               value={data.indicaciones_recomendaciones ?? ''}
-              onChange={(e) =>
-                setData('indicaciones_recomendaciones', e.target.value)
-              }
+              onChange={(e) => setData('indicaciones_recomendaciones', e.target.value)}
               placeholder="Indicaciones y recomendaciones al paciente..."
               rows={3}
-              className={`${textAreaClasses} ${
-                errors.indicaciones_recomendaciones
-                  ? 'border-red-500'
-                  : 'border-gray-600'
-              }`}
-            />
-            {errors.indicaciones_recomendaciones && (
-              <p className="mt-1 text-xs text-red-500">
-                {errors.indicaciones_recomendaciones}
-              </p>
-            )}
-          </div>
+              className="col-span-full"
+              error={errors.indicaciones_recomendaciones}
+          />
         </FormLayout>
       </>
     )

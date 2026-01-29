@@ -44,10 +44,10 @@ const Edit = ({ medicos, paciente, estancia, hojaFrontal }: EditFormularioProps)
 
   return (
     <MainLayout 
-    pageTitle='Hoja Frontal'>
+    pageTitle='Edición hoja frontal'>
     <form onSubmit={handleSubmit} className="space-y-6 max-w-2xl mx-auto">
 
-      <Head title="Editar Formulario" />
+      <Head title="Edición hoja frontal" />
 
       <SelectInput
         label="Médico Asignado"
