@@ -181,7 +181,7 @@ class DoctorController extends Controller implements HasMiddleware
                 ];
             }),
         ];
-        
+        $credenciales = $user->credenciales;
         $cargos = Role::select('id', 'name')->orderBy('name')->get();
         $usuarios = User::select('id', 'nombre', 'apellido_paterno', 'apellido_materno')
             ->orderBy('nombre')
@@ -196,10 +196,11 @@ class DoctorController extends Controller implements HasMiddleware
         return Inertia::render('Medicos/create', [
             'user' => $doctorData,
             'cargos' => $cargos,
+            'credenciales' => $credenciales,
         ]);
     }
 
-    public function update(Request $request, $id)
+   public function update(Request $request, $id)
 {
     $doctor = User::findOrFail($id);  
 
@@ -210,41 +211,47 @@ class DoctorController extends Controller implements HasMiddleware
         'curp' => 'nullable|string|max:18|unique:users,curp,' . $id, 
         'sexo' => 'nullable|in:Masculino,Femenino',
         'fecha_nacimiento' => 'required|date',
-        // CORRECCIÓN: Validar contra la tabla 'roles' si usas Spatie
         'cargo_id' => 'required|exists:roles,id', 
         'colaborador_responsable_id' => 'nullable|exists:users,id',
         'email' => 'required|email|unique:users,email,' . $id,  
+        // Password es nullable. Si llega vacío, la validación 'min:8' no se dispara
         'password' => 'nullable|string|min:8|confirmed',  
         'professional_qualifications' => 'nullable|array',  
         'professional_qualifications.*.titulo' => 'required|string|max:100',
         'professional_qualifications.*.cedula_profesional' => 'nullable|string|max:20',
+        'professional_qualifications.*.cedula' => 'nullable|string|max:20', // Por si llega con el nombre corto
     ]);
 
     DB::beginTransaction();
     try {
-        // 1. Manejo de Password
-        if (!empty($validated['password'])) {
-            $validated['password'] = Hash::make($validated['password']);
+        // --- LÓGICA DE CONTRASEÑA ---
+        // Verificamos si el campo tiene contenido real
+        if ($request->filled('password')) {
+            $validated['password'] = Hash::make($request->password);
         } else {
+            // Si está vacío, lo eliminamos del array para que el modelo no lo toque
             unset($validated['password']);
+            unset($validated['password_confirmation']); 
         }
 
-        // 2. Actualizar datos básicos del usuario
+        // 2. Actualizar datos básicos (Laravel ignorará el password si hicimos unset)
         $doctor->update($validated);
 
         // 3. Actualizar el Rol (Spatie)
-        $role = Role::find($validated['cargo_id']);
-        $doctor->syncRoles([$role->name]);
+        if (isset($validated['cargo_id'])) {
+            $role = Role::find($validated['cargo_id']);
+            $doctor->syncRoles([$role->name]);
+        }
 
         // 4. Actualizar Cédulas Profesionales
-        // Primero borramos las anteriores y creamos las nuevas (forma más limpia)
         if (isset($validated['professional_qualifications'])) {
-            $doctor->credenciales()->delete(); // Borra las actuales
+            $doctor->credenciales()->delete(); 
             
             foreach ($validated['professional_qualifications'] as $qual) {
                 if (!empty($qual['titulo'])) {
                     $doctor->credenciales()->create([
                         'titulo' => $qual['titulo'],
+                        // Soporte para ambos nombres de campo: cedula o cedula_profesional
                         'cedula_profesional' => $qual['cedula_profesional'] ?? ($qual['cedula'] ?? null),
                     ]);
                 }
@@ -252,8 +259,6 @@ class DoctorController extends Controller implements HasMiddleware
         }
 
         DB::commit();
-        Log::info('Doctor actualizado:', ['id' => $id]);
-
         return redirect()->route('doctores.index')
             ->with('success', 'Doctor actualizado exitosamente.');
 
