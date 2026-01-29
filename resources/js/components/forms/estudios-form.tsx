@@ -9,7 +9,7 @@ import InputText from '@/components/ui/input-text';
 import SelectInput from '@/components/ui/input-select';
 import Button from '../button';
 import NavegationTab from '@/components/navegation-tab';
-import EnvioPiezaForm from '@/components/forms/envio-piezas-form';
+import EnvioPiezaHojaEnfermeriaForm from './envio-pieza-hoja-enfermeria-form';
 
 interface Props {
     estancia: Estancia;
@@ -351,7 +351,12 @@ const SolicitudEstudiosForm: React.FC<Props> = ({
 
             {activeTab === 'patologia' && 
                 <div className="bg-white p-6 rounded-lg shadow-md">
-                    <EnvioPiezaForm medicos={medicos} />
+                    <EnvioPiezaHojaEnfermeriaForm 
+                        medicos={medicos} 
+                        modeloTipo={modeloTipo}
+                        modeloId={modeloId}
+                        estancia={estancia}
+                    />
                 </div>
             
             }
