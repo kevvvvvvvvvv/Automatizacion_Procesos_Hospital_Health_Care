@@ -81,5 +81,5 @@ const ShowSolicitud: React.FC<Props> & { layout: any } = ({ hoja, paciente }) =>
     );
 }
 
-ShowSolicitud.layout = (page: React.ReactElement) => <MainLayout children={page} />;
+ShowSolicitud.layout = (page: React.ReactElement) => <MainLayout children={page} link='peticiones.index' />;
 export default ShowSolicitud;

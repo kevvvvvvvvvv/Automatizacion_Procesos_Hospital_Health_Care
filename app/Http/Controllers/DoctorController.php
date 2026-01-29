@@ -258,12 +258,7 @@ class DoctorController extends Controller implements HasMiddleware
             }
         }
 
-<<<<<<< HEAD
         DB::commit();
-=======
-        $doctor->update($updateData);
-
->>>>>>> f16c66bef6a7421f1143ac0e6ada8888353e4cb3
         return redirect()->route('doctores.index')
             ->with('success', 'Doctor actualizado exitosamente.');
 
