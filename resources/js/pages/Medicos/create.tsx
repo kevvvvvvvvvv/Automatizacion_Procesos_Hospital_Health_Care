@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Head, useForm } from '@inertiajs/react';
 import { route } from 'ziggy-js';
-import { CredencialEmpleado, Role, User } from '@/types';
+import { CredencialEmpleado, Role, User} from '@/types';
 
 import InputText from '@/components/ui/input-text';
 import FormLayout from '@/components/form-layout';
@@ -11,10 +11,12 @@ import PrimaryButton from '@/components/ui/primary-button';
 
 type Props = {
     cargos?: Role[];
-    user: User;
+    user: User ;
+    credenciales?: CredencialEmpleado;
+    
 };
 
-const CreateDoctor: React.FC<Props> = ({ cargos = [], user }) => {
+const CreateDoctor: React.FC<Props> = ({ cargos = [], user, credenciales}) => {
 
     const sexoOptions = [
         { label: 'Feminino', value: 'Femenino' },
@@ -29,6 +31,7 @@ const CreateDoctor: React.FC<Props> = ({ cargos = [], user }) => {
 
     const [qualifications, setQualifications] = useState<CredencialEmpleado[]>(
         user?.credenciales || []
+        
     );
     
     
@@ -68,8 +71,8 @@ const CreateDoctor: React.FC<Props> = ({ cargos = [], user }) => {
     const handleEditQualification = (index: number) => {
     const qual = qualifications[index];
     setNewTitulo(qual.titulo);
-    // CAMBIO: Asegúrate de usar la propiedad que viene de tu base de datos/modelo
-    setNewCedula(qual.cedula_profesional || ''); 
+    // CAMBIO AQUÍ: Intentar obtener el valor de cualquiera de las dos propiedades
+    setNewCedula(qual.cedula_profesional || qual.cedula || ''); 
     setEditingIndex(index);
 };
 
@@ -101,12 +104,14 @@ const CreateDoctor: React.FC<Props> = ({ cargos = [], user }) => {
         cargo_id: user?.cargo_id || '',
         colaborador_responsable_id: user?.colaborador_responsable_id || '',
         email: user?.email || '',
-        password: '',
-        password_confirmation: '',
+        password: user?.password || '',
+        password_confirmation: user?.password_confirmation || '',
         telefono: user?.telefono || '',
         professional_qualifications: user?.credenciales || [], 
+        credenciales: credenciales?.titulo || '',
     });
-    console.log("", data.professional_qualifications);
+    //console.log(" ", credenciales );
+    //console.log("", data.professional_qualifications);
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         
@@ -271,25 +276,28 @@ const CreateDoctor: React.FC<Props> = ({ cargos = [], user }) => {
                             {qualifications.map((qual, index) => (
                             <tr key={index} className="hover:bg-gray-50">
                                 <td className="border border-gray-300 px-4 py-2">{qual.titulo}</td>
-                                <td className="border border-gray-300 px-4 py-2">{qual.cedula_profesional || 'N/A'}</td>
+                                {/* CAMBIO AQUÍ: Buscar cedula_profesional o cedula */}
                                 <td className="border border-gray-300 px-4 py-2">
-                                <button
-                                    type="button"
-                                    onClick={() => handleEditQualification(index)}
-                                    className="px-3 py-1 bg-blue-500 text-white text-xs rounded mr-1 hover:bg-blue-600 transition"
-                                >
-                                    Editar
-                                </button>
-                                <button
-                                    type="button"
-                                    onClick={() => handleRemoveQualification(index)}
-                                    className="px-3 py-1 bg-red-500 text-white text-xs rounded hover:bg-red-600 transition"
-                                >
-                                    Eliminar
-                                </button>
+                                    {qual.cedula_profesional || qual.cedula || 'N/A'}
+                                </td>
+                                <td className="border border-gray-300 px-4 py-2">
+                                    <button
+                                        type="button"
+                                        onClick={() => handleEditQualification(index)}
+                                        className="px-3 py-1 bg-blue-500 text-white text-xs rounded mr-1 hover:bg-blue-600 transition"
+                                    >
+                                        Editar
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={() => handleRemoveQualification(index)}
+                                        className="px-3 py-1 bg-red-500 text-white text-xs rounded hover:bg-red-600 transition"
+                                    >
+                                        Eliminar
+                                    </button>
                                 </td>
                             </tr>
-                            ))}
+                        ))}
                         </tbody>
                     </table>
                 </div>

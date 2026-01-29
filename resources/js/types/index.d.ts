@@ -105,7 +105,10 @@ export interface User {
     email: string;
     created_at: string; 
     updated_at: string;
-    credenciales:string | CredencialEmpleado[];
+    credenciales:string | null | CredencialEmpleado [];
+    password: string;
+    password_confirmation: string;
+
     cargo_id: number;
     permissions?: string[]; 
     roles?: string[];
