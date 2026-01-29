@@ -28,7 +28,7 @@ const Edit = ({ traslado, paciente, estancia }: Props) => {
         link='estancias.show'
         linkParams={estancia.id}>
         <div className='space-y-6'>
-            <Head title={`Editar nota de traslado: ${paciente.nombre}`}/>
+            <Head title={`Edición de nota de traslado: ${traslado.id}`}/>
 
             <PacienteCard
             paciente = {paciente}

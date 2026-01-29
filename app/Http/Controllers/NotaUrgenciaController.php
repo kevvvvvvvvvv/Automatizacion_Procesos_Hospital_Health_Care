@@ -42,37 +42,37 @@ class NotaUrgenciaController extends Controller
     }
 
     public function store(Paciente $paciente, Estancia $estancia, NotaUrgenciaRequest $request)
-{
-    
-    $validatedData = $request->validated();
-    
-    DB::beginTransaction();
+    {
+        
+        $validatedData = $request->validated();
+        
+        DB::beginTransaction();
 
-    try {
+        try {
+            
+            $formularioInstancia = FormularioInstancia::create([
+                'fecha_hora' => now(),  
+                'estancia_id' => $estancia->id,
+                'formulario_catalogo_id' => FormularioCatalogo::ID_NOTA_URGENCIAS, 
+                'user_id' => Auth::id(),
+            ]);
+            
+            $notaUrgencia = NotaUrgencia::create([
+                'id' => $formularioInstancia->id,
+                ...$validatedData
+            ]);
         
-        $formularioInstancia = FormularioInstancia::create([
-            'fecha_hora' => now(),  
-            'estancia_id' => $estancia->id,
-            'formulario_catalogo_id' => FormularioCatalogo::ID_NOTA_URGENCIAS, 
-            'user_id' => Auth::id(),
-        ]);
-        
-        $notaUrgencia = NotaUrgencia::create([
-            'id' => $formularioInstancia->id,
-            ...$validatedData
-        ]);
-       
-        //\Log::info('NotaUrgencia creada:', $notaUrgencia->toArray());
-        
-        DB::commit();
-        return Redirect::route('estancias.show', $estancia->id)->with('success','Se ha creado la nota nota urgencia'); 
-    } catch (\Exception $e) {
-        
-        \Log::error('Error al crear la nota de urgencias.', $e->getMessage());
-        DB::rollBack();
-        return Redirect::back()->with('error','Error al crear la nota de urgencia: ' . $e->getMessage());
+            //\Log::info('NotaUrgencia creada:', $notaUrgencia->toArray());
+            
+            DB::commit();
+            return Redirect::route('estancias.show', $estancia->id)->with('success','Se ha creado la nota nota urgencia'); 
+        } catch (\Exception $e) {
+            
+            \Log::error('Error al crear la nota de urgencias.' . $e->getMessage());
+            DB::rollBack();
+            return Redirect::back()->with('error','Error al crear la nota de urgencia: ' . $e->getMessage());
+        }
     }
-}
 
     public function show(Paciente $paciente, Estancia $estancia, NotaUrgencia $notasurgencia)  
    {

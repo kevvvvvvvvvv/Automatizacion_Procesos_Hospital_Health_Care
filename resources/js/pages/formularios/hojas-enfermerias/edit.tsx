@@ -6,6 +6,7 @@ import Swal from 'sweetalert2';
 import 'sweetalert2/dist/sweetalert2.min.css';
 
 import PrimaryButton from '@/components/ui/primary-button';
+import NavegationTab from '@/components/navegation-tab';
 
 import MainLayout from '@/layouts/MainLayout';
 import PacienteCard from '@/components/paciente-card';
@@ -22,6 +23,7 @@ import EscalaValoracionForm from '@/components/forms/escalas-valoracion-form';
 import ControlLiquidosForm from '@/components/forms/control-liquidos-form';
 import HabitusExteriorForm from '@/components/forms/habitus-exterior-form';
 import RiesgoCaidasForm from '@/components/forms/riesgo-caidas-form';
+
 
 
 interface CreateProps {
@@ -141,7 +143,6 @@ type CreateComponent = React.FC<CreateProps> & {
 };
 
 
-
 const Create: CreateComponent = ({ 
     paciente, 
     estancia, 
@@ -171,28 +172,12 @@ const Create: CreateComponent = ({
                 checklistInicial={checklistInicial}
             />
         </div>
-        <nav className="mb-6 mt-12">
-            <div className="border-b border-gray-200">
-                <div className="flex flex-nowrap overflow-x-auto -mb-px scrollbar-hide gap-x-6 pb-px" aria-label="Tabs">
-                    {secciones.map((seccion) => (
-                        <button
-                            key={seccion.id}
-                            type="button" 
-                            onClick={() => setActiveSection(seccion.id)}
-                            className={`
-                                ${activeSection === seccion.id
-                                    ? 'border-blue-500 text-blue-600'
-                                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                                }
-                                whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm transition-colors duration-150
-                            `}
-                        >
-                            {seccion.label}
-                        </button>
-                    ))}
-                </div>
-            </div>
-        </nav>
+        <NavegationTab
+            tabs={secciones}
+            activeTab={activeSection}
+            onTabChange={setActiveSection}
+        />
+
         </>
     );
 

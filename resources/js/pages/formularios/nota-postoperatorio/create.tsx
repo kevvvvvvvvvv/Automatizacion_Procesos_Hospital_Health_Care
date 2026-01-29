@@ -46,7 +46,7 @@ const optionsCargo = [
     { value: 'ayudante', label: 'Ayudante' },
     { value: 'instrumentista', label: 'Instrumentista' },
     { value: 'anestesiologo', label: 'Anestesiólogo' },
-    { value: 'circulante', label: 'Cirtulante' },
+    { value: 'circulante', label: 'Circulante' },
 ];
 
 interface TransfusionAgregada {
