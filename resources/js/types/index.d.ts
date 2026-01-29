@@ -54,7 +54,7 @@ export interface Doctor {
     email: string;
     password: string;
     password_confirmation: string;
-    professional_qualifications?: { titulo: string; cedula?: string }[];
+    professional_qualifications?: { titulo: string; cedula_profesional?: string }[];
 }
 export interface Paciente {
     id: number;
@@ -105,7 +105,8 @@ export interface User {
     email: string;
     created_at: string; 
     updated_at: string;
-
+    credenciales:string | CredencialEmpleado[];
+    cargo_id: number;
     permissions?: string[]; 
     roles?: string[];
 };
@@ -774,6 +775,8 @@ export interface NotaPostanestesica {
     diagnostico_o_problemas_clinicos: string;
     plan_de_estudio: string;
     pronostico: string;
+    tratamiento: string;
+    resultado_estudios: string;
     tecnica_anestesica: string;
     farmacos_administrados: string;
     duracion_anestesia: string; 
@@ -875,7 +878,10 @@ export interface ReservacionQuirofano {
     updated_at: string;
 }
 
-
+export interface Cargo {
+    nombre: string;
+    descripcion: string;
+}
 export type PageProps<T extends Record<string, unknown> = Record<string, unknown>> = T & {
     auth: {
         user: User;

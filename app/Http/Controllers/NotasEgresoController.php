@@ -129,7 +129,7 @@ class NotasEgresoController extends Controller
 
         return redirect()->route('notasegresos.show', [
             'notasegreso' => $notasegreso->id,
-        ])->with('success', 'Noya de egrso actualizada'); 
+        ])->with('success', 'Nota de egreso actualizada'); 
     }
 
     public function edit( NotaEgreso $notasegreso){

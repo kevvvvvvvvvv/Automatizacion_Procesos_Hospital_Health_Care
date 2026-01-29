@@ -97,6 +97,7 @@ class DoctorController extends Controller implements HasMiddleware
     public function store(UserRequest $request)
     {
         $validatedData = $request->validated();
+        Log::info('QUALIFICATIONS', $validatedData['professional_qualifications']);
 
         DB::beginTransaction();
         try {
@@ -160,7 +161,7 @@ class DoctorController extends Controller implements HasMiddleware
     {
         $doctore->load(['roles', 'credenciales', 'colaborador_responsable']);
         $user = $doctore;
-
+    
         $doctorData = [
             'id' => $user->id,
             'nombre' => $user->nombre,
@@ -180,7 +181,7 @@ class DoctorController extends Controller implements HasMiddleware
                 ];
             }),
         ];
-
+        
         $cargos = Role::select('id', 'name')->orderBy('name')->get();
         $usuarios = User::select('id', 'nombre', 'apellido_paterno', 'apellido_materno')
             ->orderBy('nombre')
@@ -191,7 +192,7 @@ class DoctorController extends Controller implements HasMiddleware
                     'nombre_completo' => $u->nombre_completo,
                 ];
             });
-
+        //dd($doctore ->toArray());
         return Inertia::render('Medicos/create', [
             'user' => $doctorData,
             'cargos' => $cargos,
@@ -199,42 +200,69 @@ class DoctorController extends Controller implements HasMiddleware
     }
 
     public function update(Request $request, $id)
-    {
-        $doctor = User::findOrFail($id);  
+{
+    $doctor = User::findOrFail($id);  
 
-        $validated = $request->validate([
-            'nombre' => 'required|string|max:100',
-            'apellido_paterno' => 'required|string|max:100',
-            'apellido_materno' => 'nullable|string|max:100',  
-            'curp' => 'nullable|string|max:18|unique:users,curp,' . $id, 
-            'sexo' => 'nullable|in:Masculino,Femenino',
-            'fecha_nacimiento' => 'required|date',
-            'cargo_id' => 'required|exists:cargos,id',
-            'colaborador_responsable_id' => 'nullable|exists:users,id',
-            'email' => 'required|email|unique:users,email,' . $id,  
-            'password' => 'nullable|string|min:8|confirmed',  
-            'professional_qualifications' => 'required|array|min:1',  
-            'professional_qualifications.*.titulo' => 'required|string|max:100',
-            'professional_qualifications.*.cedula' => 'nullable|string|max:20',
-        ]);
+    $validated = $request->validate([
+        'nombre' => 'required|string|max:100',
+        'apellido_paterno' => 'required|string|max:100',
+        'apellido_materno' => 'nullable|string|max:100',  
+        'curp' => 'nullable|string|max:18|unique:users,curp,' . $id, 
+        'sexo' => 'nullable|in:Masculino,Femenino',
+        'fecha_nacimiento' => 'required|date',
+        // CORRECCIÓN: Validar contra la tabla 'roles' si usas Spatie
+        'cargo_id' => 'required|exists:roles,id', 
+        'colaborador_responsable_id' => 'nullable|exists:users,id',
+        'email' => 'required|email|unique:users,email,' . $id,  
+        'password' => 'nullable|string|min:8|confirmed',  
+        'professional_qualifications' => 'nullable|array',  
+        'professional_qualifications.*.titulo' => 'required|string|max:100',
+        'professional_qualifications.*.cedula_profesional' => 'nullable|string|max:20',
+    ]);
 
-        $updateData = $validated;
-        if (empty($validated['password'])) {
-            unset($updateData['password']);  
-            unset($updateData['password_confirmation']);
+    DB::beginTransaction();
+    try {
+        // 1. Manejo de Password
+        if (!empty($validated['password'])) {
+            $validated['password'] = Hash::make($validated['password']);
         } else {
-            $updateData['password'] = Hash::make($validated['password']);  
-            unset($updateData['password_confirmation']);  
+            unset($validated['password']);
         }
 
+        // 2. Actualizar datos básicos del usuario
+        $doctor->update($validated);
 
-        $doctor->update($updateData);
+        // 3. Actualizar el Rol (Spatie)
+        $role = Role::find($validated['cargo_id']);
+        $doctor->syncRoles([$role->name]);
 
-        Log::info('Doctor actualizado:', ['id' => $id, 'data' => $updateData]);
+        // 4. Actualizar Cédulas Profesionales
+        // Primero borramos las anteriores y creamos las nuevas (forma más limpia)
+        if (isset($validated['professional_qualifications'])) {
+            $doctor->credenciales()->delete(); // Borra las actuales
+            
+            foreach ($validated['professional_qualifications'] as $qual) {
+                if (!empty($qual['titulo'])) {
+                    $doctor->credenciales()->create([
+                        'titulo' => $qual['titulo'],
+                        'cedula_profesional' => $qual['cedula_profesional'] ?? ($qual['cedula'] ?? null),
+                    ]);
+                }
+            }
+        }
+
+        DB::commit();
+        Log::info('Doctor actualizado:', ['id' => $id]);
 
         return redirect()->route('doctores.index')
             ->with('success', 'Doctor actualizado exitosamente.');
+
+    } catch (Exception $e) {
+        DB::rollBack();
+        Log::error("Error al actualizar doctor: " . $e->getMessage());
+        return back()->with('error', 'Ocurrió un error al actualizar los datos.');
     }
+}
 
 
     public function destroy($id)

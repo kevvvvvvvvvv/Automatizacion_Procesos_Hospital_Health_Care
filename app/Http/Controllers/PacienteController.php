@@ -39,7 +39,7 @@ class PacienteController extends Controller implements HasMiddleware
     {
         return Inertia::render('pacientes/create');
     }
-
+ 
     public function store(Request $request)
     {
         $validated = $request->validate([

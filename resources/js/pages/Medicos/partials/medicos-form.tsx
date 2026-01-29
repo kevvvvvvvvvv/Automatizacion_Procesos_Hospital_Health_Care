@@ -217,7 +217,16 @@ const EditDoctor: React.FC<Props> = ({ doctor, cargos = [], usuarios = [] }) => 
               error={errors.nombre}
             />
 
-          
+            <InputText
+              id="apellido_paterno"
+              name="apellido_paterno"
+              label="Apellido Paterno *"
+              value={data.apellido_paterno}
+              onChange={(e) => setData('apellido_paterno', e.target.value)}
+              placeholder="Ej: Pérez"
+              required
+              error={errors.apellido_paterno}
+            />
 
             <InputText
               id="apellido_materno"
