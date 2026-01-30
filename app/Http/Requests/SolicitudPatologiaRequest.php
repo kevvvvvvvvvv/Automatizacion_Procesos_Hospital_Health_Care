@@ -21,7 +21,7 @@ class SolicitudPatologiaRequest extends FormRequest
      */
     public function rules(): array
     {
-        $detonantesPatologia = 'biopsia_pieza_quirurgica,revision_laminillas,estudios_especiales,pcr,datos_clinicos,empresa_enviar, user_solicita_id';
+        $detonantesPatologia = 'biopsia_pieza_quirurgica,revision_laminillas,estudios_especiales,pcr,datos_clinicos,empresa_enviar, user_solicita_id, contenedores_enviados';
 
         return [
             'estudio_solicitado' => [
@@ -43,6 +43,7 @@ class SolicitudPatologiaRequest extends FormRequest
             'datos_clinicos'           => ['nullable', 'string', 'max:10000'],
             'empresa_enviar'           => ['nullable', 'string', 'max:255'],
             'user_solicita_id'         => ['required', 'numeric'],
+            'contenedores_enviados'    => ['required', 'numeric'],
             'itemable_id'              => ['required', 'numeric'],
             'itemable_type'            => ['required', 'max:255'],
         ];
@@ -71,6 +72,7 @@ class SolicitudPatologiaRequest extends FormRequest
             'datos_clinicos'           => 'datos clínicos',
             'empresa_enviar'           => 'empresa a enviar',
             'user_solicita_id'         => 'usuario que solicita',
+            'contenedores_enviados'    => 'contenedores enviados',
         ];
     }
 }

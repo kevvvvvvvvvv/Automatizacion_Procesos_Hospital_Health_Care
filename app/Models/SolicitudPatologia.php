@@ -59,6 +59,7 @@ class SolicitudPatologia extends Model
         'datos_clinicos',
         'empresa_enviar',
         'resultados',
+        'contenedores_enviados',
 
         'itemable_id',
         'itemable_type'

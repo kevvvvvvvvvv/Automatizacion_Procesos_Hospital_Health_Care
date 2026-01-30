@@ -110,7 +110,7 @@ class FormularioNotaPostoperatorioController extends Controller
             ...$datosPatologia
         ]);
 
-        $this->procesarCobroPatologia($estancia, $ventaService);
+        //$this->procesarCobroPatologia($estancia, $ventaService);
 
         return $solicitud;
     }
