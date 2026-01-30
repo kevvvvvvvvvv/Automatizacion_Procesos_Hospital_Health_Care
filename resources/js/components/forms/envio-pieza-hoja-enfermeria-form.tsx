@@ -29,7 +29,8 @@ const EnvioPiezaHojaEnfermeria = ({medicos, modeloId, modeloTipo, estancia}: Pro
         pcr: '',
         pieza_remitida: '',
         datos_clinicos: '',
-        empresa_enviar: '',    
+        empresa_enviar: '',  
+        contenedores_enviados: '',  
         itemable_id: modeloId,
         itemable_type: modeloTipo,
     });
@@ -50,6 +51,7 @@ const EnvioPiezaHojaEnfermeria = ({medicos, modeloId, modeloTipo, estancia}: Pro
                     options={medicosOptions}
                     value={data.user_solicita_id}
                     onChange={(e)=>setData('user_solicita_id',e)}
+                    error={errors.user_solicita_id}
                 />
 
                 <EnvioPieza

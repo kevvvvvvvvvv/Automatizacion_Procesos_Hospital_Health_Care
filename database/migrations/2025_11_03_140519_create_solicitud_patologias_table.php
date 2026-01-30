@@ -30,6 +30,7 @@ return new class extends Migration
             $table->string('estudios_especiales')->nullable();
             $table->string('pcr')->nullable();
             $table->string('pieza_remitida');
+            $table->integer('contenedores_enviados')->default(1);
             
             $table->text('datos_clinicos')->nullable(); 
             $table->string('empresa_enviar')->nullable();

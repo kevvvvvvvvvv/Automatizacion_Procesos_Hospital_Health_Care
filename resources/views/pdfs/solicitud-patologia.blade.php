@@ -166,24 +166,19 @@
     </style>
 </head>
 <body>
-
-
-
-        <h1>Envio de pieza patológica</h1>
-        <div>
-            <p><strong>Contenedores enviados: </strong></p>
-            <p><strong>Estudio solicitado: </strong>{{$notaData['estudio_solicitado']}}</p>
-            <p><strong>Biopsia o pieza quirúrgica: </strong>{{$notaData['biopsia_pieza_quirurgica']}}</p>
-            <p><strong>Revision de laminillas: </strong>{{$notaData['revision_laminillas']}}</p>
-            <p><strong>Estudios especiales: </strong>{{$notaData['estudios_especiales']}}</p>
-            <p><strong>PCR: </strong>{{$notaData['pcr']}}</p>
-            <p><strong>Pieza remitida: </strong>{{$notaData['pieza_remitida']}}</p>
-            <p><strong>Datos clinicos: </strong>{{$notaData['datos_clinicos']}}</p>
-            <p><strong>Empresa a enviar: </strong>{{$notaData['empresa_enviar']}}</p>
-            <p><strong>Resultados: </strong>{{$notaData['resultados']}}</p>
-            <p><strong>Detalles: </strong></p>
-        </div>
-
-
+    <h1>Envio de pieza patológica</h1>
+    <div>
+        <p><strong>Contenedores enviados: </strong>{{$notaData['contenedores_enviados']}}</p>
+        <p><strong>Estudio solicitado: </strong>{{$notaData['estudio_solicitado']}}</p>
+        <p><strong>Biopsia o pieza quirúrgica: </strong>{{$notaData['biopsia_pieza_quirurgica']}}</p>
+        <p><strong>Revision de laminillas: </strong>{{$notaData['revision_laminillas']}}</p>
+        <p><strong>Estudios especiales: </strong>{{$notaData['estudios_especiales']}}</p>
+        <p><strong>PCR: </strong>{{$notaData['pcr']}}</p>
+        <p><strong>Pieza remitida: </strong>{{$notaData['pieza_remitida']}}</p>
+        <p><strong>Datos clinicos: </strong>{{$notaData['datos_clinicos']}}</p>
+        <p><strong>Empresa a enviar: </strong>{{$notaData['empresa_enviar']}}</p>
+        <p><strong>Resultados: </strong>{{$notaData['resultados']}}</p>
+        <p><strong>Detalles: </strong></p>
+    </div>
 </body>
 </html>
