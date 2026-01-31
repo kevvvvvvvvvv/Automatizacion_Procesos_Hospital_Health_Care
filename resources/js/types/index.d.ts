@@ -183,6 +183,20 @@ export interface FormularioInstancia {
     created_at: string;
     updated_at: string;
 }
+export interface medicamento {
+    id: number;
+    excipiente_activo_gramaje: string | null,
+    volumen_total: number | null,
+    nombre_comercial: string | null,
+    gramaje: string | null,
+    fraccion: string | null,
+}
+export interface insumos {
+   id: number;
+    categoria: string | null,
+    especificacion: string | null,
+    categoria_unitaria: string | null,
+}
 
 export interface ProductoServicio {
     id: number;
@@ -193,6 +207,9 @@ export interface ProductoServicio {
     importe: number | null;
     cantidad: number | null;
     iva: number | null;
+
+    
+
 }
 
 export interface HistoryEntry {
