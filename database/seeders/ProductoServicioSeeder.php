@@ -70,13 +70,7 @@ class ProductoServicioSeeder extends Seeder
                     ]);
 
                     $esFraccion = (in_array(strtoupper(trim($record['fraccion'] ?? '')), ['SI', 'S', '1']));
-                    
-                    $fechaCaducidad = null;
-                    if (!empty($record['fecha_caducidad'])) {
-                        try {
-                            $fechaCaducidad = Carbon::parse($record['fecha_caducidad'])->format('Y-m-d');
-                        } catch (\Exception $e) { $fechaCaducidad = null; }
-                    }
+
 
                     DB::table('medicamentos')->insert([
                         'id' => $padreId,
@@ -85,7 +79,6 @@ class ProductoServicioSeeder extends Seeder
                         'nombre_comercial'   => $record['nombre_comercial'],
                         'gramaje'            => $record['gramaje'] ?? '',
                         'fraccion'           => $esFraccion,
-                        'fecha_caducidad'    => $fechaCaducidad,
                         'created_at' => now(),
                         'updated_at' => now(),
                     ]);
