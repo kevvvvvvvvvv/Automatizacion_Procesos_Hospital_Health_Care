@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Redirect;
 use App\Services\VentaService;
 
 use App\Events\MedicamentosSolicitados;
+use App\Http\Requests\HojaMedicamentoRequest;
 use App\Models\ProductoServicio;
 use App\Models\User; 
 use App\Models\Venta;
@@ -24,19 +25,11 @@ use Illuminate\Support\Facades\DB;
 
 class FormularioHojaMedicamentoController extends Controller
 {
-    public function store(Request $request, HojaEnfermeria $hojasenfermeria, VentaService $ventaService)
+    public function store(HojaMedicamentoRequest $request, HojaEnfermeria $hojasenfermeria, VentaService $ventaService)
     {
+        $validatedData = $request->validated();
+        
         try {
-            $validatedData = $request->validate([
-                'medicamentos_agregados' => 'required|array|min:1',
-                'medicamentos_agregados.*.id' => 'required|exists:producto_servicios,id', 
-                'medicamentos_agregados.*.dosis' => 'required|string|max:255',
-                'medicamentos_agregados.*.via_id' => 'required|string|max:255',
-                'medicamentos_agregados.*.gramaje' => 'required',
-                'medicamentos_agregados.*.duracion' => 'required|numeric', 
-                'medicamentos_agregados.*.unidad' => 'required',
-            ]);
-
             $hojasenfermeria->load('formularioInstancia.estancia.paciente');
             $medicamentosParaNotificacion = collect();
 
@@ -75,7 +68,8 @@ class FormularioHojaMedicamentoController extends Controller
             
             return Redirect::back()->with('success', 'Solicitud de medicamentos enviada.');                                                           
         } catch(\Exception $e) {
-            return redirect()->route('hojasenfermerias.edit',$hojasenfermeria)->with('error','No se pudo realizar la petición: ' . $e->getMessage());
+            \Log::error('Error al guardar la solicitud de medicamentos: ' . $e->getMessage() );
+            return redirect()->route('hojasenfermerias.edit',$hojasenfermeria)->with('error','No se pudo realizar la petición.');
         }
     }
 
