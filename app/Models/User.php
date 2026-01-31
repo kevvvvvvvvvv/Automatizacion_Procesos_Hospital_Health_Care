@@ -188,4 +188,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(CredencialEmpleado::class);
     }
+
+    public function routeNotificationForTwilio()
+    {
+        return '+52' . $this->telefono; 
+    }
 }

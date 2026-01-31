@@ -11,6 +11,8 @@ use App\Models\Paciente;
 use Illuminate\Support\Collection as EloquentCollection;
 use Illuminate\Notifications\Messages\BroadcastMessage;
 
+use App\Channels\TwilioWhatsAppChannel; 
+
 class NuevaSolicitudEstudios extends Notification implements ShouldBroadcast, ShouldQueue
 {
     use Queueable;
@@ -19,9 +21,6 @@ class NuevaSolicitudEstudios extends Notification implements ShouldBroadcast, Sh
     public $paciente;
     public $solicitudId;
 
-    /**
-     * Create a new notification instance.
-     */
     public function __construct(EloquentCollection $estudios, Paciente $paciente, int $solicitudId)
     {
         $this->estudios = $estudios;
@@ -29,21 +28,27 @@ class NuevaSolicitudEstudios extends Notification implements ShouldBroadcast, Sh
         $this->solicitudId = $solicitudId;
     }
 
-    /**
-     * Get the notification's delivery channels.
-     *
-     * @return array<int, string>
-     */
     public function via(object $notifiable): array
     {
-        return ['database','broadcast','mail'];
+        return ['database', 'broadcast', 'mail', TwilioWhatsAppChannel::class];
     }
 
-    /**
-     * Get the mail representation of the notification.
-     */
+    public function toWhatsApp($notifiable)
+    {
+        $listaEstudios = $this->estudios->map(function($item) {
+             return $item->catalogoEstudio->nombre ?? 'Estudio General';
+        })->implode(', ');
+
+        return "*HOSPITAL NOTIFICACIÓN*\n" .
+               "Hola *{$notifiable->name}*.\n" .
+               "Nueva solicitud *#{$this->solicitudId}* para *{$this->paciente->nombre}*.\n\n" .
+               "📋 *Estudios:*\n{$listaEstudios}\n\n" .
+               "Favor de atender.";
+    }
+
     public function toMail(object $notifiable): MailMessage
     {
+
         $nombreCompleto = trim("{$this->paciente->nombre} {$this->paciente->apellido_paterno} {$this->paciente->apellido_materno}");
         
         $primerEstudio = $this->estudios->first();
@@ -66,7 +71,6 @@ class NuevaSolicitudEstudios extends Notification implements ShouldBroadcast, Sh
             ->line("Paciente: **{$nombreCompleto}**")
             ->line("Estudios solicitados:");
 
-
         foreach ($this->estudios as $estudio) {
             $nombreEstudio = $estudio->catalogoEstudio->nombre ?? $estudio->otro_estudio;
             $mailMessage->line("- " . $nombreEstudio);
@@ -77,11 +81,6 @@ class NuevaSolicitudEstudios extends Notification implements ShouldBroadcast, Sh
             ->line('Por favor, ingresa los resultados lo antes posible.');
     }
 
-    /**
-     * Get the array representation of the notification.
-     *
-     * @return array<string, mixed>
-     */
     public function toArray(object $notifiable): array
     {
         $nombreCompleto = trim("{$this->paciente->nombre} {$this->paciente->apellido_paterno} {$this->paciente->apellido_materno}");
