@@ -374,6 +374,9 @@ export interface HojaMedicamento {
     fecha_hora_surtido_farmacia: string;
     farmaceutico_id: number;
     fecha_hora_recibido_enfermeria: srting;
+
+    nombre_medicamento: string;
+    
     producto_servicio?: ProductoServicio;
     aplicaciones: AplicacionMedicamento[];
 }

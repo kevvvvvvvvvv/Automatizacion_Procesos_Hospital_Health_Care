@@ -43,6 +43,8 @@ interface MedicamentoAgregado {
     duracion: string;
     inicio: string;
     temp_id: string; 
+
+    nombre_medicamento: string;
 }
 
 interface Props {
@@ -82,7 +84,6 @@ const MedicamentosForm: React.FC<Props> = ({ hoja, medicamentos }) => {
 
     const [localData, setLocalData] = useState({
         medicamento_id: '',
-        medicamento_nombre: '',
         dosis: '',
         gramaje: '',
         unidad: '',
@@ -90,7 +91,28 @@ const MedicamentosForm: React.FC<Props> = ({ hoja, medicamentos }) => {
         via_label: '',
         duracion_tratamiento: '',
         fecha_hora_inicio: '',
+
+        nombre_medicamento:'',
+        es_manual: false,
     });
+
+    const handleSelectMedicamento = (value) => {
+        const sel = medicamentosOptions.find(o => o.value === value);
+        setLocalData(d => ({
+            ...d,
+            medicamento_id: value,
+            nombre_medicamento: sel ? sel.label : '', 
+        }));
+    };
+
+    const toggleMode = () => {
+        setLocalData(d => ({
+            ...d,
+            es_manual: !d.es_manual,
+            medicamento_id: '',     
+            nombre_medicamento: ''  
+        }));
+    };
 
     useEffect(()=>{
         if(localData.unidad === 'dosis unica'){
@@ -121,7 +143,7 @@ const MedicamentosForm: React.FC<Props> = ({ hoja, medicamentos }) => {
 
     const handleAddToList = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault(); 
-        if (!localData.medicamento_id || !localData.dosis || !localData.unidad || !localData.gramaje || !localData.unidad || !localData.via || !localData.duracion_tratamiento) {
+        if ((!localData.medicamento_id && !localData.nombre_medicamento)|| !localData.dosis || !localData.unidad || !localData.gramaje || !localData.unidad || !localData.via || !localData.duracion_tratamiento) {
             Swal.fire({
                 icon: 'warning',
                 title: 'Campos incompletos',
@@ -133,7 +155,7 @@ const MedicamentosForm: React.FC<Props> = ({ hoja, medicamentos }) => {
 
         const newMed: MedicamentoAgregado = {
             id: localData.medicamento_id,
-            nombre: localData.medicamento_nombre,
+            nombre: localData.nombre_medicamento,
             dosis: localData.dosis,
             gramaje: localData.gramaje,
             unidad: localData.unidad,
@@ -141,6 +163,8 @@ const MedicamentosForm: React.FC<Props> = ({ hoja, medicamentos }) => {
             via_label: localData.via_label,
             duracion: localData.duracion_tratamiento,
             inicio: localData.fecha_hora_inicio,
+
+            nombre_medicamento: localData.nombre_medicamento,
             temp_id: crypto.randomUUID(),
         };
 
@@ -148,7 +172,6 @@ const MedicamentosForm: React.FC<Props> = ({ hoja, medicamentos }) => {
 
         setLocalData({
             medicamento_id: '',
-            medicamento_nombre: '',
             dosis: '',
             gramaje: '',
             unidad: '',
@@ -156,6 +179,9 @@ const MedicamentosForm: React.FC<Props> = ({ hoja, medicamentos }) => {
             via_label: '',
             duracion_tratamiento: '',
             fecha_hora_inicio: '',
+
+            nombre_medicamento: '', 
+            es_manual: false,
         });
     }
 
@@ -204,21 +230,47 @@ const MedicamentosForm: React.FC<Props> = ({ hoja, medicamentos }) => {
 
     return (
         <div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <SelectInput
-                    label="Medicamento (nombre)"
-                    options={medicamentosOptions} 
-                    value={localData.medicamento_id}
-                    onChange={(value) => {
-                        const sel = medicamentosOptions.find(o => o.value === value);
-                        setLocalData(d => ({
-                            ...d,
-                            medicamento_id: value as string,
-                            medicamento_nombre: sel ? sel.label : ''
-                        }));
-                    }}
-                    error={errors['medicamentos_agregados.0.id']}
-                />
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6"> 
+                <div className="mb-4">
+                <div className="flex justify-between items-center mb-1">
+                    <label className="block font-medium text-sm text-gray-700">
+                        Medicamento
+                    </label>
+                    <button 
+                        type="button"
+                        onClick={toggleMode}
+                        className="text-xs text-blue-600 hover:underline cursor-pointer"
+                    >
+                        {localData.es_manual 
+                            ? "← Buscar en inventario" 
+                            : "Escribir manual (no existe) →"}
+                    </button>
+                </div>
+
+                {!localData.es_manual ? (
+                    <SelectInput
+                        label="" 
+                        options={medicamentosOptions}
+                        value={localData.medicamento_id}
+                        onChange={handleSelectMedicamento}
+                        error={errors['medicamentos_agregados.0.id']}
+                    />
+                ) : (
+                    <InputText 
+                        id="medicamento_nombre_manual"
+                        name="nombre_manual"
+                        label="" 
+                        placeholder="Escriba el nombre del medicamento..."
+                        value={localData.nombre_medicamento}
+                        onChange={e => setLocalData(d => ({
+                            ...d, 
+                            nombre_medicamento: e.target.value,
+                            medicamento_id: '' 
+                        }))}
+                        error={errors['medicamentos_agregados.0.nombre_medicamento']}
+                    />
+                )}
+            </div>
                 <InputText 
                     id="medicamento_dosis"
                     name="dosis"
@@ -267,6 +319,7 @@ const MedicamentosForm: React.FC<Props> = ({ hoja, medicamentos }) => {
                     error={errors['medicamentos_agregados.0.duracion']}
                 />
                 )}
+
                 <SelectInput
                     label="Unidad"
                     options={optionsUnidad}
@@ -287,7 +340,7 @@ const MedicamentosForm: React.FC<Props> = ({ hoja, medicamentos }) => {
             </div>
 
             <form onSubmit={handleSubmitList} className="mt-8">
-                <h3 className="text-lg font-semibold mb-2">Medicamentos Pendientes por Guardar</h3>
+                <h3 className="text-lg font-semibold mb-2">Medicamentos pendientes por guardar</h3>
                 {wasSuccessful && <div className="mb-4 text-sm text-green-600">Medicamentos guardados con éxito.</div>}
                 
                 <div className="overflow-x-auto border rounded-lg">
@@ -332,13 +385,13 @@ const MedicamentosForm: React.FC<Props> = ({ hoja, medicamentos }) => {
                 </div>
                 <div className="flex justify-end mt-4">
                     <PrimaryButton type="submit" disabled={processing || data.medicamentos_agregados.length === 0}>
-                        {processing ? 'Guardando...' : 'Guardar Lista de Medicamentos'}
+                        {processing ? 'Guardando...' : 'Guardar'}
                     </PrimaryButton>
                 </div>
             </form>
 
             <div className="mt-12">
-                <h3 className="text-lg font-semibold mb-2">Historial de Medicamentos Guardados</h3>
+                <h3 className="text-lg font-semibold mb-2">Historial de medicamentos guardados</h3>
                 <div className="overflow-x-auto border rounded-lg">
                     <table className="min-w-full divide-y divide-gray-200">
                         <thead>
@@ -375,7 +428,7 @@ const MedicamentosForm: React.FC<Props> = ({ hoja, medicamentos }) => {
                                                         handleDateUpdate(med.id, now_iso);
                                                     }}
                                                 >
-                                                    Registrar 1ra Dosis
+                                                    Registrar 1ra dosis
                                                 </PrimaryButton>
                                             )}
 
@@ -405,7 +458,7 @@ const MedicamentosForm: React.FC<Props> = ({ hoja, medicamentos }) => {
                                                 type="button"
                                                 onClick={() => handleStoreAplicacion(med.id)}
                                             >
-                                                + Registrar Siguiente Dosis
+                                                + Registrar siguiente dosis
                                             </PrimaryButton>
                                         </td>
                                     </tr>

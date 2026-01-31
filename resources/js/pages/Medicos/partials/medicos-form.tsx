@@ -59,7 +59,7 @@ export const MedicoForm = ({
     cargo_id: doctor?.cargo_id || 'N/A',
     colaborador_responsable_id: doctor?.colaborador_responsable_id || 'N/A',
     email: doctor?.email || 'N/A',
-    password: '',  // Vacío por default (opcional)
+    password: '',  
     password_confirmation: '',
     x: doctor?.professional_qualifications || 'N/A',
     professional_qualifications: doctor?.professional_qualifications || 'N/A',

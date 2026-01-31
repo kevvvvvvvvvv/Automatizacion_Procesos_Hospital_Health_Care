@@ -135,7 +135,10 @@ class FormularioHojaEnfermeriaController extends Controller implements HasMiddle
                                 ->filter() 
                                 ->sortByDesc('created_at')
                                 ->values();
-        $medicamentos = ProductoServicio::where('subtipo','MEDICAMENTOS')->get();
+
+        $medicamentos = ProductoServicio::where('subtipo','MEDICAMENTOS')->with('medicamento.viasAdministracion')->get();
+        dd($medicamentos->toArray());
+
         $soluciones = ProductoServicio::where('nombre_prestacion', 'like', 'SOLUCION%')->get();
         $medicos = User::all();
         $usuarios = User::all();

@@ -16,9 +16,11 @@ return new class extends Migration
             $table->foreignId('hoja_enfermeria_id')
                 ->constrained('hoja_enfermerias')
                 ->onDelete('cascade');
+
             $table->foreignId('producto_servicio_id')
                 ->constrained('producto_servicios')
-                ->onDelete('cascade');
+                ->onDelete('cascade')
+                ->nullable();
 
             $table->integer('dosis');
             $table->string('gramaje');
@@ -29,6 +31,8 @@ return new class extends Migration
             $table->string('estado')->default('solicitado');
             $table->datetime('fecha_hora_solicitud');
             $table->datetime('fecha_hora_surtido_farmacia')->nullable();
+
+            $table->string('nombre_medicamento');
             
             $table->foreignId('farmaceutico_id')->nullable()
                 ->constrained('users') 
