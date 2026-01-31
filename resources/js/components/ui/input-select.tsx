@@ -1,5 +1,6 @@
 import React from 'react';
 import Select, { OnChangeValue, StylesConfig } from 'react-select';
+import  { useMemo } from 'react';
 
 type SelectOption<T = string | number> = {
   value: T;
@@ -43,8 +44,10 @@ const SelectInput: React.FC<SelectInputProps> = ({
     indicatorSeparator: () => ({ display: 'none' }),
   };
 
-  const selectedOption = options.find((opt) => opt.value == value) || null;
-  
+  const selectedOption = useMemo(() => {
+  return options.find((opt) => String(opt.value) === String(value)) || null;
+}, [options, value]);
+
   const handleChange = (selected: OnChangeValue<SelectOption, false>) => {
     const stringValue = selected ? String(selected.value) : '';
     onChange(stringValue);

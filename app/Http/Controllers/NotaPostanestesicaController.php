@@ -10,7 +10,6 @@ use App\Models\FormularioCatalogo;
 use App\Models\NotaPostanestesica;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Log;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Auth;
 use Spatie\LaravelPdf\Facades\Pdf;
@@ -61,6 +60,45 @@ class NotaPostanestesicaController extends Controller
             return Redirect::back()->with('error','No se pudo crear la nota postanestésica: ' . $e->getMessage());
         }
     }
+    public function edit(NotaPostanestesica $notaspostanestesica){
+        $notaspostanestesica->load('formularioInstancia.user', 'formularioInstancia.estancia.paciente');
+        $estancia = $notaspostanestesica->formularioInstancia->estancia;
+        $paciente = $estancia->paciente;
+        //dd($notaspostanestesica->toArray());
+        return Inertia::render ('formularios/nota-postanestesica/edit', [
+                'paciente' => $paciente,
+                'estancia' => $estancia,
+                'nota' => $notaspostanestesica,
+        ]);
+
+    }
+    // Cambia el nombre de la variable de $notaspostanestesica a $notaspreanestesica
+        public function update(NotaPostanestesica $notaspostanestesica, NotaPostanestesicaRequest $request) 
+        {
+            $validatedData = $request->validated();
+            $notaspostanestesica->update($validatedData);
+                    $estancia = $notaspostanestesica->formularioInstancia->estancia;
+        $paciente = $estancia->paciente;
+
+            
+         return Inertia::render('formularios/nota-postanestesica/show', [
+        'paciente' => $paciente,
+        'estancia' => $estancia,
+        'nota' => $notaspostanestesica
+    ]);
+}
+    public function show(NotaPostanestesica $notaspostanestesica)
+{
+        $notaspostanestesica->load('formularioInstancia.estancia.paciente', 'formularioInstancia.user');
+        $estancia = $notaspostanestesica->formularioInstancia->estancia;
+        $paciente = $estancia->paciente;
+
+    return Inertia::render('formularios/nota-postanestesica/show', [
+        'paciente' => $paciente,
+        'estancia' => $estancia,
+        'nota' => $notaspostanestesica
+    ])->with('success','Se ha creado la nota postanestesica.');
+}
 
     public function generarPDF(NotaPostanestesica $notaspostanestesica)
     {
