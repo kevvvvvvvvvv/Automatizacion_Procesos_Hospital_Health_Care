@@ -104,7 +104,7 @@ const MedicamentosForm: React.FC<Props> = ({ hoja, medicamentos }) => {
     const { data, setData, post, processing, errors, reset, wasSuccessful } = useForm({
         medicamentos_agregados: [] as MedicamentoAgregado[],
     });
-
+    
     const handleDateUpdate = (medicamentoId: number, newDate: string) => {
         router.patch(route('hojasmedicamentos.update', { 
             hojasenfermeria: hoja.id, 
