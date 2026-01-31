@@ -50,7 +50,7 @@ class ProductoServicio extends Model
     {
         return $this->morphMany(DetalleVenta::class, 'itemable');
     }
-    // En App\Models\ProductoServicio.php
+
     public function medicamento() {
         return $this->hasOne(Medicamento::class, 'id');
     }
