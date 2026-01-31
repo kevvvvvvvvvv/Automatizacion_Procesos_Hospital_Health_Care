@@ -192,7 +192,7 @@ export interface ProductoServicio {
     nombre_prestacion: string;
     importe: number | null;
     cantidad: number | null;
-    iva: number | null;
+    iva: number | null;  
 }
 
 export interface HistoryEntry {
@@ -376,7 +376,7 @@ export interface HojaMedicamento {
     fecha_hora_recibido_enfermeria: srting;
 
     nombre_medicamento: string;
-    
+
     producto_servicio?: ProductoServicio;
     aplicaciones: AplicacionMedicamento[];
 }
