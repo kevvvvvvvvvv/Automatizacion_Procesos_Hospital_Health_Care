@@ -41,7 +41,21 @@ export interface SharedData {
     updated_at: string;
     [key: string]: unknown; 
 }*/
-
+export interface Doctor {
+    id: number;
+    nombre: string;
+    apellido_paterno: string;
+    apellido_materno?: string | null;
+    curp?: string;
+    sexo?: string;
+    fecha_nacimiento?: string;
+    cargo_id?: number | string;
+    colaborador_responsable_id?: number | string;
+    email: string;
+    password: string;
+    password_confirmation: string;
+    professional_qualifications?: { titulo: string; cedula_profesional?: string }[];
+}
 export interface Paciente {
     id: number;
     curp: string;
@@ -91,7 +105,11 @@ export interface User {
     email: string;
     created_at: string; 
     updated_at: string;
+    credenciales:string | null | CredencialEmpleado [];
+    password: string;
+    password_confirmation: string;
 
+    cargo_id: number;
     permissions?: string[]; 
     roles?: string[];
 };
@@ -760,6 +778,8 @@ export interface NotaPostanestesica {
     diagnostico_o_problemas_clinicos: string;
     plan_de_estudio: string;
     pronostico: string;
+    tratamiento: string;
+    resultado_estudios: string;
     tecnica_anestesica: string;
     farmacos_administrados: string;
     duracion_anestesia: string; 
@@ -861,7 +881,10 @@ export interface ReservacionQuirofano {
     updated_at: string;
 }
 
-
+export interface Cargo {
+    nombre: string;
+    descripcion: string;
+}
 export type PageProps<T extends Record<string, unknown> = Record<string, unknown>> = T & {
     auth: {
         user: User;

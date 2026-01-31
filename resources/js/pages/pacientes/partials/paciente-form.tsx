@@ -343,9 +343,9 @@ export const PacienForm = ({
                     <button
                         type="button"
                         onClick={addFamiliar}
-                        className="flex items-center justify-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition h-[42px]"
+                        className="flex items-center justify-center gap-1 bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition h-[42px]"
                     >
-                        <Plus size={18} /> Agregar a la lista
+                        <Plus size={18} /> Agregar 
                     </button>
                 </div>
 

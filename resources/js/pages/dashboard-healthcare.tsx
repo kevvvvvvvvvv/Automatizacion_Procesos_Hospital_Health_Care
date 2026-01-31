@@ -1,10 +1,11 @@
 import React from 'react';
 import { FaUser } from "react-icons/fa";
 import { LuBedSingle } from "react-icons/lu";
-import { RiArchiveDrawerFill } from "react-icons/ri";
-import { MdCalendarMonth } from "react-icons/md"
-import { MdHistory, MdAdd } from "react-icons/md";
-import { FaUserDoctor, FaBowlFood } from "react-icons/fa6";
+import { RiArchiveDrawerFill , } from "react-icons/ri";
+import {FaRegCheckCircle} from "react-icons/fa";
+import { MdCalendarMonth,  } from "react-icons/md"
+import { MdHistory, MdAdd,  } from "react-icons/md";
+import { FaUserDoctor, FaBowlFood,  } from "react-icons/fa6";
 import { route } from 'ziggy-js';
 import { Head, usePage, PageProps as InertiaPageProps, router } from '@inertiajs/react';
 import { User } from '@/types';
@@ -104,6 +105,15 @@ export default function Dashboard() {
                         onClick={() => router.visit(route('dietas.index'))}
                     />
                     )}
+                </div>
+                <div>
+                    
+                     <CardButton
+                        icon={FaRegCheckCircle}
+                        text="Petición de medicamentos"
+                        onClick={() => router.visit(route('peticiones.index'))}
+                    />
+                    
                 </div>                   
             </MainLayout>
         </>

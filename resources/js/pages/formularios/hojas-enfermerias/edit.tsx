@@ -197,7 +197,7 @@ const Create: CreateComponent = ({
                         />;
             case 'escalas_valoracion':
                 return <EscalaValoracionForm 
-                            hoja={hojaenfermeria}
+                            hoja={hojaenfermeria}   
                         />;
             case 'medicamentos':
                 return <MedicamentosForm 

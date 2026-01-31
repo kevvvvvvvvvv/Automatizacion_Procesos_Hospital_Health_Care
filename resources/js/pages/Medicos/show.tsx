@@ -87,52 +87,50 @@ const Show = ({ doctor, credencial }: ShowDoctorProps) => {
             {/*<InfoField
               label="Cargo"
               value={doctor.cargo || 'No asignado'}
-            />*/}  
+            />  
             <InfoField
               label="Colaborador Responsable"
               value={doctor.colaborador_responsable_id || 'Sin responsable'}
               className="md:col-span-2"
             />
+            */}
           </div>
         </InfoCard>
-
-            <InfoCard title="Calificaciones Profesionales" className="mt-8">
-        {/* Verificamos que exista y que, si es array, tenga al menos un elemento */}
-        {credencial && (Array.isArray(credencial) ? credencial.length > 0 : true) ? (
-          <div className="overflow-x-auto">
-            <table className="w-full border-collapse border border-gray-300 bg-white rounded-lg shadow">
-              <thead className="bg-gray-100">
-                <tr>
-                  <th className="border border-gray-300 px-4 py-2 text-left font-semibold text-gray-700">Título</th>
-                  <th className="border border-gray-300 px-4 py-2 text-left font-semibold text-gray-700">Cédula Profesional</th>
-                </tr>
-              </thead>
-              <tbody>
-                {/* Si es array usamos el primer elemento [0], si es objeto lo usamos directo */}
-                {(() => {
-                  const data = Array.isArray(credencial) ? credencial[0] : credencial;
-                  return (
-                    <tr className="hover:bg-gray-50 transition-colors">
-                      <td className="border border-gray-300 px-4 py-2 text-gray-800">
-                        {data.titulo || 'No especificado'}
-                      </td>
-                      <td className="border border-gray-300 px-4 py-2 text-gray-800 font-mono">
-                        {data.cedula_profesional || 'Sin cédula'}
-                      </td>
-                    </tr>
-                  );
-                })()}
-              </tbody>
-            </table>
-          </div>
-        ) : (
-          <div className="text-center py-6 bg-gray-50 rounded-lg border border-dashed border-gray-300">
-            <p className="text-gray-500 text-sm italic">
-              No hay una credencial de empleado registrada para este doctor.
-            </p>
-          </div>
-        )}
-      </InfoCard>
+<InfoCard title="Calificaciones Profesionales" className="mt-8">
+  {/* Verificamos si hay credenciales y que sea un array con contenido */}
+  {Array.isArray(credencial) && credencial.length > 0 ? (
+    <div className="overflow-x-auto">
+      <table className="w-full border-collapse border border-gray-300 bg-white rounded-lg shadow">
+        <thead className="bg-gray-100">
+          <tr>
+            <th className="border border-gray-300 px-4 py-2 text-left font-semibold text-gray-700">Título</th>
+            <th className="border border-gray-300 px-4 py-2 text-left font-semibold text-gray-700">Cédula Profesional</th>
+          </tr>
+        </thead>
+        <tbody>
+          {/* RECORREMOS TODAS LAS CREDENCIALES */}
+          {credencial.map((item, index) => (
+            <tr key={index} className="hover:bg-gray-50 transition-colors">
+              <td className="border border-gray-300 px-4 py-2 text-gray-800">
+                {item.titulo || 'No especificado'}
+              </td>
+              <td className="border border-gray-300 px-4 py-2 text-gray-800 font-mono">
+                {/* Fallback por si la propiedad se llama cedula o cedula_profesional */}
+                {item.cedula_profesional || item.cedula || 'Sin cédula'}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  ) : (
+    <div className="text-center py-6 bg-gray-50 rounded-lg border border-dashed border-gray-300">
+      <p className="text-gray-500 text-sm italic">
+        No se han encontrado títulos registrados para este doctor.
+      </p>
+    </div>
+  )}
+</InfoCard>
         
 
         <InfoCard title="Información de Contacto" className="mt-8">
