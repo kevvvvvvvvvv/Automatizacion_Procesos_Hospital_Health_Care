@@ -72,9 +72,14 @@ class ProductoServicio extends Model
         return $this->morphMany(DetalleVenta::class, 'itemable');
     }
 
-    public function medicamento()
+    public function medicamento(): HasOne
     {
         return $this->hasOne(Medicamento::class, 'id', 'id');
+    }
+
+    public function insumo(): HasOne
+    {
+        return $this->hasOne(Insumo::class, 'id','id');
     }
     
     public function getListaViasAttribute()

@@ -1,5 +1,5 @@
 import React, { useState } from 'react'; 
-import { ChecklistItemData, Paciente, Estancia, ProductoServicio, HojaEnfermeria, HojaSignosGraficas, CatalogoEstudio, User, SolicitudEstudio, NotaPostoperatoria, notasEvoluciones, CategoriaDieta } from '@/types';
+import { ChecklistItemData, Paciente, Estancia, ProductoServicio, HojaEnfermeria, HojaSignosGraficas, CatalogoEstudio, User, SolicitudEstudio, NotaPostoperatoria, notasEvoluciones, CategoriaDieta, CatalogoViaAdministracion } from '@/types';
 import { Head, useForm, router } from '@inertiajs/react';
 import { route } from 'ziggy-js';
 import Swal from 'sweetalert2';
@@ -43,6 +43,7 @@ interface CreateProps {
     checklistInicial:ChecklistItemData[];
 
     categoria_dietas: CategoriaDieta [];
+    vias_administracion: CatalogoViaAdministracion[];
 }
 
 type SeccionHoja = 'signos' | 'riesgo_caidas' |'medicamentos' | 'terapia_iv' | 'estudios' | 'sondas' | 'dieta' | 'servicios_especiales' | 'observaciones' | 'graficas' | 'control_liquidos' | 'escalas_valoracion';
@@ -157,6 +158,7 @@ const Create: CreateComponent = ({
     checklistInicial,
     categoria_dietas,
     sondas_cateters,
+    vias_administracion,
 }) => {
 
     const [activeSection, setActiveSection] = useState<SeccionHoja>('signos');
@@ -203,6 +205,7 @@ const Create: CreateComponent = ({
                 return <MedicamentosForm 
                             hoja={hojaenfermeria}
                             medicamentos={medicamentos}
+                            vias_administracion={vias_administracion}
                         />;
             case 'terapia_iv':
                 return <TerapiaIVForm

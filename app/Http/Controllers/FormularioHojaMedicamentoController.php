@@ -34,23 +34,42 @@ class FormularioHojaMedicamentoController extends Controller
             $medicamentosParaNotificacion = collect();
 
             foreach ($validatedData['medicamentos_agregados'] as $med) {
-                $producto = ProductoServicio::find($med['id']);
+                
+                $productoId = $med['id'] ?? null; 
+                $nombreSnapshot = $med['nombre_medicamento']; 
+                $producto = null;
+                $tieneStock = false;
+
+                if ($productoId) {
+                    $producto = ProductoServicio::find($productoId);
+                    
+                    if ($producto) {
+                        $tieneStock = ($producto->cantidad >= 1) && ($producto->tipo !== 'SERVICIO');
+                    }
+                } else {
+                    $tieneStock = false; 
+                }
 
                 $nuevoMedicamento = $hojasenfermeria->hojaMedicamentos()->create([
-                    'producto_servicio_id' => $med['id'],
-                    'dosis' => $med['dosis'],
-                    'gramaje' => $med['gramaje'],
-                    'via_administracion' => $med['via_id'],
+                    'producto_servicio_id' => $productoId, 
+                    'nombre_medicamento'   => $nombreSnapshot, 
+                    'dosis'                => $med['dosis'],
+                    'gramaje'              => $med['gramaje'],
+                    'via_administracion'   => $med['via_id'],
                     'fecha_hora_solicitud' => now(),
                     'duracion_tratamiento' => $med['duracion'], 
-                    'unidad' => $med['unidad'],
-                    'estado' => 'solicitado', 
+                    'unidad'               => $med['unidad'], 
+                    'estado'               => 'solicitado', 
                 ]);
 
-                $tieneStock = ($producto->cantidad >= 1) && ($producto->tipo !== 'SERVICIO');
+                if ($nuevoMedicamento->producto_servicio_id) {
+                    $nuevoMedicamento->load('productoServicio');
+                }
+
                 $medicamentosParaNotificacion->push([
-                    'medicamento' => $nuevoMedicamento->load('productoServicio'), 
+                    'medicamento' => $nuevoMedicamento, 
                     'tiene_stock' => $tieneStock,
+                    'es_manual'   => is_null($productoId) 
                 ]);
             }
 
@@ -58,6 +77,7 @@ class FormularioHojaMedicamentoController extends Controller
             $paciente->append('nombre_completo'); 
 
             $usuariosFarmacia = User::role('farmacia')->get(); 
+            
             Notification::send($usuariosFarmacia, 
                     new NuevaSolicitudMedicamentos(
                         $medicamentosParaNotificacion, 
@@ -67,9 +87,10 @@ class FormularioHojaMedicamentoController extends Controller
                 );     
             
             return Redirect::back()->with('success', 'Solicitud de medicamentos enviada.');                                                           
+        
         } catch(\Exception $e) {
-            \Log::error('Error al guardar la solicitud de medicamentos: ' . $e->getMessage() );
-            return redirect()->route('hojasenfermerias.edit',$hojasenfermeria)->with('error','No se pudo realizar la petición.');
+            \Log::error('Error al guardar solicitud: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Error al guardar. ');
         }
     }
 

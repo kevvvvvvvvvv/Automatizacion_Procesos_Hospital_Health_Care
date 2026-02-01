@@ -41,6 +41,7 @@ export interface SharedData {
     updated_at: string;
     [key: string]: unknown; 
 }*/
+
 export interface Doctor {
     id: number;
     nombre: string;
@@ -183,16 +184,50 @@ export interface FormularioInstancia {
     created_at: string;
     updated_at: string;
 }
+export interface Medicamento {
+    id: number;
+    excipiente_activo_gramaje: string | null;
+    volumen_total: number | null;
+    nombre_comercial: string | null;
+    gramaje: string | null;
+    fraccion: string | null;
+
+    vias_administracion: CatalogoViaAdministracion[] | null;
+}
+
+export interface CatalogoViaAdministracion {
+    id: number;
+    via_administracion: string;
+}
+
+export interface Insumo {
+   id: number;
+    categoria: string | null;
+    especificacion: string | null;
+    categoria_unitaria: string | null;
+}
 
 export interface ProductoServicio {
     id: number;
     tipo: string;
     subtipo: string;
+    codigo_barras: string | null;
     codigo_prestacion: string;
     nombre_prestacion: string;
+
     importe: number | null;
+    importe_compra: number | null;
     cantidad: number | null;
-    iva: number | null;  
+    cantidad_maxima: number | null;
+    cantidad_minima: number | null;
+
+    proveedor: string | null;
+    fecha_caducidad: string | null;
+
+    iva: number | null;
+    
+    medicamento: Medicamento | null;
+    insumo: Insumo | null 
 }
 
 export interface HistoryEntry {

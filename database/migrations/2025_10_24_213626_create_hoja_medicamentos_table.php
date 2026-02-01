@@ -18,9 +18,9 @@ return new class extends Migration
                 ->onDelete('cascade');
 
             $table->foreignId('producto_servicio_id')
+                ->nullable()
                 ->constrained('producto_servicios')
-                ->onDelete('cascade')
-                ->nullable();
+                ->onDelete('cascade');
 
             $table->integer('dosis');
             $table->string('gramaje');

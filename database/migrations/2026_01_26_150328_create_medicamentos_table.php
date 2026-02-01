@@ -22,7 +22,7 @@ return new class extends Migration
             $table->text('excipiente_activo_gramaje');
             $table->decimal('volumen_total');
             $table->string('nombre_comercial');
-            $table->string('gramaje');
+            $table->string('gramaje')->nullable();
             $table->boolean('fraccion');
             
             $table->timestamps();

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useForm, router } from '@inertiajs/react';
-import { HojaEnfermeria, ProductoServicio, HojaMedicamento } from '@/types';
+import { HojaEnfermeria, ProductoServicio, HojaMedicamento, CatalogoViaAdministracion } from '@/types';
 import { route } from 'ziggy-js';
 
 // Componentes UI
@@ -10,7 +10,7 @@ import PrimaryButton from '@/components/ui/primary-button';
 import Swal from 'sweetalert2';                     
 
 
-const opcionesViaMedicamento = [
+/*const opcionesViaMedicamento = [
     
     { value: 'Vía Oral', label: 'Oral' },
     { value: 'Intravenosa', label: 'Intravenosa' },
@@ -30,7 +30,7 @@ const opcionesViaMedicamento = [
 
     
     { value: 'Inhalatoria', label: 'Inhalatoria' },
-];
+];*/
 
 interface MedicamentoAgregado {
     id: string;
@@ -50,9 +50,10 @@ interface MedicamentoAgregado {
 interface Props {
     hoja: HojaEnfermeria;
     medicamentos: ProductoServicio[]; 
+    vias_administracion: CatalogoViaAdministracion[];
 }
 
-const optionsGramaje = [
+const optionsUnidadMedida = [
     {value: 'mililitros', label: 'Mililitros(ml)'},
     {value: 'gramos', label: 'Gramos (g)'},
     {value: 'miligramos', label: 'Miligramos (mg)'},
@@ -61,7 +62,7 @@ const optionsGramaje = [
     {value: 'gotas', label: 'Gotas'},
 ];
 
-const optionsUnidad = [
+const optionsUnidadTiempo = [
     { value: 'horas', label: 'Horas' },
     { value: 'minutos', label: 'Minutos'},
     { value: 'dosis unica', label: 'Dosis unica'}
@@ -75,12 +76,32 @@ const formatDateTime = (isoString: string | null) => {
     });
 };
 
-const MedicamentosForm: React.FC<Props> = ({ hoja, medicamentos }) => {
+const MedicamentosForm: React.FC<Props> = ({ 
+    hoja, 
+    medicamentos = [], 
+    vias_administracion = []
+}) => {
 
-    const medicamentosOptions = medicamentos.map(m => ({
-        value: m.id.toString(),
-        label: m.nombre_prestacion
+    const viasOptions = vias_administracion.map(v=>({
+        label: v.via_administracion,
+        value: v.via_administracion,
     }));
+
+    const medicamentosOptions = medicamentos.map(m => {
+        const viasRaw = m.medicamento?.vias_administracion || [];
+        const viasFormateadas = viasRaw.map(v => ({
+            value: v.via_administracion,
+            label: v.via_administracion
+        }));
+
+        return {
+            value: m.id.toString(),
+            label: m.nombre_prestacion,
+            vias_disponibles: viasFormateadas 
+        };
+    });
+
+
 
     const [localData, setLocalData] = useState({
         medicamento_id: '',
@@ -96,7 +117,7 @@ const MedicamentosForm: React.FC<Props> = ({ hoja, medicamentos }) => {
         es_manual: false,
     });
 
-    const handleSelectMedicamento = (value) => {
+    const handleSelectMedicamento = (value: string ) => {
         const sel = medicamentosOptions.find(o => o.value === value);
         setLocalData(d => ({
             ...d,
@@ -126,7 +147,7 @@ const MedicamentosForm: React.FC<Props> = ({ hoja, medicamentos }) => {
     const { data, setData, post, processing, errors, reset, wasSuccessful } = useForm({
         medicamentos_agregados: [] as MedicamentoAgregado[],
     });
-
+    
     const handleDateUpdate = (medicamentoId: number, newDate: string) => {
         router.patch(route('hojasmedicamentos.update', { 
             hojasenfermeria: hoja.id, 
@@ -143,7 +164,7 @@ const MedicamentosForm: React.FC<Props> = ({ hoja, medicamentos }) => {
 
     const handleAddToList = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault(); 
-        if ((!localData.medicamento_id && !localData.nombre_medicamento)|| !localData.dosis || !localData.unidad || !localData.gramaje || !localData.unidad || !localData.via || !localData.duracion_tratamiento) {
+        if ((!localData.medicamento_id && !localData.nombre_medicamento)|| !localData.dosis || !localData.unidad || !localData.gramaje || !localData.unidad || !localData.duracion_tratamiento) {
             Swal.fire({
                 icon: 'warning',
                 title: 'Campos incompletos',
@@ -228,6 +249,26 @@ const MedicamentosForm: React.FC<Props> = ({ hoja, medicamentos }) => {
         });
     };
 
+    const viasAdministracionOptions = () => {
+
+        if (localData.es_manual) {
+            return viasOptions; 
+        }
+
+        if (localData.medicamento_id) {
+            const medSeleccionado = medicamentosOptions.find(
+                m => m.value === localData.medicamento_id
+            );
+            
+            if (medSeleccionado && medSeleccionado.vias_disponibles && medSeleccionado.vias_disponibles.length > 0) {
+                return medSeleccionado.vias_disponibles;
+            }
+        }
+
+        return viasOptions; 
+    };
+
+
     return (
         <div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6"> 
@@ -282,8 +323,8 @@ const MedicamentosForm: React.FC<Props> = ({ hoja, medicamentos }) => {
                 />
 
                 <SelectInput
-                    label="Gramaje"
-                    options={optionsGramaje}
+                    label="Unidad de medida"
+                    options={optionsUnidadMedida}
                     value={localData.gramaje}
                     onChange={(value) => {
                         setLocalData(d => ({
@@ -295,14 +336,15 @@ const MedicamentosForm: React.FC<Props> = ({ hoja, medicamentos }) => {
 
                 <SelectInput
                     label="Vía de administración"
-                    options={opcionesViaMedicamento}
+                    options={viasAdministracionOptions()} 
                     value={localData.via}
                     onChange={(value) => {
-                        const sel = opcionesViaMedicamento.find(o => o.value === value);
+                        const opcionesActuales = viasAdministracionOptions();
+                        const sel = opcionesActuales.find((o) => o.value === value);
                         setLocalData(d => ({
                             ...d,
                             via: value as string,
-                            via_label: sel ? sel.label : ''
+                            via_label: sel ? sel.label : '' 
                         }));
                     }}
                     error={errors['medicamentos_agregados.0.via_id']}
@@ -321,8 +363,8 @@ const MedicamentosForm: React.FC<Props> = ({ hoja, medicamentos }) => {
                 )}
 
                 <SelectInput
-                    label="Unidad"
-                    options={optionsUnidad}
+                    label="Unidad de tiempo"
+                    options={optionsUnidadTiempo}
                     value={localData.unidad}
                     onChange={(value) => {
                         setLocalData(d => ({
@@ -413,7 +455,7 @@ const MedicamentosForm: React.FC<Props> = ({ hoja, medicamentos }) => {
                                 (hoja.hoja_medicamentos ?? []).map((med: HojaMedicamento) => (
                                     <tr key={med.id}>
                                         <td className="px-4 py-4 text-sm text-gray-900">
-                                            {med.producto_servicio?.nombre_prestacion || '...'}
+                                            {med.nombre_medicamento|| '...'}
                                         </td>
                                         <td className="px-4 py-4 text-sm text-gray-500">{med.dosis + ' ' + med.gramaje}</td>
                                         <td className="px-4 py-4 text-sm text-gray-500">{med.duracion_tratamiento + ' ' + med.unidad}</td>
