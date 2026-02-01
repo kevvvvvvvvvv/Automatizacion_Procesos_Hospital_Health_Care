@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\HojaEnfermeriaRequest;
 use App\Models\CatalogoEstudio;
+use App\Models\CatalogoViaAdministracion;
 use App\Models\CategoriaDieta;
 use App\Models\Paciente;
 use App\Models\Estancia;
@@ -137,13 +138,12 @@ class FormularioHojaEnfermeriaController extends Controller implements HasMiddle
                                 ->values();
 
         $medicamentos = ProductoServicio::where('subtipo','MEDICAMENTOS')->with('medicamento.viasAdministracion')->get();
-        dd($medicamentos->toArray());
-
         $soluciones = ProductoServicio::where('nombre_prestacion', 'like', 'SOLUCION%')->get();
         $medicos = User::all();
         $usuarios = User::all();
         $categoria_dietas = CategoriaDieta::with('dietas')->get();
         $sondas_cateters = ProductoServicio::where('nombre_prestacion','like','SONDA%')->orWhere('nombre_prestacion', 'like', 'CATETER%')->get();
+        $vias_administracion = CatalogoViaAdministracion::all();
 
         $dataParaGraficas = HojaSignos::select($columnasGraficas)
             ->where('hoja_enfermeria_id', $hojasenfermeria->id)
@@ -169,7 +169,8 @@ class FormularioHojaEnfermeriaController extends Controller implements HasMiddle
             'nota' =>$nota,
             'checklistInicial' => $nota ? $nota->checklistItems->where('is_completed', true)->values() : [],
 
-            'categoria_dietas' => $categoria_dietas
+            'categoria_dietas' => $categoria_dietas,
+            'vias_administracion' => $vias_administracion,
         ]);
     }
 
