@@ -38,6 +38,10 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|HojaEnfermeriaQuirofano whereHoraInicioPaciente($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|HojaEnfermeriaQuirofano whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|HojaEnfermeriaQuirofano whereUpdatedAt($value)
+ * @property array<array-key, mixed>|null $anestesia
+ * @property array<array-key, mixed>|null $servicios_especiales
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|HojaEnfermeriaQuirofano whereAnestesia($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|HojaEnfermeriaQuirofano whereServiciosEspeciales($value)
  * @mixin \Eloquent
  */
 class HojaEnfermeriaQuirofano extends Model

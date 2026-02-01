@@ -46,6 +46,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|HojaMedicamento whereUnidad($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|HojaMedicamento whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|HojaMedicamento whereViaAdministracion($value)
+ * @property string $nombre_medicamento
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|HojaMedicamento whereNombreMedicamento($value)
  * @mixin \Eloquent
  */
 class HojaMedicamento extends Model
@@ -68,6 +70,8 @@ class HojaMedicamento extends Model
         'fecha_hora_surtido_farmacia',
         'farmaceutico_id',
         'fecha_hora_recibido_enfermeria',
+
+        'nombre_medicamento'
     ];
 
     public function productoServicio():BelongsTo

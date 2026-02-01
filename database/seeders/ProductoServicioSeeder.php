@@ -2,68 +2,163 @@
 
 namespace Database\Seeders;
 
-use App\Models\ProductoServicio;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use League\Csv\Reader;
+use Carbon\Carbon;
+
+use App\Models\ProductoServicio;
 
 class ProductoServicioSeeder extends Seeder
 {
     public function run(): void
     {
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        DB::table('medicamentos')->truncate();
+        DB::table('insumos')->truncate();
+        DB::table('producto_servicios')->truncate();
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+
         DB::transaction(function () {
-            DB::table('producto_servicios')->delete();
-
-            $path = database_path('seeders/data/producto_servicios.csv');
-        
-            $stream = fopen($path, 'r');
             
-
-            stream_filter_append($stream, 'convert.iconv.ISO-8859-1/UTF-8');
+            $pathServicios = database_path('seeders/data/servicios.csv');
             
+            if (file_exists($pathServicios)) {
+                $this->command->info('Importando Servicios...');
+                $csv = $this->leerCsv($pathServicios, ';');
 
-            $csv = Reader::createFromStream($stream);
+                foreach ($csv->getRecords() as $record) {
+                    if (empty($record['nombre_prestacion'])) continue;
 
-            $csv->setDelimiter(';'); 
-            $csv->setHeaderOffset(0);
-
-            $records = $csv->getRecords();
-            $dataToInsert = [];
-            $chunkSize = 500;
-
-            foreach ($records as $record) {
-                if (empty($record['codigo_prestacion']) && empty($record['nombre_prestacion'])) {
-                    continue;
-                }
-
-                $dataToInsert[] = [
-                    'tipo'              => trim($record['tipo'] ?? ''),
-                    'subtipo'           => trim($record['subtipo'] ?? ''),
-                    'codigo_prestacion' => trim($record['codigo_prestacion'] ?? ''),
-                    'nombre_prestacion' => trim($record['nombre_prestacion'] ?? ''),
-                    'importe'           => isset($record['importe']) ? floatval(str_replace(',', '', $record['importe'])) : 0,
-                    'cantidad'          => empty($record['cantidad']) ? null : (int)$record['cantidad'],
-                    'iva' => empty($record['iva']) 
-                                ? null 
-                                : (float)str_replace('%', '', $record['iva']),
-                ];
-
-                if (count($dataToInsert) >= $chunkSize) {
-                    DB::table('producto_servicios')->insert($dataToInsert);
-                    $dataToInsert = [];
+                    DB::table('producto_servicios')->insert([
+                        'tipo'              => 'SERVICIO',
+                        'subtipo'           => $record['subtipo'] ?? 'GENERAL',
+                        'codigo_prestacion' => $record['codigo_prestacion'] ?? null,
+                        'nombre_prestacion' => $record['nombre_prestacion'],
+                        'importe'           => $this->limpiarMoneda($record['importe'] ?? 0),
+                        'iva'               => $this->limpiarMoneda($record['iva'] ?? 16),
+                        'cantidad'          => null, 
+                        'created_at'        => now(),
+                        'updated_at'        => now(),
+                    ]);
                 }
             }
 
-            if (!empty($dataToInsert)) {
-                DB::table('producto_servicios')->insert($dataToInsert);
+            $pathMedicamentos = database_path('seeders/data/medicamentos.csv');
+
+            if (file_exists($pathMedicamentos)) {
+                $this->command->info('Importando Medicamentos y Generando Catálogo de Vías...');
+                $csv = $this->leerCsv($pathMedicamentos, ','); 
+
+                foreach ($csv->getRecords() as $recordRaw) {
+                    
+                    $record = array_combine(array_map('trim', array_keys($recordRaw)), $recordRaw);
+
+                    if (empty($record['nombre_comercial'])) continue;
+
+                    $padreId = DB::table('producto_servicios')->insertGetId([
+                        'tipo'              => 'INSUMOS',
+                        'subtipo'           => 'MEDICAMENTOS',
+                        'codigo_prestacion' => $record['codigo_barras'] ?? null,
+                        'codigo_barras'     => $record['codigo_barras'] ?? null,
+                        'nombre_prestacion' => $record['excipiente_activo_gramaje'] ?? $record['nombre_comercial'],
+                        'importe'           => $this->limpiarMoneda($record['importe'] ?? 0),
+                        'cantidad'          => (int)($record['cantidad'] ?? 0),
+                        'iva'               => 0,
+                        'created_at'        => now(),
+                        'updated_at'        => now(),
+                    ]);
+
+                    $esFraccion = (in_array(strtoupper(trim($record['fraccion'] ?? '')), ['SI', 'S', '1']));
+
+
+                    DB::table('medicamentos')->insert([
+                        'id' => $padreId,
+                        'excipiente_activo_gramaje' => $record['excipiente_activo_gramaje'] ?? 'S/D',
+                        'volumen_total'      => $this->limpiarMoneda($record['volumen_total'] ?? 0),
+                        'nombre_comercial'   => $record['nombre_comercial'],
+                        'gramaje'            => $record['gramaje'] ?? '',
+                        'fraccion'           => $esFraccion,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ]);
+
+                    
+                    $viasRaw = $record['via_administracion'] ?? 'NO ESPECIFICADA';
+                    $listaVias = explode(',', $viasRaw); 
+
+                    foreach ($listaVias as $viaNombre) {
+                        $viaLimpia = $this->normalizarVia($viaNombre);
+
+                        if (empty($viaLimpia)) continue;
+
+                        $catalogo = DB::table('catalogo_via_administracions')
+                                    ->where('via_administracion', $viaLimpia)
+                                    ->first();
+
+                        if (!$catalogo) {
+                            $catalogoId = DB::table('catalogo_via_administracions')->insertGetId([
+                                'via_administracion' => $viaLimpia,
+                                'created_at' => now(),
+                                'updated_at' => now(),
+                            ]);
+                        } else {
+                            $catalogoId = $catalogo->id;
+                        }
+
+                        DB::table('medicamento_vias')->insert([
+                            'medicamento_id' => $padreId,
+                            'catalogo_via_administracion_id' => $catalogoId,
+                            'created_at' => now(),
+                            'updated_at' => now(),
+                        ]);
+                    }
+                }
             }
 
-            if (is_resource($stream)) {
-                fclose($stream);
+            $pathInsumos = database_path('seeders/data/insumos.csv');
+
+            if (file_exists($pathInsumos)) {
+                $this->command->info('Importando Insumos...');
+                $csv = $this->leerCsv($pathInsumos, ','); 
+
+                foreach ($csv->getRecords() as $recordRaw) {
+
+                    $record = array_combine(
+                        array_map('trim', array_keys($recordRaw)),
+                        $recordRaw
+                    );
+
+                    if (empty($record['categoria']) && empty($record['especificacion'])) continue;
+                    $nombreInsumo = $record['nombre'] ?? ($record['categoria'] . ' ' . $record['especificacion']);
+
+                    $padreId = DB::table('producto_servicios')->insertGetId([
+                        'tipo'              => 'INSUMOS', 
+                        'subtipo'           => 'GENERAL', 
+                        'codigo_prestacion' => $record['codigo'] ?? null, 
+                        'codigo_barras'     => $record['codigo_barras'] ?? null,
+                        'nombre_prestacion' => $nombreInsumo,
+                        
+                        'importe'           => $this->limpiarMoneda($record['importe'] ?? 0.1),
+                        'cantidad'          => (int)($record['Cantidad'] ?? 0),
+                        
+                        'created_at'        => now(),
+                        'updated_at'        => now(),
+                    ]);
+
+                    DB::table('insumos')->insert([
+                        'id' => $padreId, 
+
+                        'categoria'          => $record['categoria'] ?? 'General',
+                        'especificacion'     => $record['especificacion'] ?? 'S/E',
+                        'categoria_unitaria' => $record['categoria_unitaria'] ?? 'PZA', 
+                        
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ]);
+                }
             }
         });
-
         ProductoServicio::create([
             'tipo' => 'SERVICIOS',
             'subtipo' => 'ADMISION',
@@ -81,5 +176,59 @@ class ProductoServicioSeeder extends Seeder
             'importe' => 0.1,
             'cantidad' => null,
         ]);
+    }
+
+    private function leerCsv($path, $delimiter = ',')
+    {
+        $stream = fopen($path, 'r');
+        stream_filter_append($stream, 'convert.iconv.ISO-8859-1/UTF-8');
+        
+        $csv = Reader::createFromStream($stream);
+        $csv->setDelimiter($delimiter); 
+        $csv->setHeaderOffset(0);
+        
+        return $csv;
+    }
+
+    private function limpiarMoneda($valor)
+    {
+        if (is_null($valor) || $valor === '') return 0;
+        return floatval(str_replace(['$', ',', '%'], '', $valor));
+    }
+
+    private function normalizarVia($texto)
+    {
+        $texto = strtoupper(trim($texto));
+
+        $correcciones = [
+            'INTRAVENOSO'   => 'INTRAVENOSA',
+            'SUBCUTANEO'    => 'SUBCUTÁNEA', 
+            'SUBCUTÁNEO'    => 'SUBCUTÁNEA',
+            'OFTÁLMICO'     => 'OFTÁLMICA',
+            'OFTALMICO'     => 'OFTÁLMICA',
+            'OTOLÓGICO'     => 'OTOLÓGICA',
+            'OTOLOGICO'     => 'OTOLÓGICA',
+            'TOPICO'        => 'TÓPICA',
+            'TÓPICO'        => 'TÓPICA',
+            
+            'SUBCUTANEA'    => 'SUBCUTÁNEA',
+            'OFTALMICA'     => 'OFTÁLMICA',
+            'DERMICA'       => 'DÉRMICA',
+            'CUTANEA'       => 'CUTÁNEA',
+            'TOPICA'        => 'TÓPICA',
+            'INTRARTERIAL'  => 'INTRAARTERIAL', 
+            'INFILTRACION'  => 'INFILTRACIÓN',
+            'INFILTRACION LOCAL'     => 'INFILTRACIÓN LOCAL',
+            'INFILTRACION TRONCULAR' => 'INFILTRACIÓN TRONCULAR',
+
+        ];
+
+        $textoCorregido = $correcciones[$texto] ?? $texto;
+
+        if ($textoCorregido === 'REVISAR' || $textoCorregido === '') {
+            return null;
+        }
+
+        return $textoCorregido;
     }
 }

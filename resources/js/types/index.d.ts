@@ -42,6 +42,21 @@ export interface SharedData {
     [key: string]: unknown; 
 }*/
 
+export interface Doctor {
+    id: number;
+    nombre: string;
+    apellido_paterno: string;
+    apellido_materno?: string | null;
+    curp?: string;
+    sexo?: string;
+    fecha_nacimiento?: string;
+    cargo_id?: number | string;
+    colaborador_responsable_id?: number | string;
+    email: string;
+    password: string;
+    password_confirmation: string;
+    professional_qualifications?: { titulo: string; cedula_profesional?: string }[];
+}
 export interface Paciente {
     id: number;
     curp: string;
@@ -91,7 +106,11 @@ export interface User {
     email: string;
     created_at: string; 
     updated_at: string;
+    credenciales:string | null | CredencialEmpleado [];
+    password: string;
+    password_confirmation: string;
 
+    cargo_id: number;
     permissions?: string[]; 
     roles?: string[];
 };
@@ -165,16 +184,50 @@ export interface FormularioInstancia {
     created_at: string;
     updated_at: string;
 }
+export interface Medicamento {
+    id: number;
+    excipiente_activo_gramaje: string | null;
+    volumen_total: number | null;
+    nombre_comercial: string | null;
+    gramaje: string | null;
+    fraccion: string | null;
+
+    vias_administracion: CatalogoViaAdministracion[] | null;
+}
+
+export interface CatalogoViaAdministracion {
+    id: number;
+    via_administracion: string;
+}
+
+export interface Insumo {
+   id: number;
+    categoria: string | null;
+    especificacion: string | null;
+    categoria_unitaria: string | null;
+}
 
 export interface ProductoServicio {
     id: number;
     tipo: string;
     subtipo: string;
+    codigo_barras: string | null;
     codigo_prestacion: string;
     nombre_prestacion: string;
+
     importe: number | null;
+    importe_compra: number | null;
     cantidad: number | null;
+    cantidad_maxima: number | null;
+    cantidad_minima: number | null;
+
+    proveedor: string | null;
+    fecha_caducidad: string | null;
+
     iva: number | null;
+    
+    medicamento: Medicamento | null;
+    insumo: Insumo | null 
 }
 
 export interface HistoryEntry {
@@ -356,6 +409,9 @@ export interface HojaMedicamento {
     fecha_hora_surtido_farmacia: string;
     farmaceutico_id: number;
     fecha_hora_recibido_enfermeria: srting;
+
+    nombre_medicamento: string;
+
     producto_servicio?: ProductoServicio;
     aplicaciones: AplicacionMedicamento[];
 }
@@ -760,6 +816,8 @@ export interface NotaPostanestesica {
     diagnostico_o_problemas_clinicos: string;
     plan_de_estudio: string;
     pronostico: string;
+    tratamiento: string;
+    resultado_estudios: string;
     tecnica_anestesica: string;
     farmacos_administrados: string;
     duracion_anestesia: string; 
@@ -861,7 +919,10 @@ export interface ReservacionQuirofano {
     updated_at: string;
 }
 
-
+export interface Cargo {
+    nombre: string;
+    descripcion: string;
+}
 export type PageProps<T extends Record<string, unknown> = Record<string, unknown>> = T & {
     auth: {
         user: User;

@@ -33,6 +33,7 @@ class DatabaseSeeder extends Seeder
             HabitacionPrecioSeeder::class,
             CategoriaDietaSeeder::class,
             DietaSeeder::class,
+            CatalogoViaAdministracionSeeder::class,
         ]);
 
     }

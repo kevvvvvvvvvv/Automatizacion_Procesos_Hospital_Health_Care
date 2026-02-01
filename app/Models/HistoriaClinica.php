@@ -37,6 +37,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|HistoriaClinica whereTalla($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|HistoriaClinica whereTemperatura($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|HistoriaClinica whereTensionArterial($value)
+ * @property int|null $saturacion_oxigeno
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|HistoriaClinica whereSaturacionOxigeno($value)
  * @mixin \Eloquent
  */
 class HistoriaClinica extends Model

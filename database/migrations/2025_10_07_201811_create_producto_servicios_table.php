@@ -17,11 +17,22 @@ return new class extends Migration
             $table->id();
             $table->string('tipo');
             $table->string('subtipo');
-            $table->string('codigo_prestacion');
+            $table->string('codigo_prestacion')->nullable();
+            $table->string('codigo_barras')->nullable()->index();
             $table->string('nombre_prestacion',200);
-            $table->decimal('importe', 8, 2);
+
+            $table->decimal('importe', 8, 2)->default(0.1); 
+            $table->decimal('importe_compra')->nullable();
+
             $table->integer('cantidad')->nullable();
+            $table->integer('cantidad_maxima')->nullable();
+            $table->integer('cantidad_minima')->nullable();
+
+            $table->string('proveedor')->nullable();
+            $table->date('fecha_caducidad')->nullable();
+
             $table->decimal('iva',8,2)->default(16);
+            $table->timestamps();
         });
     }
 
