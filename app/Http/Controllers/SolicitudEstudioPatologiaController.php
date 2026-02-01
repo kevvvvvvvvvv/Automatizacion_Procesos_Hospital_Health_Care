@@ -51,13 +51,14 @@ class SolicitudEstudioPatologiaController extends Controller
             return Redirect::back()->with('success','Se ha creado la solicitud de estudio anatomopatológico');
         }catch(\Exception $e){
             DB::rollBack();
-            Log::error('Error al crear la solicitud de estudio anatomopatológico');
-            return Redirect::back()->with('error','Error al crear la solicitud de estudio anatomopatológico: ' . $e->getMessage());    
+            Log::error('Error al crear la solicitud de estudio anatomopatológico' . $e->getMessage());
+            return Redirect::back()->with('error','Error al crear la solicitud de estudio anatomopatológico.');    
         }
     }
 
     public function generarPDF(SolicitudPatologia $solicitudespatologia)
     {
+        
         $solicitudespatologia->load(
             'formularioInstancia.estancia.paciente',
             'formularioInstancia.user.credenciales',
@@ -68,7 +69,7 @@ class SolicitudEstudioPatologiaController extends Controller
         $estancia = $solicitudespatologia->formularioInstancia->estancia;
 
         $headerData = [
-            'historiasclinicas' => $solicitudespatologia,
+            'historiaclinica' => $solicitudespatologia,
             'estancia' => $estancia,
             'paciente' => $paciente,
         ];
@@ -79,25 +80,13 @@ class SolicitudEstudioPatologiaController extends Controller
             'meidco' => $medico,
         ];
 
-        Pdf::view('pdfs.solicitud-patologia', [
-            'notaData' => $solicitudespatologia,
-            'estancia' => $estancia,
-            'paciente' => $paciente,
-            'medico'  => $medico
-        ]
-        )->withBrowsershot(function (Browsershot $browsershot) {
-            $chromePath = config('services.browsershot.chrome_path');
-            if ($chromePath) {
-                $browsershot->setChromePath($chromePath);
-                $browsershot->noSandbox();
-                $browsershot->addChromiumArguments([
-                    'disable-dev-shm-usage',
-                    'disable-gpu',
-                ]);
-            }
-            })
-        ->headerView('header', $headerData) 
-        ->inline('envio-pieza-patologica- ' . $estancia->folio . '.pdf');
-
+        return $this->pdfGenerator->generateStandardPdf(
+            'pdfs.solicitud-patologia',
+            $viewData,
+            $headerData,
+            'solicitud-patologia-',
+            $estancia->id
+        );
+        
     }
 }

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 /**
  * @property int $id
@@ -58,10 +59,19 @@ class SolicitudPatologia extends Model
         'datos_clinicos',
         'empresa_enviar',
         'resultados',
+        'contenedores_enviados',
+
+        'itemable_id',
+        'itemable_type'
     ];
 
     public function formularioInstancia(): BelongsTo
     {
         return $this->belongsTo(FormularioInstancia::class, 'id', 'id');
     }
+
+    public function itemable(): MorphTo
+    {
+        return $this->morphTo();
+    } 
 }
