@@ -13,7 +13,7 @@ interface EnvioPiezaProps {
     medicos: User[];
 }
 
-const EnvioPieza: React.FC<EnvioPiezaProps> = ({ hoja, medicos }) => {
+const EnvioPieza: React.FC<EnvioPiezaProps> = ({ hoja }) => {
 
     const { data, setData, post, processing, errors, reset } = useForm({
         estudio_solicitado: '',

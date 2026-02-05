@@ -87,6 +87,7 @@ class NotaPostoperatoriaRequest extends FormRequest
             'pcr'                      => ['nullable', 'string', 'max:255'],
             'datos_clinicos'           => ['nullable', 'string', 'max:10000'],
             'empresa_enviar'           => ['nullable', 'string', 'max:255'],
+            'contenedores_enviados'    => ['required', 'numeric'],
         ];
     }
 
@@ -118,6 +119,7 @@ class NotaPostoperatoriaRequest extends FormRequest
 
             'estudio_solicitado' => 'estudio de patología solicitado',
             'pieza_remitida'     => 'pieza remitida',
+            'contenedores_enviados'    => 'contenedores enviados',
         ];
     }
 

@@ -11,6 +11,7 @@ interface EnvioPiezaData {
     pieza_remitida?: string;
     datos_clinicos?: string;
     empresa_enviar?: string;
+    contenedores_enviados?: string;
     [key: string]: any; 
 }
 
@@ -31,6 +32,16 @@ const EnvioPieza: React.FC<EnvioPiezaProps> = ({ data, setData, errors }) => {
                         
             <div className="p-4 border rounded-lg bg-gray-50 space-y-4 col-span-full">                         
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <InputText
+                        label='Contendores enviados'
+                        id='contenedores_enviados'
+                        name='contenedores_enviados'
+                        value={data.contenedores_enviados || ''}
+                        onChange={(e)=>setData('contenedores_enviados',e.target.value)}
+                        error={errors.contenedores_enviados}
+                        type='number'
+                    />
+
                     <InputText
                         label="Estudio solicitado"
                         id='estudio_solicitado'
