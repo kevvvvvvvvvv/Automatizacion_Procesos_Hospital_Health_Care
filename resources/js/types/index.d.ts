@@ -183,15 +183,16 @@ export interface FormularioInstancia {
     created_at: string;
     updated_at: string;
 }
-export interface medicamento {
+export interface Medicamento {
     id: number;
     excipiente_activo_gramaje: string | null,
     volumen_total: number | null,
     nombre_comercial: string | null,
+    via_administracion: string | null
     gramaje: string | null,
     fraccion: string | null,
 }
-export interface insumos {
+export interface Insumos {
    id: number;
     categoria: string | null,
     especificacion: string | null,

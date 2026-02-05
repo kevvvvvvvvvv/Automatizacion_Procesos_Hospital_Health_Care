@@ -14,18 +14,29 @@ class Medicamento extends Model
     // Importante: El ID no es autoincremental aquí, viene de ProductoServicio
     public $incrementing = false;
 
+    // App\Models\Medicamento.php
+
     protected $fillable = [
-        'id',
+        'id', // Importante incluir el ID ya que no es autoincremental
         'excipiente_activo_gramaje',
         'volumen_total',
         'nombre_comercial',
         'gramaje',
         'fraccion',
     ];
-
     /**
      * Relación inversa con el Producto/Servicio principal.
      */
+    // App\Models\Medicamento.php
+    public function vias()
+    {
+        return $this->belongsToMany(
+            CatalogoViaAdministracion::class, 
+            'medicamento_vias', 
+            'medicamento_id', 
+            'catalogo_via_administracion_id'
+        );
+    }
     public function productoServicio(): BelongsTo
     {
         return $this->belongsTo(ProductoServicio::class, 'id');
