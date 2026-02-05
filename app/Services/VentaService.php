@@ -52,15 +52,10 @@ class VentaService
     {
         return DB::transaction(function () use ($venta, $item) {
             
-            // 1. Procesamos y guardamos el nuevo detalle
             $detalle = $this->procesarItem($venta, $item);
 
-            // 2. Recalculamos los totales de la venta sumando lo que ya había + lo nuevo
-            // Ojo: Es más seguro sumar desde la BD para evitar errores de desincronización
             $nuevoSubtotal = $venta->detalles()->sum('subtotal');
             
-            // Para el total con impuestos, es mejor iterar o guardar el total con impuestos en el detalle
-            // Aquí usaré una lógica simple sumando al total anterior:
             $totalNuevoItem = $this->calcularTotalConImpuestos($detalle);
             $nuevoTotalVenta = $venta->total + $totalNuevoItem;
 

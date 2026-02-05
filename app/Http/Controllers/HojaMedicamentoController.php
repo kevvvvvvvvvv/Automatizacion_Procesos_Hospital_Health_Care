@@ -58,7 +58,8 @@ class HojaMedicamentoController extends Controller
 
         } catch (\Exception $e) {
             DB::rollBack();
-            return Redirect::back()->with('error', 'Error al surtir: ' . $e->getMessage());
+            \Log::error('Error al surtir medicamento: ' . $e->getMessage());
+            return Redirect::back()->with('error', 'Error al surtir.');
         }
     }
 }
