@@ -32,7 +32,7 @@ class SolicitudEstudioController extends Controller
             $solicitud = $this->crearCabeceraSolicitud($request, $estancia);
             $itemsParaNotificar = $this->guardarItems($request, $solicitud);
             $this->procesarNotificaciones($solicitud, $itemsParaNotificar);
-            $this->enviarRecordatorioCita($twilio);
+            $this->enviarRecordatorioCita($twilio, $estancia);
 
             DB::commit();
             return Redirect::back()->with('success', 'Solicitud creada y notificada.');
@@ -342,17 +342,29 @@ class SolicitudEstudioController extends Controller
         };
     }
 
-    public function enviarRecordatorioCita(TwilioWhatsAppService $twilio)
+    public function enviarRecordatorioCita(TwilioWhatsAppService $twilio, Estancia $estancia)
     {
-        $numeroCliente = '+5217774571517'; 
+        // 1. OBTENER EL NÚMERO REAL
+        // Asumimos que $estancia tiene la relación con 'paciente' y este tiene 'telefono'
+        // Ojo: Asegúrate de agregar el código de país si no lo guardas en la BD
+        $telefonoPaciente = $estancia->paciente->telefono; 
         
-        $fecha = '2025-12-28';
-        $hora = '10:00 AM';
+        // Limpieza básica: Si no tiene +52, se lo ponemos (ajusta según tu lógica)
+        if (!str_starts_with($telefonoPaciente, '+')) {
+            $telefonoPaciente = '+52' . $telefonoPaciente;
+        }
 
+        // 2. OBTENER FECHA REAL (Ejemplo: Created_at o una fecha de cita específica)
+        // Twilio Sandbox pide formato texto simple
+        $fecha = $estancia->created_at->format('Y-m-d'); 
+        $hora = $estancia->created_at->format('H:i');
+
+        // 3. CONSTRUIR EL MENSAJE (OBLIGATORIO EN INGLÉS POR AHORA)
+        // Tienes que usar ESTA estructura exacta mientras estés en Sandbox
         $mensaje = "Your appointment is coming up on $fecha at $hora";
 
-        $twilio->sendMessage($numeroCliente, $mensaje);
-
-        return "Notificación de cita enviada (En inglés por Sandbox)";
+        // 4. ENVIAR
+        // El servicio ya sabe quién envía (desde tu .env), tú solo dices a quién y qué.
+        $twilio->sendMessage($telefonoPaciente, $mensaje);
     }
 }

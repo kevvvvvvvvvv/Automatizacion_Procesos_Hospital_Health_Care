@@ -28,23 +28,23 @@ class NuevaSolicitudEstudios extends Notification implements ShouldBroadcast, Sh
         $this->solicitudId = $solicitudId;
     }
 
-    public function via(object $notifiable): array
-    {
-        return ['database', 'broadcast', 'mail', TwilioWhatsAppChannel::class];
-    }
+        public function via(object $notifiable): array
+        {
+            return ['database', 'broadcast', 'mail', TwilioWhatsAppChannel::class];
+        }
 
-    public function toWhatsApp($notifiable)
-    {
-        $listaEstudios = $this->estudios->map(function($item) {
-             return $item->catalogoEstudio->nombre ?? 'Estudio General';
-        })->implode(', ');
+        public function toWhatsApp($notifiable)
+        {
+            $listaEstudios = $this->estudios->map(function($item) {
+                return $item->catalogoEstudio->nombre ?? 'Estudio General';
+            })->implode(', ');
 
-        return "*HOSPITAL NOTIFICACIÓN*\n" .
-               "Hola *{$notifiable->name}*.\n" .
-               "Nueva solicitud *#{$this->solicitudId}* para *{$this->paciente->nombre}*.\n\n" .
-               "📋 *Estudios:*\n{$listaEstudios}\n\n" .
-               "Favor de atender.";
-    }
+            return "*HOSPITAL NOTIFICACIÓN*\n" .
+                "Hola *{$notifiable->name}*.\n" .
+                "Nueva solicitud *#{$this->solicitudId}* para *{$this->paciente->nombre}*.\n\n" .
+                "📋 *Estudios:*\n{$listaEstudios}\n\n" .
+                "Favor de atender.";
+        }
 
     public function toMail(object $notifiable): MailMessage
     {
