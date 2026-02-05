@@ -6,12 +6,17 @@ import { route } from 'ziggy-js';
 import PrimaryButton from '@/components/ui/primary-button';
 import InputText from '@/components/ui/input-text';
 import FormLayout from '@/components/form-layout';
-import { ProductoServicio } from '@/types';
+import { Insumos, Medicamento, ProductoServicio } from '@/types';
+import medicamentos from '@/routes/medicamentos';
 // Interface del modelo que te manda Laravel por props
 
 
 interface Props {
   productoServicio?: ProductoServicio | null; 
+  medicamentos?: Medicamento;
+  insumos?: Insumos;
+  viasCatalogo: { id: number, via_administracion: string }[]; // Nueva Prop
+  viaActualId?: number;
 }
 
 interface FormularioFormData {
@@ -28,13 +33,14 @@ interface FormularioFormData {
   nombre_comercial?: string | null;
   gramaje?: string | null;
   fraccion?: string | null;
+  via_administracion: string[];
   // Campos de Insumos
   categoria?: string | null;
   especificacion?: string | null;
   categoria_unitaria?: string | null;
 }
 
-const ProductoServicioForm = ({ productoServicio } : Props) => {
+const ProductoServicioForm = ({ productoServicio, medicamentos, insumos, viasCatalogo, viaActualId }: Props)=> {
   const isEdit = !!productoServicio;
   const { data, setData, post, put, processing, errors } = useForm<FormularioFormData>({
   
@@ -46,14 +52,16 @@ const ProductoServicioForm = ({ productoServicio } : Props) => {
       cantidad: productoServicio?.cantidad ?? null,
       iva: productoServicio?.iva ?? null,
 
-      excipiente_activo_gramaje: productoServicio?.excipiente_activo_gramaje ?? '',
-      volumen_total: productoServicio?.volumen_total ?? '',
-      nombre_comercial: productoServicio?.nombre_comercial ?? '',
-      gramaje: productoServicio?.gramaje ?? '',
-      fraccion: productoServicio?.fraccion ?? '',
-      categoria: productoServicio?.categoria ?? '',
-      especificacion: productoServicio?.especificacion ?? '',
-      categoria_unitaria: productoServicio?.categoria_unitaria ?? '',
+      excipiente_activo_gramaje: medicamentos?.excipiente_activo_gramaje ?? '',
+      volumen_total: medicamentos?.volumen_total ?? '',
+      nombre_comercial: medicamentos?.nombre_comercial ?? '',
+      gramaje: medicamentos?.gramaje ?? '',
+      fraccion: medicamentos?.fraccion ?? '',
+      via_administracion: [],
+
+      categoria: insumos?.categoria ?? '',
+      especificacion: insumos?.especificacion ?? '',
+      categoria_unitaria: insumos?.categoria_unitaria ?? '',
     });
 
   const optionsTipo = [
@@ -102,9 +110,13 @@ const ProductoServicioForm = ({ productoServicio } : Props) => {
     {value: "SOLUCION", label: "SOLUCION"},
     {value: 'TUBO ENDOTRAQUEAL', label: 'TUBO ENDOTRAQUEAL'},
     {value: 'VENDA', label: 'VENDA'},
+  ];
 
+  const optionsVias = viasCatalogo.map(via => ({
+    value: via.id.toString(),
+    label: via.via_administracion
+  }));
 
-  ]
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -212,7 +224,16 @@ const ProductoServicioForm = ({ productoServicio } : Props) => {
           
         )}
         {data.subtipo === 'MEDICAMENTOS' && (
-        <>
+          <>
+            <InputText
+            id = 'excipiente_activo_gramaje'
+            name='excipiente_activo_gramaje'
+            label = 'Excipiente activo'
+            value={data.excipiente_activo_gramaje ?? ''}
+            onChange={e => setData('excipiente_activo_gramaje', e.target.value)}
+            placeholder='Escriba el excipiente activo con framaje'
+            error={errors.excipiente_activo_gramaje}
+            />
             <InputText
             id = 'nombre_comercial'
             name = 'nombre_comercial' 
@@ -248,6 +269,14 @@ const ProductoServicioForm = ({ productoServicio } : Props) => {
               }
               error={errors.tipo}
             />
+            <SelectInput
+            label="Vías de administración"
+            isMulti={true} 
+            options={optionsVias}
+            value={data.via_administracion} 
+            onChange={(values) => setData('via_administracion', values)}
+            error={errors.via_administracion}
+          />
         </>
         )}
         {data.subtipo === 'INSUMOS' && (
@@ -276,6 +305,7 @@ const ProductoServicioForm = ({ productoServicio } : Props) => {
               }
               error={errors.tipo}
               />
+              
           </>
         )}
       </div>
