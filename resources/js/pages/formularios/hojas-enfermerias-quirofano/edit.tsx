@@ -6,10 +6,10 @@ import PacienteCard from '@/components/paciente-card';
 import MainLayout from '@/layouts/MainLayout';
 
 import InsumosBasicosForm from '@/components/forms/insumos-basicos-form';
-import EnvioPieza from '@/components/forms/envio-piezas-form';
 import GeneralesForm from  '@/components/forms/generales-form';
 import PersonalQuirurgicoForm from '@/components/forms/personal-quirurgico-form';
 import EquipoLaparoscopiaForm from '@/components/forms/equipo-laparoscopia-form';
+import EnvioPiezaHojaEnfermeria from '@/components/forms/envio-pieza-hoja-enfermeria-form';
 
 
 
@@ -77,8 +77,11 @@ const CreateHojaEnfermeriaQuirofano:CreateComponent = ({paciente, estancia, hoja
                             materiales={insumos}
                         />
             case 'pieza_patologica':
-                return <EnvioPieza
-                            hoja={hoja}
+                return <EnvioPiezaHojaEnfermeria
+                            medicos={users}
+                            modeloId={hoja.id}
+                            modeloTipo='App\Models\HojaEnfermeriaQuirofano'
+                            estancia={estancia}
                         />
             case 'servicios_especiales':
                 return <EquipoLaparoscopiaForm
