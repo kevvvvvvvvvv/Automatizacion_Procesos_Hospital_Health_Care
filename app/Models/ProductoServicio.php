@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use App\Models\Inventario\Medicamento;
+use App\Models\Inventario\Insumo;
 
 /**
  * @property int $id
@@ -27,6 +29,25 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductoServicio whereNombrePrestacion($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductoServicio whereSubtipo($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductoServicio whereTipo($value)
+ * @property string|null $codigo_barras
+ * @property string|null $importe_compra
+ * @property int|null $cantidad_maxima
+ * @property int|null $cantidad_minima
+ * @property string|null $proveedor
+ * @property string|null $fecha_caducidad
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductoServicio whereCantidadMaxima($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductoServicio whereCantidadMinima($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductoServicio whereCodigoBarras($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductoServicio whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductoServicio whereFechaCaducidad($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductoServicio whereImporteCompra($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductoServicio whereProveedor($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductoServicio whereUpdatedAt($value)
+ * @property-read mixed $vias_administracion
+ * @property-read Medicamento|null $medicamento
+ * @property-read mixed $lista_vias
  * @mixin \Eloquent
  */
 class ProductoServicio extends Model
@@ -50,13 +71,23 @@ class ProductoServicio extends Model
     {
         return $this->morphMany(DetalleVenta::class, 'itemable');
     }
-    // En App\Models\ProductoServicio.php
-    public function medicamento() {
-        return $this->hasOne(Medicamento::class, 'id');
+
+    public function medicamento(): HasOne
+    {
+        return $this->hasOne(Medicamento::class, 'id', 'id');
     }
 
-    public function insumo() {
-        return $this->hasOne(Insumo::class, 'id');
+    public function insumo(): HasOne
+    {
+        return $this->hasOne(Insumo::class, 'id','id');
     }
-
+    
+    public function getListaViasAttribute()
+    {
+        if ($this->medicamento && $this->medicamento->viasAdministracion) {
+            return $this->medicamento->viasAdministracion;
+        }
+        
+        return collect([]); 
+    }
 }

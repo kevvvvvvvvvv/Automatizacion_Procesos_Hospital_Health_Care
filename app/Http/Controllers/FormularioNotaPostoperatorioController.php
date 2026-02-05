@@ -62,97 +62,130 @@ class FormularioNotaPostoperatorioController extends Controller
     {
         $validatedData = $request->validated();
 
+        DB::beginTransaction();
+        try {
+            $solicitudPatologia = $this->procesarSolicitudPatologia($validatedData, $estancia, $ventaService);
+            $nota = $this->crearNotaPostoperatoria($validatedData, $estancia, $solicitudPatologia?->id);
+            if ($solicitudPatologia) {
+                $this->vincularPatologiaNota($solicitudPatologia, $nota);
+            }
+            $this->guardarRelaciones($nota, $validatedData);
+
+            DB::commit();
+
+            return Redirect::route('estancias.show', $estancia->id)
+                ->with('success', 'Se ha creado la nota postoperatoria exitosamente.');
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Error al crear nota postoperatoria: ' . $e->getMessage());
+            return Redirect::back()->with('error', 'No se pudo crear la nota postoperatoria.');
+        }
+    }
+
+    private function procesarSolicitudPatologia(array $data, Estancia $estancia, VentaService $ventaService): ?SolicitudPatologia
+    {
         $camposPatologia = [
             'estudio_solicitado', 'biopsia_pieza_quirurgica', 'revision_laminillas',
             'estudios_especiales', 'pcr', 'pieza_remitida', 'datos_clinicos', 'empresa_enviar'
         ];
 
-        DB::beginTransaction();
-        try{
+        $datosPatologia = Arr::only($data, $camposPatologia);
 
-            $solicitudPatologiaId = null;
-            $datosPatologia = Arr::only($validatedData, $camposPatologia);
-            
-            if (!empty(array_filter($datosPatologia))) {
-                
-                $formPatologia = FormularioInstancia::create([
-                    'fecha_hora' => now(),
-                    'estancia_id' => $estancia->id,
-                    'formulario_catalogo_id' => FormularioCatalogo::ID_SOLICITUD_PATOLOGIA,
-                    'user_id' => Auth::id(),
-                ]);
+        if (empty(array_filter($datosPatologia))) {
+            return null;
+        }
 
-                $solicitud = SolicitudPatologia::create([
-                    'id' => $formPatologia->id,
-                    'user_solicita_id' => Auth::id(),
-                    'fecha_estudio' => now(), 
-                    ...$datosPatologia
-                ]);
+        $formPatologia = FormularioInstancia::create([
+            'fecha_hora' => now(),
+            'estancia_id' => $estancia->id,
+            'formulario_catalogo_id' => FormularioCatalogo::ID_SOLICITUD_PATOLOGIA,
+            'user_id' => Auth::id(),
+        ]);
 
-                $idPatologia = ProductoServicio::select('id')
-                                                ->where('codigo_prestacion','85121801_01');
+        $solicitud = SolicitudPatologia::create([
+            'id' => $formPatologia->id,
+            'user_solicita_id' => Auth::id(),
+            'fecha_estudio' => now(),
+            ...$datosPatologia
+        ]);
 
-                $itemParaVenta = [
-                    'id' => $idPatologia,
-                    'cantidad' => 1,
-                    'tipo' => 'producto'
-                ]; 
+        //$this->procesarCobroPatologia($estancia, $ventaService);
 
-                $solicitudPatologiaId = $solicitud->id;
+        return $solicitud;
+    }
 
-                $ventaExistente = Venta::where('estancia_id', $estancia->id)
-                                        ->where('estado', Venta::ESTADO_PENDIENTE)
-                                        ->first();
-                
-                if ($ventaExistente) {
-                    $ventaService->addItemToVenta($ventaExistente, $itemParaVenta);
-                } else {
-                    $ventaService->crearVenta([$itemParaVenta], $estancia->id, Auth::id());
-                }                                        
-            }
+    private function procesarCobroPatologia(Estancia $estancia, VentaService $ventaService): void
+    {
+        $idPatologia = ProductoServicio::where('codigo_prestacion', '85121801_01')->value('id');
 
-            $formNota = FormularioInstancia::create([
-                'fecha_hora' => now(),
-                'estancia_id' => $estancia->id,
-                'formulario_catalogo_id' => FormularioCatalogo::ID_NOTA_POSTOPERATOIRA, 
-                'user_id' => Auth::id(),
-            ]);
+        if (!$idPatologia) return;
 
-            $datosNota = Arr::except($validatedData, array_merge(
-                $camposPatologia, 
-                ['ayudantes_agregados', 'transfusiones_agregadas']
-            ));
+        $itemParaVenta = [
+            'id' => $idPatologia,
+            'cantidad' => 1,
+            'tipo' => 'producto'
+        ];
 
-            $nota = NotaPostoperatoria::create([
-                'id' => $formNota->id,
-                'user_id' => Auth::id(),
-                'solicitud_patologia_id' => $solicitudPatologiaId,
-                ...$datosNota
-            ]);
+        $ventaExistente = Venta::where('estancia_id', $estancia->id)
+                                ->where('estado', Venta::ESTADO_PENDIENTE)
+                                ->first();
 
-            if (!empty($validatedData['ayudantes_agregados'])) {
-                $ayudantes = array_map(function ($item) {
-                    return [
-                        'user_id' => $item['ayudante_id'],
-                        'cargo' => $item['cargo'],
-                    ];
-                }, $validatedData['ayudantes_agregados']);
-                
-                $nota->personalEmpleados()->createMany($ayudantes);
-            }
+        if ($ventaExistente) {
+            $ventaService->addItemToVenta($ventaExistente, $itemParaVenta);
+        } else {
+            $ventaService->crearVenta([$itemParaVenta], $estancia->id, Auth::id());
+        }
+    }
 
-            if (!empty($validatedData['transfusiones_agregadas'])) {
-                $nota->transfusiones()->createMany($validatedData['transfusiones_agregadas']);
-            }
+    private function crearNotaPostoperatoria(array $data, Estancia $estancia, ?int $solicitudPatologiaId): NotaPostoperatoria
+    {
+        $formNota = FormularioInstancia::create([
+            'fecha_hora' => now(),
+            'estancia_id' => $estancia->id,
+            'formulario_catalogo_id' => FormularioCatalogo::ID_NOTA_POSTOPERATOIRA,
+            'user_id' => Auth::id(),
+        ]);
 
-            DB::commit();
-            
-            return Redirect::route('estancias.show', $estancia->id)
-                ->with('success', 'Se ha creado la nota postoperatoria exitosamente.');
-        } catch(\Exception $e) {
-            DB::rollBack();
-            Log::error('Error al crear nota postoperatoria: ' . $e->getMessage());
-            return Redirect::back()->with('error','No se pudo crear la nota postoperatoria.');
+        $camposExcluidos = [
+            'estudio_solicitado', 'biopsia_pieza_quirurgica', 'revision_laminillas',
+            'estudios_especiales', 'pcr', 'pieza_remitida', 'datos_clinicos', 'empresa_enviar',
+            'ayudantes_agregados', 'transfusiones_agregadas'
+        ];
+        
+        $datosNota = Arr::except($data, $camposExcluidos);
+
+        return NotaPostoperatoria::create([
+            'id' => $formNota->id,
+            'user_id' => Auth::id(),
+            'solicitud_patologia_id' => $solicitudPatologiaId,
+            ...$datosNota
+        ]);
+    }
+
+    private function vincularPatologiaNota(SolicitudPatologia $solicitud, NotaPostoperatoria $nota): void
+{
+    $solicitud->update([
+        'itemable_id'   => $nota->id,
+        'itemable_type' => $nota->getMorphClass(),
+    ]);
+}
+
+    private function guardarRelaciones(NotaPostoperatoria $nota, array $data): void
+    {
+        if (!empty($data['ayudantes_agregados'])) {
+            $ayudantes = array_map(function ($item) {
+                return [
+                    'user_id' => $item['ayudante_id'],
+                    'cargo' => $item['cargo'],
+                ];
+            }, $data['ayudantes_agregados']);
+
+            $nota->personalEmpleados()->createMany($ayudantes);
+        }
+
+        if (!empty($data['transfusiones_agregadas'])) {
+            $nota->transfusiones()->createMany($data['transfusiones_agregadas']);
         }
     }
 

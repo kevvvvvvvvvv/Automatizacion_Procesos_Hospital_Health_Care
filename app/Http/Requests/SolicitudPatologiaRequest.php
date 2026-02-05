@@ -21,50 +21,58 @@ class SolicitudPatologiaRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
-            'estudio_solicitado' => 'required|string|max:255',
-            'datos_clinicos' => 'nullable|string',
-            'pieza_remitida' => 'required|string|max:255',
+        $detonantesPatologia = 'biopsia_pieza_quirurgica,revision_laminillas,estudios_especiales,pcr,datos_clinicos,empresa_enviar, user_solicita_id, contenedores_enviados';
 
-            'biopsia_pieza_quirurgica' => 'nullable|string|max:255',
-            'revision_laminillas' => 'nullable|string|max:255',
-            'estudios_especiales' => 'nullable|string|max:255',
-            'pcr' => 'nullable|string|max:255',
-            'user_solicita_id' => 'required|numeric',
+        return [
+            'estudio_solicitado' => [
+                'required',
+                'required_with:pieza_remitida,' . $detonantesPatologia, 
+                'string',
+                'max:255'
+            ],
+            'pieza_remitida' => [
+                'required',
+                'required_with:estudio_solicitado,' . $detonantesPatologia,
+                'string',
+                'max:255'
+            ],
+            'biopsia_pieza_quirurgica' => ['nullable', 'string', 'max:255'],
+            'revision_laminillas'      => ['nullable', 'string', 'max:255'],
+            'estudios_especiales'      => ['nullable', 'string', 'max:255'],
+            'pcr'                      => ['nullable', 'string', 'max:255'],
+            'datos_clinicos'           => ['nullable', 'string', 'max:10000'],
+            'empresa_enviar'           => ['nullable', 'string', 'max:255'],
+            'user_solicita_id'         => ['required', 'numeric'],
+            'contenedores_enviados'    => ['required', 'numeric'],
+            'itemable_id'              => ['required', 'numeric'],
+            'itemable_type'            => ['required', 'max:255'],
         ];
     }
 
     public function messages(): array
     {
         return [
-            'fecha_estudio.required' => 'Debe seleccionar la fecha del estudio.',
-            'fecha_estudio.date' => 'El formato de la fecha del estudio no es válido.',
+            'required' => 'El campo :attribute es obligatorio.',
+            'required_with' => 'El campo :attribute es requerido cuando se envía :values.',
+            'string'   => 'El campo :attribute debe ser una cadena de texto.',
+            'max'      => 'El campo :attribute no debe exceder los :max caracteres.',
+            'numeric'  => 'El campo :attribute debe ser un número válido.',
+        ];
+    }
 
-            'estudio_solicitado.required' => 'El campo "estudio solicitado" es obligatorio.',
-            'estudio_solicitado.string' => 'El campo "estudio solicitado" debe ser texto.',
-            'estudio_solicitado.max' => 'El campo "estudio solicitado" es demasiado largo (máx. 255 caracteres).',
-
-            'pieza_remitida.required' => 'Debe especificar la "pieza que se remitirá" (ej. Riñón derecho).',
-            'pieza_remitida.string' => 'El campo "pieza remitida" debe ser texto.',
-            'pieza_remitida.max' => 'El campo "pieza remitida" es demasiado largo (máx. 255 caracteres).',
-
-            'datos_clinicos.required' => 'Los "datos clínicos" (diagnóstico) son obligatorios.',
-            'datos_clinicos.string' => 'Los "datos clínicos" deben ser texto.',
-
-            'biopsia_pieza_quirurgica.string' => 'El campo "biopsia o pieza" debe ser texto.',
-            'biopsia_pieza_quirurgica.max' => 'El campo "biopsia o pieza" es demasiado largo.',
-            
-            'revision_laminillas.string' => 'El campo "revisión de laminillas" debe ser texto.',
-            'revision_laminillas.max' => 'El campo "revisión de laminillas" es demasiado largo.',
-
-            'estudios_especiales.string' => 'El campo "estudios especiales" debe ser texto.',
-            'estudios_especiales.max' => 'El campo "estudios especiales" es demasiado largo.',
-
-            'pcr.string' => 'El campo "PCR" debe ser texto.',
-            'pcr.max' => 'El campo "PCR" es demasiado largo.',
-
-            'user_solicita_id.required' => 'El medico que solicita es obligatorio',
-            'user_solicita_id.numeric' => 'El medico debe tener un ID',
+    public function attributes(): array
+    {
+        return [
+            'estudio_solicitado'       => 'estudio solicitado',
+            'pieza_remitida'           => 'pieza remitida',
+            'biopsia_pieza_quirurgica' => 'biopsia o pieza quirúrgica',
+            'revision_laminillas'      => 'revisión de laminillas',
+            'estudios_especiales'      => 'estudios especiales',
+            'pcr'                      => 'PCR',
+            'datos_clinicos'           => 'datos clínicos',
+            'empresa_enviar'           => 'empresa a enviar',
+            'user_solicita_id'         => 'usuario que solicita',
+            'contenedores_enviados'    => 'contenedores enviados',
         ];
     }
 }

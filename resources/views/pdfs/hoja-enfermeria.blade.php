@@ -515,7 +515,7 @@
             @else
                 @foreach ($notaData->hojaMedicamentos as $medicamento)
                     <tr>
-                        <td><strong>{{ $medicamento->productoServicio->nombre_prestacion }}</strong></td>
+                        <td><strong>{{ $medicamento->nombre_medicamento }}</strong></td>
                         <td>{{ $medicamento->dosis }}</td>
                         <td>{{ $medicamento->gramaje }}</td>
                         <td>{{ $medicamento->via_administracion }}</td>
