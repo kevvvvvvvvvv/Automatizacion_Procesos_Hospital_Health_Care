@@ -495,13 +495,16 @@ const MedicamentosForm: React.FC<Props> = ({
                                                 </div>
                                             )}
                                         </td>
+
                                         <td className="px-4 py-4 text-sm space-x-2 whitespace-nowrap">
+                                            {med.fecha_hora_inicio && (
                                             <PrimaryButton
                                                 type="button"
                                                 onClick={() => handleStoreAplicacion(med.id)}
                                             >
                                                 + Registrar siguiente dosis
                                             </PrimaryButton>
+                                            )}
                                         </td>
                                     </tr>
                                 ))
