@@ -4,8 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
-use App\Models\Inventario\Medicamento;
-use App\Models\Inventario\Insumo;
+use App\Models\Medicamento;
+use App\Models\Insumo;
 
 /**
  * @property int $id
@@ -64,7 +64,11 @@ class ProductoServicio extends Model
         'nombre_prestacion',
         'importe',
         'cantidad',
-        'iva'
+        'iva',
+        'cantidad_maxima',
+        'cantidad_minima',
+        'fecha_caducidad',
+        'proveedor'
     ];
 
     public function detallesVenta()
@@ -72,10 +76,12 @@ class ProductoServicio extends Model
         return $this->morphMany(DetalleVenta::class, 'itemable');
     }
 
-    public function medicamento(): HasOne
+    public function medicamento()
     {
         return $this->hasOne(Medicamento::class, 'id', 'id');
     }
+
+
 
     public function insumo(): HasOne
     {

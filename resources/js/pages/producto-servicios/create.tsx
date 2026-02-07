@@ -8,6 +8,8 @@ import InputText from '@/components/ui/input-text';
 import FormLayout from '@/components/form-layout';
 import { Insumos, Medicamento, ProductoServicio } from '@/types';
 import medicamentos from '@/routes/medicamentos';
+import { error } from 'console';
+import InputDate from '@/components/ui/input-date';
 // Interface del modelo que te manda Laravel por props
 
 
@@ -27,6 +29,11 @@ interface FormularioFormData {
   importe: number | string | null;
   cantidad: number | string | null;
   iva: number | string | null;
+
+    cantidad_maxima: number | null;
+    cantidad_minima: number | null;
+    proveedor: string | null;
+    fecha_caducidad: string | null;
   // Campos de Medicamentos
   excipiente_activo_gramaje?: string| null;
   volumen_total?: string | number| null;
@@ -51,6 +58,11 @@ const ProductoServicioForm = ({ productoServicio, medicamentos, insumos, viasCat
       importe: productoServicio?.importe ?? null,
       cantidad: productoServicio?.cantidad ?? null,
       iva: productoServicio?.iva ?? null,
+      cantidad_maxima: productoServicio?.cantidad_maxima ?? null,
+    cantidad_minima: productoServicio?.cantidad_minima ?? null,
+
+    proveedor: productoServicio?.proveedor ?? null,
+    fecha_caducidad: productoServicio?.fecha_caducidad ?? null,
 
       excipiente_activo_gramaje: medicamentos?.excipiente_activo_gramaje ?? '',
       volumen_total: medicamentos?.volumen_total ?? '',
@@ -126,6 +138,7 @@ const ProductoServicioForm = ({ productoServicio, medicamentos, insumos, viasCat
     } else {
       // CREAR
       post(route('producto-servicios.store'));
+      
     }
   };
 
@@ -212,6 +225,7 @@ const ProductoServicioForm = ({ productoServicio, medicamentos, insumos, viasCat
         />
 
         {data.tipo === 'INSUMOS' && (
+          <>
           <InputText
             id="cantidad"
             name="cantidad"
@@ -221,7 +235,50 @@ const ProductoServicioForm = ({ productoServicio, medicamentos, insumos, viasCat
             placeholder="Escriba la cantidad del producto disponible"
             error={errors.cantidad}
           />
-          
+          <InputText 
+            id="cantidad_maxima"
+            name="cantidad_maxima"
+            label="Cantidad Maxima"
+            value={(data.cantidad_maxima ?? '').toString()} 
+            onChange={(e) => setData('cantidad_maxima', e.target.value)}
+            placeholder='Escriba la cantidad maxima que puede haber'
+            error={errors.cantidad_maxima}
+                />
+            <InputText
+            id='cantidad_minima'
+            name='cantidad_minima'
+            label='Cantidad minima'
+            value={(data.cantidad_minima ?? '').toString()}
+            onChange={(e) => setData('cantidad_minima', e.target.value)}
+            placeholder='Escriba la cantidad minima que debe haber del producto'
+            error={errors.cantidad_minima}
+            />
+            <InputText 
+              id='proveedor'
+              name='proveedor'
+              label='Proveedor'
+              value={(data.proveedor ?? '')}
+              onChange={(e) => setData('proveedor', e.target.value)}
+              placeholder='Ingresar el nombre del proveedor'
+              error={errors.proveedor}
+            />
+            <InputDate
+              id="fecha_caducidad"
+              name="fecha_caducidad"
+              description="Fecha de caducidad"
+              value={data.fecha_caducidad} 
+              onChange={(date: Date | null) => {
+                  if (date) {
+                      // Convertimos a formato ISO (YYYY-MM-DD) para la base de datos
+                      const formattedDate = date.toISOString().split('T')[0];
+                      setData('fecha_caducidad', formattedDate);
+                  } else {
+                      setData('fecha_caducidad', null);
+                  }
+              }}
+              error={errors.fecha_caducidad}
+          />
+          </>
         )}
         {data.subtipo === 'MEDICAMENTOS' && (
           <>
@@ -246,7 +303,7 @@ const ProductoServicioForm = ({ productoServicio, medicamentos, insumos, viasCat
             <InputText
             id = 'volumen_total'
             name = 'volumen_total'
-            label = 'Volumen total de la presentaciòn'
+            label = 'Volumen total de la presentación (Solo el número)'
             value={(data.volumen_total ?? '').toString()}
             onChange={(e) =>  setData('volumen_total', e.target.value)}
             placeholder='Ingresel el volumen total del producto'
