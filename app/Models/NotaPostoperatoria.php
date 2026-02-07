@@ -89,6 +89,8 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|NotaPostoperatoria whereTemp($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|NotaPostoperatoria whereTratamiento($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|NotaPostoperatoria whereUpdatedAt($value)
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\SolicitudPatologia> $solicitudPatologia
+ * @property-read int|null $solicitud_patologia_count
  * @mixin \Eloquent
  */
 class NotaPostoperatoria extends Model

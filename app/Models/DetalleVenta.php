@@ -52,9 +52,12 @@ class DetalleVenta extends Model
         'subtotal',
         'descuento',
         'estado',
+        'iva_aplicado',
         'venta_id',
         'itemable_id',
         'itemable_type',
+
+        
     ];
 
     public function venta(): BelongsTo
