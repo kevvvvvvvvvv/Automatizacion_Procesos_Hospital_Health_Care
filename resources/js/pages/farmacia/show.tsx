@@ -11,7 +11,7 @@ interface Props {
     paciente: Paciente;
 }
 
-const ShowSolicitud: React.FC<Props> & { layout: any } = ({ hoja, paciente }) => {
+const ShowSolicitud = ({ hoja, paciente }: Props) => {
 
     const solicitados = hoja.hoja_medicamentos?.filter(m => m.estado === 'solicitado') || [];
     const surtidos = hoja.hoja_medicamentos?.filter(m => m.estado === 'surtido') || [];
@@ -38,13 +38,13 @@ const ShowSolicitud: React.FC<Props> & { layout: any } = ({ hoja, paciente }) =>
     }
 
     return (
-        <>
+         <MainLayout link='peticiones.index'>
             <Head title={`Solicitud para ${paciente.nombre}`} />
             <h1 className="text-2xl font-bold">Solicitud de medicamentos</h1>
             <p className="mb-4">Paciente: <span className="font-semibold">{paciente.nombre} {paciente.apellido_paterno}</span></p>
 
             <div className="bg-white p-6 rounded-lg shadow-md">
-                <h2 className="text-xl font-semibold mb-3">Pendientes de Surtir</h2>
+                <h2 className="text-xl font-semibold mb-3">Pendientes de surtir</h2>
                 <ul className="divide-y">
                     {solicitados.length > 0 ? solicitados.map((med: HojaMedicamento) => (
                         <li key={med.id} className="flex justify-between items-center py-3">
@@ -77,9 +77,8 @@ const ShowSolicitud: React.FC<Props> & { layout: any } = ({ hoja, paciente }) =>
                     )) : <p className="text-gray-500">Aún no se han surtido medicamentos.</p>}
                 </ul>
             </div>
-        </>
+        </MainLayout>
     );
 }
 
-ShowSolicitud.layout = (page: React.ReactElement) => <MainLayout children={page} link='peticiones.index' />;
 export default ShowSolicitud;
