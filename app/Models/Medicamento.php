@@ -23,22 +23,24 @@ class Medicamento extends Model
         'nombre_comercial',
         'gramaje',
         'fraccion',
+        
     ];
     /**
      * Relación inversa con el Producto/Servicio principal.
      */
     // App\Models\Medicamento.php
-    public function vias()
+   public function vias()
+{
+    return $this->belongsToMany(
+        CatalogoViaAdministracion::class, 
+        'medicamento_vias', // Nombre de tu tabla intermedia
+        'medicamento_id', 
+        'catalogo_via_administracion_id'
+    );
+}
+    public function productoServicio()
     {
-        return $this->belongsToMany(
-            CatalogoViaAdministracion::class, 
-            'medicamento_vias', 
-            'medicamento_id', 
-            'catalogo_via_administracion_id'
-        );
+        return $this->belongsTo(ProductoServicio::class, 'id', 'id');
     }
-    public function productoServicio(): BelongsTo
-    {
-        return $this->belongsTo(ProductoServicio::class, 'id');
-    }
+
 }
