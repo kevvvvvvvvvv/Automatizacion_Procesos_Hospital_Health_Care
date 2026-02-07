@@ -44,7 +44,8 @@ class RoleAndPermissionSeeder extends Seeder
             'hojas' => ['crear', 'consultar', 'editar', 'eliminar',], 
             'hojas enfermerias' => ['crear', 'consultar', 'eliminar'], // Solo se puede editar el documento que una persona creó
             'documentos medicos' => ['crear', 'consultar'],
-            'consentimientos' => ['crear']
+            'consentimientos' => ['crear'],
+            'dietas' => ['consultar', 'crear', 'eliminar', 'editar'],
         ];
 
         foreach ($permissions as $module => $actions) {

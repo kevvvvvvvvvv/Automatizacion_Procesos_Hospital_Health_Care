@@ -19,7 +19,6 @@ interface Props {
 }
 
 
-
 export const DietasForm = ({ 
     categoria_dietas, 
     onSubmit, 
