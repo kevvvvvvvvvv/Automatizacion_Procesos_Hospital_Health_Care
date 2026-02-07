@@ -18,7 +18,10 @@ const DietasCreate = ({categoria_dietas}: Props) => {
     };
 
     return (
-        <MainLayout pageTitle='Registro de dieta' link='dashboard'>
+        <MainLayout 
+            pageTitle='Registro de dieta' 
+            link='dietas.index'
+        >
             <Head title='Registro de dieta'/>
             <DietasForm
                 onSubmit={handleCreate}
