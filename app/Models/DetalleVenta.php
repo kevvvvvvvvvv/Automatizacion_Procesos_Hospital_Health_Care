@@ -56,7 +56,7 @@ class DetalleVenta extends Model
         'venta_id',
         'itemable_id',
         'itemable_type',
-
+        'nombre_producto_servicio'
         
     ];
 

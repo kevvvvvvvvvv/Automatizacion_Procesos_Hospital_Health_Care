@@ -27,7 +27,7 @@ const DetallesVenta = ({ paciente, estancia, venta }: Props) => {
             
             <div className="p-4 md:p-8 mt-4 bg-white rounded-lg shadow">
                 <div className="flex justify-between items-center mb-4">
-                    <h2 className="text-xl font-semibold">Detalles de la Venta #{venta.id}</h2>
+                    <h2 className="text-xl font-semibold">Detalles de la venta #{venta.id}</h2>
                 </div>
                 <p className="mb-1 text-sm text-gray-600">Fecha: {new Date(venta.fecha).toLocaleDateString('es-MX', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
                 <p className="mb-4 text-sm text-gray-600">Estado: <span className="font-medium">{venta.estado}</span></p>
@@ -46,7 +46,7 @@ const DetallesVenta = ({ paciente, estancia, venta }: Props) => {
                         {detalles.map((detalle) => {
                             const nombreItem = detalle.itemable 
                                 ? (detalle.itemable.nombre_prestacion || detalle.itemable.nombre || 'Sin nombre')
-                                : 'Producto/Servicio Externo';
+                                : detalle.nombre_producto_servicio;
 
                             const esProducto = detalle.itemable_type?.includes('ProductoServicio');
                             const esEstudio = detalle.itemable_type?.includes('CatalogoEstudio');

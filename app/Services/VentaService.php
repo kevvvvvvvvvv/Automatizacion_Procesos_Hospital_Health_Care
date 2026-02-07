@@ -108,7 +108,6 @@ class VentaService
             }
         }
 
-        // Creamos el detalle. Si el modelo no existe, los campos polimórficos serán null.
         return DetalleVenta::create([
             'venta_id'      => $venta->id,
             'itemable_id'   => $modelo ? $modelo->id : null,          
@@ -117,6 +116,11 @@ class VentaService
             'cantidad'      => $cantidad,
             'subtotal'      => $precioUnitario * $cantidad,
             'estado'        => 'completado',
+
+            'nombre_producto_servicio' => $modelo 
+                ? ($modelo->nombre_prestacion ?? $modelo->nombre ?? 'Sin nombre') 
+                : ($itemData['nombre'] ?? 'Producto Manual'),
+                
             'iva_aplicado'   => $iva,
         ]);
     }
