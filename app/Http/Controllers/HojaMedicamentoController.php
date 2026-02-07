@@ -22,6 +22,7 @@ class HojaMedicamentoController extends Controller
             'estado' => 'required|string|in:surtido,entregado',
         ]);
 
+
         if ($medicamento->estado !== 'solicitado') {
             return Redirect::back()->with('error', 'Este medicamento ya fue procesado.');
         }
@@ -34,7 +35,8 @@ class HojaMedicamentoController extends Controller
             $itemParaVenta = [
                 'id' => $medicamento->producto_servicio_id,
                 'cantidad' => 1,
-                'tipo' => 'producto' 
+                'tipo' => 'producto',
+                'nombre' => $medicamento->nombre_medicamento,
             ];
 
             $ventaExistente = Venta::where('estancia_id', $estanciaId)
