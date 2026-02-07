@@ -11,12 +11,16 @@ interface Props {
     venta: Venta & { detalles: DetalleVentaType[] }; 
 }
 
-const DetallesVenta: React.FC<Props> & { layout: any } = ({ paciente, estancia, venta }) => {
+const DetallesVenta = ({ paciente, estancia, venta }: Props) => {
 
     const detalles = venta.detalles || [];
 
     return (
-        <>
+        <MainLayout 
+            pageTitle={`Detalles de venta ${venta.id}`} 
+            link='pacientes.estancias.ventas.index' 
+            linkParams={[paciente.id, estancia.id]}
+        >
             <Head title={`Detalles Venta #${venta.id}`} />
 
             <PacienteCard paciente={paciente} estancia={estancia} />
@@ -39,31 +43,38 @@ const DetallesVenta: React.FC<Props> & { layout: any } = ({ paciente, estancia, 
                             </tr>
                         </thead>
                         <tbody>
-                            {detalles.map((detalle) => {
-                                const nombreItem = detalle.itemable 
-                                    ? (detalle.itemable.nombre_prestacion || detalle.itemable.nombre || 'Sin nombre')
-                                    : 'Ítem eliminado o no encontrado';
-                                
-                                return (
-                                    <tr key={detalle.id} className="border-b hover:bg-gray-50">
-                                        <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
-                                            {nombreItem}
+                        {detalles.map((detalle) => {
+                            const nombreItem = detalle.itemable 
+                                ? (detalle.itemable.nombre_prestacion || detalle.itemable.nombre || 'Sin nombre')
+                                : 'Producto/Servicio Externo';
 
-                                            <span className="ml-2 text-xs text-gray-500 bg-gray-100 px-2 py-0.5 rounded border">
-                                                {detalle.itemable_type.includes('ProductoServicio') ? 'Producto' : 'Estudio'}
-                                            </span>
-                                        </td>
-                                        <td className="px-6 py-4 text-right">{detalle.cantidad}</td>
-                                        <td className="px-6 py-4 text-right">
-                                            ${Number(detalle.precio_unitario).toLocaleString('es-MX', { minimumFractionDigits: 2 })}
-                                        </td>
-                                        <td className="px-6 py-4 text-right">
-                                            ${Number(detalle.subtotal).toLocaleString('es-MX', { minimumFractionDigits: 2 })}
-                                        </td>
-                                    </tr>
-                                );
-                            })}
+                            const esProducto = detalle.itemable_type?.includes('ProductoServicio');
+                            const esEstudio = detalle.itemable_type?.includes('CatalogoEstudio');
                             
+                            let etiquetaTipo = 'Manual';
+                            if (esProducto) etiquetaTipo = 'Producto';
+                            if (esEstudio) etiquetaTipo = 'Estudio';
+
+                            return (
+                                <tr key={detalle.id} className="border-b hover:bg-gray-50">
+                                    <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
+                                        <div className="flex flex-col">
+                                            <span>{nombreItem}</span>
+                                            <span className="w-fit text-[10px] uppercase font-bold text-gray-500 bg-gray-100 px-2 py-0.5 rounded border mt-1">
+                                                {etiquetaTipo}
+                                            </span>
+                                        </div>
+                                    </td>
+                                    <td className="px-6 py-4 text-right">{detalle.cantidad}</td>
+                                    <td className="px-6 py-4 text-right">
+                                        ${Number(detalle.precio_unitario).toLocaleString('es-MX', { minimumFractionDigits: 2 })}
+                                    </td>
+                                    <td className="px-6 py-4 text-right">
+                                        ${Number(detalle.subtotal).toLocaleString('es-MX', { minimumFractionDigits: 2 })}
+                                    </td>
+                                </tr>
+                            );
+                        })}
                             {detalles.length === 0 && (
                                 <tr>
                                     <td colSpan={4} className="px-6 py-4 text-center text-gray-500">No hay detalles para esta venta.</td>
@@ -90,16 +101,8 @@ const DetallesVenta: React.FC<Props> & { layout: any } = ({ paciente, estancia, 
                     </table>
                 </div>
             </div>
-        </>
+        </MainLayout>
     );
 }
 
-DetallesVenta.layout = (page: React.ReactElement) => {
-
-    const {venta, paciente, estancia} = page.props as Props;
-
-    return (
-        <MainLayout children={page} pageTitle={`Detalles de venta ${venta.id}`} link='pacientes.estancias.ventas.index' linkParams={[paciente.id, estancia.id]}/>
-    );
-}
 export default DetallesVenta;

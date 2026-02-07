@@ -39,6 +39,7 @@ class HojaMedicamentoController extends Controller
 
             $ventaExistente = Venta::where('estancia_id', $estanciaId)
                                   ->where('estado', Venta::ESTADO_PENDIENTE)
+        
                                   ->first();
 
             if ($ventaExistente) {

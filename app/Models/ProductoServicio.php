@@ -48,6 +48,7 @@ use App\Models\Inventario\Insumo;
  * @property-read mixed $vias_administracion
  * @property-read Medicamento|null $medicamento
  * @property-read mixed $lista_vias
+ * @property-read Insumo|null $insumo
  * @mixin \Eloquent
  */
 class ProductoServicio extends Model
