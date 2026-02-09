@@ -258,7 +258,9 @@ Route::get('/consentimientos/pdf/{file}', [ConsentimientoController::class, 'gen
     ->where('file', '.*')
     ->name('consentimientos.pdf')
     ->middleware('auth');
-
+Route::get('/encuesta-satisfaccions/{encuesta-satisfaccions}/pdf', [SolicitudEstudioController::class, 'generarPDf'])
+    ->name('encuesta-satisfaccions.pdf')
+    ->middleware('auth');
 
 
 // Farmacia

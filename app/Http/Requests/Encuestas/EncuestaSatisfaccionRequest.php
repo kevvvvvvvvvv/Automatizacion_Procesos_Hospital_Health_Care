@@ -14,22 +14,32 @@ class EncuestaSatisfaccionRequest extends FormRequest
         return true;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
-     */
+    
     public function rules(): array
     {
         return [
-            'atencion_recpcion' => ['required','integer','between:min,max'],
-            'trato_personal_enfermeria',
-            'limpieza_comodidad_habitacion',
-            'calidad_comida',
-            'tiempo_atencion',
-            'informacion_tratamiento',
-            'atencion_nutricional',
-            'comentarios',
+            'atencion_recpcion' => ['required','integer'],
+            'trato_personal_enfermeria' => ['required','integer'],
+            'limpieza_comodidad_habitacion' => ['required','integer'],
+            'calidad_comida' => ['required','integer'],
+            'tiempo_atencion' => ['required','integer'],
+            'informacion_tratamiento' => ['required','integer'],
+            'atencion_nutricional' => ['required'],
+            'comentarios' => ['nullable','string'],
+        ];
+    }
+     public function messages(): array
+    {
+        return [
+            'atencion_recpcion.required' => 'Es obligatorio selecionar una opción',
+
+            'trato_personal_enfermeria.required' => 'El obligatorio selecionar una opción',
+            'limpieza_comodidad_habitacion.required' => 'Es obligatorio selecionar una opción',
+            'calidad_comida.required' => "Debe seleccionar una opción",
+            'tiempo_atencion.required' => "Debe selecionar una opción",
+            'informacion_tratamiento.required' => "Debe selecionar una opción",
+            'atencion_nutricional' => 'Debe seleccionar una opción',
+            'comentarios.string' => 'Debe ser un texto',
         ];
     }
 }

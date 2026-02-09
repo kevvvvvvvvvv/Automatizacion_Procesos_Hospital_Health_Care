@@ -1,7 +1,7 @@
 import React from 'react';
 import { EncuestaSatisfaccion, Estancia } from '@/types';
 import { Head, useForm } from '@inertiajs/react';
-
+import { useEffect } from 'react';
 import MainLayout from '@/layouts/MainLayout';
 import FormLayout from '@/components/form-layout';
 import PrimaryButton from '@/components/ui/primary-button';
@@ -35,8 +35,21 @@ const EncuestaSatisfaccionForm = ({
         comentarios: encuesta?.comentarios || '',
     });
 
-    const { data, setData, processing, errors} = form;
-
+    const { data, setData, processing, errors} = form;  
+    useEffect(() => {
+    if (encuesta) {
+        setData({
+            atencion_recpcion: encuesta.atencion_recpcion || '',
+            trato_personal_enfermeria: encuesta.trato_personal_enfermeria || '',
+            limpieza_comodidad_habitacion: encuesta.limpieza_comodidad_habitacion || '',
+            calidad_comida: encuesta.calidad_comida || '',
+            tiempo_atencion: encuesta.tiempo_atencion || '',
+            informacion_tratamiento: encuesta.informacion_tratamiento || '',
+            atencion_nutricional: encuesta.atencion_nutricional,
+            comentarios: encuesta.comentarios || '',
+        });
+    }
+}, [encuesta]);
     const handleSumbit = (e: React.FormEvent) => {
         e.preventDefault();
         onSubmit(form)
@@ -80,7 +93,7 @@ const EncuestaSatisfaccionForm = ({
                         value={Number(data.limpieza_comodidad_habitacion)}
                         onChange={(val) => setData('limpieza_comodidad_habitacion', val)}
                         error={errors.limpieza_comodidad_habitacion}
-                    />
+                    /> 
                     <RatingInput 
                         label="Calidad de la Comida"
                         value={Number(data.calidad_comida)}
@@ -110,11 +123,13 @@ const EncuestaSatisfaccionForm = ({
                     error={errors.atencion_nutricional}
                 />
 
-                <TextAreaInput
+               <TextAreaInput
                     label='Comentarios'
                     value={data.comentarios}
-                    onChange={(e)=>setData('comentarios',e)}
+                    // Accedemos al valor del target
+                    onChange={(e) => setData('comentarios', e.target.value)} 
                     error={errors.comentarios}
+                    placeholder='Escriba alguna queja o sugerencia'
                 />
 
             </FormLayout>
