@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Encuestas\EncuestaSatisfaccion;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -42,6 +43,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|FormularioInstancia whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|FormularioInstancia whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|FormularioInstancia whereUserId($value)
+ * @property-read EncuestaSatisfaccion|null $encuestaSatisfaccion
  * @mixin \Eloquent
  */
 class FormularioInstancia extends Model
@@ -128,5 +130,10 @@ class FormularioInstancia extends Model
     public function hojaEnfermeriaQuirofano(): HasOne
     {
         return $this->hasOne(HojaEnfermeriaQuirofano::class, 'id', 'id');
+    }
+
+    public function encuestaSatisfaccion(): HasOne
+    {
+        return $this->hasOne(EncuestaSatisfaccion::class, 'id', 'id');
     }
 }
