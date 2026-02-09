@@ -39,6 +39,13 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|SolicitudPatologia whereRevisionLaminillas($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|SolicitudPatologia whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|SolicitudPatologia whereUserSolicitaId($value)
+ * @property int $contenedores_enviados
+ * @property string|null $itemable_type
+ * @property int|null $itemable_id
+ * @property-read Model|\Eloquent|null $itemable
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SolicitudPatologia whereContenedoresEnviados($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SolicitudPatologia whereItemableId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SolicitudPatologia whereItemableType($value)
  * @mixin \Eloquent
  */
 class SolicitudPatologia extends Model

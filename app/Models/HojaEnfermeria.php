@@ -48,6 +48,8 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|HojaEnfermeria whereObservaciones($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|HojaEnfermeria whereTurno($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|HojaEnfermeria whereUpdatedAt($value)
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\SolicitudPatologia> $solicitudPatologia
+ * @property-read int|null $solicitud_patologia_count
  * @mixin \Eloquent
  */
 class HojaEnfermeria extends Model

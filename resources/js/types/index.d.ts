@@ -297,6 +297,8 @@ export interface DetalleVenta{
         nombre_prestacion?: string; 
         nombre?: string;
     };
+
+    nombre_producto_servicio: string;
 }
 
 export interface HojaEnfermeria {

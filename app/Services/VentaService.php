@@ -78,41 +78,50 @@ class VentaService
         $tipo = $itemData['tipo']; 
 
         $modelo = null;
-        $precioUnitario = 0;
-        $iva = 0;
+        // Buscamos el precio y el nombre que vengan en el request por si el producto no existe
+        $precioUnitario = $itemData['precio'] ?? 0.1; 
+        $iva = $itemData['iva'] ?? 0;
 
         if ($tipo === 'producto') {
-            $modelo = ProductoServicio::findOrFail($id);
-            $precioUnitario = $modelo->importe;
-            $iva = $modelo->iva ?? 16;
-            if ($modelo->tipo !== 'SERVICIOS') {
-                if ($modelo->cantidad < $cantidad) {
-                    throw new Exception("Stock insuficiente para el producto: {$modelo->nombre_prestacion}");
+            $modelo = ProductoServicio::find($id);
+            
+            if ($modelo) {
+                $precioUnitario = $modelo->importe ?? $precioUnitario;
+                $iva = $modelo->iva ?? $iva;
+
+                // Solo descontamos stock si el modelo existe y no es servicio
+                if ($modelo->tipo !== 'SERVICIOS') {
+                    // Si hay stock lo descontamos, si no, lo dejamos pasar (ya que quieres permitir la venta)
+                    if ($modelo->cantidad >= $cantidad) {
+                        $modelo->decrement('cantidad', $cantidad);
+                    }
                 }
-                $modelo->decrement('cantidad', $cantidad);
             }
         } 
         
         elseif ($tipo === 'estudio') {
-            $modelo = CatalogoEstudio::findOrFail($id);
-            $precioUnitario = $modelo->costo; 
-            $iva = 0;
-        } 
-        
-        else {
-            throw new Exception("Tipo de item no válido: $tipo");
+            $modelo = CatalogoEstudio::find($id);
+            
+            if ($modelo) {
+                $precioUnitario = $modelo->costo;
+                $iva = 0;
+            }
         }
 
         return DetalleVenta::create([
-            'venta_id' => $venta->id,
-            'itemable_id' => $modelo->id,          
-            'itemable_type' => get_class($modelo),  
+            'venta_id'      => $venta->id,
+            'itemable_id'   => $modelo ? $modelo->id : null,          
+            'itemable_type' => $modelo ? get_class($modelo) : null,  
             'precio_unitario' => $precioUnitario,
-            'cantidad' => $cantidad,
-            'subtotal' => $precioUnitario * $cantidad,
-            'estado' => 'completado', // O 'pendiente' según tu lógica
-            // Sugerencia: Guarda el IVA histórico en el detalle por si cambian los impuestos mañana
-            // 'iva_aplicado' => $iva 
+            'cantidad'      => $cantidad,
+            'subtotal'      => $precioUnitario * $cantidad,
+            'estado'        => 'completado',
+
+            'nombre_producto_servicio' => $modelo 
+                ? ($modelo->nombre_prestacion ?? $modelo->nombre ?? 'Sin nombre') 
+                : ($itemData['nombre'] ?? 'Producto Manual'),
+                
+            'iva_aplicado'   => $iva,
         ]);
     }
 
@@ -121,11 +130,11 @@ class VentaService
      */
     private function calcularTotalConImpuestos(DetalleVenta $detalle)
     {
-        $item = $detalle->itemable;
+        $item = $detalle->itemable ?? '';
         $iva = 0;
 
         if ($item instanceof ProductoServicio) {
-            $iva = $item->iva;
+            $iva = $item->iva ?? 0;
         } 
         
         return $detalle->subtotal * (1 + ($iva / 100));

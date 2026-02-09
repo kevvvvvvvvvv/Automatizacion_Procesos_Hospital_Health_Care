@@ -159,225 +159,223 @@ const EditVenta = ({ venta, paciente, estancia, catalogoOptions }: EditVentaProp
 
 
     return (
-        <div className="space-y-6">
-            <Head title="Editar venta" />
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <div className="lg:col-span-1 space-y-6">
-                    <div className="bg-white shadow rounded-lg p-6 border-t-4 border-blue-500">
-                        <h3 className="text-lg font-bold text-gray-800 mb-4 border-b pb-2">Configuración de venta</h3>
-                        
-                        <form onSubmit={handleUpdateVenta} className="space-y-4">
-                            <InfoField label="Subtotal Actual" value={`$ ${Number(venta.subtotal).toLocaleString('es-MX', {minimumFractionDigits: 2})}`} />
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Tipo de descuento</label>
-                                <div className="flex space-x-4">
-                                    <label className="flex items-center space-x-2 cursor-pointer">
-                                        <input type="radio" name="dto_type" checked={dataVenta.descuento_tipo === 'monto'} onChange={() => setDataVenta('descuento_tipo', 'monto')} />
-                                        <span>Monto ($)</span>
-                                    </label>
-                                    <label className="flex items-center space-x-2 cursor-pointer">
-                                        <input type="radio" name="dto_type" checked={dataVenta.descuento_tipo === 'porcentaje'} onChange={() => setDataVenta('descuento_tipo', 'porcentaje')} />
-                                        <span>Porcentaje (%)</span>
-                                    </label>
+        <MainLayout
+            pageTitle={`Gestión de venta: ${venta.id}`}
+            link="pacientes.estancias.ventas.index"      
+            linkParams={{ paciente: paciente.id, estancia: estancia.id, venta: venta.id }}
+        >
+            <div className="space-y-6">
+                <Head title="Editar venta" />
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div className="lg:col-span-1 space-y-6">
+                        <div className="bg-white shadow rounded-lg p-6 border-t-4 border-blue-500">
+                            <h3 className="text-lg font-bold text-gray-800 mb-4 border-b pb-2">Configuración de venta</h3>
+                            
+                            <form onSubmit={handleUpdateVenta} className="space-y-4">
+                                <InfoField label="Subtotal Actual" value={`$ ${Number(venta.subtotal).toLocaleString('es-MX', {minimumFractionDigits: 2})}`} />
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">Tipo de descuento</label>
+                                    <div className="flex space-x-4">
+                                        <label className="flex items-center space-x-2 cursor-pointer">
+                                            <input type="radio" name="dto_type" checked={dataVenta.descuento_tipo === 'monto'} onChange={() => setDataVenta('descuento_tipo', 'monto')} />
+                                            <span>Monto ($)</span>
+                                        </label>
+                                        <label className="flex items-center space-x-2 cursor-pointer">
+                                            <input type="radio" name="dto_type" checked={dataVenta.descuento_tipo === 'porcentaje'} onChange={() => setDataVenta('descuento_tipo', 'porcentaje')} />
+                                            <span>Porcentaje (%)</span>
+                                        </label>
+                                    </div>
                                 </div>
-                            </div>
 
-                            <InputText
-                                id="descuento"
-                                name="descuento"
-                                label={dataVenta.descuento_tipo === 'porcentaje' ? 'Porcentaje (%)' : 'Monto a descontar ($)'}
-                                type="number"
-                                value={dataVenta.descuento}
-                                onChange={(e) => setDataVenta('descuento', e.target.value)}
-                                error={errorsVenta.descuento}
-                            />
-
-
-                            <div className="bg-gray-50 p-3 rounded text-sm space-y-1">
-                                <div className="flex justify-between">
-                                    <span className="text-gray-600">Descuento aplicado:</span>
-                                    <span className="font-semibold text-red-600">- ${descuentoMonto.toFixed(2)}</span>
-                                </div>
-                                <div className="flex justify-between text-lg font-bold border-t pt-1 mt-1">
-                                    <span>Total Final:</span>
-                                    <span>${totalCalculado.toFixed(2)}</span>
-                                </div>
-                            </div>
-
-                            <PrimaryButton disabled={processingVenta} type='submit' className="w-full justify-center">
-                                {processingVenta ? 'Guardando...' : 'Actualizar venta'}
-                            </PrimaryButton>
-                        </form>
-                    </div>
-                </div>
-
-                <div className="lg:col-span-2 space-y-6">
-                    <div className="bg-white shadow rounded-lg p-6 border-t-4 border-indigo-500">
-                        <h3 className="text-lg font-bold text-gray-800 mb-4">Agregar productos / servicios / estudios</h3>
-                        
-                        <form onSubmit={handleAddItem} className="flex flex-col md:flex-row gap-3 items-end">
-                            <div className="flex-grow w-full">
-                                <SelectInput
-                                    label="Buscar ítem"
-                                    options={catalogoOptions}
-                                    value={dataItem.value_select}
-                                    onChange={(val) => {
-                                        const selected = catalogoOptions.find(opt => opt.value === val);
-                                        if(selected) {
-                                            setDataItem(prev => ({
-                                                ...prev,
-                                                value_select: val,
-                                                id: String(selected.real_id),
-                                                tipo: selected.type
-                                            }));
-                                        }
-                                    }}
-                                    placeholder="Seleccione un producto..."
+                                <InputText
+                                    id="descuento"
+                                    name="descuento"
+                                    label={dataVenta.descuento_tipo === 'porcentaje' ? 'Porcentaje (%)' : 'Monto a descontar ($)'}
+                                    type="number"
+                                    value={String(dataVenta.descuento)}
+                                    onChange={(e) => setDataVenta('descuento', Number(e.target.value))}
+                                    error={errorsVenta.descuento}
                                 />
-                            </div>
-                            <div className="w-full md:w-32">
-                                <InputText 
-                                    label="Cant." 
-                                    name="cantidad" 
-                                    type="number" 
-                                    value={dataItem.cantidad} 
-                                    onChange={e => setDataItem('cantidad', Number(e.target.value))}
-                                />
-                            </div>
-                            <PrimaryButton disabled={processingItem} type="submit" className="h-[42px] mb-[2px]">
-                                Agregar
-                            </PrimaryButton>
-                        </form>
 
-                        {dataItem.value_select && (
-                            <p className="text-sm text-gray-500 mt-2">
-                                Precio unitario: <span className="font-bold text-green-600">${catalogoOptions.find(o => o.value === dataItem.value_select)?.precio}</span>
-                            </p>
-                        )}
-                    </div>
 
-                    <div className="bg-white shadow rounded-lg overflow-hidden">
-                        <div className="px-6 py-4 border-b flex justify-between items-center bg-gray-50">
-                            <h3 className="text-lg font-bold text-gray-800">Detalle de la cuenta</h3>
-                            <span className="bg-gray-200 text-gray-700 px-3 py-1 rounded-full text-xs font-bold">
-                                {venta.detalles.length} ítems
-                            </span>
+                                <div className="bg-gray-50 p-3 rounded text-sm space-y-1">
+                                    <div className="flex justify-between">
+                                        <span className="text-gray-600">Descuento aplicado:</span>
+                                        <span className="font-semibold text-red-600">- ${descuentoMonto.toFixed(2)}</span>
+                                    </div>
+                                    <div className="flex justify-between text-lg font-bold border-t pt-1 mt-1">
+                                        <span>Total Final:</span>
+                                        <span>${totalCalculado.toFixed(2)}</span>
+                                    </div>
+                                </div>
+
+                                <PrimaryButton disabled={processingVenta} type='submit' className="w-full justify-center">
+                                    {processingVenta ? 'Guardando...' : 'Actualizar venta'}
+                                </PrimaryButton>
+                            </form>
                         </div>
-                        
-                        <div className="overflow-x-auto">
-                            <table className="w-full text-sm text-left text-gray-700">
-                                <thead className="bg-gray-100 text-xs uppercase font-semibold text-gray-600">
-                                    <tr>
-                                        <th className="px-6 py-3">Descripción</th>
-                                        <th className="px-6 py-3 text-center">Cant.</th>
-                                        <th className="px-6 py-3 text-right">P. Unit</th>
-                                        <th className="px-6 py-3 text-right">Subtotal</th>
-                                        <th className="px-6 py-3 text-center">Acciones</th>
-                                    </tr>
-                                </thead>
-                                <tbody className="divide-y divide-gray-200">
-                                    {venta.detalles.map((detalle) => {
-                                        const isEditing = editingId === detalle.id;
+                    </div>
 
-                                        const nombreItem = detalle.itemable 
-                                            ? (detalle.itemable.nombre_prestacion || detalle.itemable.nombre || 'Sin nombre')
-                                            : 'Ítem eliminado';
+                    <div className="lg:col-span-2 space-y-6">
+                        <div className="bg-white shadow rounded-lg p-6 border-t-4 border-indigo-500">
+                            <h3 className="text-lg font-bold text-gray-800 mb-4">Agregar productos / servicios / estudios</h3>
+                            
+                            <form onSubmit={handleAddItem} className="flex flex-col md:flex-row gap-3 items-end">
+                                <div className="flex-grow w-full">
+                                    <SelectInput
+                                        label="Buscar ítem"
+                                        options={catalogoOptions}
+                                        value={dataItem.value_select}
+                                        onChange={(val) => {
+                                            const selected = catalogoOptions.find(opt => opt.value === val);
+                                            if(selected) {
+                                                setDataItem(prev => ({
+                                                    ...prev,
+                                                    value_select: val,
+                                                    id: String(selected.real_id),
+                                                    tipo: selected.type
+                                                }));
+                                            }
+                                        }}
+                                        placeholder="Seleccione un producto..."
+                                    />
+                                </div>
+                                <div className="w-full md:w-32">
+                                    <InputText 
+                                        id='cantidad'
+                                        label="Cant." 
+                                        name="cantidad" 
+                                        type="number" 
+                                        value={String(dataItem.cantidad)} 
+                                        onChange={e => setDataItem('cantidad', Number(e.target.value))}
+                                    />
+                                </div>
+                                <PrimaryButton disabled={processingItem} type="submit" className="h-[42px] mb-[2px]">
+                                    Agregar
+                                </PrimaryButton>
+                            </form>
 
-                                        return (
-                                            <tr key={detalle.id} className="hover:bg-gray-50 transition">
-                                                <td className="px-6 py-4">
-                                                    <div className="font-medium text-gray-900">{nombreItem}</div>
-                                                    <div className="text-xs text-gray-500 uppercase">
-                                                        {detalle.itemable_type.includes('Producto') ? 'Producto' : 'Estudio'}
-                                                    </div>
-                                                </td>
-                                                <td className="px-6 py-4 text-center">
-                                                    {isEditing ? (
-                                                        <input 
-                                                            type="number" 
-                                                            min="1"
-                                                            className="w-16 text-center border rounded py-1 px-2 focus:ring-blue-500 focus:border-blue-500"
-                                                            value={editingValues.cantidad}
-                                                            onChange={(e) => setEditingValues({...editingValues, cantidad: Number(e.target.value)})}
-                                                        />
-                                                    ) : (
-                                                        <span className="font-bold">{detalle.cantidad}</span>
-                                                    )}
-                                                </td>
+                            {dataItem.value_select && (
+                                <p className="text-sm text-gray-500 mt-2">
+                                    Precio unitario: <span className="font-bold text-green-600">${catalogoOptions.find(o => o.value === dataItem.value_select)?.precio}</span>
+                                </p>
+                            )}
+                        </div>
 
-                                                <td className="px-6 py-4 text-right">
-                                                    {isEditing ? (
-                                                        <div className="flex justify-end items-center">
-                                                            <span className="text-gray-500 mr-1">$</span>
+                        <div className="bg-white shadow rounded-lg overflow-hidden">
+                            <div className="px-6 py-4 border-b flex justify-between items-center bg-gray-50">
+                                <h3 className="text-lg font-bold text-gray-800">Detalle de la cuenta</h3>
+                                <span className="bg-gray-200 text-gray-700 px-3 py-1 rounded-full text-xs font-bold">
+                                    {venta.detalles.length} ítems
+                                </span>
+                            </div>
+                            
+                            <div className="overflow-x-auto">
+                                <table className="w-full text-sm text-left text-gray-700">
+                                    <thead className="bg-gray-100 text-xs uppercase font-semibold text-gray-600">
+                                        <tr>
+                                            <th className="px-6 py-3">Descripción</th>
+                                            <th className="px-6 py-3 text-center">Cant.</th>
+                                            <th className="px-6 py-3 text-right">P. Unit</th>
+                                            <th className="px-6 py-3 text-right">Subtotal</th>
+                                            <th className="px-6 py-3 text-center">Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody className="divide-y divide-gray-200">
+                                        {venta.detalles.map((detalle) => {
+                                            const isEditing = editingId === detalle.id;
+
+                                            const nombreItem = detalle.itemable 
+                                                ? (detalle.itemable.nombre_prestacion || detalle.itemable.nombre || 'Sin nombre')
+                                                : detalle.nombre_producto_servicio;
+
+                                            return (
+                                                <tr key={detalle.id} className="hover:bg-gray-50 transition">
+                                                    <td className="px-6 py-4">
+                                                        <div className="font-medium text-gray-900">{nombreItem}</div>
+                                                        <div className="text-xs text-gray-500 uppercase">
+                                                            {detalle.itemable_type 
+                                                                ? (detalle.itemable_type.includes('Producto') ? 'Producto' : 'Estudio') 
+                                                                : 'Manual'
+                                                            }
+                                                        </div>
+                                                    </td>
+                                                    <td className="px-6 py-4 text-center">
+                                                        {isEditing ? (
                                                             <input 
                                                                 type="number" 
-                                                                min="0"
-                                                                step="0.01" 
-                                                                className="w-24 text-right border rounded py-1 px-2 focus:ring-blue-500 focus:border-blue-500"
-                                                                value={editingValues.precio}
-                                                                onChange={(e) => setEditingValues({...editingValues, precio: Number(e.target.value)})}
+                                                                min="1"
+                                                                className="w-16 text-center border rounded py-1 px-2 focus:ring-blue-500 focus:border-blue-500"
+                                                                value={editingValues.cantidad}
+                                                                onChange={(e) => setEditingValues({...editingValues, cantidad: Number(e.target.value)})}
                                                             />
-                                                        </div>
-                                                    ) : (
-                                                        `$${Number(detalle.precio_unitario).toLocaleString(undefined, {minimumFractionDigits: 2})}`
-                                                    )}
-                                                </td>
-                                                <td className="px-6 py-4 text-right font-bold text-gray-900">
-                                                    ${Number(detalle.subtotal).toLocaleString()}
-                                                </td>
+                                                        ) : (
+                                                            <span className="font-bold">{detalle.cantidad}</span>
+                                                        )}
+                                                    </td>
 
-                                                <td className="px-6 py-4 text-center space-x-2">
-                                                    {isEditing ? (
-                                                        <>
-                                                            <button onClick={() => saveEditing(detalle.id)} title="Guardar cambios" className="hover:bg-green-100 p-1 rounded"><IconSave /></button>
-                                                            <button onClick={() => setEditingId(null)} title="Cancelar" className="hover:bg-gray-100 p-1 rounded"><IconCancel /></button>
-                                                        </>
-                                                    ) : (
-                                                        <>
-                                                            <button onClick={() => startEditing(detalle)} title="Editar cantidad" className="hover:bg-blue-100 p-1 rounded"><IconEdit /></button>
-                                                            <button onClick={() => deleteItem(detalle.id)} title="Eliminar ítem" className="hover:bg-red-100 p-1 rounded"><IconTrash /></button>
-                                                        </>
-                                                    )}
+                                                    <td className="px-6 py-4 text-right">
+                                                        {isEditing ? (
+                                                            <div className="flex justify-end items-center">
+                                                                <span className="text-gray-500 mr-1">$</span>
+                                                                <input 
+                                                                    type="number" 
+                                                                    min="0"
+                                                                    step="0.01" 
+                                                                    className="w-24 text-right border rounded py-1 px-2 focus:ring-blue-500 focus:border-blue-500"
+                                                                    value={editingValues.precio}
+                                                                    onChange={(e) => setEditingValues({...editingValues, precio: Number(e.target.value)})}
+                                                                />
+                                                            </div>
+                                                        ) : (
+                                                            `$${Number(detalle.precio_unitario).toLocaleString(undefined, {minimumFractionDigits: 2})}`
+                                                        )}
+                                                    </td>
+                                                    <td className="px-6 py-4 text-right font-bold text-gray-900">
+                                                        ${Number(detalle.subtotal).toLocaleString()}
+                                                    </td>
+
+                                                    <td className="px-6 py-4 text-center space-x-2">
+                                                        {isEditing ? (
+                                                            <>
+                                                                <button onClick={() => saveEditing(detalle.id)} title="Guardar cambios" className="hover:bg-green-100 p-1 rounded"><IconSave /></button>
+                                                                <button onClick={() => setEditingId(null)} title="Cancelar" className="hover:bg-gray-100 p-1 rounded"><IconCancel /></button>
+                                                            </>
+                                                        ) : (
+                                                            <>
+                                                                <button onClick={() => startEditing(detalle)} title="Editar cantidad" className="hover:bg-blue-100 p-1 rounded"><IconEdit /></button>
+                                                                <button onClick={() => deleteItem(detalle.id)} title="Eliminar ítem" className="hover:bg-red-100 p-1 rounded"><IconTrash /></button>
+                                                            </>
+                                                        )}
+                                                    </td>
+                                                </tr>
+                                            );
+                                        })}
+                                        {venta.detalles.length === 0 && (
+                                            <tr>
+                                                <td colSpan={5} className="text-center py-8 text-gray-500 italic">
+                                                    No hay productos agregados aún.
                                                 </td>
                                             </tr>
-                                        );
-                                    })}
-                                    {venta.detalles.length === 0 && (
+                                        )}
+                                    </tbody>
+                                    <tfoot className="bg-gray-50 font-bold text-gray-900">
                                         <tr>
-                                            <td colSpan={5} className="text-center py-8 text-gray-500 italic">
-                                                No hay productos agregados aún.
-                                            </td>
+                                            <td colSpan={3} className="px-6 py-4 text-right">Total acumulado:</td>
+                                            <td className="px-6 py-4 text-right text-lg">${Number(venta.total).toLocaleString()}</td>
+                                            <td></td>
                                         </tr>
-                                    )}
-                                </tbody>
-                                <tfoot className="bg-gray-50 font-bold text-gray-900">
-                                    <tr>
-                                        <td colSpan={3} className="px-6 py-4 text-right">Total acumulado:</td>
-                                        <td className="px-6 py-4 text-right text-lg">${Number(venta.total).toLocaleString()}</td>
-                                        <td></td>
-                                    </tr>
-                                </tfoot>
-                            </table>
+                                    </tfoot>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    );
-};
-
-EditVenta.layout = (page: React.ReactElement) => {
-    const { estancia,paciente,venta } = page.props as EditVentaProps;
-
-    return (
-        <MainLayout
-        pageTitle={`Gestión de venta: ${page.props.venta.id}`}
-        link="pacientes.estancias.ventas.index"      
-        linkParams={{ paciente: paciente.id, estancia: estancia.id, venta: venta.id }}
-        >
-        {page}
         </MainLayout>
     );
 };
+
+
 
 export default EditVenta;

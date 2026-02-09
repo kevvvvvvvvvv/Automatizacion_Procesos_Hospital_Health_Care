@@ -52,7 +52,7 @@ export default function Ticket({ venta }:{ venta: Venta}) {
                             venta.detalles?.map((detalle) => {
                                 const nombreItem = detalle.itemable 
                                     ? (detalle.itemable.nombre_prestacion || detalle.itemable.nombre || 'Sin nombre')
-                                    : 'Ítem eliminado o no encontrado';
+                                    : detalle.nombre_producto_servicio;
 
                                 return (
                                     <tr key={detalle.id}>
