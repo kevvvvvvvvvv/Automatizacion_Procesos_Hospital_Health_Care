@@ -312,10 +312,25 @@ export interface HojaEnfermeria {
 
     hojas_terapia_i_v: HojaTerapiaIV[] | null; 
     hoja_medicamentos: HojaMedicamento[] | null;
-    hoja_signos: HojaSignos[] | null;
-    solicitud_dietas: SolicitudDieta[] | null;
+    hoja_signos: HojaSignos[];
+    hoja_control_liquidos: ControlLiquidos [];
+    solicitudes_dieta: SolicitudDieta[];
     sondas_cateteres: HojaSondaCateter[] | null;
     hoja_oxigenos: HojaOxigeno[] | null;
+}
+
+export interface ControlLiquidos {
+    id: number;
+    fecha_hora_registro: string;
+    uresis: number;
+    uresis_descripcion: string;
+    evacuaciones: number;
+    evacuaciones_descripcion: string;
+    emesis: number;
+    emesis_descripcion: string;
+    drenes: number;
+    drenes_descripcion: string;
+
 }
 
 export interface HojaEnfermeriaQuirofano {

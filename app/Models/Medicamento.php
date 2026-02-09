@@ -52,15 +52,15 @@ class Medicamento extends Model
      * Relación inversa con el Producto/Servicio principal.
      */
     // App\Models\Medicamento.php
-   public function vias()
-{
-    return $this->belongsToMany(
-        CatalogoViaAdministracion::class, 
-        'medicamento_vias', // Nombre de tu tabla intermedia
-        'medicamento_id', 
-        'catalogo_via_administracion_id'
-    );
-}
+    public function viasAdministracion()
+    {
+        return $this->belongsToMany(
+            CatalogoViaAdministracion::class, 
+            'medicamento_vias', // Nombre de tu tabla intermedia
+            'medicamento_id', 
+            'catalogo_via_administracion_id'
+        );
+    }
     public function productoServicio()
     {
         return $this->belongsTo(ProductoServicio::class, 'id', 'id');
