@@ -3,7 +3,7 @@
 namespace App\Jobs;
 
 use App\Models\User;
-use App\Models\Backups;
+use App\Models\BackupsRestauration\Backups;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -29,67 +29,57 @@ class GenerarBackupJob implements ShouldQueue
     }
 
 
- public function handle(): void
+    public function handle(): void
     {
         try {
             $user = User::findOrFail($this->userId);
 
             
-        } catch (\Exception $e) {
-            Log::error("Job de backup falló: No se pudo encontrar al usuario con ID {$this->userId}");
-            return; 
-        }
-       
-        $backupDir = storage_path('app/backups');
-        $fileName = 'backup-' . $user->id . '-' . now()->format('Y-m-d-His') . '.sql';
-        $storagePath = 'backups/' . $fileName;
+            } catch (\Exception $e) {
+                Log::error("Job de backup falló: No se pudo encontrar al usuario con ID {$this->userId}");
+                return; 
+            }
+        
+            $backupDir = storage_path('backups');
+            $fileName = 'backup-' . $user->id . '-' . now()->format('Y-m-d-His') . '.sql';
+            $storagePath = 'backups/' . $fileName;
 
-        $backupRecord = Backups::create([
-            'user_id' => $user->id,
-            'file_name' => $fileName,
-            'path' => $storagePath,
-            'status' => 'pending',
-        ]);
+            $backupRecord = Backups::create([
+                'user_id' => $user->id,
+                'file_name' => $fileName,
+                'path' => $storagePath,
+                'status' => 'pending',
+            ]);
 
-        try {
+            try {
             File::ensureDirectoryExists($backupDir);
 
             $dbConfig = config('database.connections.mysql');
-            $dbName = $dbConfig['database'];
-            $dbUser = $dbConfig['username'];
-            $dbPass = $dbConfig['password'];
-            $dbHost = $dbConfig['host'];
-            $dbPort = $dbConfig['port'];
+            
+            $dumpPath = '/usr/bin/mariadb-dump'; 
 
-           $backupFullPath = storage_path('app/' . $storagePath);
+            $backupFullPath = storage_path( $storagePath);
 
-        // Busca el ejecutable en tu carpeta de laragon
-        $dumpPath = 'C:\laragon\bin\mysql\mariadb-10.6.13-winx64\bin\mariadb-dump.exe'; 
+            $process = Process::run([
+                $dumpPath,
+                "-u{$dbConfig['username']}",
+                "-p{$dbConfig['password']}",
+                "-h{$dbConfig['host']}",
+                "-P{$dbConfig['port']}",
+                $dbConfig['database']
+            ]);
 
-        $command = sprintf(
-            '"%s" --user="%s" --password="%s" --host="%s" --port="%s" "%s"',
-            $dumpPath,
-            $dbUser,
-            $dbPass, 
-            $dbHost,
-            $dbPort,
-            $dbName
-        );
-
-          $process = Process::run($command);
             if ($process->successful()) {
-                File::put(storage_path('app/' . $storagePath), $process->output());
+                File::put($backupFullPath, $process->output());
+                
                 $backupRecord->update(['status' => 'completed']);
-                Log::info("Backup completado para usuario {$user->idUsuario}: {$fileName}");
-
             } else {
-                $error = $process->errorOutput();
-                Log::error("Error en backup (mysqldump) para usuario {$user->idUsuario}: " . $error);
+                Log::error("Error de MariaDB: " . $process->errorOutput());
                 $backupRecord->update(['status' => 'failed']);
             }
 
         } catch (\Exception $e) {
-            Log::error("Excepción en Job de backup (Usuario: {$user->idUsuario}): " . $e->getMessage());
+            Log::error("Excepción en Job: " . $e->getMessage());
             $backupRecord->update(['status' => 'failed']);
         }
     }
