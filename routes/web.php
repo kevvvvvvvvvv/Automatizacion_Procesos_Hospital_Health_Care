@@ -48,7 +48,7 @@ use App\Http\Controllers\FormularioHojaRiesgoCaidaController;
 use App\Http\Controllers\HojaControlLiquidoController;
 use App\Http\Controllers\HojaEscalaValoracionController;
 use App\Http\Controllers\PeticionesController;
-use App\Http\Controllers\BackupsController;
+use App\Http\Controllers\BackupsRestauration\BackupsController;
 use App\Http\Controllers\Encuestas\EncuestaSatisfaccionController;
 use App\Models\HojaContolLiquido;
 use Illuminate\Support\Facades\Route;
@@ -75,10 +75,12 @@ Route::resource('quirofanos', ReservacionQuirofanoController::class)->middleware
 Route::post('/reservaciones/{reservacione}/pagar',[ReservacionController::class,'pagar'])->middleware('auth');
 Route::resource('dietas',DietaController::class)->middleware('auth');
 Route::resource('peticiones', PeticionesController::class)-> middleware('auth');
+
+
 Route::resource('respaldo', BackupsController::class)->middleware('auth');
-Route::get('/respaldo/download/{file}', function ($file) {
-    return Storage::disk(config('backup.backup.destination.disks')[0])->download(config('backup.backup.name').'/'.$file);
-})->name('backups.download');
+Route::get('respaldo/{backup}/download', [BackupsController::class, 'download'])
+    ->name('bd.respaldo.download')
+    ->middleware('auth');
 
 Route::resource('pacientes.responsable', FamiliarResponsableController::class);
 Route::resource('pacientes.estancias', EstanciaController::class)->shallow()->middleware('auth');

@@ -1,5 +1,7 @@
 import React from 'react';
 import { Head, useForm } from '@inertiajs/react';
+import { route } from 'ziggy-js';
+
 import MainLayout from '@/layouts/MainLayout';
 import { Database, Download, RefreshCw, AlertCircle, CheckCircle, Clock } from 'lucide-react';
 import PrimaryButton from '@/components/ui/primary-button';
@@ -21,10 +23,10 @@ const RespaldoIndex = ({ backups }: Props) => {
     const { post, processing } = useForm();
 
     const handleCreateBackup = (e: React.FormEvent) => {
+        e.preventDefault()
         post(route('respaldo.store'));
     };
 
-    // Función para formatear el tamaño de bytes a MB
     const formatSize = (bytes: number) => {
         if (!bytes) return '0 KB';
         const mb = bytes / (1024 * 1024);
@@ -32,8 +34,8 @@ const RespaldoIndex = ({ backups }: Props) => {
     };
 
     return (
-        <MainLayout pageTitle="Mantenimiento de Base de Datos" link='dashboard'>
-            <Head title="Respaldos de Sistema" />
+        <MainLayout pageTitle="Mantenimiento de base de datos" link='dashboard'>
+            <Head title="Respaldos de sistema" />
 
             <div className="max-w-6xl mx-auto p-4 md:p-8">
                 {/* Encabezado con Acción */}
@@ -43,7 +45,7 @@ const RespaldoIndex = ({ backups }: Props) => {
                             <Database size={32} />
                         </div>
                         <div>
-                            <h2 className="text-xl font-bold text-gray-800">Copia de Seguridad</h2>
+                            <h2 className="text-xl font-bold text-gray-800">Copia de seguridad</h2>
                             <p className="text-sm text-gray-500">Genera y descarga respaldos completos de la base de datos.</p>
                         </div>
                     </div>
@@ -54,11 +56,10 @@ const RespaldoIndex = ({ backups }: Props) => {
                         className="flex items-center gap-2"
                     >
                         {processing ? <RefreshCw className="animate-spin" size={18} /> : <Database size={18} />}
-                        Generar Nuevo Respaldo
+                        Generar nuevo respaldo
                     </PrimaryButton>
                 </div>
-
-                {/* Tabla de Respaldos */}
+                
                 <div className="bg-white shadow rounded-lg overflow-hidden">
                     <table className="min-w-full divide-y divide-gray-200">
                         <thead className="bg-gray-50">

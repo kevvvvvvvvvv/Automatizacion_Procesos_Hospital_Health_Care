@@ -12,7 +12,7 @@ use Laravel\Fortify\TwoFactorAuthenticatable;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Database\Eloquent\Relations\HasMany; 
 use App\Models\CredencialEmpleado;
-use App\Models\backups;
+use App\Models\BackupsRestauration\Backups;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Laravel\Cashier\Billable;
 
@@ -189,8 +189,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(CredencialEmpleado::class);
     }
+
     public function backups()
-{
-    return $this->hasMany(Backups::class, 'user_id', 'idUsuario');
-}
+    {
+        return $this->hasMany(Backups::class, 'user_id', 'id');
+    }
 }
