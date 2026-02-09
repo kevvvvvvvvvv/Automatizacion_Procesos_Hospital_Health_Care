@@ -200,7 +200,7 @@ export interface CatalogoViaAdministracion {
     via_administracion: string;
 }
 
-export interface Insumo {
+export interface Insumos {
    id: number;
     categoria: string | null;
     especificacion: string | null;
