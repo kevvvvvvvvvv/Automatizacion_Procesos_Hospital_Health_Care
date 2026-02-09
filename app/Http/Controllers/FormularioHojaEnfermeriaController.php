@@ -112,6 +112,10 @@ class FormularioHojaEnfermeriaController extends Controller implements HasMiddle
             'hojaEscalaValoraciones',
             'hojaControlLiquidos',
             'sondasCateteres.productoServicio',
+
+            'hojaSignos',
+            'hojaControlLiquidos',
+            
         );
 
         $estancia = $hojasenfermeria->formularioInstancia->estancia;

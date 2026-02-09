@@ -2,6 +2,7 @@ import React from 'react';
 import { useForm } from '@inertiajs/react';
 import { HojaEnfermeria, HojaSignos } from '@/types'; 
 import { route } from 'ziggy-js';
+import { Pencil } from 'lucide-react'; 
 
 import InputText from '@/components/ui/input-text';
 import PrimaryButton from '@/components/ui/primary-button';
@@ -139,7 +140,7 @@ const SignosVitalesForm: React.FC<Props> = ({ hoja }) => {
             </div>
         </form>
         <div className="mt-12">
-                <h3 className="text-lg font-semibold mb-2">Historial de Signos Vitales</h3>
+                <h3 className="text-lg font-semibold mb-2">Historial de signos vitales</h3>
                 <div className="overflow-x-auto border rounded-lg">
                     <table className="min-w-full divide-y divide-gray-200">
                         <thead className="bg-gray-50">
@@ -149,6 +150,10 @@ const SignosVitalesForm: React.FC<Props> = ({ hoja }) => {
                                 <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">F.C.</th>
                                 <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">F.R.</th>
                                 <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Temp</th>
+                                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">S.O.</th>
+                                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">G.C.</th>
+                                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Talla</th>
+                                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Peso</th>
                                 <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Acción</th>
                             </tr>
                         </thead>
@@ -165,18 +170,24 @@ const SignosVitalesForm: React.FC<Props> = ({ hoja }) => {
                                     <tr key={registro.id}>
                                         <td className="px-4 py-4 text-sm text-gray-900">{registro.fecha_hora_registro}</td>
                                         <td className="px-4 py-4 text-sm text-gray-500">
-                                            {registro.tension_arterial_sistolica} / {registro.tension_arterial_diastolica}
+                                            {registro.tension_arterial_sistolica} / {registro.tension_arterial_diastolica} mmHg
                                         </td>
-                                        <td className="px-4 py-4 text-sm text-gray-500">{registro.frecuencia_cardiaca}</td>
-                                        <td className="px-4 py-4 text-sm text-gray-500">{registro.frecuencia_respiratoria}</td>
-                                        <td className="px-4 py-4 text-sm text-gray-500">{registro.temperatura}</td>
+                                        <td className="px-4 py-4 text-sm text-gray-500">{registro.frecuencia_cardiaca} ppm</td>
+                                        <td className="px-4 py-4 text-sm text-gray-500">{registro.frecuencia_respiratoria} rpm</td>
+                                        <td className="px-4 py-4 text-sm text-gray-500">{registro.temperatura} °C</td>
+                                        <td className="px-4 py-4 text-sm text-gray-500">{registro.saturacion_oxigeno} %</td>
+                                        <td className="px-4 py-4 text-sm text-gray-500">{registro.glucemia_capilar} mg/dL</td>
+                                        <td className="px-4 py-4 text-sm text-gray-500">{registro.talla} cm</td>
+                                        <td className="px-4 py-4 text-sm text-gray-500">{registro.peso} kg</td>
                                         <td className="px-4 py-4 text-sm">
                                             <button
                                                 type="button"
                                                 // onClick={() => handleRemove(registro.id)}
-                                                className="text-red-600 hover:text-red-900"
+                                                className="text-blue-600 hover:text-blue-900"
                                             >
-                                                Eliminar
+                                                <Pencil
+                                                    size={18}
+                                                />
                                             </button>
                                         </td>
                                     </tr>
