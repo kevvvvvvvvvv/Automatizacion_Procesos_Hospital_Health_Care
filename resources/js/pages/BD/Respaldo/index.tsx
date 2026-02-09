@@ -20,7 +20,7 @@ interface Props {
 const RespaldoIndex = ({ backups }: Props) => {
     const { post, processing } = useForm();
 
-    const handleCreateBackup = () => {
+    const handleCreateBackup = (e: React.FormEvent) => {
         post(route('respaldo.store'));
     };
 

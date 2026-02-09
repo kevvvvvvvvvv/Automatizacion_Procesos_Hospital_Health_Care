@@ -3,7 +3,7 @@
 namespace App\Jobs;
 
 use App\Models\User;
-use App\Models\Backup;
+use App\Models\Backups;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -23,7 +23,7 @@ class GenerarBackupJob implements ShouldQueue
     /**
      * @param int $userId
      */
-    public function __construct(int $userId)
+    public function __construct(?int $userId)
     {
         $this->userId = $userId;
     }
@@ -33,17 +33,19 @@ class GenerarBackupJob implements ShouldQueue
     {
         try {
             $user = User::findOrFail($this->userId);
+
+            
         } catch (\Exception $e) {
             Log::error("Job de backup falló: No se pudo encontrar al usuario con ID {$this->userId}");
             return; 
         }
-
+       
         $backupDir = storage_path('app/backups');
-        $fileName = 'backup-' . $user->idUsuario . '-' . now()->format('Y-m-d-His') . '.sql';
+        $fileName = 'backup-' . $user->id . '-' . now()->format('Y-m-d-His') . '.sql';
         $storagePath = 'backups/' . $fileName;
 
-        $backupRecord = Backup::create([
-            'user_id' => $user->idUsuario,
+        $backupRecord = Backups::create([
+            'user_id' => $user->id,
             'file_name' => $fileName,
             'path' => $storagePath,
             'status' => 'pending',
@@ -59,16 +61,22 @@ class GenerarBackupJob implements ShouldQueue
             $dbHost = $dbConfig['host'];
             $dbPort = $dbConfig['port'];
 
-            $command = sprintf(
-                'mariadb-dump --user="%s" --password="%s" --host="%s" --port="%s" "%s"',
-                $dbUser,
-                $dbPass, 
-                $dbHost,
-                $dbPort,
-                $dbName
-            );
+           $backupFullPath = storage_path('app/' . $storagePath);
 
-            $process = Process::run($command);
+        // Busca el ejecutable en tu carpeta de laragon
+        $dumpPath = 'C:\laragon\bin\mysql\mariadb-10.6.13-winx64\bin\mariadb-dump.exe'; 
+
+        $command = sprintf(
+            '"%s" --user="%s" --password="%s" --host="%s" --port="%s" "%s"',
+            $dumpPath,
+            $dbUser,
+            $dbPass, 
+            $dbHost,
+            $dbPort,
+            $dbName
+        );
+
+          $process = Process::run($command);
             if ($process->successful()) {
                 File::put(storage_path('app/' . $storagePath), $process->output());
                 $backupRecord->update(['status' => 'completed']);
