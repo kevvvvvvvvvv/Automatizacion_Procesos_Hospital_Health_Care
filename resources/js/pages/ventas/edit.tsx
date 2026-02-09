@@ -296,7 +296,7 @@ const EditVenta = ({ venta, paciente, estancia, catalogoOptions }: EditVentaProp
                                                         <div className="text-xs text-gray-500 uppercase">
                                                             {detalle.itemable_type 
                                                                 ? (detalle.itemable_type.includes('Producto') ? 'Producto' : 'Estudio') 
-                                                                : 'Manual'
+                                                                : 'Pendiente de catalogar'
                                                             }
                                                         </div>
                                                     </td>

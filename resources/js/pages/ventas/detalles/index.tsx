@@ -51,7 +51,7 @@ const DetallesVenta = ({ paciente, estancia, venta }: Props) => {
                             const esProducto = detalle.itemable_type?.includes('ProductoServicio');
                             const esEstudio = detalle.itemable_type?.includes('CatalogoEstudio');
                             
-                            let etiquetaTipo = 'Manual';
+                            let etiquetaTipo = 'Pendiente de catalogar';
                             if (esProducto) etiquetaTipo = 'Producto';
                             if (esEstudio) etiquetaTipo = 'Estudio';
 

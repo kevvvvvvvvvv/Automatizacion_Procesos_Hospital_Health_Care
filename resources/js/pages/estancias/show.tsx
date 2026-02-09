@@ -308,6 +308,21 @@ const Show = ({ estancia }: ShowEstanciaProps) => {
                                         )}
                                     </Menu.Item>
                                     )}
+                                    <Menu.Item>
+                                        {({ active }) => (
+                                            <Link
+                                                href={route('estancias.encuesta-satisfaccions.create', { 
+                                                    estancia: estancia.id 
+                                                })}
+                                                method="get" 
+                                                className={`${
+                                                    active ? 'bg-blue-500 text-white' : 'text-gray-900'
+                                                } group flex rounded-md text-left w-full px-2 py-2 text-sm`}
+                                            >
+                                                Añadir encuesta de satisfacción
+                                            </Link>
+                                        )}
+                                    </Menu.Item>
                                     </>
                                     )}
                                 </div>
