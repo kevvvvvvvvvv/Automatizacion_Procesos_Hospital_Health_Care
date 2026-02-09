@@ -17,9 +17,9 @@ class Backups extends Model
         'status',
     ];
 
-    public function user()
+    public function user():BelongsTo
     {
-        return $this->belongsTo(User::class, 'user_id', 'idUsuario');
+        return $this->belongsTo(User::class,'user_id','idusuario');
     }
     
 }
