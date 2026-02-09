@@ -37,7 +37,7 @@ class BackupsController extends Controller
     }
     //dd($id);
     GenerarBackupJob::dispatch((int)$id);
-
+    
     return to_route('respaldo.index')
         ->with('success', 'Tu respaldo se está generando...');
 }
