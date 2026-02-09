@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use ParagonIE_Sodium_Core_Ed25519;
 
 /**
  * @property int $id
@@ -38,6 +39,7 @@ class FormularioCatalogo extends Model
     public const ID_NOTA_POSTANESTESICA = 13;
     public const ID_HOJA_ENFERMERIA_QUIROFANO = 14;
     public const ID_SOLICITUD_ESTUDIOS = 15;
+    public const ID_ENCUESTA_SATISFACCION = 16;
 
     public $incrementing = false; 
     protected $keyType = 'int';

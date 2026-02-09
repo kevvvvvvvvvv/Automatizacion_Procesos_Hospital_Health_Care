@@ -54,8 +54,11 @@ const MoneyRow = ({ label, amount, isTotal = false, isDeduction = false }: any) 
     );
 };
 
+interface Props {
+    venta: Venta; 
+}
 
-const Show = ({ venta }: { venta: Venta }) => { 
+const Show = ({ venta }: Props) => { 
 
     const [showModal, setShowModal] = useState(false);
     
@@ -76,7 +79,12 @@ const Show = ({ venta }: { venta: Venta }) => {
     const ivaCalculado = Number(venta.total) - Number(venta.subtotal);
 
     return (
-        <MainLayout pageTitle={`Consulta venta #${venta.id}`}  >
+        <MainLayout 
+            pageTitle={`Consulta venta #${venta.id}`}  
+            link="pacientes.estancias.ventas.index"      
+            linkParams={{ paciente: venta.estancia.paciente.id, estancia: venta.estancia.id, venta: venta.id }}
+        >
+
             <Head title={`Consulta de venta #${venta.id}`}/>
             <div className="max-w-5xl mx-auto space-y-6 pb-10">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-6 rounded-xl shadow-sm border border-gray-200">
