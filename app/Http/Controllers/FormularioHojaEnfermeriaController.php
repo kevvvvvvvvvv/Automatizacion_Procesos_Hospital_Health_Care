@@ -114,7 +114,7 @@ class FormularioHojaEnfermeriaController extends Controller implements HasMiddle
             'sondasCateteres.productoServicio',
 
             'hojaSignos',
-            'hojaControlLiquidos',
+            'solicitudesDieta',
             
         );
 
