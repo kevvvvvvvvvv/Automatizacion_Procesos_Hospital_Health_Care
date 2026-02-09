@@ -6,12 +6,19 @@ import { route } from 'ziggy-js';
 import PrimaryButton from '@/components/ui/primary-button';
 import InputText from '@/components/ui/input-text';
 import FormLayout from '@/components/form-layout';
-import { ProductoServicio } from '@/types';
+import { Insumos, Medicamento, ProductoServicio } from '@/types';
+import medicamentos from '@/routes/medicamentos';
+import { error } from 'console';
+import InputDate from '@/components/ui/input-date';
 // Interface del modelo que te manda Laravel por props
 
 
 interface Props {
   productoServicio?: ProductoServicio | null; 
+  medicamentos?: Medicamento;
+  insumos?: Insumos;
+  viasCatalogo: { id: number, via_administracion: string }[]; // Nueva Prop
+  viaActualId?: number;
 }
 
 interface FormularioFormData {
@@ -22,19 +29,25 @@ interface FormularioFormData {
   importe: number | string | null;
   cantidad: number | string | null;
   iva: number | string | null;
+
+    cantidad_maxima: number | null;
+    cantidad_minima: number | null;
+    proveedor: string | null;
+    fecha_caducidad: string | null;
   // Campos de Medicamentos
   excipiente_activo_gramaje?: string| null;
   volumen_total?: string | number| null;
   nombre_comercial?: string | null;
   gramaje?: string | null;
   fraccion?: string | null;
+  via_administracion: string[];
   // Campos de Insumos
   categoria?: string | null;
   especificacion?: string | null;
   categoria_unitaria?: string | null;
 }
 
-const ProductoServicioForm = ({ productoServicio } : Props) => {
+const ProductoServicioForm = ({ productoServicio, medicamentos, insumos, viasCatalogo, viaActualId }: Props)=> {
   const isEdit = !!productoServicio;
   const { data, setData, post, put, processing, errors } = useForm<FormularioFormData>({
   
@@ -45,15 +58,22 @@ const ProductoServicioForm = ({ productoServicio } : Props) => {
       importe: productoServicio?.importe ?? null,
       cantidad: productoServicio?.cantidad ?? null,
       iva: productoServicio?.iva ?? null,
+      cantidad_maxima: productoServicio?.cantidad_maxima ?? null,
+    cantidad_minima: productoServicio?.cantidad_minima ?? null,
 
-      excipiente_activo_gramaje: productoServicio?.excipiente_activo_gramaje ?? '',
-      volumen_total: productoServicio?.volumen_total ?? '',
-      nombre_comercial: productoServicio?.nombre_comercial ?? '',
-      gramaje: productoServicio?.gramaje ?? '',
-      fraccion: productoServicio?.fraccion ?? '',
-      categoria: productoServicio?.categoria ?? '',
-      especificacion: productoServicio?.especificacion ?? '',
-      categoria_unitaria: productoServicio?.categoria_unitaria ?? '',
+    proveedor: productoServicio?.proveedor ?? null,
+    fecha_caducidad: productoServicio?.fecha_caducidad ?? null,
+
+      excipiente_activo_gramaje: medicamentos?.excipiente_activo_gramaje ?? '',
+      volumen_total: medicamentos?.volumen_total ?? '',
+      nombre_comercial: medicamentos?.nombre_comercial ?? '',
+      gramaje: medicamentos?.gramaje ?? '',
+      fraccion: medicamentos?.fraccion ?? '',
+      via_administracion: [],
+
+      categoria: insumos?.categoria ?? '',
+      especificacion: insumos?.especificacion ?? '',
+      categoria_unitaria: insumos?.categoria_unitaria ?? '',
     });
 
   const optionsTipo = [
@@ -102,9 +122,13 @@ const ProductoServicioForm = ({ productoServicio } : Props) => {
     {value: "SOLUCION", label: "SOLUCION"},
     {value: 'TUBO ENDOTRAQUEAL', label: 'TUBO ENDOTRAQUEAL'},
     {value: 'VENDA', label: 'VENDA'},
+  ];
 
+  const optionsVias = viasCatalogo.map(via => ({
+    value: via.id.toString(),
+    label: via.via_administracion
+  }));
 
-  ]
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -114,6 +138,7 @@ const ProductoServicioForm = ({ productoServicio } : Props) => {
     } else {
       // CREAR
       post(route('producto-servicios.store'));
+      
     }
   };
 
@@ -200,6 +225,7 @@ const ProductoServicioForm = ({ productoServicio } : Props) => {
         />
 
         {data.tipo === 'INSUMOS' && (
+          <>
           <InputText
             id="cantidad"
             name="cantidad"
@@ -209,10 +235,62 @@ const ProductoServicioForm = ({ productoServicio } : Props) => {
             placeholder="Escriba la cantidad del producto disponible"
             error={errors.cantidad}
           />
-          
+          <InputText 
+            id="cantidad_maxima"
+            name="cantidad_maxima"
+            label="Cantidad Maxima"
+            value={(data.cantidad_maxima ?? '').toString()} 
+            onChange={(e) => setData('cantidad_maxima', e.target.value)}
+            placeholder='Escriba la cantidad maxima que puede haber'
+            error={errors.cantidad_maxima}
+                />
+            <InputText
+            id='cantidad_minima'
+            name='cantidad_minima'
+            label='Cantidad minima'
+            value={(data.cantidad_minima ?? '').toString()}
+            onChange={(e) => setData('cantidad_minima', e.target.value)}
+            placeholder='Escriba la cantidad minima que debe haber del producto'
+            error={errors.cantidad_minima}
+            />
+            <InputText 
+              id='proveedor'
+              name='proveedor'
+              label='Proveedor'
+              value={(data.proveedor ?? '')}
+              onChange={(e) => setData('proveedor', e.target.value)}
+              placeholder='Ingresar el nombre del proveedor'
+              error={errors.proveedor}
+            />
+            <InputDate
+              id="fecha_caducidad"
+              name="fecha_caducidad"
+              description="Fecha de caducidad"
+              value={data.fecha_caducidad} 
+              onChange={(date: Date | null) => {
+                  if (date) {
+                      // Convertimos a formato ISO (YYYY-MM-DD) para la base de datos
+                      const formattedDate = date.toISOString().split('T')[0];
+                      setData('fecha_caducidad', formattedDate);
+                  } else {
+                      setData('fecha_caducidad', null);
+                  }
+              }}
+              error={errors.fecha_caducidad}
+          />
+          </>
         )}
         {data.subtipo === 'MEDICAMENTOS' && (
-        <>
+          <>
+            <InputText
+            id = 'excipiente_activo_gramaje'
+            name='excipiente_activo_gramaje'
+            label = 'Excipiente activo'
+            value={data.excipiente_activo_gramaje ?? ''}
+            onChange={e => setData('excipiente_activo_gramaje', e.target.value)}
+            placeholder='Escriba el excipiente activo con framaje'
+            error={errors.excipiente_activo_gramaje}
+            />
             <InputText
             id = 'nombre_comercial'
             name = 'nombre_comercial' 
@@ -225,7 +303,7 @@ const ProductoServicioForm = ({ productoServicio } : Props) => {
             <InputText
             id = 'volumen_total'
             name = 'volumen_total'
-            label = 'Volumen total de la presentaciòn'
+            label = 'Volumen total de la presentación (Solo el número)'
             value={(data.volumen_total ?? '').toString()}
             onChange={(e) =>  setData('volumen_total', e.target.value)}
             placeholder='Ingresel el volumen total del producto'
@@ -248,6 +326,14 @@ const ProductoServicioForm = ({ productoServicio } : Props) => {
               }
               error={errors.tipo}
             />
+            <SelectInput
+            label="Vías de administración"
+            isMulti={true} 
+            options={optionsVias}
+            value={data.via_administracion} 
+            onChange={(values) => setData('via_administracion', values)}
+            error={errors.via_administracion}
+          />
         </>
         )}
         {data.subtipo === 'INSUMOS' && (
@@ -276,6 +362,7 @@ const ProductoServicioForm = ({ productoServicio } : Props) => {
               }
               error={errors.tipo}
               />
+              
           </>
         )}
       </div>

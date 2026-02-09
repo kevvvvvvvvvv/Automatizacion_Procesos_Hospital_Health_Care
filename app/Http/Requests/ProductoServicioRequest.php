@@ -6,60 +6,90 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class ProductoServicioRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
     public function authorize(): bool
     {
         return true;
     }
 
-   
-
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
-     */
     public function rules(): array
     {
-        return [
-            'tipo' => 'required|string',
-            'subtipo' => 'required|string',
-            'codigo_prestacion' => 'required|string',
-            'nombre_prestacion' => 'required|string',
-            'importe' => 'required|numeric',
-            'cantidad' => 'nullable|numeric',
-            'iva' => 'nullable|numeric'
+        $rules = [
+
+            // ================= PRODUCTO BASE =================
+            'tipo' => 'required|string|max:100',
+            'subtipo' => 'required|string|in:MEDICAMENTOS,INSUMOS',
+
+            'nombre_prestacion' => 'required|string|max:200',
+            'codigo_barras' => 'nullable|string|max:100',
+
+            'importe' => 'required|numeric|min:0',
+            'importe_compra' => 'nullable|numeric|min:0',
+
+            'cantidad' => 'nullable|integer|min:0',
+            'cantidad_minima' => 'nullable|integer|min:0',
+            'cantidad_maxima' => 'nullable|integer|min:0',
+
+            'proveedor' => 'nullable|string|max:150',
+            'fecha_caducidad' => 'nullable|date',
         ];
+
+        // ================= MEDICAMENTOS =================
+        if ($this->subtipo === 'MEDICAMENTOS') {
+            $rules += [
+
+                'excipiente_activo_gramaje' => 'string|max:500',
+
+                // 🔥 SOLO NUMEROS
+                'volumen_total' => 'numeric|min:0',
+
+                'nombre_comercial' => 'string|max:200',
+                'gramaje' => 'string|max:100',
+
+                // boolean real
+                'fraccion' => 'boolean',
+
+                'via_administracion' => 'nullable|array'
+            ];
+        }
+
+        // ================= INSUMOS =================
+        if ($this->subtipo === 'INSUMOS') {
+            $rules += [
+                'categoria' => 'string|max:200',
+                'especificacion' => 'string|max:500',
+                'categoria_unitaria' => 'string|max:200',
+            ];
+        }
+
+        return $rules;
     }
 
-    /**
-     * Get the error messages for the defined validation rules.
-     *
-     * @return array<string, string>
-     */
+    // 🧠 MENSAJES PROFESIONALES
     public function messages(): array
     {
         return [
-            'tipo.required' => 'Debe seleccionar un tipo.',
-            'tipo.string' => 'El tipo seleccionado no es válido.',
 
-            'subtipo.required' => 'Debe seleccionar un subtipo.',
-            'subtipo.string' => 'El subtipo seleccionado no es válido.',
+            // generales
+            'tipo.required' => 'El tipo es obligatorio.',
+            'subtipo.required' => 'El subtipo es obligatorio.',
+            'subtipo.in' => 'Subtipo inválido.',
 
-            'codigo_prestacion.required' => 'El código de la prestación es obligatorio.',
-            'codigo_prestacion.string' => 'El código de la prestación debe ser texto.',
+            'nombre_prestacion.required' => 'El nombre es obligatorio.',
 
-            'nombre_prestacion.required' => 'El nombre de la prestación es obligatorio.',
-            'nombre_prestacion.string' => 'El nombre de la prestación debe ser texto.',
-
+            'importe.numeric' => 'El importe debe ser numérico.',
             'importe.required' => 'El importe es obligatorio.',
-            'importe.numeric' => 'El importe debe ser un valor numérico.',
 
-            'cantidad.numeric' => 'La cantidad debe ser un valor numérico.',
-            
-            'iva.numeric' => 'EL IVA debe ser valor numerico', 
+            'cantidad.integer' => 'La cantidad debe ser número entero.',
+            'cantidad_minima.integer' => 'Stock mínimo debe ser número.',
+            'cantidad_maxima.integer' => 'Stock máximo debe ser número.',
+
+            // 💊 medicamentos
+            'excipiente_activo_gramaje.required' => 'El excipiente es obligatorio.',
+
+            'volumen_total.required' => 'El volumen es obligatorio.',
+            'volumen_total.numeric' => 'El volumen total SOLO debe contener números.',
+
+
         ];
     }
 }
