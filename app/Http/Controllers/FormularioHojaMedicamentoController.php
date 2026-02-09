@@ -100,14 +100,20 @@ class FormularioHojaMedicamentoController extends Controller
             'fecha_hora_inicio' => 'required|date',
         ]);
 
-        $fechaMySQL = Carbon::parse($validatedData['fecha_hora_inicio'])
-                            ->setTimezone(config('app.timezone')) 
-                            ->format('Y-m-d H:i:s'); 
+        try{
+            $fechaMySQL = Carbon::parse($validatedData['fecha_hora_inicio'])
+                                ->setTimezone(config('app.timezone')) 
+                                ->format('Y-m-d H:i:s'); 
 
-        $hojasmedicamento->update([
-            'fecha_hora_inicio' => $fechaMySQL,
-        ]);
-        
-        return Redirect::back()->with('success', 'Fecha de medicamento actualizada.');
+            $hojasmedicamento->update([
+                'fecha_hora_inicio' => $fechaMySQL,
+            ]);
+            
+            return Redirect::back()->with('success', 'Fecha de medicamento actualizada.');
+
+        }catch(\Exception $e){
+            
+        }
+
     }
 }

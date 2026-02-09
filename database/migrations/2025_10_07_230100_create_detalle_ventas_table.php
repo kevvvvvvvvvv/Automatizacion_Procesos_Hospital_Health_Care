@@ -20,12 +20,13 @@ return new class extends Migration
             $table->decimal('subtotal',8,2);
             $table->decimal('descuento',8,2)->nullable();
             $table->string('estado');
+            $table->decimal('iva_aplicado');
 
             $table->foreignId('venta_id')
                 ->constrained('ventas')
                 ->onDelete('cascade');
 
-            $table->morphs('itemable');
+            $table->nullableMorphs('itemable');
 
             $table->timestamps();
         });

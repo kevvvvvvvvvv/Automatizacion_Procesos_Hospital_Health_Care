@@ -113,6 +113,8 @@ const ControlLiquidosForm = ({hoja}: Props) => {
                 {processing ? 'Guardando...' : 'Guardar'}
             </PrimaryButton>
         </form>
+
+        
     );
 }
 

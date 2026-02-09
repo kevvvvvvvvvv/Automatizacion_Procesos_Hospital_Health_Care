@@ -18,8 +18,8 @@ const ShowSolicitud = ({ hoja, paciente }: Props) => {
 
     const handleSurtirMedicamento = (medicamentoId: number) => {
         Swal.fire({
-            title: '¿Confirmar Surtido?',
-            text: "¿Estás seguro de surtir este medicamento? Esta acción registrará el cargo.",
+            title: '¿Confirmar surtido?',
+            text: "¿Estás seguro de surtir este medicamento?",
             icon: 'question',
             showCancelButton: true,
             confirmButtonColor: '#3085d6', 
@@ -49,7 +49,12 @@ const ShowSolicitud = ({ hoja, paciente }: Props) => {
                     {solicitados.length > 0 ? solicitados.map((med: HojaMedicamento) => (
                         <li key={med.id} className="flex justify-between items-center py-3">
                             <div>
-                                <p className="font-semibold">{med.nombre_medicamento}</p>
+                                <p className="font-semibold">{med.nombre_medicamento} </p>
+
+                                {!med.producto_servicio_id  && (    
+                                    <p className='text-red-600 font-bold' >Producto no registrado en el inventario</p>
+                                )}
+
                                 <p className="text-sm text-gray-600">
                                     Dosis: {med.dosis} | Vía: {med.via_administracion}
                                 </p>
@@ -70,6 +75,9 @@ const ShowSolicitud = ({ hoja, paciente }: Props) => {
                     {surtidos.length > 0 ? surtidos.map((med: HojaMedicamento) => (
                         <li key={med.id} className="py-3">
                             <p className="font-semibold text-gray-500">{med.nombre_medicamento}</p>
+                            {!med.producto_servicio_id  && (    
+                                <p className='text-red-400 font-bold' >Producto no registrado en el inventario</p>
+                            )}
                             <p className="text-sm text-gray-400">
                                 Surtido: {new Date(med.fecha_hora_surtido_farmacia).toLocaleString()}
                             </p>

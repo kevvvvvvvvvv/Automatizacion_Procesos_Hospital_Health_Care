@@ -63,10 +63,11 @@ class NuevaSolicitudMedicamentos extends Notification implements ShouldBroadcast
         $itemsMensaje = [];
         $conteoSinStock = 0;
 
+
         foreach ($this->medicamentos as $info) {
-            $nombreMed = $info['medicamento']->productoServicio->nombre_prestacion;
+            $nombreMed = $info['medicamento']->nombre_medicamento;
             
-            if (!$info['tiene_stock']) {
+            if (!$info['tiene_stock'] && !$info['es_manual']) {
                 $itemsMensaje[] = "{$nombreMed} (¡SIN STOCK!)";
                 $conteoSinStock++;
             } else {
