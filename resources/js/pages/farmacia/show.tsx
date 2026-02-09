@@ -49,7 +49,7 @@ const ShowSolicitud = ({ hoja, paciente }: Props) => {
                     {solicitados.length > 0 ? solicitados.map((med: HojaMedicamento) => (
                         <li key={med.id} className="flex justify-between items-center py-3">
                             <div>
-                                <p className="font-semibold">{med.nombre_medicamento} </p>
+                                <p className="font-semibold">{med.nombre_medicamento}</p>
 
                                 {!med.producto_servicio_id  && (    
                                     <p className='text-red-600 font-bold' >Producto no registrado en el inventario</p>
