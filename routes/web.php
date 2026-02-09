@@ -75,6 +75,9 @@ Route::post('/reservaciones/{reservacione}/pagar',[ReservacionController::class,
 Route::resource('dietas',DietaController::class)->middleware('auth');
 Route::resource('peticiones', PeticionesController::class)-> middleware('auth');
 Route::resource('respaldo', BackupsController::class)->middleware('auth');
+Route::get('/respaldo/download/{file}', function ($file) {
+    return Storage::disk(config('backup.backup.destination.disks')[0])->download(config('backup.backup.name').'/'.$file);
+})->name('backups.download');
 
 Route::resource('pacientes.responsable', FamiliarResponsableController::class);
 Route::resource('pacientes.estancias', EstanciaController::class)->shallow()->middleware('auth');

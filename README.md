@@ -112,4 +112,11 @@ npm install @stripe/stripe-js @stripe/react-stripe-js
 
 ```bash
 php artisan storage:link
-``` 
+```
+
+<h2>Para el respaldo de la base de datos</h2>
+
+```bash
+composer require spatie/laravel-backup --ignore-platform-reqs
+composer require "spatie/laravel-backup:^9.0" --ignore-platform-req=ext-pcntl
+```
