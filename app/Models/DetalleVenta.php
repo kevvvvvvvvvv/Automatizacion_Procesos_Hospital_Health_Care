@@ -35,6 +35,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|DetalleVenta whereVentaId($value)
  * @property string|null $nombre_producto_servicio
  * @method static \Illuminate\Database\Eloquent\Builder<static>|DetalleVenta whereNombreProductoServicio($value)
+ * @property string $iva_aplicado
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DetalleVenta whereIvaAplicado($value)
  * @mixin \Eloquent
  */
 class DetalleVenta extends Model

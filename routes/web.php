@@ -48,6 +48,7 @@ use App\Http\Controllers\FormularioHojaRiesgoCaidaController;
 use App\Http\Controllers\HojaControlLiquidoController;
 use App\Http\Controllers\HojaEscalaValoracionController;
 use App\Http\Controllers\PeticionesController;
+use App\Http\Controllers\Encuestas\EncuestaSatisfaccionController;
 use App\Models\HojaContolLiquido;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -94,6 +95,7 @@ Route::resource('pacientes.estancias.notasevoluciones', NotaEvolucionController:
 Route::resource('pacientes.estancias.notaspreanestesicas', NotaPreAnestesicaController::class)->shallow()->middleware('auth');
 Route::resource('pacientes.estancias.hojasenfermeriasquirofanos',HojaEnfemeriaQuirofanoController::class)->shallow()->middleware('auth');
 Route::resource('pacientes.estancias.consentimientos', ConsentimientoController::class)->shallow()->middleware('auth');
+Route::resource('estancias.encuesta-satisfaccions', EncuestaSatisfaccionController::class)->shallow()->middleware('auth');
 
 Route::post('/checklist/toggle', [ChecklistController::class, 'toggle'])->name('checklist.toggle');
 
@@ -179,6 +181,8 @@ Route::resource('estancia.solicitudes-estudios', SolicitudEstudioController::cla
 Route::resource('pacientes.estancias.interconsultas', InterconsultaController::class)->shallow()->parameters(['honorarios' => 'honorario','interconsultas' => 'interconsulta']);
 
 Route::get('pacientes/{paciente}/estancias/{estancia}/interconsultas/{interconsulta}', [InterconsultaController::class, 'show'])->name('pacientes.estancias.interconsultas.show')->middleware('auth');
+
+
 
 //PDFs
 Route::get('/hojasfrontales/{hojafrontal}/pdf', [FormularioHojaFrontalController::class, 'generarPDF'])
