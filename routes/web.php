@@ -48,6 +48,7 @@ use App\Http\Controllers\FormularioHojaRiesgoCaidaController;
 use App\Http\Controllers\HojaControlLiquidoController;
 use App\Http\Controllers\HojaEscalaValoracionController;
 use App\Http\Controllers\PeticionesController;
+use App\Http\Controllers\BackupsController;
 use App\Models\HojaContolLiquido;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -73,7 +74,7 @@ Route::resource('quirofanos', ReservacionQuirofanoController::class)->middleware
 Route::post('/reservaciones/{reservacione}/pagar',[ReservacionController::class,'pagar'])->middleware('auth');
 Route::resource('dietas',DietaController::class)->middleware('auth');
 Route::resource('peticiones', PeticionesController::class)-> middleware('auth');
-
+Route::resource('respaldo', BackupsController::class)->middleware('auth');
 
 Route::resource('pacientes.responsable', FamiliarResponsableController::class);
 Route::resource('pacientes.estancias', EstanciaController::class)->shallow()->middleware('auth');

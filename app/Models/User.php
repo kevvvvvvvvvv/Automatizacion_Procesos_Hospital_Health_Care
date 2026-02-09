@@ -188,4 +188,8 @@ class User extends Authenticatable
     {
         return $this->hasMany(CredencialEmpleado::class);
     }
+    public function backups()
+{
+    return $this->hasMany(Backup::class, 'user_id', 'idUsuario');
+}
 }
