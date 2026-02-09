@@ -278,6 +278,7 @@ export interface Venta{
     created_at: string;
     updated_at: string;
     user: User | null;
+    
     estancia: Estancia;
     detalles: DetalleVenta[];
 }
@@ -974,8 +975,23 @@ export interface ChecklistItemData {
     section_id: string;
     task_index: number;
 }
+
 export interface hojaFrontal {
     medico_id: number;
     medico: User;
     notas:string;
+}
+
+export interface EncuestaSatisfaccion {
+    id: number;
+    atencion_recpcion: number;
+    trato_personal_enfermeria: number; 
+    limpieza_comodidad_habitacion: number;
+    calidad_comida: number;
+    tiempo_atencion: number;
+    informacion_tratamiento: number;
+    atencion_nutricional: boolean;
+    comentarios?: sting;
+
+    formulario_instancia: FormularioInstancia;
 }
