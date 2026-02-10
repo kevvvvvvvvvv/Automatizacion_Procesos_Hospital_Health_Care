@@ -7,6 +7,7 @@ import { Pencil } from 'lucide-react';
 import InputText from '@/components/ui/input-text';
 import PrimaryButton from '@/components/ui/primary-button';
 import { DataTable } from '../ui/data-table';
+import Swal from 'sweetalert2';
 
 interface Props {
     hoja: HojaEnfermeria;
@@ -29,10 +30,23 @@ const SignosVitalesForm: React.FC<Props> = ({ hoja }) => {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        post(route('hojassignos.store', { hojasenfermeria: hoja.id }), {
-            preserveScroll: true,
-            onSuccess: ()=>{
-                reset();
+        Swal.fire({
+            title: '¿Confirmar registro?',
+            text: "Se guardarán los signos vitales capturados.",
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Sí, guardar',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                post(route('hojassignos.store', { hojasenfermeria: hoja.id }), {
+                    preserveScroll: true,
+                    onSuccess: ()=>{
+                        reset();
+                    }
+                });
             }
         });
     }
@@ -45,42 +59,42 @@ const SignosVitalesForm: React.FC<Props> = ({ hoja }) => {
         { 
             header: 'T.A.', 
             key: 'tension', 
-            render: (reg: HojaSignos) => `${reg.tension_arterial_sistolica} / ${reg.tension_arterial_diastolica} mmHg` 
+            render: (reg: HojaSignos) => reg.tension_arterial_sistolica ? `${reg.tension_arterial_sistolica} / ${reg.tension_arterial_diastolica} mmHg` : 'Sin registros' 
         },
         { 
             header: 'F.C.', 
             key: 'frecuencia_cardiaca', 
-            render: (reg: HojaSignos) => `${reg.frecuencia_cardiaca} ppm` 
+            render: (reg: HojaSignos) => reg.frecuencia_cardiaca ? `${reg.frecuencia_cardiaca} ppm` : 'Sin registros' 
         },
         { 
             header: 'F.R.', 
             key: 'frecuencia_respiratoria', 
-            render: (reg: HojaSignos) => `${reg.frecuencia_respiratoria} rpm` 
+            render: (reg: HojaSignos) => reg.frecuencia_respiratoria ? `${reg.frecuencia_respiratoria} rpm` : 'Sin registros' 
         },
         { 
             header: 'Temp', 
             key: 'temperatura', 
-            render: (reg: HojaSignos) => `${reg.temperatura} °C` 
+            render: (reg: HojaSignos) => reg.temperatura ? `${reg.temperatura} °C` : 'Sin registros'
         },
         { 
             header: 'S.O.', 
             key: 'saturacion_oxigeno', 
-            render: (reg: HojaSignos) => `${reg.saturacion_oxigeno} %` 
+            render: (reg: HojaSignos) => reg.saturacion_oxigeno ? `${reg.saturacion_oxigeno} %` : 'Sin registros'  
         },
         { 
             header: 'G.C.', 
             key: 'glucemia_capilar', 
-            render: (reg: HojaSignos) => `${reg.glucemia_capilar} mg/dL` 
+            render: (reg: HojaSignos) => reg.glucemia_capilar ? `${reg.glucemia_capilar} mg/dL` : 'Sin registros' 
         },
         { 
             header: 'Talla', 
             key: 'talla', 
-            render: (reg: HojaSignos) => `${reg.talla} cm` 
+            render: (reg: HojaSignos) => reg.talla ? `${reg.talla} cm` : 'Sin registros' 
         },
         { 
             header: 'Peso', 
-            key: 'peso', 
-            render: (reg: HojaSignos) => `${reg.peso} kg` 
+            key: 'peso',             
+            render:  (reg: HojaSignos) => reg.peso ? `${reg.peso} kg` : 'Sin registros'
         },
         {
             header: 'Acción',

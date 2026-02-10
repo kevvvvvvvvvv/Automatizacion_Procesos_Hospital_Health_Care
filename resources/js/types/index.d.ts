@@ -598,18 +598,26 @@ export interface SolicitudEstudio {
 export interface SolicitudDieta {
     id: number;
     hoja_enfermeria_id: number;
-    tipo_dieta: string;
-    opcion_seleccionada: string;
+    dieta_id: string;
     horario_solicitud: string;
     user_supervisa_id: number;
     horario_entrega: string;
     user_entrega_id: number;
+    observaciones: string;
 
-    horario_operacion: string;
-    horario_termino: string;
-    horario_inicio_dieta:string;
-
+    dieta: Dieta;
     user_supervisa?: User; 
+}
+
+export interface Dieta {
+    id: number;
+    categoria_dieta_id: number;
+    alimento: string;
+    costo: number;
+
+    categoria_dieta: CategoriaDieta;
+    created_at:string;
+    updated_at: string;
 }
 
 export interface Preoperatoria {
