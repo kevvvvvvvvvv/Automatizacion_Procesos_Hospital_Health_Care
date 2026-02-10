@@ -63,8 +63,8 @@ const DietaForm: React.FC<Props> = ({ hoja, categoria_dietas = [] }) => {
             key: 'tipo_dieta',
             render: (reg: SolicitudDieta) => (
             <div>
-                <div className="font-bold text-gray-900">{reg.tipo_dieta}</div>
-                <div className="text-xs text-gray-500">{reg.opcion_seleccionada}</div>
+                <div className="font-bold text-gray-900">{reg.dieta.categoria_dieta.categoria}</div>
+                <div className="text-xs text-gray-500">{}</div>
             </div>
             )
         },

@@ -114,9 +114,11 @@ class FormularioHojaEnfermeriaController extends Controller implements HasMiddle
             'sondasCateteres.productoServicio',
 
             'hojaSignos',
-            'solicitudesDieta',
+            'solicitudesDieta.dieta.categoriaDieta',
             
         );
+
+        //dd($hojasenfermeria->toArray());
 
         $estancia = $hojasenfermeria->formularioInstancia->estancia;
         $paciente = $hojasenfermeria->formularioInstancia->estancia->paciente;

@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Validator;
 
 class HojaSignosRequest extends FormRequest
 {
@@ -23,63 +24,58 @@ class HojaSignosRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'tension_arterial_sistolica' => ['nullable', 'integer', 'min:0', 'required_with:tension_arterial_diastolica'],
-            'tension_arterial_diastolica' => ['nullable', 'integer', 'min:0', 'required_with:tension_arterial_sistolica'],
-            'frecuencia_cardiaca' => ['nullable', 'integer', 'min:0'],
-            'frecuencia_respiratoria' => ['nullable', 'integer', 'min:0'],
-            'saturacion_oxigeno' => ['nullable', 'integer', 'min:0', 'max:100'], 
-            'glucemia_capilar' => ['nullable', 'integer', 'min:0'],
-            'temperatura' => ['nullable', 'numeric', 'min:0'],
-            'talla' => ['nullable', 'numeric', 'min:0'],
-            'peso' => ['nullable', 'numeric', 'min:0'],
-            'estado_conciencia' => ['nullable', 'string', 'max:255'],
+            'tension_arterial_sistolica'  => ['nullable', 'integer', 'min:0', 'max:300', 'required_with:tension_arterial_diastolica'],
+            'tension_arterial_diastolica' => ['nullable', 'integer', 'min:0', 'max:200', 'required_with:tension_arterial_sistolica'],
+            'frecuencia_cardiaca'         => ['nullable', 'integer', 'min:0', 'max:300'],
+            'frecuencia_respiratoria'     => ['nullable', 'integer', 'min:0', 'max:150'],
+            'saturacion_oxigeno'          => ['nullable', 'integer', 'min:0', 'max:100'],
+            'glucemia_capilar'            => ['nullable', 'integer', 'min:0', 'max:1000'],
+            'temperatura'                 => ['nullable', 'numeric', 'min:0', 'max:50'],
+            'talla'                       => ['nullable', 'numeric', 'min:0', 'max:300'],
+            'peso'                        => ['nullable', 'numeric', 'min:0', 'max:600'],
+            'estado_conciencia'           => ['nullable', 'string', 'max:255'],
+        ];
+    }
+
+    public function attributes(): array
+    {
+        return [
+            'tension_arterial_sistolica'  => 'T.A. sistólica',
+            'tension_arterial_diastolica' => 'T.A. diastólica',
+            'frecuencia_cardiaca'         => 'frecuencia cardíaca',
+            'frecuencia_respiratoria'     => 'frecuencia respiratoria',
+            'saturacion_oxigeno'          => 'saturación de oxígeno',
+            'glucemia_capilar'            => 'glucemia capilar',
+            'temperatura'                 => 'temperatura',
+            'talla'                       => 'talla',
+            'peso'                        => 'peso',
+            'estado_conciencia'           => 'estado de conciencia',
         ];
     }
 
     public function messages(): array
     {
         return [
-            // --- T.A. Sistólica ---
-            'tension_arterial_sistolica.integer' => 'La T.A. sistólica debe ser un número entero.',
-            'tension_arterial_sistolica.min' => 'La T.A. sistólica no puede ser un valor negativo.',
-            'tension_arterial_sistolica.required_with' => 'Debes ingresar ambas cifras de la tensión arterial (sistólica y diastólica).',
-            'tension_arterial_diastolica.required_with' => 'Debes ingresar ambas cifras de la tensión arterial (sistólica y diastólica).',
-
-            // --- T.A. Diastólica ---
-            'tension_arterial_diastolica.integer' => 'La T.A. diastólica debe ser un número entero.',
-            'tension_arterial_diastolica.min' => 'La T.A. diastólica no puede ser un valor negativo.',
-
-            // --- Frecuencia Cardíaca ---
-            'frecuencia_cardiaca.integer' => 'La frecuencia cardíaca debe ser un número entero.',
-            'frecuencia_cardiaca.min' => 'La frecuencia cardíaca no puede ser un valor negativo.',
-
-            // --- Frecuencia Respiratoria ---
-            'frecuencia_respiratoria.integer' => 'La frecuencia respiratoria debe ser un número entero.',
-            'frecuencia_respiratoria.min' => 'La frecuencia respiratoria no puede ser un valor negativo.',
-
-            // --- Saturación de Oxígeno ---
-            'saturacion_oxigeno.integer' => 'La saturación de oxígeno debe ser un número entero.',
-            'saturacion_oxigeno.min' => 'La saturación de oxígeno no puede ser un valor negativo.',
-            'saturacion_oxigeno.max' => 'La saturación de oxígeno no puede ser mayor a 100.',
-
-            // --- Glucemia Capilar ---
-            'glucemia_capilar.integer' => 'La glucemia capilar debe ser un número entero.',
-            'glucemia_capilar.min' => 'La glucemia capilar no puede ser un valor negativo.',
-
-            // --- Temperatura, Talla, Peso ---
-            'temperatura.numeric' => 'La temperatura debe ser un valor numérico.',
-            'temperatura.min' => 'La temperatura no puede ser un valor negativo.',
-            
-            'talla.numeric' => 'La talla debe ser un valor numérico.',
-            'talla.min' => 'La talla no puede ser un valor negativo.',
-
-            'peso.numeric' => 'El peso debe ser un valor numérico.',
-            'peso.min' => 'El peso no puede ser un valor negativo.',
-
-            // --- Estado ---
-            'estado_conciencia.string' => 'El estado de conciencia debe ser un texto.',
-            'estado_conciencia.max' => 'El estado de conciencia no debe exceder 255 caracteres.',
-
+            'integer'       => 'El campo :attribute debe ser un número entero.',
+            'numeric'       => 'El campo :attribute debe ser un valor numérico.',
+            'min'           => 'El campo :attribute no puede ser un valor negativo.',
+            'max'           => 'El campo :attribute no debe exceder el valor máximo permitido (:max).',
+            'required_with' => 'Debes ingresar ambas cifras de la tensión arterial (sistólica y diastólica).',
+            'string'        => 'El campo :attribute debe ser una cadena de texto.',
         ];
+    }
+
+    public function withValidator(Validator $validator)
+    {
+        $validator->after(function ($validator) {
+            $campos = array_keys($this->rules());
+            $valores = $this->only($campos);
+            if (empty(array_filter($valores, fn($value) => $value !== null && $value !== ''))) {
+                $validator->errors()->add(
+                    'registro_vacio', 
+                    'Debe completar al menos un campo para poder guardar el registro de signos vitales.'
+                );
+            }
+        });
     }
 }
