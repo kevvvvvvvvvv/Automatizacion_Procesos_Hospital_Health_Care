@@ -65,7 +65,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     })->name('dashboard');
 });
 
-Route::post('/cargos', [CargoController::class, 'store'])->name('cargos.store');
+Route::post('/cargos', [CargoController::class, 'store'])->name('cargos.store')->middleware('auth');
 Route::resource('habitaciones', HabitacionController::class)->middleware('auth');
 Route::resource('producto-servicios', ProductoServicioController::class)->middleware('auth');
 Route::resource('pacientes', PacienteController::class)->middleware('auth');
@@ -74,7 +74,7 @@ Route::resource('reservaciones', ReservacionController::class)->middleware('auth
 Route::resource('quirofanos', ReservacionQuirofanoController::class)->middleware('auth');
 Route::post('/reservaciones/{reservacione}/pagar',[ReservacionController::class,'pagar'])->middleware('auth');
 Route::resource('dietas',DietaController::class)->middleware('auth');
-Route::resource('peticiones', PeticionesController::class)-> middleware('auth');
+
 
 
 Route::resource('respaldo', BackupsController::class)->middleware('auth');
@@ -264,8 +264,13 @@ Route::get('/consentimientos/pdf/{file}', [ConsentimientoController::class, 'gen
 
 
 // Farmacia
-Route::get('/farmacia/solicitudes/{hojaenfermeria}', [FarmaciaController::class, 'show'])
-    ->name('farmacia.solicitud.show');
+Route::get('farmacia/solicitudes-medicamentos/{hojasenfermeria}', [FarmaciaController::class, 'show'])
+    ->name('solicitudes-medicamentos.show')
+    ->middleware('auth');
+
+Route::get('farmacia/solicitudes-medicamentos', [FarmaciaController::class, 'index'])->name('solicitudes-medicamentos.index')->middleware('auth');
+
+
 Route::patch('/medicamentos/{medicamento}/actualizar-estado', [HojaMedicamentoController::class, 'actualizarEstado'])
     ->name('medicamentos.actualizar-estado')
     ->middleware('auth');

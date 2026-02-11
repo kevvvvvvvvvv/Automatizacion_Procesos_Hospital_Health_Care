@@ -11,25 +11,62 @@ use App\Models\HojaMedicamento;
 use Illuminate\Support\Facades\DB;
 
 use App\Models\HojaEnfermeria;
+use App\Models\Estancia;
 
 use Inertia\Inertia;
 
 class FarmaciaController extends Controller
 {
-    public function show(HojaEnfermeria $hojaenfermeria)
-    {
 
-        $hojaenfermeria->load([
-                'formularioInstancia.estancia.paciente',
-                'hojaMedicamentos' => function ($query) {
-                    $query->whereIn('estado', ['solicitado', 'surtido']);
-                },
-                'hojaMedicamentos.productoServicio' 
-            ]);
+    public function show(HojaEnfermeria $hojasenfermeria)
+    {
+        $hojasenfermeria->load([
+            'formularioInstancia.estancia.paciente',
+            'hojaMedicamentos' => function ($query) {
+                $query->whereIn('estado', ['solicitado', 'surtido']);
+            },
+            'hojaMedicamentos.productoServicio' 
+        ]);
 
         return Inertia::render('farmacia/show', [
-            'hoja' => $hojaenfermeria,
-            'paciente' => $hojaenfermeria->formularioInstancia->estancia->paciente,
+            'hoja' => $hojasenfermeria,
+            'paciente' => $hojasenfermeria->formularioInstancia->estancia->paciente,
+        ]);
+    }
+
+    public function index()
+    {
+        $peticionesAgrupadas = Estancia::with([
+                'paciente',
+                'formularioInstancias.hojaEnfermeria.hojaMedicamentos' => function ($query) {
+                    $query->where('estado', 'solicitado');
+                },
+                'formularioInstancias.hojaEnfermeria.hojaMedicamentos.productoServicio'
+            ])
+            ->whereHas('formularioInstancias.hojaEnfermeria.hojaMedicamentos', function ($query) {
+                $query->where('estado', 'solicitado');
+            })
+            ->get()
+            ->map(function ($estancia) {
+                $todosLosMedicamentos = $estancia->formularioInstancias->flatMap(function ($instancia) {
+                    return $instancia->hojaEnfermeria ? $instancia->hojaEnfermeria->hojaMedicamentos : [];
+                });
+
+                $instanciaConMedicamento = $estancia->formularioInstancias->first(function($instancia) {
+                    return $instancia->hojaEnfermeria && $instancia->hojaEnfermeria->hojaMedicamentos->count() > 0;
+                });
+
+                return [
+                    'estancia_id' => $estancia->id,
+                    'paciente' => $estancia->paciente,
+                    'total_items' => $todosLosMedicamentos->count(),
+                    'resumen' => $todosLosMedicamentos->take(3)->map(fn($m) => $m->productoServicio->nombre ?? 'N/A'),
+                    'hoja_enfermeria_id' => $instanciaConMedicamento ? $instanciaConMedicamento->id : null,
+                ];
+            });
+
+        return Inertia::render('peticiones/index', [
+            'peticiones' => $peticionesAgrupadas
         ]);
     }
 

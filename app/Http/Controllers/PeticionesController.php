@@ -23,13 +23,10 @@ class PeticionesController extends Controller
             })
             ->get()
             ->map(function ($estancia) {
-                // Recolectamos todos los medicamentos
                 $todosLosMedicamentos = $estancia->formularioInstancias->flatMap(function ($instancia) {
                     return $instancia->hojaEnfermeria ? $instancia->hojaEnfermeria->hojaMedicamentos : [];
                 });
 
-                // Buscamos el ID de la Hoja de Enfermería que tenga medicamentos solicitados
-                // para que el botón "Surtir" nos mande a la hoja correcta
                 $instanciaConMedicamento = $estancia->formularioInstancias->first(function($instancia) {
                     return $instancia->hojaEnfermeria && $instancia->hojaEnfermeria->hojaMedicamentos->count() > 0;
                 });
