@@ -29,7 +29,6 @@ interface ShowEstanciaProps {
 }
 
 
-
 const Show = ({ estancia }: ShowEstanciaProps) => {
     
     const { can, hasRole } = usePermission();
@@ -423,7 +422,7 @@ const Show = ({ estancia }: ShowEstanciaProps) => {
                                                         Registrado por: {c.user?.nombre}
                                                     </p>
                                                     <p className="text-xs text-gray-500">
-                                                        {new Date(c.created_at).toLocaleString('es-MX', dateOptions)}
+                                                        {new Date(c.created_at).toLocaleDateString()}
                                                     </p>
                                                 </div>
 

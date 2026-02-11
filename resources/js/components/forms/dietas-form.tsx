@@ -3,6 +3,7 @@ import { useForm } from '@inertiajs/react';
 import { CategoriaDieta, HojaEnfermeria, SolicitudDieta } from '@/types'; 
 import { route } from 'ziggy-js';
 import { Pencil } from 'lucide-react';
+import Swal from 'sweetalert2';
 
 import SelectInput from '@/components/ui/input-select';
 import PrimaryButton from '@/components/ui/primary-button';
@@ -48,11 +49,24 @@ const DietaForm: React.FC<Props> = ({ hoja, categoria_dietas = [] }) => {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        post(route('hojasenfermerias.dietas.store', { hojasenfermeria: hoja.id }), {
-            preserveScroll: true,
-            onSuccess: () => {
-                reset();
-                setCategoriaData('');
+        Swal.fire({
+            title: '¿Confirmar registro?',
+            text: "Se guardarán los signos vitales capturados.",
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Sí, guardar',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                post(route('hojasenfermerias.dietas.store', { hojasenfermeria: hoja.id }), {
+                    preserveScroll: true,
+                    onSuccess: () => {
+                        reset();
+                        setCategoriaData('');
+                    }
+                });
             }
         });
     }

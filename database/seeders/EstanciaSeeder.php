@@ -18,6 +18,7 @@ class EstanciaSeeder extends Seeder
             'paciente_id' => 1,
             'fecha_ingreso' => '2025-09-28 10:00',
             'tipo_estancia' => 'Interconsulta',
+            'tipo_ingreso' => 'Ingreso',
             'modalidad_ingreso' => 'Particular',
             'familiar_responsable_id' => 1,
             'created_by' => 7
@@ -31,6 +32,7 @@ class EstanciaSeeder extends Seeder
             'habitacion_id' => 2,
             'estancia_anterior_id' => 1,
             'tipo_estancia' => 'Hospitalizacion',
+            'tipo_ingreso' => 'Ingreso',
             'modalidad_ingreso' => 'Particular',
             'familiar_responsable_id' => 2,
             'created_by' => 7

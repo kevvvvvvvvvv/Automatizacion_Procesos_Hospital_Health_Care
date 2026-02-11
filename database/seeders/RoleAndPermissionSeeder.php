@@ -46,6 +46,10 @@ class RoleAndPermissionSeeder extends Seeder
             'documentos medicos' => ['crear', 'consultar'],
             'consentimientos' => ['crear'],
             'dietas' => ['consultar', 'crear', 'eliminar', 'editar'],
+
+            'base de datos' => ['consultar', 'respaldar','restaurar'],
+            'peticion medicamentos' => ['consultar','editar', 'crear'],
+            'peticion dietas' => ['consultar','editar'],
         ];
 
         foreach ($permissions as $module => $actions) {
@@ -126,6 +130,21 @@ class RoleAndPermissionSeeder extends Seeder
             
             'consultar documentos medicos',
             'crear documentos medicos',
+        ]);
+
+        $roleFarmacia->syncPermissions([
+            'consultar peticion medicamentos',
+            'editar peticion medicamentos',
+        ]);
+
+        $roleCocina->syncPermissions([
+            'consultar dietas',
+            'editar dietas',
+            'crear dietas',
+            'eliminar dietas',
+
+            'consultar peticion dietas',
+            'editar peticion dietas',
         ]);
     }
 }

@@ -3,11 +3,11 @@ import { useForm } from '@inertiajs/react';
 import { HojaEnfermeria, HojaSignos } from '@/types'; 
 import { route } from 'ziggy-js';
 import { Pencil } from 'lucide-react'; 
+import Swal from 'sweetalert2';
 
 import InputText from '@/components/ui/input-text';
 import PrimaryButton from '@/components/ui/primary-button';
 import { DataTable } from '../ui/data-table';
-import Swal from 'sweetalert2';
 
 interface Props {
     hoja: HojaEnfermeria;
