@@ -26,7 +26,7 @@ class EstanciaRequest extends FormRequest
             'tipo_estancia'          => 'required|string|in:Hospitalizacion,Interconsulta',
             'tipo_ingreso'           => 'required|string|in:Ingreso,Reingreso',
             'modalidad_ingreso'      => 'required|string',
-            'estancia_referencia_id' => 'nullable|required_if:tipo_ingreso,Reingreso|exists:estancias,id',
+            'estancia_anterior_id' => 'nullable|required_if:tipo_ingreso,Reingreso|exists:estancias,id',
         ];
     }
 

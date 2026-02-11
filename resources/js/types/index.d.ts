@@ -165,6 +165,8 @@ export interface Estancia {
     familiar_responsable_id: number | null;
     estancia_anterior_id: number | null;
 
+    estancia_anterior: Estancia;
+
     paciente: Paciente;
 
     created_at: string;
@@ -876,7 +878,7 @@ export interface Consentimiento{
     diagnostico: string;
     route_pdf: string;
     user: User;
-    created_at?: string;
+    created_at: string;
     updated_at?: string;
 }
 

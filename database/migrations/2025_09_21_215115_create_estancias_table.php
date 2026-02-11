@@ -31,6 +31,8 @@ return new class extends Migration
             $table->enum('tipo_estancia', ['Interconsulta', 'Hospitalizacion']);
             $table->string('modalidad_ingreso');
 
+            $table->string('tipo_ingreso');
+
             $table->foreignId('estancia_anterior_id')
                   ->nullable()
                   ->constrained('estancias')
