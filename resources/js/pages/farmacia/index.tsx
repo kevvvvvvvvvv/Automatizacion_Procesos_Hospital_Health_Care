@@ -1,6 +1,8 @@
 import React from 'react';
 import { Head, Link } from '@inertiajs/react';
 import MainLayout from '@/layouts/MainLayout';
+import { route } from 'ziggy-js';
+
 import { ShoppingCart, User as UserIcon, ChevronRight } from 'lucide-react';
 
 interface Props {
@@ -9,7 +11,7 @@ interface Props {
 
 const FarmaciaIndex = ({ peticiones }: Props) => {
     return (
-        <MainLayout pageTitle="Panel de Surtido de Medicamentos" link='dashboard'>
+        <MainLayout pageTitle="Panel de surtido de medicamentos" link='dashboard'>
             <Head title="Farmacia - Pendientes" />
 
             <div className="grid grid-cols-1 gap-4">
@@ -19,7 +21,7 @@ const FarmaciaIndex = ({ peticiones }: Props) => {
                             <thead className="bg-gray-50 text-gray-600">
                                 <tr>
                                     <th className="px-6 py-3 text-left text-xs font-bold uppercase tracking-wider">Paciente / Estancia</th>
-                                    <th className="px-6 py-3 text-left text-xs font-bold uppercase tracking-wider">Medicamentos Pendientes</th>
+                                    <th className="px-6 py-3 text-left text-xs font-bold uppercase tracking-wider">Medicamentos pendientes</th>
                                     <th className="px-6 py-3 text-center text-xs font-bold uppercase tracking-wider">Acción</th>
                                 </tr>
                             </thead>
@@ -50,10 +52,10 @@ const FarmaciaIndex = ({ peticiones }: Props) => {
                                         
                                         <td className="px-6 py-4 text-center">
                                             <Link
-                                                href={route('farmacia.solicitud.show', peticion.hoja_enfermeria_id)}
+                                                href={route('solicitudes-medicamentos.show', peticion.hoja_enfermeria_id)}
                                                 className="inline-flex items-center px-4 py-2 bg-indigo-600 text-white text-xs font-bold rounded hover:bg-indigo-700 transition"
                                             >
-                                                Surtir Pedido <ChevronRight size={14} className="ml-1" />
+                                                Surtir pedido <ChevronRight size={14} className="ml-1" />
                                             </Link>
                                         </td>
                                     </tr>
