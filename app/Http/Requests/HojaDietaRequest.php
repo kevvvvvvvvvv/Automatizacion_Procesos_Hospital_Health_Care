@@ -23,7 +23,7 @@ class HojaDietaRequest extends FormRequest
     {
         return [
             'dieta_id' => 'required|numeric|exists:dietas,id',
-            'observaciones' => 'nullable|string' 
+            'observaciones' => 'nullable|string|min:0|max:255' 
         ];
     }
 
@@ -32,7 +32,8 @@ class HojaDietaRequest extends FormRequest
         return [
             'dieta_id.required' => 'La dieta es requerida',
             'dieta_id.numeric' => 'La dieta debe de ser numérica',
-            'observaciones.string' => 'Las observaciones tienen que ser un texto'
+            'observaciones.string' => 'Las observaciones tienen que ser un texto',
+            'observaciones.max' => 'Las observaciones no deben superar los 255 caracteres',
         ];  
     }
 }

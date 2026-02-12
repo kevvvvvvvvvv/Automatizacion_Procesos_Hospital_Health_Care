@@ -54,7 +54,7 @@ class EstanciaController extends Controller
                 'fecha_ingreso' => $fechaHoraCarbon->format('Y-m-d H:i:s'),
                 'tipo_estancia' => $validatedData['tipo_estancia'],
                 'tipo_ingreso' => $validatedData['tipo_ingreso'],
-                'estancia_anterior_id' => $validatedData['estancia_referencia_id'] ?? null,
+                'estancia_anterior_id' => $validatedData['estancia_anterior_id'] ?? null,
                 'modalidad_ingreso' => $validatedData['modalidad_ingreso'],
                 'habitacion_id' =>  $request['habitacion_id'] ?? null,
                 'familiar_responsable_id' => $request['familiar_responsable_id'] ?? null,
@@ -75,7 +75,11 @@ class EstanciaController extends Controller
 
     public function edit(Estancia $estancia)
     {
-        $estancia->load('habitacion');
+        $estancia->load(
+            'habitacion',
+            'estanciaAnterior'
+        );
+
         $paciente = $estancia->paciente;
         $paciente->load('estancias','familiarResponsables');
         $habitaciones = Habitacion::where('estado','Libre')->get();
@@ -113,7 +117,7 @@ class EstanciaController extends Controller
                 'fecha_ingreso' => $fechaHoraCarbon->format('Y-m-d H:i:s'),
                 'tipo_estancia' => $validatedData['tipo_estancia'],
                 'tipo_ingreso' => $validatedData['tipo_ingreso'],
-                'estancia_anterior_id' => $validatedData['estancia_referencia_id'] ?? null,
+                'estancia_anterior_id' => $validatedData['estancia_anterior_id'] ?? null,
                 'modalidad_ingreso' => $validatedData['modalidad_ingreso'],
                 'habitacion_id' =>  $request['habitacion_id'] ?? null,
                 'familiar_responsable_id' => $request['familiar_responsable_id'] ?? null,

@@ -34,23 +34,25 @@ const Create = ({
     onSubmit,
 }: Props) => {
 
+    const initialModalidad = estancia?.modalidad_ingreso === 'Particular' || !estancia?.modalidad_ingreso 
+        ? 'Particular' 
+        : 'Compania';
+
+    const [tipoModalidad, setTipoModalidad] = useState<'Particular' | 'Compania'>(initialModalidad);
+
     const form = useForm({
         folio: estancia?.folio || '',
         paciente_id: paciente?.id,
         fecha_ingreso: estancia?.fecha_ingreso ||  new Date(), 
         tipo_estancia: estancia?.tipo_estancia || '',
         tipo_ingreso:  estancia?.tipo_ingreso || 'Ingreso',
-        modalidad_ingreso: estancia?.modalidad_ingreso || '', 
-        estancia_referencia_id: estancia?.estancia_anterior_id || null,
+        modalidad_ingreso: estancia?.modalidad_ingreso || 'Particular', 
+        estancia_anterior_id: estancia?.estancia_anterior_id || null,
         familiar_responsable_id: estancia?.familiar_responsable_id || null,
         habitacion_id: estancia?.habitacion_id || null,
     });
 
     const { data, setData, processing, errors } = form;
-
-    React.useEffect(() => {
-        setData('modalidad_ingreso', 'Particular');
-    }, [setData]);
   
     const optionsEstanciasPrevias = paciente.estancias.map(estancia => ({
         value: estancia.id,
@@ -66,8 +68,6 @@ const Create = ({
         value: habitacion.id,
         label: habitacion.identificador
     }));
-
-    const [tipoModalidad, setTipoModalidad] = useState<'Particular' | 'Compania'>('Particular');
 
     const handleTipoModalidadChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const newTipo = e.target.value as 'Particular' | 'Compania';
@@ -109,8 +109,8 @@ const Create = ({
                 description="Fecha de ingreso"
                 id="fecha_ingreso"
                 name="fecha_ingreso"
-                value={data.fecha_ingreso}
-                onChange={(date) => setData('fecha_ingreso', String(date))} 
+                value={data.fecha_ingreso ? new Date(data.fecha_ingreso) : new Date()}
+                onChange={(date) => setData('fecha_ingreso', date || new Date())}
                 error={errors.fecha_ingreso}
             />
 
@@ -141,13 +141,13 @@ const Create = ({
                 error={errors.tipo_ingreso}
             />
 
-            {data.tipo_ingreso === 'Reingreso' && (
+            {(data.tipo_ingreso == 'Reingreso') && (
                 <SelectInput
                     label="Estancia de referencia para reingreso"
                     options={optionsEstanciasPrevias}
-                    value={data.estancia_referencia_id}
-                    onChange={(value) => setData('estancia_referencia_id', value ? Number(value) : null)}
-                    error={errors.estancia_referencia_id}
+                    value={data.estancia_anterior_id}
+                    onChange={(value) => setData('estancia_anterior_id', value ? Number(value) : null)}
+                    error={errors.estancia_anterior_id}
                     placeholder="Selecciona la estancia original..."
                 />
             )}
@@ -169,7 +169,7 @@ const Create = ({
                             type="radio"
                             name="tipo_modalidad"
                             value="Particular"
-                            checked={tipoModalidad === 'Particular'}
+                            checked={tipoModalidad === 'Particular'} 
                             onChange={handleTipoModalidadChange}
                             className="text-indigo-600 focus:ring-indigo-500"
                         />

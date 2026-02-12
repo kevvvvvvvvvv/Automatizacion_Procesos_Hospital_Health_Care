@@ -8,32 +8,15 @@ import { MdCalendarMonth,  } from "react-icons/md"
 import { MdHistory, MdAdd,  } from "react-icons/md";
 import { FaUserDoctor, FaBowlFood,  } from "react-icons/fa6";
 import { route } from 'ziggy-js';
-import { Head, usePage, PageProps as InertiaPageProps, router } from '@inertiajs/react';
-import { User } from '@/types';
+import { Head, usePage, router } from '@inertiajs/react';
+import { usePermission } from '@/hooks/use-permission';
 import MainLayout from '@/layouts/MainLayout';
 import CardButton from '@/components/ui/card-button';
-
-
-interface PageProps extends InertiaPageProps {
-    auth: {
-        user: User;
-    };
-}
+import {PageProps} from '@/types';
 
 export default function Dashboard() {
+    const { can } = usePermission();
     const { auth } = usePage<PageProps>().props;
-    const user = auth.user;
-
-    const can = (permissionName: string): boolean => {
-        const userRoles = user.roles || [];
-        const userPermissions = user.permissions || [];
-
-        if (userRoles.includes('admin')) {
-            return true;
-        }
-
-        return userPermissions.includes(permissionName);
-    };
 
     return (
         <>
@@ -91,7 +74,7 @@ export default function Dashboard() {
                     />)}
                 </div>
                 <div>
-                     <CardButton
+                    <CardButton
                         icon={MdCalendarMonth}
                         text="Reservar"
                         onClick={() => router.visit(route('rerservaciones.reserva'))}
@@ -108,23 +91,24 @@ export default function Dashboard() {
                     )}
                 </div>
                 <div>
-                    
+                    {can('consultar peticion medicamentos') && (
                      <CardButton
                         icon={FaRegCheckCircle}
                         text="Petición de medicamentos"
                         onClick={() => router.visit(route('peticiones.index'))}
                     />
-                    
+                    )}
                 </div>
+                
                 <div>
-                    
+                    {can('consultar base de datos') && (
                      <CardButton
                         icon={FaDatabase}
                         text="Respaldo de la base de datos"
                         onClick={() => router.visit(route('respaldo.index'))}
                     />
-                    
-                </div>                   
+                    )}
+                </div>                 
             </MainLayout>
         </>
     );

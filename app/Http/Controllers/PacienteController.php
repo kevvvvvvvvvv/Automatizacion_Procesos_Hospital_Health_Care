@@ -41,8 +41,7 @@ class PacienteController extends Controller implements HasMiddleware
     }
  
     public function store(Request $request)
-    {
-        $validated = $request->validate([
+    { $validated = $request->validate([
             'curp' => 'required|string|max:18|unique:pacientes,curp',
             'nombre' => 'required|string|max:100',
             'apellido_paterno' => 'required|string|max:100',
@@ -63,25 +62,18 @@ class PacienteController extends Controller implements HasMiddleware
             'lugar_origen' => 'required|string|max:100',
             'nombre_padre' => 'nullable|string|max:100',
             'nombre_madre' => 'nullable|string|max:100',
-
             'responsables' => 'nullable|array',
             'responsables.*.nombre_completo' => 'required|string|max:100',
             'responsables.*.parentesco' => 'required|string|max:100',
-        ]);
-
-        return DB::transaction(function () use ($validated) {
+        ]);return DB::transaction(function () use ($validated) {
             try {
                 $pacienteData = Arr::except($validated, ['responsables']);
-                
                 $paciente = Paciente::create($pacienteData);
                 if (!empty($validated['responsables'])) {
                     $paciente->familiarResponsables()->createMany($validated['responsables']);
-                }
-                return redirect()->route('pacientes.index')
+                } return redirect()->route('pacientes.index')
                     ->with('success', 'Paciente registrado correctamente.');
-
             } catch (\Exception $e) {
-
                 \Log::error('Error creando paciente: ' . $e->getMessage());
                 return back()->with('error', 'Ocurrió un error al guardar los datos. Por favor intente de nuevo.');
             }

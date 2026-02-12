@@ -77,7 +77,7 @@ const ServiciosEspecialesForm: React.FC<Props> = ({ modelo, tipo }) => {
                         <tbody>
                             {(modelo.hoja_oxigenos ?? []).length === 0 ? (
                                 <tr className='text-center'>
-                                    <td colSpan={3} className='px-4 py-4 text-sm text-gray-500 text-center'>
+                                    <td colSpan={7} className='px-4 py-4 text-sm text-gray-500 text-center'>
                                         No hay aplicaciones de oxígeno registradas
                                     </td>
                                 </tr>
