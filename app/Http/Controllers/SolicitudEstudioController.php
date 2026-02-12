@@ -35,10 +35,10 @@ class SolicitudEstudioController extends Controller implements HasMiddleware
     {
         $permission = \Spatie\Permission\Middleware\PermissionMiddleware::class;
         return [
-            new Middleware($permission . ':consultar hojas', only: ['index', 'show', 'generarPDF']),
-            new Middleware($permission . ':crear hojas', only: ['create', 'store']),
+            new Middleware($permission . ':consultar solicitudes estudios', only: ['index', 'show', 'generarPDF']),
+            new Middleware($permission . ':crear solicitudes estudios', only: ['create', 'store']),
             new Middleware($permission . ':editar solicitudes estudios', only: ['update','edit']),
-            new Middleware($permission . ':eliminar hojas', only: ['destroy']),
+            new Middleware($permission . ':eliminar solicitudes estudios', only: ['destroy']),
         ];
     }
 
