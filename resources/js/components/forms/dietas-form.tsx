@@ -2,10 +2,13 @@ import React, { useMemo, useState } from 'react';
 import { useForm } from '@inertiajs/react';
 import { CategoriaDieta, HojaEnfermeria, SolicitudDieta } from '@/types'; 
 import { route } from 'ziggy-js';
+import { Pencil } from 'lucide-react';
+import Swal from 'sweetalert2';
 
 import SelectInput from '@/components/ui/input-select';
 import PrimaryButton from '@/components/ui/primary-button';
 import InputText from '../ui/input-text';
+import { DataTable } from '../ui/data-table';
 
 
 interface Props {
@@ -46,14 +49,82 @@ const DietaForm: React.FC<Props> = ({ hoja, categoria_dietas = [] }) => {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        post(route('hojasenfermerias.dietas.store', { hojasenfermeria: hoja.id }), {
-            preserveScroll: true,
-            onSuccess: () => {
-                reset();
-                setCategoriaData('');
+        Swal.fire({
+            title: '¿Confirmar registro?',
+            text: "Se guardarán los signos vitales capturados.",
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Sí, guardar',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                post(route('hojasenfermerias.dietas.store', { hojasenfermeria: hoja.id }), {
+                    preserveScroll: true,
+                    onSuccess: () => {
+                        reset();
+                        setCategoriaData('');
+                    }
+                });
             }
         });
     }
+
+    const columnasDietas = [
+        { 
+            header: 'Tipo de Dieta', 
+            key: 'tipo_dieta',
+            render: (reg: SolicitudDieta) => (
+            <div>
+                <div className="font-bold text-gray-900">{reg.dieta.categoria_dieta.categoria}</div>
+                <div className="text-xs text-gray-500">{}</div>
+            </div>
+            )
+        },
+        { 
+            header: 'Solicitud', 
+            key: 'horario_solicitud',
+            render: (reg: SolicitudDieta) => (
+            <div className="text-xs">
+                <span className="block font-medium">Pedido: {reg.horario_solicitud}</span>
+                <span className="text-gray-400">Supervisa: {reg.user_supervisa?.nombre || 'Pendiente'}</span>
+            </div>
+            )
+        },
+        { 
+            header: 'Entrega', 
+            key: 'horario_entrega',
+            render: (reg: SolicitudDieta) => (
+            <div className="text-xs">
+                {reg.horario_entrega ? (
+                <>
+                    <span className="block text-green-600 font-medium">Entregado: {reg.horario_entrega}</span>
+                    <span className="text-gray-400">ID Entrega: {reg.user_entrega_id}</span>
+                </>
+                ) : (
+                <span className="text-amber-500 italic">En proceso...</span>
+                )}
+            </div>
+            )
+        },
+        {
+            header: 'Acción',
+            key: 'accion',
+            render: (reg: SolicitudDieta) => (
+            <div className="flex gap-2">
+                <button 
+                onClick={() => console.log("Editar dieta:", reg.id)} 
+                className="text-blue-600 hover:text-blue-900"
+                title="Editar"
+                >
+                <Pencil size={18} />
+                </button>
+            </div>
+            )
+        }
+    ];
+
 
     return (
         <div className="space-y-6">
@@ -114,37 +185,7 @@ const DietaForm: React.FC<Props> = ({ hoja, categoria_dietas = [] }) => {
             </form>
 
             <div className="mt-12">
-                <h3 className="text-lg font-semibold mb-2">Historial de dietas solicitadas</h3>
-                <div className="overflow-x-auto border rounded-lg bg-white shadow-sm">
-                    <table className="min-w-full divide-y divide-gray-200">
-                        <thead className="bg-gray-50">
-                            <tr className='text-left text-xs font-medium text-gray-500 uppercase'>
-                                <th className="px-4 py-3">Tipo de dieta</th>
-                                <th className="px-4 py-3">Opción</th>
-                                <th className="px-4 py-3">Solicitó</th>
-                                <th className="px-4 py-3">Hora solicitud</th>
-                            </tr>
-                        </thead>
-                        <tbody className="bg-white divide-y divide-gray-200">
-                            {(hoja.solicitud_dietas ?? []).length === 0 ? (
-                                <tr>
-                                    <td colSpan={4} className="px-4 py-4 text-sm text-gray-500 text-center">
-                                        No hay dietas registradas en esta hoja.
-                                    </td>
-                                </tr>
-                            ) : (
-                                (hoja.solicitud_dietas ?? []).map((dieta: SolicitudDieta) => (
-                                    <tr key={dieta.id}>
-                                        <td className="px-4 py-4 text-sm font-medium text-gray-900">{dieta.tipo_dieta}</td>
-                                        <td className="px-4 py-4 text-sm text-gray-500">{dieta.opcion_seleccionada}</td>
-                                        <td className="px-4 py-4 text-sm text-gray-500">{dieta.user_supervisa?.nombre || 'N/A'}</td>
-                                        <td className="px-4 py-4 text-sm text-gray-500">{new Date(dieta.horario_solicitud).toLocaleString('es-MX')}</td>
-                                    </tr>
-                                ))
-                            )}
-                        </tbody>
-                    </table>
-                </div>
+                <DataTable columns={columnasDietas} data={hoja.solicitudes_dieta} />
             </div>
         </div>
     );

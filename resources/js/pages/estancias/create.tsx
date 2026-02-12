@@ -16,7 +16,7 @@ const Create = ({
 }: Props) => {
 
     const handleCreate = (form: any) => {
-        form.post(route('pacientes.estancias.store'));
+        form.post(route('pacientes.estancias.store',{paciente: paciente.id}));
     }
 
     return (
