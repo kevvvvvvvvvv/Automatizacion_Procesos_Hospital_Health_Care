@@ -33,10 +33,10 @@ class SolicitudEstudioPatologiaController extends Controller implements HasMiddl
     {
         $permission = \Spatie\Permission\Middleware\PermissionMiddleware::class;
         return [
-            new Middleware($permission . ':consultar hojas', only: ['index', 'show', 'generarPDF']),
-            new Middleware($permission . ':crear hojas enfermerias', only: ['create','store']),
-            new Middleware($permission . ':crear hojas', only: ['create', 'store']),
-            new Middleware($permission . ':eliminar hojas', only: ['destroy']),
+            new Middleware($permission . ':consultar solicitudes estudios patologicos', only: ['index', 'show', 'generarPDF']),
+            new Middleware($permission . ':crear solicitudes estudios patologicos', only: ['create','store']),
+            new Middleware($permission . ':editar solicitudes estudios patologicos', only: ['edit', 'update']),
+            new Middleware($permission . ':eliminar solicitudes estudios patologicos', only: ['destroy']),
         ];
     }
 

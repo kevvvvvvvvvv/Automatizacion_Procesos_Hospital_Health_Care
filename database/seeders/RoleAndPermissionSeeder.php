@@ -41,8 +41,12 @@ class RoleAndPermissionSeeder extends Seeder
             'historial' =>['consultar'],
             'ventas' => ['consultar','eliminar','editar','crear'],
             'detalles ventas' => ['consultar','eliminar','editar','crear'],
+
             'hojas' => ['crear', 'consultar', 'editar', 'eliminar',], 
             'hojas enfermerias' => ['crear', 'consultar', 'eliminar'], // Solo se puede editar el documento que una persona creó
+            'solicitudes estudios' => ['crear','editar','consultar','eliminar'],
+            'solicitudes estudios patologicos' => ['crear','editar','consultar','eliminar'],
+
             'documentos medicos' => ['crear', 'consultar'],
             'consentimientos' => ['crear'],
             'dietas' => ['consultar', 'crear', 'eliminar', 'editar'],
@@ -79,6 +83,14 @@ class RoleAndPermissionSeeder extends Seeder
 
             'consultar hojas enfermerias',
             'crear hojas enfermerias',
+
+            'consultar hojas', 
+            
+            'consultar solicitudes estudios',
+            'crear solicitudes estudios',
+
+            'consultar solicitudes estudios patologicos',
+            'crear solicitudes estudios patologicos'
         ]);
 
         $roleCaja->syncPermissions([
@@ -126,10 +138,20 @@ class RoleAndPermissionSeeder extends Seeder
             'editar estancias',
             'consultar estancias',
 
+            'consultar hojas',
+            'crear hojas',
+            'eliminar hojas', 
+
             'consultar hojas enfermerias',
             
             'consultar documentos medicos',
             'crear documentos medicos',
+
+            'consultar solicitudes estudios',
+            'crear solicitudes estudios',
+
+            'consultar solicitudes estudios patologicos',
+            'crear solicitudes estudios patologicos'
         ]);
 
         $roleFarmacia->syncPermissions([
