@@ -111,9 +111,9 @@ class FormularioHojaEnfermeriaController extends Controller implements HasMiddle
             'hojaOxigenos.userFin',
             'hojaEscalaValoraciones',
             'hojaControlLiquidos',
-            'sondasCateteres.productoServicio',
-
             'hojaSignos',
+            'hojaRiesgoCaida',
+            'sondasCateteres.productoServicio',
             'solicitudesDieta.dieta.categoriaDieta',
             
         );

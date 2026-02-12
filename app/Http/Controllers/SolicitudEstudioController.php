@@ -139,6 +139,8 @@ class SolicitudEstudioController extends Controller implements HasMiddleware
             'grupos.*.items.*.cancelado' => 'boolean',
         ]);
 
+        dd($validated);
+
         try {
             DB::transaction(function () use ($request) {
                 foreach ($request->grupos as $index => $grupoData) {
