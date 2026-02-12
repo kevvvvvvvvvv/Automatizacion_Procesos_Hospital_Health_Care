@@ -319,6 +319,22 @@ export interface HojaEnfermeria {
     solicitudes_dieta: SolicitudDieta[];
     sondas_cateteres: HojaSondaCateter[] | null;
     hoja_oxigenos: HojaOxigeno[] | null;
+    hoja_riesgo_caida: HojaRiesgoCaida[];
+}
+
+export interface HojaRiesgoCaida {
+    id: number;
+    hoja_enfermeria_id: number;
+    caidas_previas: boolean;
+    estado_mental: string;
+    deambulacion:strinig;
+    edad_mayor_70: boolean;
+    medicamentos: string;
+    deficits: string;
+    puntaje_total: number;
+
+    created_at: string;
+    updated_at: string;
 }
 
 export interface ControlLiquidos {
