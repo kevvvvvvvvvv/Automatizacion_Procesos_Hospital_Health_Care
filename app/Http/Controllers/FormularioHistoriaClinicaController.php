@@ -20,8 +20,24 @@ use Spatie\LaravelPdf\Facades\Pdf;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Redis;
 
-class FormularioHistoriaClinicaController extends Controller
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
+
+class FormularioHistoriaClinicaController extends Controller implements HasMiddleware
 {
+    use AuthorizesRequests;
+
+    public static function middleware(): array
+    {
+        $permission = \Spatie\Permission\Middleware\PermissionMiddleware::class;
+        return [
+            new Middleware($permission . ':consultar hojas', only: ['index', 'show', 'generarPDF']),
+            new Middleware($permission . ':crear hojas', only: ['create', 'store']),
+            new Middleware($permission . ':eliminar hojas', only: ['destroy']),
+        ];
+    }
+
     public function show()
     {
         return Redirect::back()->with('error','La opción de mostrar no esta habilitada por el momento.');
