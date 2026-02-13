@@ -26,6 +26,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Medicamento whereNombreComercial($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Medicamento whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Medicamento whereVolumenTotal($value)
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\CatalogoViaAdministracion> $viasAdministracion
+ * @property-read int|null $vias_administracion_count
  * @mixin \Eloquent
  */
 class Medicamento extends Model

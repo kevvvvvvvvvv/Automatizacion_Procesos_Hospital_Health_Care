@@ -21,17 +21,19 @@ use Illuminate\Routing\Controllers\Middleware;
 
 use Inertia\Inertia;
 
+
 class NotaPostanestesicaController extends Controller implements HasMiddleware
 {
     use AuthorizesRequests;
 
     protected $pdfGenerator;
+    use AuthorizesRequests;
 
     public static function middleware(): array
     {
         $permission = \Spatie\Permission\Middleware\PermissionMiddleware::class;
         return [
-            new Middleware($permission . ':consultar hojas', only: ['index', 'show']),
+            new Middleware($permission . ':consultar hojas', only: ['index', 'show', 'generarPDF']),
             new Middleware($permission . ':crear hojas', only: ['create', 'store']),
             new Middleware($permission . ':eliminar hojas', only: ['destroy']),
         ];

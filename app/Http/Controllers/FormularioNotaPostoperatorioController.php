@@ -27,9 +27,25 @@ use Spatie\LaravelPdf\Facades\Pdf;
 use App\Services\PdfGeneratorService;
 use App\Services\VentaService; 
 
-class FormularioNotaPostoperatorioController extends Controller
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
+
+
+class FormularioNotaPostoperatorioController extends Controller implements HasMiddleware
 {
     protected $pdfGenerator;
+    use AuthorizesRequests;
+
+    public static function middleware(): array
+    {
+        $permission = \Spatie\Permission\Middleware\PermissionMiddleware::class;
+        return [
+            new Middleware($permission . ':consultar hojas', only: ['index', 'show', 'generarPDF']),
+            new Middleware($permission . ':crear hojas', only: ['create', 'store']),
+            new Middleware($permission . ':eliminar hojas', only: ['destroy']),
+        ];
+    }
 
     public function __construct(PdfGeneratorService $pdfGenerator)
     {
