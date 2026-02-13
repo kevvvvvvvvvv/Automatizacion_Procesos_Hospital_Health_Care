@@ -15,8 +15,23 @@ use App\Models\Estancia;
 
 use Inertia\Inertia;
 
-class FarmaciaController extends Controller
+use Illuminate\Routing\Controllers\Middleware;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Routing\Controllers\HasMiddleware;
+
+class FarmaciaController extends Controller implements HasMiddleware
 {
+    use AuthorizesRequests;
+
+    public static function middleware(): array
+    {
+        $permission = \Spatie\Permission\Middleware\PermissionMiddleware::class;
+        return [
+            new Middleware($permission . ':consultar peticion medicamentos', only: ['index', 'show']),
+            new Middleware($permission . ':crear peticion medicamentos', only: ['create', 'store']),
+            new Middleware($permission . ':eliminar peticion medicamentos', only: ['destroy']),
+        ];
+    }
 
     public function show(HojaEnfermeria $hojasenfermeria)
     {
@@ -65,7 +80,7 @@ class FarmaciaController extends Controller
                 ];
             });
 
-        return Inertia::render('peticiones/index', [
+        return Inertia::render('farmacia/index', [
             'peticiones' => $peticionesAgrupadas
         ]);
     }

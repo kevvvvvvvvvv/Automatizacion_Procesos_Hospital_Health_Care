@@ -21,7 +21,8 @@ use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 
-use Illuminate\Support\Facades\DB; 
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Redis;
 
 class FormularioHojaMedicamentoController extends Controller
 {
@@ -112,7 +113,8 @@ class FormularioHojaMedicamentoController extends Controller
             return Redirect::back()->with('success', 'Fecha de medicamento actualizada.');
 
         }catch(\Exception $e){
-            
+            \Log::error('Error al actualizar la fecha de actualización del medicamento: ' .$e->getMessage());
+            return Redirect::back()->with('error','Error al actualizar la fecha de actualización del medicamento.');
         }
 
     }
