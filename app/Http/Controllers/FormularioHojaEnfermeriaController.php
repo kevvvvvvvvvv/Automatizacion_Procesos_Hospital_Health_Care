@@ -37,7 +37,7 @@ class FormularioHojaEnfermeriaController extends Controller implements HasMiddle
     {
         $permission = \Spatie\Permission\Middleware\PermissionMiddleware::class;
         return [
-            new Middleware($permission . ':consultar hojas enfermerias', only: ['index', 'show']),
+            new Middleware($permission . ':consultar hojas enfermerias', only: ['index', 'show', 'generarPDF']),
             new Middleware($permission . ':crear hojas enfermerias', only: ['create', 'store']),
             new Middleware($permission . ':eliminar hojas enfermerias', only: ['destroy']),
         ];
@@ -111,9 +111,9 @@ class FormularioHojaEnfermeriaController extends Controller implements HasMiddle
             'hojaOxigenos.userFin',
             'hojaEscalaValoraciones',
             'hojaControlLiquidos',
-            'sondasCateteres.productoServicio',
-
             'hojaSignos',
+            'hojaRiesgoCaida',
+            'sondasCateteres.productoServicio',
             'solicitudesDieta.dieta.categoriaDieta',
             
         );

@@ -22,8 +22,27 @@ use App\Notifications\NuevaSolicitudEstudios;
 use Inertia\Inertia;
 use App\Services\TwilioWhatsAppService;
 
-class SolicitudEstudioController extends Controller
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
+
+class SolicitudEstudioController extends Controller implements HasMiddleware
 {
+
+    use AuthorizesRequests;
+
+    public static function middleware(): array
+    {
+        $permission = \Spatie\Permission\Middleware\PermissionMiddleware::class;
+        return [
+            new Middleware($permission . ':consultar solicitudes estudios', only: ['index', 'show', 'generarPDF']),
+            new Middleware($permission . ':crear solicitudes estudios', only: ['create', 'store']),
+            new Middleware($permission . ':editar solicitudes estudios', only: ['update','edit']),
+            new Middleware($permission . ':eliminar solicitudes estudios', only: ['destroy']),
+        ];
+    }
+
+
     public function store(SolicitudEstudioRequest $request, Estancia $estancia, TwilioWhatsAppService $twilio)
     {
         $validatedData = $request->validated();
@@ -119,6 +138,8 @@ class SolicitudEstudioController extends Controller
             'grupos.*.items.*.id' => 'required|exists:solicitud_items,id',
             'grupos.*.items.*.cancelado' => 'boolean',
         ]);
+
+        dd($validated);
 
         try {
             DB::transaction(function () use ($request) {
