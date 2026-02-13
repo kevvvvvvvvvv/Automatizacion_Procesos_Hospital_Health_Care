@@ -15,12 +15,27 @@ use Illuminate\Support\Facades\Auth;
 use Spatie\LaravelPdf\Facades\Pdf;
 use App\Services\PdfGeneratorService;
 
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
+
 use Inertia\Inertia;
 
-class NotaPostanestesicaController extends Controller
+class NotaPostanestesicaController extends Controller implements HasMiddleware
 {
+    use AuthorizesRequests;
 
     protected $pdfGenerator;
+
+    public static function middleware(): array
+    {
+        $permission = \Spatie\Permission\Middleware\PermissionMiddleware::class;
+        return [
+            new Middleware($permission . ':consultar hojas', only: ['index', 'show']),
+            new Middleware($permission . ':crear hojas', only: ['create', 'store']),
+            new Middleware($permission . ':eliminar hojas', only: ['destroy']),
+        ];
+    }
 
     public function __construct(PdfGeneratorService $pdfGenerator)
     {
@@ -56,7 +71,7 @@ class NotaPostanestesicaController extends Controller
             return Redirect::route('estancias.show', $estancia->id)->with('success','Se ha creado la nota postanestesica.');
         }catch(\Exception $e){
             DB::rollBack();
-            Log::error('Error al crear hoja frontal: ' . $e->getMessage());
+            \Log::error('Error al crear hoja frontal: ' . $e->getMessage());
             return Redirect::back()->with('error','No se pudo crear la nota postanestésica: ' . $e->getMessage());
         }
     }
