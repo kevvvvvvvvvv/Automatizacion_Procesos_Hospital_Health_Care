@@ -360,6 +360,8 @@ export interface HojaEnfermeriaQuirofano {
     hora_fin_anestesia: string;
     hora_fin_paciente: string;
 
+    estado: string;
+
     servicios_especiales: {
         torre: boolean;
         armonico: boolean;
