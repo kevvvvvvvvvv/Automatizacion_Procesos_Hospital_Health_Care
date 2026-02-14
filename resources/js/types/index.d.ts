@@ -609,6 +609,7 @@ export interface SolicitudEstudio {
     user_llena?: User;
     solicitud_items?: SolicitudItem[]; 
 
+    formulario_instancia: FormularioInstancia;
     user_solicita: User;
     user_llena?: User;
 }
