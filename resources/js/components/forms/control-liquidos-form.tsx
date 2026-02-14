@@ -3,6 +3,7 @@ import React from 'react';
 import { route } from 'ziggy-js';
 import { useForm } from '@inertiajs/react';
 import { Pencil } from 'lucide-react'; 
+import Swal from 'sweetalert2';
 
 import PrimaryButton from '../ui/primary-button'
 import InputText from '../ui/input-text';
@@ -27,81 +28,88 @@ const ControlLiquidosForm = ({hoja}: Props) => {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        post(route('hojas-control-liquidos.store',{ hojasenfermeria: hoja.id}),{
-            preserveScroll: true,
-            onSuccess: ()=>{
-                reset();
+        Swal.fire({
+            title: '¿Confirmar registro?',
+            text: "Se guardarán los controles de líquidos.",
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Sí, guardar',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                post(route('hojas-control-liquidos.store',{ hojasenfermeria: hoja.id}),{
+                    preserveScroll: true,
+                    onSuccess: ()=>{
+                        reset();
+                    }
+                });
             }
         });
     }
 
+    const renderEgreso = (valor: number | null, descripcion: string | null) => {
+        if (!valor && !descripcion) {
+            return <span className="text-gray-400 text-sm">Sin registros</span>;
+        }
+
+        return (
+            <div>
+                {valor !== null && (
+                    <div className="font-medium text-gray-900">{valor} ml</div>
+                )}
+                {descripcion && (
+                    <div className="text-xs text-gray-500 italic leading-tight">
+                        {descripcion}
+                    </div>
+                )}
+            </div>
+        );
+    };
+
     const columnasControlLiquidos = [
         { 
             header: 'Fecha/Hora', 
-            key: 'fecha_hora_registro' 
+            key: 'fecha_hora_registro',
+            render: (reg: ControlLiquidos) => (
+                <span className="text-sm text-gray-600">{reg.fecha_hora_registro}</span>
+            )
         },
         { 
             header: 'Uresis', 
             key: 'uresis', 
-            render: (reg: ControlLiquidos) => (
-            <div>
-                <div className="font-medium">{reg.uresis} ml</div>
-                {reg.uresis_descripcion && (
-                <div className="text-xs text-gray-400 italic">{reg.uresis_descripcion}</div>
-                )}
-            </div>
-            )
+            render: (reg: ControlLiquidos) => renderEgreso(reg.uresis, reg.uresis_descripcion)
         },
         { 
             header: 'Evacuaciones', 
             key: 'evacuaciones', 
-            render: (reg: ControlLiquidos) => (
-            <div>
-                <div className="font-medium">{reg.evacuaciones}</div>
-                {reg.evacuaciones_descripcion && (
-                <div className="text-xs text-gray-400 italic">{reg.evacuaciones_descripcion}</div>
-                )}
-            </div>
-            )
+            render: (reg: ControlLiquidos) => renderEgreso(reg.evacuaciones, reg.evacuaciones_descripcion)
         },
         { 
             header: 'Emesis', 
             key: 'emesis', 
-            render: (reg: ControlLiquidos) => (
-            <div>
-                <div className="font-medium">{reg.emesis} ml</div>
-                {reg.emesis_descripcion && (
-                <div className="text-xs text-gray-400 italic">{reg.emesis_descripcion}</div>
-                )}
-            </div>
-            )
+            render: (reg: ControlLiquidos) => renderEgreso(reg.emesis, reg.emesis_descripcion)
         },
         { 
             header: 'Drenes', 
             key: 'drenes', 
-            render: (reg: ControlLiquidos) => (
-            <div>
-                <div className="font-medium">{reg.drenes} ml</div>
-                {reg.drenes_descripcion && (
-                <div className="text-xs text-gray-400 italic">{reg.drenes_descripcion}</div>
-                )}
-            </div>
-            )
+            render: (reg: ControlLiquidos) => renderEgreso(reg.drenes, reg.drenes_descripcion)
         },
         {
             header: 'Acción',
             key: 'accion',
             render: (reg: ControlLiquidos) => (
-            <button 
-                onClick={() => console.log("Editar control:", reg.id)} 
-                className="text-blue-600 hover:text-blue-900"
-            >
-                <Pencil size={18} />
-            </button>
+                <button 
+                    onClick={() => console.log("Editar control:", reg.id)} 
+                    className="p-1 text-blue-600 hover:bg-blue-50 rounded-full transition-colors"
+                    title="Editar registro"
+                >
+                    <Pencil size={18} />
+                </button>
             )
         }
     ];
-
 
     return (
         <>
@@ -180,9 +188,11 @@ const ControlLiquidosForm = ({hoja}: Props) => {
                         error={errors.drenes_descripcion} 
                     />
                 </div>
-                <PrimaryButton disabled={processing} type='submit'>
-                    {processing ? 'Guardando...' : 'Guardar'}
-                </PrimaryButton>
+                <div className='flex justify-end'>
+                    <PrimaryButton disabled={processing} type='submit'>
+                        {processing ? 'Guardando...' : 'Guardar'}
+                    </PrimaryButton>
+                </div>
             </form>
             <div className="mt-12">
                 <DataTable columns={columnasControlLiquidos} data={hoja.hoja_control_liquidos} />

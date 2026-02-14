@@ -253,7 +253,7 @@ const MainLayout = ({ pageTitle, children, link, linkParams }: MainLayoutProps) 
                         {notifications.length > 0 ? (
                             notifications.map((notif: LaravelNotification) => {
                                 const targetUrl = notif.data.action_url 
-                                    || (notif.data.hoja_id ? route('farmacia.solicitud.show', { hojaenfermeria: notif.data.hoja_id }) : null);
+                                    || (notif.data.hoja_id ? route('solicitudes-medicamentos.show', { hojasenfermeria: notif.data.hoja_id }) : null);
                                 const cardContent = (
                                     <div className={`p-4 hover:bg-gray-50 ${!notif.read_at ? 'bg-blue-50' : ''}`}>
                                         {notif.data.title && (

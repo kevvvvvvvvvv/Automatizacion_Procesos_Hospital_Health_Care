@@ -95,11 +95,20 @@ export default function Dashboard() {
                      <CardButton
                         icon={FaRegCheckCircle}
                         text="Petición de medicamentos"
-                        onClick={() => router.visit(route('peticiones.index'))}
+                        onClick={() => router.visit(route('solicitudes-medicamentos.index'))}
                     />
                     )}
                 </div>
-                
+                <div>
+                    {can('consultar peticion dietas') && (
+                    <CardButton
+                        icon={FaRegCheckCircle}
+                        text="Petición de dietas"
+                        onClick={() => router.visit(route('dietas.index'))}
+                    />
+                    )}
+
+                </div>
                 <div>
                     {can('consultar base de datos') && (
                      <CardButton

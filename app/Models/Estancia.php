@@ -63,6 +63,8 @@ use App\Auditable;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Estancia whereTipoEstancia($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Estancia whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Estancia whereUpdatedBy($value)
+ * @property string $tipo_ingreso
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Estancia whereTipoIngreso($value)
  * @mixin \Eloquent
  */
 class Estancia extends Model

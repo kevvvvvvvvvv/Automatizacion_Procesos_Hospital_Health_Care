@@ -20,6 +20,7 @@ use App\Models\HojaEnfermeriaQuirofano;
 use App\Models\ProductoServicio;
 use App\Models\User;
 use App\Services\PdfGeneratorService;
+
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
@@ -33,7 +34,7 @@ class HojaEnfemeriaQuirofanoController extends Controller implements HasMiddlewa
     {
         $permission = \Spatie\Permission\Middleware\PermissionMiddleware::class;
         return [
-            new Middleware($permission . ':consultar hojas enfermerias', only: ['index', 'show']),
+            new Middleware($permission . ':consultar hojas enfermerias', only: ['index', 'show', 'generarPDF']),
             new Middleware($permission . ':crear hojas enfermerias', only: ['create', 'store']),
             new Middleware($permission . ':eliminar hojas enfermerias', only: ['destroy']),
         ];
