@@ -36,16 +36,22 @@ const EncuestaSatisfaccionForm = ({
     });
 
     const { data, setData, processing, errors} = form;  
+
     useEffect(() => {
     if (encuesta) {
         setData({
-            atencion_recpcion: encuesta.atencion_recpcion || '',
-            trato_personal_enfermeria: encuesta.trato_personal_enfermeria || '',
-            limpieza_comodidad_habitacion: encuesta.limpieza_comodidad_habitacion || '',
-            calidad_comida: encuesta.calidad_comida || '',
-            tiempo_atencion: encuesta.tiempo_atencion || '',
-            informacion_tratamiento: encuesta.informacion_tratamiento || '',
-            atencion_nutricional: encuesta.atencion_nutricional,
+            // Aseguramos que los ratings sean números. 
+            // Si el valor es null, ponemos 0 para que no rompa el componente.
+            atencion_recpcion: encuesta.atencion_recpcion ? Number(encuesta.atencion_recpcion) : 0,
+            trato_personal_enfermeria: encuesta.trato_personal_enfermeria ? Number(encuesta.trato_personal_enfermeria) : 0,
+            limpieza_comodidad_habitacion: encuesta.limpieza_comodidad_habitacion ? Number(encuesta.limpieza_comodidad_habitacion) : 0,
+            calidad_comida: encuesta.calidad_comida ? Number(encuesta.calidad_comida) : 0,
+            tiempo_atencion: encuesta.tiempo_atencion ? Number(encuesta.tiempo_atencion) : 0,
+            informacion_tratamiento: encuesta.informacion_tratamiento ? Number(encuesta.informacion_tratamiento) : 0,
+            
+            // CONVERSIÓN CRÍTICA: Forzamos a booleano real
+            atencion_nutricional: Boolean(encuesta.atencion_nutricional), 
+            
             comentarios: encuesta.comentarios || '',
         });
     }

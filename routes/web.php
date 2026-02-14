@@ -49,6 +49,7 @@ use App\Http\Controllers\HojaControlLiquidoController;
 use App\Http\Controllers\HojaEscalaValoracionController;
 use App\Http\Controllers\PeticionesController;
 use App\Http\Controllers\BackupsRestauration\BackupsController;
+use App\Http\Controllers\RestauracionController;
 use App\Http\Controllers\Encuestas\EncuestaSatisfaccionController;
 use App\Models\HojaContolLiquido;
 use Illuminate\Support\Facades\Route;
@@ -260,7 +261,7 @@ Route::get('/consentimientos/pdf/{file}', [ConsentimientoController::class, 'gen
     ->where('file', '.*')
     ->name('consentimientos.pdf')
     ->middleware('auth');
-Route::get('/encuesta-satisfaccions/{encuesta-satisfaccions}/pdf', [SolicitudEstudioController::class, 'generarPDf'])
+Route::get('/encuesta-satisfaccions/{encuesta-satisfaccions}/pdf', [EncuestaSatisfaccionController::class, 'generarPDF'])
     ->name('encuesta-satisfaccions.pdf')
     ->middleware('auth');
 
@@ -283,6 +284,15 @@ Route::get('/historial', [HistoryController::class, 'index'])->name('historiales
 Route::get ('/rerservacion/reserva', [ReservacionController::class, 'reserva'])->name('rerservaciones.reserva')->middleware('auth');
 
 
+//RESTAURACIÓN DE LA BASE DE DATOS
+Route::get('/bd/respaldo/restauracion/', [RestauracionController::class, 'showView'])
+    ->name('bd.restauracion'); 
+
+Route::get('/bd/respaldo/restauracion', [RestauracionController::class, 'showView'])
+    ->name('bd.restauracion'); 
+
+Route::post('/bd/respaldo/restauracion', [RestauracionController::class, 'restore'])
+    ->name('bd.restauracion.store');
 
 require __DIR__.'/settings.php';
 require __DIR__.'/auth.php';
