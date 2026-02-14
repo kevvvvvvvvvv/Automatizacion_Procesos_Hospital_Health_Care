@@ -72,21 +72,58 @@ class EncuestaSatisfaccionController extends Controller
             'estancia' => $encuesta_satisfaccion->formularioInstancia->estancia,
         ]);
     }
-
+    public function update( EncuestaSatisfaccionRequest $request, EncuestaSatisfaccion $encuesta_satisfaccion){
+        $validatedData = $request->validated();
+        $encuesta_satisfaccion->update($validatedData);
+        $estancia = $encuesta_satisfaccion->formularioInstancia->estancia;
+        $paciente = $estancia->paciente;
+        return Inertia::render('formularios/encuestas-satisfacciones/show', [
+            'encuestaSatisfaccion' => $encuesta_satisfaccion,
+            'estancia' => $estancia,
+            'paciente' => $paciente
+        ])->with('succes', 'Encuesta actualizada');
+    }
     public function show(EncuestaSatisfaccion $encuesta_satisfaccion)
     {
          $encuesta_satisfaccion->load([
             'formularioInstancia.user', 
             'formularioInstancia.estancia.paciente'
         ]);
+        $estancia = $encuesta_satisfaccion->formularioInstancia->estancia;
+        $paciente = $estancia->paciente;
 
+        //dd($encuesta_satisfaccion->toArray());
         return Inertia::render('formularios/encuestas-satisfacciones/show', [
-            'encuesta' => $encuesta_satisfaccion
+            'encuestaSatisfaccion' => $encuesta_satisfaccion,
+            'estancia' => $estancia,
+            'paciente' => $paciente
         ]);
     }
 
     public function generarPDF(EncuestaSatisfaccion $encuesta_satisfaccion)
     {
-        // Aquí irá tu lógica de PDF
+        dd($encuesta_satisfaccion);
+        $encuesta_satisfaccion->load(
+            'formularioInstancia.estancia.paciente'
+        );
+
+        $estancia = $encuesta_satisfaccion->formularioInstancia->estancia;
+        $paciente = $estancia->paciente;
+          $headerData = [
+            'encuesta_satisfaccion' => $encuesta_satisfaccion,
+            'paciente' => $paciente,
+            'estancia' => $estancia,
+        ];
+        $viewData = [
+            'notaData' => $encuesta_satisfaccion,
+            'pacientte' => $paciente,
+        ];
+        return $this->pdfGenerator->generateStandardPdf(
+            'pdfs.encuesta-satisfaccions',
+            $viewData,
+            $headerData,
+            'encuesta-satisfaccions-',
+            $estancia->folio,
+        );
     }
 }

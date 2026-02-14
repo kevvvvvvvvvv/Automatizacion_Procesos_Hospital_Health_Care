@@ -34,101 +34,131 @@ const RespaldoIndex = ({ backups }: Props) => {
     };
 
     return (
-        <MainLayout pageTitle="Mantenimiento de base de datos" link='dashboard'>
+        <MainLayout pageTitle="Mantenimiento" link='dashboard'>
             <Head title="Respaldos de sistema" />
 
             <div className="max-w-6xl mx-auto p-4 md:p-8">
-                {/* Encabezado con Acción */}
-                <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100 mb-8 flex flex-col md:flex-row justify-between items-center gap-4">
-                    <div className="flex items-center space-x-4">
-                        <div className="p-3 bg-blue-100 rounded-lg text-blue-600">
+                {/* Encabezado Responsivo */}
+                <div className="bg-white p-4 md:p-6 rounded-lg shadow-sm border border-gray-100 mb-6 flex flex-col sm:flex-row justify-between items-center gap-4 text-center sm:text-left">
+                    <div className="flex flex-col sm:flex-row items-center gap-4">
+                        <div className="p-3 bg-blue-100 rounded-lg text-blue-600 hidden sm:block">
                             <Database size={32} />
                         </div>
                         <div>
                             <h2 className="text-xl font-bold text-gray-800">Copia de seguridad</h2>
-                            <p className="text-sm text-gray-500">Genera y descarga respaldos completos de la base de datos.</p>
+                            <p className="text-sm text-gray-500">Gestión de base de datos del sistema.</p>
                         </div>
                     </div>
                     
                     <PrimaryButton 
                         onClick={handleCreateBackup} 
                         disabled={processing}
-                        className="flex items-center gap-2"
+                        className="flex items-center justify-center gap-2 w-full sm:w-auto"
                     >
                         {processing ? <RefreshCw className="animate-spin" size={18} /> : <Database size={18} />}
-                        Generar nuevo respaldo
+                        <span className="whitespace-nowrap">Generar respaldo</span>
                     </PrimaryButton>
                 </div>
                 
-                <div className="bg-white shadow rounded-lg overflow-hidden">
-                    <table className="min-w-full divide-y divide-gray-200">
-                        <thead className="bg-gray-50">
-                            <tr>
-                                <th className="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase">Archivo</th>
-                                <th className="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase">Fecha</th>
-                                <th className="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase">Tamaño</th>
-                                <th className="px-6 py-3 text-center text-xs font-bold text-gray-500 uppercase">Estado</th>
-                                <th className="px-6 py-3 text-center text-xs font-bold text-gray-500 uppercase">Acción</th>
-                            </tr>
-                        </thead>
-                        <tbody className="bg-white divide-y divide-gray-200 text-sm">
-                            {backups.length > 0 ? (
-                                backups.map((backup) => (
-                                    <tr key={backup.id} className="hover:bg-gray-50 transition-colors">
-                                        <td className="px-6 py-4 font-medium text-gray-900">
-                                            {backup.file_name}
-                                        </td>
-                                        <td className="px-6 py-4 text-gray-600">
-                                            {new Date(backup.created_at).toLocaleString()}
-                                        </td>
-                                        <td className="px-6 py-4 text-gray-600">
-                                            {formatSize(backup.size)}
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            <div className="flex justify-center">
-                                                {backup.status === 'completed' && (
-                                                    <span className="flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                                        <CheckCircle size={14} className="mr-1" /> Completado
-                                                    </span>
-                                                )}
-                                                {backup.status === 'pending' && (
-                                                    <span className="flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800 animate-pulse">
-                                                        <Clock size={14} className="mr-1" /> Procesando
-                                                    </span>
-                                                )}
-                                                {backup.status === 'failed' && (
-                                                    <span className="flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800" title={backup.error_message}>
-                                                        <AlertCircle size={14} className="mr-1" /> Fallido
-                                                    </span>
-                                                )}
-                                            </div>
-                                        </td>
-                                        <td className="px-6 py-4 text-center">
-                                            {backup.status === 'completed' && (
-                                                <a
-                                                    href={route('bd.respaldo.download', backup.id)}
-                                                    className="inline-flex items-center p-2 text-blue-600 hover:bg-blue-100 rounded-full transition"
-                                                    title="Descargar SQL"
-                                                >
-                                                    <Download size={20} />
-                                                </a>
-                                            )}
-                                        </td>
-                                    </tr>
-                                ))
-                            ) : (
+                {/* Contenedor de Tabla / Cards */}
+                <div className="bg-white shadow rounded-lg overflow-hidden border border-gray-200">
+                    {/* Vista para Desktop (Tablas) */}
+                    <div className="hidden md:block overflow-x-auto">
+                        <table className="min-w-full divide-y divide-gray-200">
+                            <thead className="bg-gray-50">
                                 <tr>
-                                    <td colSpan={5} className="px-6 py-12 text-center text-gray-500 italic">
-                                        No se han generado respaldos todavía.
-                                    </td>
+                                    <th className="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase italic">Archivo</th>
+                                    <th className="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase italic">Fecha</th>
+                                    <th className="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase italic">Tamaño</th>
+                                    <th className="px-6 py-3 text-center text-xs font-bold text-gray-500 uppercase italic">Estado</th>
+                                    <th className="px-6 py-3 text-right text-xs font-bold text-gray-500 uppercase italic">Acción</th>
                                 </tr>
-                            )}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody className="bg-white divide-y divide-gray-200 text-sm font-medium">
+                                {backups.length > 0 ? (
+                                    backups.map((backup) => (
+                                        <tr key={backup.id} className="hover:bg-gray-50 transition-colors">
+                                            <td className="px-6 py-4 text-gray-900 break-all">{backup.file_name}</td>
+                                            <td className="px-6 py-4 text-gray-600">{new Date(backup.created_at).toLocaleString()}</td>
+                                            <td className="px-6 py-4 text-gray-600">{formatSize(backup.size)}</td>
+                                            <td className="px-6 py-4">
+                                                <div className="flex justify-center">
+                                                    <StatusBadge status={backup.status} error={backup.error_message} />
+                                                </div>
+                                            </td>
+                                            <td className="px-6 py-4 text-right">
+                                                {backup.status === 'completed' && (
+                                                    <a href={route('bd.respaldo.download', backup.id)} className="p-2 text-blue-600 hover:bg-blue-100 rounded-full inline-block transition">
+                                                        <Download size={20} />
+                                                    </a>
+                                                )}
+                                            </td>
+                                        </tr>
+                                    ))
+                                ) : <EmptyState />}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    {/* Vista para Móviles (Cards) */}
+                    <div className="md:hidden divide-y divide-gray-200">
+                        {backups.length > 0 ? (
+                            backups.map((backup) => (
+                                <div key={backup.id} className="p-4 flex flex-col gap-3">
+                                    <div className="flex justify-between items-start">
+                                        <div className="flex-1 pr-2">
+                                            <p className="text-sm font-bold text-gray-900 break-all">{backup.file_name}</p>
+                                            <p className="text-xs text-gray-500">{new Date(backup.created_at).toLocaleString()}</p>
+                                        </div>
+                                        <StatusBadge status={backup.status} error={backup.error_message} />
+                                    </div>
+                                    <div className="flex justify-between items-center bg-gray-50 p-2 rounded">
+                                        <span className="text-xs text-gray-500 font-bold uppercase tracking-wider">Tamaño: {formatSize(backup.size)}</span>
+                                        {backup.status === 'completed' && (
+                                            <a 
+                                                href={route('bd.respaldo.download', backup.id)} 
+                                                className="flex items-center gap-1 text-sm text-blue-600 font-bold px-3 py-1 bg-blue-50 rounded-md border border-blue-200"
+                                            >
+                                                <Download size={16} /> Descargar
+                                            </a>
+                                        )}
+                                    </div>
+                                </div>
+                            ))
+                        ) : <EmptyState />}
+                    </div>
                 </div>
             </div>
         </MainLayout>
     );
 };
+
+/* Sub-componentes para mantener el código limpio */
+
+const StatusBadge = ({ status, error }: { status: string, error?: string }) => {
+    if (status === 'completed') return (
+        <span className="flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-green-100 text-green-800 border border-green-200">
+            <CheckCircle size={14} className="mr-1" /> Completado
+        </span>
+    );
+    if (status === 'pending') return (
+        <span className="flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-800 animate-pulse border border-amber-200">
+            <Clock size={14} className="mr-1" /> Procesando
+        </span>
+    );
+    return (
+        <span className="flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-red-100 text-red-800 border border-red-200" title={error}>
+            <AlertCircle size={14} className="mr-1" /> Fallido
+        </span>
+    );
+};
+
+const EmptyState = () => (
+    <div className="p-8 text-center text-gray-500 italic md:table-row">
+        <div className="md:table-cell md:py-12" colSpan={5}>
+            No se han generado respaldos todavía.
+        </div>
+    </div>
+);
 
 export default RespaldoIndex;
