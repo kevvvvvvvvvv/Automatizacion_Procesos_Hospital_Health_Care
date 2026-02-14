@@ -31,7 +31,7 @@ const EstudioDetalle = ({ solicitud }: Props) => {
     };
 
     return (
-        <MainLayout>
+        <MainLayout link='estancias.show' linkParams={solicitud.formulario_instancia.estancia_id} pageTitle={`Solicitud estudios #${solicitud.id}`}>
             <Head title={`Solicitud #${solicitud.id}`} />
 
             <div className="py-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -91,7 +91,7 @@ const EstudioDetalle = ({ solicitud }: Props) => {
                     <div className="px-8 py-6">
                         <h3 className="text-lg font-semibold text-gray-800 mb-4">Estudios solicitados</h3>
                         
-                        <div className="overflow-hidden border rounded-lg border-gray-200">
+                        <div className="overflow-x-auto border rounded-lg border-gray-200">
                             <table className="min-w-full divide-y divide-gray-200">
                                 <thead className="bg-gray-50">
                                     <tr>
