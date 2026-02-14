@@ -127,7 +127,10 @@ export default function Dashboard() {
                         onClick={() => router.visit(route('bd.restauracion'))}
                     />
                     )}
-                    bd.restauracion
+                    
+                </div>
+                <div>
+                    
                 </div>                   
             </MainLayout>
         </>
