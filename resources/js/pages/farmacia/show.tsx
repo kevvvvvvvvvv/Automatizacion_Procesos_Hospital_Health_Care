@@ -5,7 +5,8 @@ import MainLayout from '@/layouts/MainLayout';
 import PrimaryButton from '@/components/ui/primary-button';
 import { route } from 'ziggy-js';
 import Swal from 'sweetalert2';
-import { Pill, CheckCircle2, AlertTriangle, User } from 'lucide-react';
+import { Pill, CheckCircle2, AlertTriangle, ArrowLeft } from 'lucide-react';
+import { Link } from '@inertiajs/react';
 
 interface Props {
     hoja: HojaEnfermeria;
@@ -13,125 +14,138 @@ interface Props {
 }
 
 const ShowSolicitud = ({ hoja, paciente }: Props) => {
-    const solicitados = hoja.hoja_medicamentos?.filter(m => m.estado === 'solicitado') || [];
-    const surtidos = hoja.hoja_medicamentos?.filter(m => m.estado === 'surtido') || [];
+    // Memorizamos los filtros para evitar cálculos innecesarios en cada render
+    const solicitados = React.useMemo(() => 
+        hoja.hoja_medicamentos?.filter(m => m.estado === 'solicitado') || [], 
+    [hoja.hoja_medicamentos]);
+
+    const surtidos = React.useMemo(() => 
+        hoja.hoja_medicamentos?.filter(m => m.estado === 'surtido') || [], 
+    [hoja.hoja_medicamentos]);
 
     const handleSurtirMedicamento = (medicamentoId: number) => {
         Swal.fire({
             title: '¿Confirmar surtido?',
-            text: "¿Estás seguro de surtir este medicamento?",
+            text: "¿Estás seguro de marcar este medicamento como entregado?",
             icon: 'question',
             showCancelButton: true,
-            confirmButtonColor: '#3085d6', 
-            cancelButtonColor: '#d33',  
+            confirmButtonColor: '#10b981', // Color verde esmeralda (surtido)
+            cancelButtonColor: '#6b7280',  
             confirmButtonText: 'Sí, surtir',
-            cancelButtonText: 'Cancelar'
+            cancelButtonText: 'Cancelar',
+            reverseButtons: true
         }).then((result) => {
             if (result.isConfirmed) {
                 router.patch(route('medicamentos.actualizar-estado', { medicamento: medicamentoId }), {
                     estado: 'surtido',
                 }, {
                     preserveScroll: true,
+                    onSuccess: () => {
+                        Swal.fire('¡Surtido!', 'El medicamento ha sido actualizado.', 'success');
+                    }
                 });
             }
         });
     }
 
     return (
-<<<<<<< HEAD
-        <MainLayout link='peticiones.index' pageTitle="Detalle de Solicitud">
+        <MainLayout link='solicitudes-medicamentos.index'>
             <Head title={`Solicitud - ${paciente.nombre}`} />
-            
-            <div className="max-w-4xl mx-auto p-2 sm:p-4">
-                {/* Header Card */}
-                <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-5 mb-6">
-                    <div className="flex items-center gap-3 mb-2">
-                        <div className="p-2 bg-blue-50 text-blue-600 rounded-lg">
-                            <User size={24} />
+
+            <div className="max-w-5xl mx-auto py-6 px-4">
+                
+
+                <div className="mb-8">
+                    <h1 className="text-3xl font-black text-gray-900 tracking-tight">Solicitud de Medicamentos</h1>
+                    <div className="mt-2 flex items-center gap-2 text-gray-600">
+                        <div className="bg-blue-100 p-1.5 rounded-full text-blue-600">
+                             <ArrowLeft size={16} className="rotate-180" /> 
                         </div>
-                        <h1 className="text-xl sm:text-2xl font-bold text-gray-800">Solicitud de medicamentos</h1>
+                        <p className="text-lg">
+                            Paciente: <span className="font-bold text-gray-900">{paciente.nombre} {paciente.apellido_paterno} {paciente.apellido_materno}</span>
+                        </p>
                     </div>
-                    <p className="text-gray-600 flex items-center gap-2">
-                        Paciente: <span className="font-bold text-gray-900">{paciente.nombre} {paciente.apellido_paterno}</span>
-                    </p>
                 </div>
-=======
-         <MainLayout link='solicitudes-medicamentos.index'>
-            <Head title={`Solicitud para ${paciente.nombre}`} />
-            <h1 className="text-2xl font-bold">Solicitud de medicamentos</h1>
-            <p className="mb-4">Paciente: <span className="font-semibold">{paciente.nombre} {paciente.apellido_paterno}</span></p>
->>>>>>> 3554850e322fe1aaab08586af2cb7d80e074be8d
 
                 {/* Sección Pendientes */}
-                <div className="bg-white rounded-xl shadow-md overflow-hidden border border-amber-100">
-                    <div className="bg-amber-50 px-5 py-3 border-b border-amber-100">
+                <div className="bg-white rounded-2xl shadow-sm overflow-hidden border border-amber-200">
+                    <div className="bg-amber-50 px-6 py-4 border-b border-amber-100 flex justify-between items-center">
                         <h2 className="text-lg font-bold text-amber-800 flex items-center gap-2">
-                            <Pill size={20} /> Pendientes de surtir
+                            <Pill size={22} /> Pendientes de surtir
                         </h2>
+                        <span className="bg-amber-200 text-amber-800 text-xs font-black px-2.5 py-1 rounded-full">
+                            {solicitados.length} PENDIENTES
+                        </span>
                     </div>
                     
                     <div className="divide-y divide-gray-100">
                         {solicitados.length > 0 ? solicitados.map((med: HojaMedicamento) => (
-                            <div key={med.id} className="p-5 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 hover:bg-gray-50 transition-colors">
+                            <div key={med.id} className="p-6 flex flex-col md:flex-row md:justify-between md:items-center gap-6 hover:bg-amber-50/30 transition-colors">
                                 <div className="flex-1">
-                                    <p className="font-bold text-gray-900 text-lg">{med.nombre_medicamento}</p>
+                                    <h3 className="font-black text-gray-900 text-xl uppercase tracking-tight">{med.nombre_medicamento}</h3>
                                     
                                     {!med.producto_servicio_id && (
-                                        <p className='text-red-600 text-xs font-bold flex items-center gap-1 mt-1 bg-red-50 p-1 rounded inline-flex'>
-                                            <AlertTriangle size={14} /> No registrado en inventario
-                                        </p>
+                                        <div className='flex items-center gap-1.5 mt-1.5 text-red-600 bg-red-50 px-3 py-1 rounded-lg border border-red-100 inline-flex'>
+                                            <AlertTriangle size={14} /> 
+                                            <span className="text-xs font-bold uppercase">No vinculado a inventario central</span>
+                                        </div>
                                     )}
 
-                                    <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-sm text-gray-600">
-                                        <span className="bg-gray-100 px-2 py-0.5 rounded"><b>Dosis:</b> {med.dosis}</span>
-                                        <span className="bg-gray-100 px-2 py-0.5 rounded"><b>Vía:</b> {med.via_administracion}</span>
+                                    <div className="mt-4 flex flex-wrap gap-3 text-sm">
+                                        <span className="bg-white border border-gray-200 px-3 py-1 rounded-md shadow-sm text-gray-700">
+                                            <b className="text-gray-400 mr-1 uppercase text-[10px]">Dosis:</b> {med.dosis}
+                                        </span>
+                                        <span className="bg-white border border-gray-200 px-3 py-1 rounded-md shadow-sm text-gray-700">
+                                            <b className="text-gray-400 mr-1 uppercase text-[10px]">Vía:</b> {med.via_administracion}
+                                        </span>
                                     </div>
                                 </div>
                                 
                                 <PrimaryButton 
                                     onClick={() => handleSurtirMedicamento(med.id)}
-                                    className="w-full sm:w-auto justify-center shadow-sm"
+                                    className="w-full md:w-auto px-8 py-3 bg-amber-600 hover:bg-amber-700 justify-center transition-all transform active:scale-95"
                                 >
-                                    Surtir medicamento
+                                    Surtir ahora
                                 </PrimaryButton>
                             </div>
                         )) : (
-                            <div className="p-10 text-center text-gray-500 italic">
-                                No hay medicamentos pendientes.
+                            <div className="p-12 text-center">
+                                <CheckCircle2 className="mx-auto text-green-400 mb-2" size={40} />
+                                <p className="text-gray-500 font-medium">Todo surtido. No hay pendientes.</p>
                             </div>
                         )}
                     </div>
                 </div>
 
                 {/* Sección Surtidos */}
-                <div className="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100 mt-8">
-                    <div className="bg-green-50 px-5 py-3 border-b border-green-100">
-                        <h2 className="text-lg font-bold text-green-800 flex items-center gap-2">
-                            <CheckCircle2 size={20} /> Ya surtidos
+                <div className="bg-white rounded-2xl shadow-sm overflow-hidden border border-gray-100 mt-10">
+                    <div className="bg-gray-50 px-6 py-4 border-b border-gray-100">
+                        <h2 className="text-lg font-bold text-gray-600 flex items-center gap-2">
+                            <CheckCircle2 size={22} className="text-green-500" /> Historial de entrega (Surtidos)
                         </h2>
                     </div>
                     
-                    <div className="divide-y divide-gray-100">
+                    <div className="divide-y divide-gray-50">
                         {surtidos.length > 0 ? surtidos.map((med: HojaMedicamento) => (
-                            <div key={med.id} className="p-5 bg-gray-50/50">
-                                <div className="flex justify-between items-start">
+                            <div key={med.id} className="p-6 bg-white opacity-80">
+                                <div className="flex justify-between items-center gap-4">
                                     <div>
-                                        <p className="font-semibold text-gray-500">{med.nombre_medicamento}</p>
-                                        {!med.producto_servicio_id && (
-                                            <p className='text-red-400 text-xs font-bold'>No registrado en inventario</p>
-                                        )}
-                                        <p className="text-xs text-gray-400 mt-1 italic">
-                                            Entregado el: {new Date(med.fecha_hora_surtido_farmacia).toLocaleString()}
+                                        <p className="font-bold text-gray-400 uppercase line-through">{med.nombre_medicamento}</p>
+                                        <p className="text-[11px] text-gray-400 mt-1 flex items-center gap-1 font-medium">
+                                            <ClockIcon size={12} />
+                                            Entregado el: {med.fecha_hora_surtido_farmacia 
+                                                ? new Date(med.fecha_hora_surtido_farmacia).toLocaleString() 
+                                                : 'Fecha no registrada'}
                                         </p>
                                     </div>
-                                    <div className="text-green-600 bg-green-100 p-1 rounded-full">
-                                        <CheckCircle2 size={18} />
+                                    <div className="bg-green-100 text-green-600 p-2 rounded-xl shadow-inner">
+                                        <CheckCircle2 size={24} />
                                     </div>
                                 </div>
                             </div>
                         )) : (
-                            <div className="p-10 text-center text-gray-500 italic">
-                                Aún no se han surtido medicamentos.
+                            <div className="p-12 text-center text-gray-400 font-medium">
+                                Historial vacío.
                             </div>
                         )}
                     </div>
@@ -140,5 +154,10 @@ const ShowSolicitud = ({ hoja, paciente }: Props) => {
         </MainLayout>
     );
 }
+
+// Icono auxiliar rápido
+const ClockIcon = ({ size }: { size: number }) => (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+);
 
 export default ShowSolicitud;

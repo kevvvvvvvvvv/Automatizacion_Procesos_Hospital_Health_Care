@@ -32,11 +32,15 @@ class EncuestaSatisfaccionController extends Controller implements HasMiddleware
         ];
     }
 
+        public function create(Estancia $estancia)
+        {
+         $estancia->load('paciente');
 
         return Inertia::render('formularios/encuestas-satisfacciones/create', [
             'estancia' => $estancia,
         ]);
-    }
+        }
+    
 
     public function store(EncuestaSatisfaccionRequest $request, Estancia $estancia)
     {

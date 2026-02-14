@@ -44,6 +44,10 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|FormularioInstancia whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|FormularioInstancia whereUserId($value)
  * @property-read EncuestaSatisfaccion|null $encuestaSatisfaccion
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\NotaEgreso> $notaEgreso
+ * @property-read int|null $nota_egreso_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\NotaPreAnestesica> $notaPreAnestesica
+ * @property-read int|null $nota_pre_anestesica_count
  * @mixin \Eloquent
  */
 class FormularioInstancia extends Model
