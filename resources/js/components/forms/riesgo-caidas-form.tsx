@@ -1,11 +1,13 @@
 import React, { useEffect } from 'react';
 import { useForm } from '@inertiajs/react';
-import { HojaEnfermeria } from '@/types';
+import { HojaEnfermeria, HojaRiesgoCaida } from '@/types';
 import { route } from 'ziggy-js';
+import Swal from 'sweetalert2';
 
 import PrimaryButton from '../ui/primary-button';
 import SelectInput from '../ui/input-select';
 import Checkbox from '../ui/input-checkbox';
+import {DataTable} from '../ui/data-table';
 
 interface Props {
     hoja: HojaEnfermeria;
@@ -30,7 +32,7 @@ const deficitList = [
 const RiesgoCaidasForm = ({ hoja }: Props) => {
     
 
-    const { data, setData, post, processing } = useForm({
+    const { data, setData, post, processing, reset } = useForm({
         caidas_previas: '0', 
         estado_mental: 'orientado',
         deambulacion: 'normal',
@@ -71,10 +73,100 @@ const RiesgoCaidasForm = ({ hoja }: Props) => {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        post(route('hojas-riesgo-caidas.store', {hojasenfermeria: hoja.id})
-            
-        );
+        Swal.fire({
+            title: '¿Confirmar registro?',
+            text: "Se guardarán los resultados del riesgo de caídas.",
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Sí, guardar',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {        
+                post(route('hojas-riesgo-caidas.store', {hojasenfermeria: hoja.id}),{
+                    preserveScroll: true,
+                    onSuccess: () => reset(),
+                });
+            }
+        });    
     };
+
+    const columnasRiesgoCaidas = [
+        { 
+            header: 'Fecha', 
+            key: 'created_at',
+            render: (reg: HojaRiesgoCaida) => (
+                <span className="text-sm text-gray-600">
+                    {new Date(reg.created_at).toLocaleString('es-MX', { dateStyle: 'short', timeStyle: 'short' })}
+                </span>
+            )
+        },
+        { 
+            header: 'Estado Mental', 
+            key: 'estado_mental',
+            render: (reg: HojaRiesgoCaida) => (
+                <span className={`capitalize ${reg.estado_mental === 'confuso' ? 'text-red-600 font-bold' : ''}`}>
+                    {reg.estado_mental}
+                </span>
+            )
+        },
+        { 
+            header: 'Deambulación', 
+            key: 'deambulacion',
+            render: (reg: HojaRiesgoCaida) => <span className="capitalize">{reg.deambulacion.replace('_', ' ')}</span>
+        },
+        { 
+            header: 'Medicamentos', 
+            key: 'medicamentos', 
+            render: (reg: HojaRiesgoCaida) => (
+                <div className="flex flex-wrap gap-1 max-w-xs">
+                    {reg.medicamentos.length > 0 ? (
+                        reg.medicamentos.map((med, i) => (
+                            <span key={i} className="px-2 py-0.5 bg-yellow-100 text-yellow-800 text-[10px] rounded-full border border-yellow-200">
+                                {med}
+                            </span>
+                        ))
+                    ) : (
+                        <span className="text-gray-400 text-xs">Ninguno</span>
+                    )}
+                </div>
+            )
+        },
+        { 
+            header: 'Déficits', 
+            key: 'deficits', 
+            render: (reg: HojaRiesgoCaida) => (
+                <div className="flex flex-wrap gap-1 max-w-xs">
+                    {reg.deficits.length > 0 ? (
+                        reg.deficits.map((def, i) => (
+                            <span key={i} className="px-2 py-0.5 bg-blue-100 text-blue-800 text-[10px] rounded-full border border-blue-200">
+                                {def}
+                            </span>
+                        ))
+                    ) : (
+                        <span className="text-gray-400 text-xs">Ninguno</span>
+                    )}
+                </div>
+            )
+        },
+        { 
+            header: 'Puntaje', 
+            key: 'puntaje_total', 
+            render: (reg: HojaRiesgoCaida) => {
+                const nivelRiesgo = reg.puntaje_total >= 3 ? 'Alto Riesgo' : 'Riesgo Bajo';
+                const color = reg.puntaje_total >= 3 ? 'bg-red-500' : 'bg-green-500';
+                return (
+                    <div className="flex flex-col items-center">
+                        <span className={`text-white px-2 py-1 rounded text-xs font-bold ${color}`}>
+                            {reg.puntaje_total} pts
+                        </span>
+                        <span className="text-[10px] text-gray-500 mt-1">{nivelRiesgo}</span>
+                    </div>
+                );
+            }
+        }
+    ];
 
 
     const getNivelRiesgo = (puntos: number) => {
@@ -84,6 +176,7 @@ const RiesgoCaidasForm = ({ hoja }: Props) => {
     };
 
     return (
+        <>
         <form onSubmit={handleSubmit} className="space-y-6">
 
             <SelectInput
@@ -183,6 +276,10 @@ const RiesgoCaidasForm = ({ hoja }: Props) => {
                 </PrimaryButton>
             </div>
         </form>
+        <div className="mt-12">
+            <DataTable columns={columnasRiesgoCaidas} data={hoja.hoja_riesgo_caida} />
+        </div>
+        </>
     );
 };
 

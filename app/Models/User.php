@@ -92,6 +92,8 @@ use Laravel\Cashier\Billable;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User withoutPermission($permissions)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User withoutRole($roles, $guard = null)
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, Backups> $backups
+ * @property-read int|null $backups_count
  * @mixin \Eloquent
  */
 class User extends Authenticatable 

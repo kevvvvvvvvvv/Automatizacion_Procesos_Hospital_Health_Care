@@ -19,10 +19,26 @@ use App\Services\PdfGeneratorService;
 use Spatie\LaravelPdf\Facades\Pdf;
 use Spatie\Browsershot\Browsershot;
 
-class SolicitudEstudioPatologiaController extends Controller
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
+
+class SolicitudEstudioPatologiaController extends Controller implements HasMiddleware
 {
 
     protected $pdfGenerator;
+    use AuthorizesRequests;
+
+    public static function middleware(): array
+    {
+        $permission = \Spatie\Permission\Middleware\PermissionMiddleware::class;
+        return [
+            new Middleware($permission . ':consultar solicitudes estudios patologicos', only: ['index', 'show', 'generarPDF']),
+            new Middleware($permission . ':crear solicitudes estudios patologicos', only: ['create','store']),
+            new Middleware($permission . ':editar solicitudes estudios patologicos', only: ['edit', 'update']),
+            new Middleware($permission . ':eliminar solicitudes estudios patologicos', only: ['destroy']),
+        ];
+    }
 
     public function __construct(PdfGeneratorService $pdfGenerator){
         return $this->pdfGenerator = $pdfGenerator;

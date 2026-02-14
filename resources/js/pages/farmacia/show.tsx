@@ -38,7 +38,7 @@ const ShowSolicitud = ({ hoja, paciente }: Props) => {
     }
 
     return (
-         <MainLayout link='peticiones.index'>
+         <MainLayout link='solicitudes-medicamentos.index'>
             <Head title={`Solicitud para ${paciente.nombre}`} />
             <h1 className="text-2xl font-bold">Solicitud de medicamentos</h1>
             <p className="mb-4">Paciente: <span className="font-semibold">{paciente.nombre} {paciente.apellido_paterno}</span></p>

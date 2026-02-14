@@ -18,7 +18,11 @@ use Redirect;
 use App\Http\Requests\NotaPreanestesicaRequest;
 use App\Services\PdfGeneratorService;
 
-class NotaPreAnestesicaController extends Controller
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
+
+class NotaPreAnestesicaController extends Controller implements HasMiddleware
 {
 
     /**
@@ -26,6 +30,17 @@ class NotaPreAnestesicaController extends Controller
      * @var PdfGeneratorService
      */
     protected $pdfGenerator;
+    use AuthorizesRequests;
+
+    public static function middleware(): array
+    {
+        $permission = \Spatie\Permission\Middleware\PermissionMiddleware::class;
+        return [
+            new Middleware($permission . ':consultar hojas', only: ['index', 'show', 'generarPDF']),
+            new Middleware($permission . ':crear hojas', only: ['create', 'store']),
+            new Middleware($permission . ':eliminar hojas', only: ['destroy']),
+        ];
+    }
 
     /**
      * Inicializa el controlador con sus dependencias.
