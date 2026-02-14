@@ -38,6 +38,7 @@ const ShowSolicitud = ({ hoja, paciente }: Props) => {
     }
 
     return (
+<<<<<<< HEAD
         <MainLayout link='peticiones.index' pageTitle="Detalle de Solicitud">
             <Head title={`Solicitud - ${paciente.nombre}`} />
             
@@ -54,6 +55,12 @@ const ShowSolicitud = ({ hoja, paciente }: Props) => {
                         Paciente: <span className="font-bold text-gray-900">{paciente.nombre} {paciente.apellido_paterno}</span>
                     </p>
                 </div>
+=======
+         <MainLayout link='solicitudes-medicamentos.index'>
+            <Head title={`Solicitud para ${paciente.nombre}`} />
+            <h1 className="text-2xl font-bold">Solicitud de medicamentos</h1>
+            <p className="mb-4">Paciente: <span className="font-semibold">{paciente.nombre} {paciente.apellido_paterno}</span></p>
+>>>>>>> 3554850e322fe1aaab08586af2cb7d80e074be8d
 
                 {/* Sección Pendientes */}
                 <div className="bg-white rounded-xl shadow-md overflow-hidden border border-amber-100">
