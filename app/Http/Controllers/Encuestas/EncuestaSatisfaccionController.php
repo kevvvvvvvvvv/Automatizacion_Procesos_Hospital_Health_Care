@@ -14,11 +14,24 @@ use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
-class EncuestaSatisfaccionController extends Controller
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
+
+class EncuestaSatisfaccionController extends Controller implements HasMiddleware
 {
-    public function create(Estancia $estancia)
+    use AuthorizesRequests;
+
+    public static function middleware(): array
     {
-        $estancia->load('paciente');
+        $permission = \Spatie\Permission\Middleware\PermissionMiddleware::class;
+        return [
+            new Middleware($permission . ':consultar hojas', only: ['index', 'show', 'generarPDF']),
+            new Middleware($permission . ':crear hojas', only: ['create', 'store']),
+            new Middleware($permission . ':eliminar hojas', only: ['destroy']),
+        ];
+    }
+
 
         return Inertia::render('formularios/encuestas-satisfacciones/create', [
             'estancia' => $estancia,

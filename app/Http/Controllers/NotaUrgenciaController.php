@@ -16,12 +16,27 @@ use App\Services\PdfGeneratorService;
 
 use App\Http\Requests\NotaUrgenciaRequest;
 
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
+
 use Redirect;
 
-class NotaUrgenciaController extends Controller
+class NotaUrgenciaController extends Controller implements HasMiddleware
 {
 
     protected $pdfGenerator;
+    use AuthorizesRequests;
+
+    public static function middleware(): array
+    {
+        $permission = \Spatie\Permission\Middleware\PermissionMiddleware::class;
+        return [
+            new Middleware($permission . ':consultar hojas', only: ['index', 'show', 'generarPDF']),
+            new Middleware($permission . ':crear hojas', only: ['create', 'store']),
+            new Middleware($permission . ':eliminar hojas', only: ['destroy']),
+        ];
+    }
 
     public function __construct(PdfGeneratorService $pdfGenerator)
     {

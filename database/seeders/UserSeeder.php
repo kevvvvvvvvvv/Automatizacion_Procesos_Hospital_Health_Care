@@ -381,5 +381,19 @@ class UserSeeder extends Seeder
 
         $userGabriel->assignRole('caja');
 
+        $userCocina = User::create([
+            'curp' => 'ROMA850512MDFRNS08', 
+            'nombre' => 'Rosa',
+            'apellido_paterno' => 'Martínez',
+            'apellido_materno' => 'Aguirre',
+            'sexo' => 'Femenino',
+            'fecha_nacimiento' => '1985-05-12',
+            'email' => 'cocina@test.com', 
+            'telefono' => '7775556789',
+            'password' => Hash::make('12345678'),
+        ]);
+
+        $userCocina->assignRole('cocina');
+
     }
 }

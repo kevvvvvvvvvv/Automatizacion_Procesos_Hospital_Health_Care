@@ -16,12 +16,25 @@ use App\Services\PdfGeneratorService;
 use App\Http\Requests\TrasladoRequest;
 use App\Models\FormularioCatalogo;
 
-// use Illuminate\Http\Request;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 
-class TrasladoController extends Controller
+class TrasladoController extends Controller implements HasMiddleware
 {
-    //
     protected $pdfGenerator;
+    use AuthorizesRequests;
+
+    public static function middleware(): array
+    {
+        $permission = \Spatie\Permission\Middleware\PermissionMiddleware::class;
+        return [
+            new Middleware($permission . ':consultar hojas', only: ['index', 'show', 'generarPDF']),
+            new Middleware($permission . ':crear hojas', only: ['create', 'store']),
+            new Middleware($permission . ':eliminar hojas', only: ['destroy']),
+        ];
+    }
+
 
     public function __construct(PdfGeneratorService $pdfGenerator)
     {

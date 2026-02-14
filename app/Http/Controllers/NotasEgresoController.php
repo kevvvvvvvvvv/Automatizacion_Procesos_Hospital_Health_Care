@@ -18,13 +18,16 @@ use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Log;
 use App\Models\Habitacion;
 
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 
 /**
  * Controlador para la gestión de Notas de egreso.
  * Maneja el flujo de CRUD y generación de PDF
  * para las notas de egreso de los pacientes.
  */
-class NotasEgresoController extends Controller
+class NotasEgresoController extends Controller implements HasMiddleware
 {
 
     /**
@@ -32,6 +35,18 @@ class NotasEgresoController extends Controller
      * @var PdfGeneratorService
      */
     protected $pdfGenerator;
+
+    use AuthorizesRequests;
+
+    public static function middleware(): array
+    {
+        $permission = \Spatie\Permission\Middleware\PermissionMiddleware::class;
+        return [
+            new Middleware($permission . ':consultar hojas', only: ['index', 'show', 'generarPDF']),
+            new Middleware($permission . ':crear hojas', only: ['create', 'store']),
+            new Middleware($permission . ':eliminar hojas', only: ['destroy']),
+        ];
+    }
 
 
     /**
@@ -41,10 +56,6 @@ class NotasEgresoController extends Controller
     public function __construct(PdfGeneratorService $pdfGenerator)
     {
         $this->pdfGenerator = $pdfGenerator;
-    }
-
-    public function index(){
-        //
     }
 
     /**
