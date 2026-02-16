@@ -51,7 +51,7 @@ const DietaForm: React.FC<Props> = ({ hoja, categoria_dietas = [] }) => {
         e.preventDefault();
         Swal.fire({
             title: '¿Confirmar registro?',
-            text: "Se guardarán los signos vitales capturados.",
+            text: "Se guardará la solicitud de dieta.",
             icon: 'question',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
@@ -60,7 +60,7 @@ const DietaForm: React.FC<Props> = ({ hoja, categoria_dietas = [] }) => {
             cancelButtonText: 'Cancelar'
         }).then((result) => {
             if (result.isConfirmed) {
-                post(route('hojasenfermerias.dietas.store', { hojasenfermeria: hoja.id }), {
+                post(route('hojasenfermerias.solicitudes-dietas.store', { hojasenfermeria: hoja.id }), {
                     preserveScroll: true,
                     onSuccess: () => {
                         reset();

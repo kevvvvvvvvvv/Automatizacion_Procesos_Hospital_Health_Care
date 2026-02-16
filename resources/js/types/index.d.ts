@@ -185,6 +185,8 @@ export interface FormularioInstancia {
     user_id: number;
     created_at: string;
     updated_at: string;
+
+    estancia: Estancia;
 }
 export interface Medicamento {
     id: number;
@@ -629,6 +631,10 @@ export interface SolicitudDieta {
     horario_entrega: string;
     user_entrega_id: number;
     observaciones: string;
+
+    estado: string;
+
+    hoja_enfermeria: HojaEnfermeria;
 
     dieta: Dieta;
     user_supervisa?: User; 
