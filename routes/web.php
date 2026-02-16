@@ -52,6 +52,7 @@ use App\Http\Controllers\BackupsRestauration\BackupsController;
 use App\Http\Controllers\RestauracionController;
 use App\Http\Controllers\Encuestas\EncuestaSatisfaccionController;
 use App\Http\Controllers\MantenimientoController;
+use App\Http\Controllers\EncuestaPersonalController;
 use App\Models\HojaContolLiquido;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -105,6 +106,8 @@ Route::resource('pacientes.estancias.hojasenfermeriasquirofanos',HojaEnfemeriaQu
 Route::resource('pacientes.estancias.consentimientos', ConsentimientoController::class)->shallow()->middleware('auth');
 Route::resource('estancias.encuesta-satisfaccions', EncuestaSatisfaccionController::class)->shallow()->middleware('auth');
 Route::resource('notificaciones', NotificacionController::class)->shallow()->middleware('auth');
+Route::resource('estancias.encuestapersonal', EncuestaPersonalController::class)->shallow()->middleware('auth');
+
 
 Route::post('/checklist/toggle', [ChecklistController::class, 'toggle'])->name('checklist.toggle')->middleware('auth');
 
@@ -251,6 +254,9 @@ Route::get('/encuesta-satisfaccions/{encuesta-satisfaccions}/pdf', [EncuestaSati
     ->name('encuesta-satisfaccions.pdf')
     ->middleware('auth');
 
+Route::get('/encuestapersonal/{encuestapersonal}/pdf', [EncuestaPersonalController::class, 'generarPDF'])
+    ->name('encuestapersonal.pdf')
+    ->middleware('auth');
 
 // Farmacia
 Route::get('farmacia/solicitudes-medicamentos/{hojasenfermeria}', [FarmaciaController::class, 'show'])

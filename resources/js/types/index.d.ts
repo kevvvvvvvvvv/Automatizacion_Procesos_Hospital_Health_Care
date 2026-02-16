@@ -1037,3 +1037,30 @@ export interface EncuestaSatisfaccion {
 
     formulario_instancia: FormularioInstancia;
 }
+export interface EncuestaPersonal {
+    id: number;
+    trato_claro: number;
+    presentacion_personal: number; 
+    tiempo_atencion: number;
+    informacion_tratamiento: number;
+    
+    comentarios?: sting;
+
+    formulario_instancia: FormularioInstancia;
+}
+
+
+export interface SolicitudSoporte {
+    id: number;
+    tipo_servicio: string;
+    comentarios: string;
+    resultados_aceptado: string;
+    observaciones: string;
+    duracion_espera: string;
+    duracion_actividad: string;
+
+    habitacion_id: number | null;
+
+    created_at: string;
+    updated_at: string;
+}

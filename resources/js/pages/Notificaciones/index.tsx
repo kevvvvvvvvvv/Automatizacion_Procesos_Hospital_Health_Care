@@ -23,7 +23,8 @@ export default function Index({ notificaciones }) {
                 <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
                     <div>
                         <h1 className="text-2xl font-black text-gray-900 flex items-center gap-3">
-                            <Bell className="text-blue-600" size={28} />
+            
+                          <Bell className="text-blue-600" size={28} />
                             Centro de Notificaciones
                         </h1>
                         <p className="text-gray-500 text-sm mt-1">
