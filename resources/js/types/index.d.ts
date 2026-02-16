@@ -312,6 +312,8 @@ export interface HojaEnfermeria {
     created_at: string;
     updated_at: string;
 
+    formulario_instancia: FormularioInstancia;
+
     hojas_terapia_i_v: HojaTerapiaIV[] | null; 
     hoja_medicamentos: HojaMedicamento[] | null;
     hoja_signos: HojaSignos[];
@@ -361,6 +363,8 @@ export interface HojaEnfermeriaQuirofano {
     hora_fin_paciente: string;
 
     estado: string;
+
+    formulario_instancia: FormularioInstancia;
 
     servicios_especiales: {
         torre: boolean;

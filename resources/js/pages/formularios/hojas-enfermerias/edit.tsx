@@ -1,11 +1,8 @@
 import React, { useState } from 'react'; 
 import { ChecklistItemData, Paciente, Estancia, ProductoServicio, HojaEnfermeria, HojaSignosGraficas, CatalogoEstudio, User, SolicitudEstudio, NotaPostoperatoria, notasEvoluciones, CategoriaDieta, CatalogoViaAdministracion } from '@/types';
-import { Head, useForm, router } from '@inertiajs/react';
-import { route } from 'ziggy-js';
-import Swal from 'sweetalert2';
+import { Head } from '@inertiajs/react';
 import 'sweetalert2/dist/sweetalert2.min.css';
 
-import PrimaryButton from '@/components/ui/primary-button';
 import NavegationTab from '@/components/navegation-tab';
 
 import MainLayout from '@/layouts/MainLayout';
@@ -23,6 +20,7 @@ import EscalaValoracionForm from '@/components/forms/escalas-valoracion-form';
 import ControlLiquidosForm from '@/components/forms/control-liquidos-form';
 import HabitusExteriorForm from '@/components/forms/habitus-exterior-form';
 import RiesgoCaidasForm from '@/components/forms/riesgo-caidas-form';
+import CerrarHoja from '@/components/app-cerrrar-hoja';
 
 
 
@@ -63,80 +61,6 @@ const secciones: { id: SeccionHoja, label: string }[] = [
     { id: 'observaciones', label: 'Observaciones' },
     { id: 'graficas', label: 'Gráficas' },
 ];
-
-interface CerrarHojaProps {
-    hoja: HojaEnfermeria;
-    estanciaId: number; 
-}
-
-const CerrarHojaSection: React.FC<CerrarHojaProps> = ({ hoja, estanciaId }) => {
-    
-    const { put, processing } = useForm({
-        estado: 'Cerrado',
-    });
-
-    const handleCerrarHoja = () => {
-        Swal.fire({
-            title: '¿Estás seguro de cerrar la hoja?',
-            text: "Una vez cerrada, esta hoja de enfermería no podrá ser modificada.",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#d33', 
-            cancelButtonColor: '#3085d6', 
-            confirmButtonText: 'Sí, ¡cerrar hoja!',
-            cancelButtonText: 'Cancelar'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                put(route('hojasenfermerias.update', { hojasenfermeria: hoja.id }), {
-
-                    onSuccess: () => {
-                         Swal.fire(
-                            '¡Cerrada!',
-                            'La hoja de enfermería ha sido cerrada.',
-                            'success'
-                        );
-                        router.get(route('estancias.show', { estancia: estanciaId }));
-                    },
-                    onError: () => {
-                        Swal.fire(
-                            'Error',
-                            'No se pudo cerrar la hoja. Intenta de nuevo.',
-                            'error'
-                        );
-                    }
-                });
-            }
-        });
-    };
-
-    if (hoja.estado === 'Cerrado') {
-        return (
-            <div className="p-4 mb-4 text-sm text-green-800 rounded-lg bg-green-100" role="alert">
-                <span className="font-medium">Hoja cerrada:</span> Esta hoja de enfermería ya ha sido finalizada y no puede ser editada.
-            </div>
-        );
-    }
-
-    return (
-        <div className="p-4 mb-6 border border-red-300 rounded-lg bg-red-50">
-            <h3 className="text-lg font-medium text-red-800">Cerrar hoja de enfermería</h3>
-            <p className="mt-1 text-sm text-red-700">
-                Esta acción finalizará la hoja de enfermería y la marcará como "Cerrada".
-                No podrás realizar más cambios después de esto.
-            </p>
-            <div className="mt-4">
-                <PrimaryButton
-                    type="button"
-                    className="bg-red-600 hover:bg-red-700 focus:bg-red-700 active:bg-red-800 focus:ring-red-500"
-                    onClick={handleCerrarHoja}
-                    disabled={processing}
-                >
-                    {processing ? 'Cerrando...' : 'Cerrar hoja permanentemente'}
-                </PrimaryButton>
-            </div>
-        </div>
-    );
-}
 
 
 type CreateComponent = React.FC<CreateProps> & {
@@ -258,9 +182,13 @@ const Create: CreateComponent = ({
                 estancia={estancia}
             />
             <div className="bg-white shadow-sm ring-1 ring-gray-900/5 sm:rounded-xl md:col-span-2 mt-6 p-6">
-                <CerrarHojaSection 
+                <CerrarHoja 
                     hoja={hojaenfermeria} 
-                    estanciaId={estancia.id} 
+                    title='hoja de enfermería en hospitalización'
+                    routeConfig={{ 
+                        name: 'hojasenfermerias.update', 
+                        params: { hojasenfermeria: hojaenfermeria.id } 
+                    }}
                 />
                 
                 <NavigationTabs />
