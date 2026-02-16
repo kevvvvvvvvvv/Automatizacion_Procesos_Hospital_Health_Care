@@ -1,21 +1,25 @@
 import React from 'react';
 import Swal from 'sweetalert2';
-import { router } from '@inertiajs/react';
-import route from 'ziggy-js';
+import { router, useForm } from '@inertiajs/react';
+import { route } from 'ziggy-js';
+
 
 import PrimaryButton from './ui/primary-button';
 import { HojaEnfermeria, HojaEnfermeriaQuirofano } from '@/types';
 
 
 interface Props {
-    route: string;
+    routeConfig: {
+        name: string;
+        params: Record<string, number>;
+    };
     title: string;
     hoja: HojaEnfermeria | HojaEnfermeriaQuirofano;
 
 }
 
 const CerrarHoja = ({
-    route,
+    routeConfig,
     title,
     hoja
 }: Props) => {
@@ -26,7 +30,7 @@ const CerrarHoja = ({
     const handleCerrarHoja = () => {
         Swal.fire({
             title: '¿Estás seguro de cerrar la hoja?',
-            text: "Una vez cerrada, esta ${hoja de enfermería} no podrá ser modificada.",
+            text: "Una vez cerrada, esta hoja no podrá ser modificada.",
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#d33', 
@@ -35,15 +39,14 @@ const CerrarHoja = ({
             cancelButtonText: 'Cancelar'
         }).then((result) => {
             if (result.isConfirmed) {
-                put(route('hojasenfermerias.update', { hojasenfermeria: hoja.id }), {
-
+                put(String(route(routeConfig.name, routeConfig.params)), {
                     onSuccess: () => {
                          Swal.fire(
                             '¡Cerrada!',
                             'La hoja de enfermería ha sido cerrada.',
                             'success'
                         );
-                        router.get(route('estancias.show', { estancia: estanciaId }));
+                        router.get(route('estancias.show', { estancia: hoja.formulario_instancia.estancia_id }));
                     },
                     onError: () => {
                         Swal.fire(
