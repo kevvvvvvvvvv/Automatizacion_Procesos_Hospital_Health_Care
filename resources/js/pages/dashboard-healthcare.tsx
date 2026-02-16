@@ -104,7 +104,7 @@ export default function Dashboard() {
                     <CardButton
                         icon={FaRegCheckCircle}
                         text="Petición de dietas"
-                        onClick={() => router.visit(route('dietas.index'))}
+                        onClick={() => router.visit(route('solicitudes-dietas.index'))}
                     />
                     )}
 

@@ -35,8 +35,9 @@ class SolicitudDieta extends Model
     protected $fillable = [
         'id',
         'hoja_enfermeria_id',
-
         'dieta_id',
+
+        'estado',
 
         'horario_solicitud',
         'user_supervisa_id',
@@ -49,6 +50,11 @@ class SolicitudDieta extends Model
     ];
 
     public $timestamps = false;
+
+    public function hojaEnfermeria(): BelongsTo
+    {
+        return $this->belongsTo(HojaEnfermeria::class);
+    }
 
     public function usuarioSupervisa():BelongsTo
     {

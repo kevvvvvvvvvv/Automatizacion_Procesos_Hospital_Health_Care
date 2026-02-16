@@ -21,6 +21,8 @@ return new class extends Migration
                 ->constrained('dietas')
                 ->onDelete('cascade');
 
+            $table->string('estado');
+
             $table->datetime('horario_solicitud');
 
             $table->foreignId('user_supervisa_id')->nullable() // "Quién supervisó"
