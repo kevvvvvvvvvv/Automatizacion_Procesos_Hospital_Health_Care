@@ -140,4 +140,8 @@ class FormularioInstancia extends Model
     {
         return $this->hasOne(EncuestaSatisfaccion::class, 'id', 'id');
     }
-}
+    public function encuestaPersonal(): HasOne
+    {
+        return $this->hasOne(EncuestaPersonal::class, 'id', 'id');
+    }
+    }

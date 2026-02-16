@@ -1,6 +1,6 @@
 import React from 'react';
 import MainLayout from '@/layouts/MainLayout';
-import { Head } from '@inertiajs/react';
+import { Head, router } from '@inertiajs/react';
 import { Trash2, Settings, Monitor, ChevronRight } from 'lucide-react';
 
 export default function Index() {
@@ -13,15 +13,15 @@ export default function Index() {
             descripcion: 'Reportar falta de higiene o solicitud de aseo.',
             color: 'bg-emerald-500',
             icon: <Trash2 size={32} className="text-white" />,
-            hover: 'hover:border-emerald-500 hover:bg-emerald-50'
+            //hover: 'hover:border-emerald-500 hover:bg-emerald-50'
         },
         {
             id: 'mantenimiento',
             titulo: 'Mantenimiento',
             descripcion: 'Reparaciones físicas, luces, plomería o mobiliario.',
-            color: 'bg-orange-500',
+            color: 'bg-gray-500',
             icon: <Settings size={32} className="text-white" />,
-            hover: 'hover:border-orange-500 hover:bg-orange-50'
+            //hover: 'hover:border-gray-500 hover:bg-gray-200'
         },
         {
             id: 'sistemas',
@@ -29,17 +29,17 @@ export default function Index() {
             descripcion: 'Soporte técnico, software, red o equipos de cómputo.',
             color: 'bg-blue-600',
             icon: <Monitor size={32} className="text-white" />,
-            hover: 'hover:border-blue-600 hover:bg-blue-50'
+            //hover: 'hover:border-blue-600 hover:bg-blue-50'
         }
     ];
 
     const handleAction = (tipo) => {
-        console.log(`Abriendo formulario para: ${tipo}`);
-        // Aquí podrías usar router.get(route('mantenimiento.crear', { tipo }))
+
+        router.get(route('mantenimiento.create', { tipo: tipo }));
     };  
 
     return (
-        <MainLayout pageTitle="Panel de Mantenimiento">
+        <MainLayout pageTitle="Panel de Mantenimiento"  link='dashboard'>
             <Head title="Mantenimiento" />
 
             <div className="max-w-6xl mx-auto py-10 px-4">
@@ -53,7 +53,7 @@ export default function Index() {
                         <button
                             key={cat.id}
                             onClick={() => handleAction(cat.id)}
-                            className={`group flex flex-col p-8 bg-white border-2 border-transparent rounded-3xl shadow-xl transition-all duration-300 transform hover:-translate-y-2 text-left ${cat.hover}`}
+                            className={`group flex flex-col p-8 bg-white border-2 border-transparent rounded-3xl shadow-xl transition-all duration-300 transform hover:-translate-y-2 text-left ${cat}`}
                         >
                             <div className={`${cat.color} w-16 h-16 rounded-2xl flex items-center justify-center mb-6 shadow-lg group-hover:scale-110 transition-transform`}>
                                 {cat.icon}
@@ -72,12 +72,7 @@ export default function Index() {
                     ))}
                 </div>
 
-                <div className="mt-16 bg-blue-50 rounded-2xl p-6 border border-blue-100 flex items-center gap-4">
-                    <div className="bg-blue-100 p-3 rounded-full text-blue-600 font-bold text-sm">i</div>
-                    <p className="text-blue-800 text-sm">
-                        <b>Nota importante:</b> Los reportes de sistemas son atendidos bajo prioridad técnica. Para urgencias médicas críticas, contactar directamente por extensión.
-                    </p>
-                </div>
+                
             </div>
         </MainLayout>
     );

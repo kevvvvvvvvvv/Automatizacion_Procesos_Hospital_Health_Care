@@ -109,7 +109,54 @@ const Show = ({ estancia }: ShowEstanciaProps) => {
                 {(can('crear hojas enfermerias') || can('crear documentos medicos') || can('crear consentimientos')) && (
                 <div className="flex justify-between items-center mb-4">
                     <h2 className="text-xl font-semibold">Formularios registrados</h2>
+                    <Menu as="div">
+                            <Menu.Button className="inline-flex items-center justify-center w-full px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700 active:bg-blue-900 focus:outline-none focus:border-blue-900 focus:ring focus:ring-blue-300 disabled:opacity-25 transition">
+                                <Plus size={16} className="mr-2"/>
+                                Encuesta de satisfaccion
+                                <ChevronDown size={16} className="ml-2 -mr-1" />
+                            </Menu.Button>
+                             <Menu.Items className="absolute right-0 w-56 mt-2 origin-top-right bg-white divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                                <div className="px-1 py-1">
+                                    {can('crear hojas enfermerias') && (
+                                    <>
+                                 <Menu.Item>
+                                        {({ active }) => (
+                                            <Link
+                                                href={route('estancias.encuesta-satisfaccions.create', { 
+                                                    estancia: estancia.id 
+                                                })}
+                                                method="get" 
+                                                className={`${
+                                                    active ? 'bg-blue-500 text-white' : 'text-gray-900'
+                                                } group flex rounded-md text-left w-full px-2 py-2 text-sm`}
+                                            >
+                                                Añadir encuesta de satisfacción
+                                            </Link>
+                                        )}
+                                    </Menu.Item>
+                                    <Menu.Item>
+                                        {({ active }) => (
+                                            <Link
+                                                href={route('estancias.encuestapersonal.create', { 
+                                                    estancia: estancia.id 
+                                                })}
+                                                method="get" 
+                                                className={`${
+                                                    active ? 'bg-blue-500 text-white' : 'text-gray-900'
+                                                } group flex rounded-md text-center w-full px-2 py-2 text-sm`}
+                                            >
+                                                Añadir encuesta de personal
+                                            </Link>
+                                        )}
+                                    </Menu.Item>
+
+                                    </>
+                                    )}
+                                </div>
+                            </Menu.Items> 
+                        </Menu>
                     <div className="relative inline-block text-left">
+                            
                         <Menu as="div">
                             <Menu.Button className="inline-flex items-center justify-center w-full px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700 active:bg-blue-900 focus:outline-none focus:border-blue-900 focus:ring focus:ring-blue-300 disabled:opacity-25 transition">
                                 <Plus size={16} className="mr-2"/>
@@ -307,21 +354,7 @@ const Show = ({ estancia }: ShowEstanciaProps) => {
                                         )}
                                     </Menu.Item>
                                     )}
-                                    <Menu.Item>
-                                        {({ active }) => (
-                                            <Link
-                                                href={route('estancias.encuesta-satisfaccions.create', { 
-                                                    estancia: estancia.id 
-                                                })}
-                                                method="get" 
-                                                className={`${
-                                                    active ? 'bg-blue-500 text-white' : 'text-gray-900'
-                                                } group flex rounded-md text-left w-full px-2 py-2 text-sm`}
-                                            >
-                                                Añadir encuesta de satisfacción
-                                            </Link>
-                                        )}
-                                    </Menu.Item>
+                                   
                                     </>
                                     )}
                                 </div>
