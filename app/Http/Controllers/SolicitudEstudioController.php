@@ -156,50 +156,40 @@ class SolicitudEstudioController extends Controller implements HasMiddleware
                     
                     $rutaArchivo = null;
 
-                    // 2. Manejo de subida de archivos
-                    // Nota: Accedemos usando el índice numérico del array
                     if ($request->hasFile("grupos.{$index}.archivo_grupo")) {
                         $archivo = $request->file("grupos.{$index}.archivo_grupo");
-                        // Guardar en disco 'public' dentro de carpeta 'resultados'
                         $rutaArchivo = $archivo->store('resultados_estudios', 'public');
                     }
-
-                    // 3. Actualizar cada Item (Estudio individual) dentro del grupo
                     foreach ($grupoData['items'] as $itemData) {
                         $item = SolicitudItem::findOrFail($itemData['id']);
 
                         if ($itemData['cancelado']) {
-                            // CASO A: El estudio fue cancelado
+
                             $item->update([
                                 'estado' => 'CANCELADO',
                                 'fecha_realizacion' => now(),
-                                //'notas_cancelacion' => 'Cancelado durante la entrega de resultados',
+                                
                             ]);
                         } else {
-                            // CASO B: El estudio se realizó correctamente
-                            
-                            // Preparamos datos a actualizar
+
                             $datosActualizar = [
-                                'estado' => 'FINALIZADO', // O 'ENTREGADO'
                                 'fecha_realizacion' => $grupoData['fecha_hora_grupo'] ?? now(),
                                 'problema_clinico' => $grupoData['problema_clinico'],
                                 'incidentes_accidentes' => $grupoData['incidentes_accidentes'],
                             ];
 
-                            // Solo actualizamos la ruta del archivo si se subió uno nuevo
-                            // Si no, mantenemos el anterior (si existía)
                             if ($rutaArchivo) {
                                 $datosActualizar['ruta_archivo_resultado'] = $rutaArchivo;
                                 $datosActualizar['estado'] = 'FINALIZADO';
+                            } else {
+                                $datosActualizar['estado'] = 'PENDIENTE'; 
                             }
-
                             $item->update($datosActualizar);
                         }
                     }
                 }
                 
-                // Opcional: Actualizar estatus general de la solicitud padre
-                // $solicitud_estudio->update(['estatus' => 'COMPLETADO']);
+
             });
 
             return redirect()->route('estancias.show',$solicitudes_estudio->formularioInstancia['estancia_id'])
