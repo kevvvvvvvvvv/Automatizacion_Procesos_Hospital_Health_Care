@@ -1,6 +1,6 @@
 import React from 'react';
 import { Head, useForm } from '@inertiajs/react';
-import { SolicitudEstudio, User } from '@/types';
+import { SolicitudEstudio, User, Estancia } from '@/types';
 import { route } from 'ziggy-js';
 
 import MainLayout from '@/layouts/MainLayout';
@@ -20,19 +20,32 @@ const ResultadosComponent = ({ solicitud_estudio, grupos_estudios }: Props) => {
 
     const { data, setData, post, processing, errors } = useForm({
         _method: 'PUT',
-        
-        grupos: gruposSeguros.map(grupo => ({
-            nombre_grupo: grupo.nombre_grupo,
-            problema_clinico: '',
-            incidentes_accidentes: '',
-            fecha_hora_grupo: '', 
-            archivo_grupo: null as File | null,
-            items: grupo.items.map((item:any) => ({
-                id: item.id,
-                nombre_estudio: item.catalogo_estudio?.nombre || item.otro_estudio,
-                cancelado: false, 
-            }))
-        }))
+        grupos: gruposSeguros.map(grupo => {
+            // Tomamos el primer item del grupo para extraer los datos generales 
+            // que se guardaron previamente (fecha, problema clínico, etc.)
+            const primerItem = grupo.items[0] || {};
+
+            return {
+                nombre_grupo: grupo.nombre_grupo,
+                // Si existe el dato en el primer item, úsalo; si no, pon vacío
+                problema_clinico: primerItem.problema_clinico || '',
+                incidentes_accidentes: primerItem.incidentes_accidentes || '',
+                ruta_archivo_actual: primerItem.ruta_archivo_resultado || null,
+                archivo_grupo: null,
+                
+                // Formatear fecha para el input datetime-local (YYYY-MM-DDTHH:mm)
+                fecha_hora_grupo: primerItem.fecha_realizacion 
+                    ? new Date(primerItem.fecha_realizacion).toISOString().slice(0, 16) 
+                    : '', 
+
+                
+                items: grupo.items.map((item: any) => ({
+                    id: item.id,
+                    nombre_estudio: item.catalogo_estudio?.nombre || item.otro_estudio,
+                    cancelado: item.estado === 'CANCELADO', 
+                }))
+            };
+        })
     });
 
     const updateGroupField = (groupIndex: number, field: string, value: any) => {
@@ -57,11 +70,11 @@ const ResultadosComponent = ({ solicitud_estudio, grupos_estudios }: Props) => {
     };
 
     return (
-        <MainLayout pageTitle='Entrega de resultados' link='dashboard'>
+        <MainLayout pageTitle='Entrega de resultados' link='estancias.show' linkParams={solicitud_estudio.formulario_instancia.estancia_id}>
             <Head title="Resultados de estudios"/>
             
             <FormLayout 
-                title={`Solicitud #${solicitud_estudio.id}`} 
+                title={`Solicitud  de estudios #${solicitud_estudio.id}`} 
                 onSubmit={handleSubmit} 
                 actions={
                     <PrimaryButton disabled={processing} type='submit'>
@@ -77,11 +90,13 @@ const ResultadosComponent = ({ solicitud_estudio, grupos_estudios }: Props) => {
                     data.grupos.map((grupo, gIndex) => (
                         <div key={gIndex} className="mb-10 border-2 border-gray-200 rounded-xl overflow-hidden shadow-sm">
                             <div className="bg-gray-100 p-4 border-b border-gray-200">
-                                <h2 className="text-xl font-bold text-gray-800 flex items-center gap-2">
-                                    <span className="bg-blue-600 text-white text-xs px-2 py-1 rounded uppercase tracking-wide">
+                                <h2 className="text-xl font-bold text-gray-800 flex flex-wrap items-center gap-2">
+                                    <span className="bg-blue-600 text-white text-xs px-2 py-1 rounded uppercase tracking-wide shrink-0">
                                         Departamento
                                     </span>
-                                    {grupo.nombre_grupo}
+                                    <span className="break-words">
+                                        {grupo.nombre_grupo}
+                                    </span>
                                 </h2>
                             </div>
 
@@ -126,8 +141,26 @@ const ResultadosComponent = ({ solicitud_estudio, grupos_estudios }: Props) => {
                                         {errors[`grupos.${gIndex}.archivo_grupo` as keyof typeof errors] && (
                                             <p className="text-red-500 text-sm mt-2">{errors[`grupos.${gIndex}.archivo_grupo` as keyof typeof errors]}</p>
                                         )}
+
+                                        {grupo.ruta_archivo_actual && (
+                                            <div className="mb-3 p-2 bg-white rounded border border-blue-200 flex items-center justify-between">
+                                                <div className="flex items-center gap-2">
+                                                    <span className="text-blue-600">📄</span>
+                                                    <a 
+                                                        href={`/storage/${grupo.ruta_archivo_actual}`} 
+                                                        target="_blank" 
+                                                        className="text-xs font-semibold text-blue-700 hover:underline"
+                                                    >
+                                                        Ver archivo actual
+                                                    </a>
+                                                </div>
+                                                <span className="text-[10px] bg-blue-100 text-blue-800 px-2 py-0.5 rounded">Guardado</span>
+                                            </div>
+                                        )}
                                         <p className="text-xs text-gray-500 mt-2">
-                                            Sube un único archivo (PDF, imagen, Excel, etcétera) que contenga los resultados de todos los estudios listados abajo.
+                                            {grupo.ruta_archivo_actual 
+                                                ? 'Si seleccionas un archivo nuevo, se reemplazará el anterior.' 
+                                                : 'Sube un único archivo con los resultados.'}
                                         </p>
                                     </div>
                                 </div>
@@ -137,7 +170,7 @@ const ResultadosComponent = ({ solicitud_estudio, grupos_estudios }: Props) => {
                                     <h4 className="font-bold text-gray-700 mb-3">Estudios incluidos:</h4>
                                     <div className="space-y-2">
                                         {grupo.items.map((item: any, iIndex: number) => (
-                                            <div key={item.id} className={`flex justify-between items-center p-3 rounded border transition-colors ${item.cancelado ? 'bg-red-50 border-red-200' : 'bg-gray-50 border-gray-200'}`}>
+                                            <div key={item.id} className={`grid grid-cols-1 md:grid-cols-2 items-center p-3 rounded border transition-colors ${item.cancelado ? 'bg-red-50 border-red-200' : 'bg-gray-50 border-gray-200'}`}>
                                                 
                                                 <div className="flex items-center gap-3">
                                                     <span className="font-mono text-sm text-gray-400">#{iIndex + 1}</span>
@@ -146,7 +179,7 @@ const ResultadosComponent = ({ solicitud_estudio, grupos_estudios }: Props) => {
                                                     </span>
                                                 </div>
 
-                                                <label className="flex items-center gap-2 cursor-pointer select-none">
+                                                <label className="flex items-center gap-2 cursor-pointer select-none justify-end">
                                                     <input 
                                                         type="checkbox" 
                                                         checked={item.cancelado}

@@ -10,6 +10,7 @@ import GeneralesForm from  '@/components/forms/generales-form';
 import PersonalQuirurgicoForm from '@/components/forms/personal-quirurgico-form';
 import EquipoLaparoscopiaForm from '@/components/forms/equipo-laparoscopia-form';
 import EnvioPiezaHojaEnfermeria from '@/components/forms/envio-pieza-hoja-enfermeria-form';
+import CerrarHoja from '@/components/app-cerrrar-hoja';
 
 
 
@@ -109,6 +110,14 @@ const CreateHojaEnfermeriaQuirofano:CreateComponent = ({paciente, estancia, hoja
             />
 
             <div className='mt-4 bg-white p-6 border rounded-lg shadow-sm'>
+                <CerrarHoja
+                    hoja={hoja}
+                    title='hoja de enfermería en quirófano'
+                    routeConfig={{
+                        name: 'hojasenfermeriasquirofanos.update',
+                        params: {hojasenfermeriasquirofano: hoja.id}
+                    }}
+                />
                 <NavigationTabs/>
                 {renderActiveSection()}
             </div>

@@ -8,25 +8,24 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use App\Models\Paciente;
-use Illuminate\Support\Collection as EloquentCollection;
+
+use App\Models\SolicitudDieta;
 use Illuminate\Notifications\Messages\BroadcastMessage;
 
 class NuevaSolicitudDietas extends Notification implements ShouldBroadcast, ShouldQueue
 {
     use Queueable;
 
-    public $estudios;
+    public $dieta;
     public $paciente;
-    public $solicitudId;
 
     /**
      * Create a new notification instance.
      */
-    public function __construct(EloquentCollection $estudios, Paciente $paciente, int $solicitudId)
+    public function __construct(SolicitudDieta $dieta, Paciente $paciente)
     {
-        $this->estudios = $estudios;
+        $this->dieta = $dieta;
         $this->paciente = $paciente;
-        $this->solicitudId = $solicitudId;
     }
 
     /**
@@ -57,26 +56,16 @@ class NuevaSolicitudDietas extends Notification implements ShouldBroadcast, Shou
     public function toArray(object $notifiable): array
     {
         $nombreCompleto = trim("{$this->paciente->nombre} {$this->paciente->apellido_paterno} {$this->paciente->apellido_materno}");
-        $primerEstudio = $this->estudios->first();
-        $departamento = 'General';
-
-        if ($primerEstudio) {
-            $departamento = $primerEstudio->catalogoEstudio->departamento 
-                            ?? $primerEstudio->detalles['departamento_manual'] 
-                            ?? 'Estudios Varios';
-        }
-
-        $cantidad = $this->estudios->count();
-        $mensajePrincipal = "Solicitud de dieta para {$nombreCompleto}.";
+        $tipoDieta = $this->dieta->nombre_dieta ?? 'Dieta General';
 
         return [
-            'solicitud_id' => $this->solicitudId, 
+            'title' => 'NUEVA DIETA', 
+            'message' => "Se ha solicitado {$tipoDieta} para el paciente {$nombreCompleto}.",
+            'dieta_id' => $this->dieta->id,
             'paciente_id' => $this->paciente->id,
             'paciente_nombre' => $nombreCompleto,
-            'departamento' => $departamento,
-            'cantidad_estudios' => $cantidad,
-            'message' => $mensajePrincipal,
-            'action_url' => "/solicitudes-estudios/{$this->solicitudId}/edit", 
+            'action_url' => "/dietas/{$this->dieta->id}/edit", 
+            'action_text' => 'Ver solicitud'
         ];
     }
 
