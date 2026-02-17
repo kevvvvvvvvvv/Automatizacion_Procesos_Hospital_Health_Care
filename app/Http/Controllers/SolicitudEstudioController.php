@@ -21,15 +21,22 @@ use App\Models\User;
 use App\Notifications\NuevaSolicitudEstudios;
 use Inertia\Inertia;
 use App\Services\TwilioWhatsAppService;
+use App\Services\PdfGeneratorService;
 
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
 
+
 class SolicitudEstudioController extends Controller implements HasMiddleware
 {
-
+    protected $pdfGenerator;
     use AuthorizesRequests;
+
+    public function __construct(PdfGeneratorService $pdfGenerator)
+    {
+        $this->pdfGenerator = $pdfGenerator;
+    }
 
     public static function middleware(): array
     {
@@ -69,7 +76,9 @@ class SolicitudEstudioController extends Controller implements HasMiddleware
         $solicitudes_estudio->load([
             'solicitudItems.catalogoEstudio', 
             'userSolicita',
-            'userLlena' 
+            'userLlena',
+            'itemable', 
+            'formularioInstancia.estancia'
         ]);
         
         $personal = User::all();
@@ -139,7 +148,7 @@ class SolicitudEstudioController extends Controller implements HasMiddleware
             'grupos.*.items.*.cancelado' => 'boolean',
         ]);
 
-        dd($validated);
+        $solicitudes_estudio->load('formularioInstancia.estancia');
 
         try {
             DB::transaction(function () use ($request) {
@@ -147,53 +156,43 @@ class SolicitudEstudioController extends Controller implements HasMiddleware
                     
                     $rutaArchivo = null;
 
-                    // 2. Manejo de subida de archivos
-                    // Nota: Accedemos usando el índice numérico del array
                     if ($request->hasFile("grupos.{$index}.archivo_grupo")) {
                         $archivo = $request->file("grupos.{$index}.archivo_grupo");
-                        // Guardar en disco 'public' dentro de carpeta 'resultados'
                         $rutaArchivo = $archivo->store('resultados_estudios', 'public');
                     }
-
-                    // 3. Actualizar cada Item (Estudio individual) dentro del grupo
                     foreach ($grupoData['items'] as $itemData) {
                         $item = SolicitudItem::findOrFail($itemData['id']);
 
                         if ($itemData['cancelado']) {
-                            // CASO A: El estudio fue cancelado
+
                             $item->update([
                                 'estado' => 'CANCELADO',
                                 'fecha_realizacion' => now(),
-                                // Limpiamos o mantenemos notas según tu lógica
-                                'notas_cancelacion' => 'Cancelado durante la entrega de resultados',
+                                
                             ]);
                         } else {
-                            // CASO B: El estudio se realizó correctamente
-                            
-                            // Preparamos datos a actualizar
+
                             $datosActualizar = [
-                                'estado' => 'FINALIZADO', // O 'ENTREGADO'
                                 'fecha_realizacion' => $grupoData['fecha_hora_grupo'] ?? now(),
                                 'problema_clinico' => $grupoData['problema_clinico'],
                                 'incidentes_accidentes' => $grupoData['incidentes_accidentes'],
                             ];
 
-                            // Solo actualizamos la ruta del archivo si se subió uno nuevo
-                            // Si no, mantenemos el anterior (si existía)
                             if ($rutaArchivo) {
                                 $datosActualizar['ruta_archivo_resultado'] = $rutaArchivo;
+                                $datosActualizar['estado'] = 'FINALIZADO';
+                            } else {
+                                $datosActualizar['estado'] = 'PENDIENTE'; 
                             }
-
                             $item->update($datosActualizar);
                         }
                     }
                 }
                 
-                // Opcional: Actualizar estatus general de la solicitud padre
-                // $solicitud_estudio->update(['estatus' => 'COMPLETADO']);
+
             });
 
-            return redirect()->route('dashboard')
+            return redirect()->route('estancias.show',$solicitudes_estudio->formularioInstancia['estancia_id'])
                 ->with('success', 'Resultados guardados correctamente.');            
 
         }catch(\Exception $e){
@@ -208,10 +207,13 @@ class SolicitudEstudioController extends Controller implements HasMiddleware
             'userSolicita',
             'userLlena',
             'solicitudItems.catalogoEstudio',
-            'solicitudItems.userRealiza'
+            'solicitudItems.userRealiza',
+            'formularioInstancia.estancia',
         );
+
         return Inertia::render('estudios/items/index', [
             'solicitud' => $solicitudes_estudio,
+            
         ]);
     }
 
@@ -224,21 +226,25 @@ class SolicitudEstudioController extends Controller implements HasMiddleware
             'formularioInstancia.estancia.paciente'
         ); 
 
-        //dd($solicitudes_estudio->toArray());
-        return Pdf::view('pdfs.solicitud-estudio',['solicitud' => $solicitudes_estudio])
-            ->withBrowsershot(function (Browsershot $browsershot){
-                $chromePath = config('services.browsershot.chrome_path');
-                if ($chromePath) {
-                    $browsershot->setChromePath($chromePath);
-                    $browsershot->noSandbox();
-                    $browsershot->addChromiumArguments([
-                        'disable-dev-shm-usage',
-                        'disable-gpu',
-                    ]);
-                }
-            })
-            ->inline('solicitud examen.pdf');
-            
+        $headerData = [
+            'historiaclinica' => $solicitudes_estudio,
+            'paciente' => $solicitudes_estudio->formularioInstancia->estancia->paciente,
+            'estancia' => $solicitudes_estudio->formularioInstancia->estancia
+        ];
+
+        $viewData = [
+            'notaData' => $solicitudes_estudio,
+            'paciente' => $solicitudes_estudio->formularioInstancia->estancia->paciente,
+            'medico' => $solicitudes_estudio->formularioInstancia->user,
+        ];
+
+        return $this->pdfGenerator->generateStandardPdf(
+            'pdfs.solicitud-estudio',
+            $viewData,
+            $headerData,
+            'solicitud-estudios-',
+            $solicitudes_estudio->id
+        );
     }
 
     private function crearCabeceraSolicitud($request, $estancia)
@@ -376,4 +382,5 @@ class SolicitudEstudioController extends Controller implements HasMiddleware
 
         return "Notificación de cita enviada (En inglés por Sandbox)";
     }
+
 }

@@ -185,6 +185,8 @@ export interface FormularioInstancia {
     user_id: number;
     created_at: string;
     updated_at: string;
+
+    estancia: Estancia;
 }
 export interface Medicamento {
     id: number;
@@ -312,6 +314,8 @@ export interface HojaEnfermeria {
     created_at: string;
     updated_at: string;
 
+    formulario_instancia: FormularioInstancia;
+
     hojas_terapia_i_v: HojaTerapiaIV[] | null; 
     hoja_medicamentos: HojaMedicamento[] | null;
     hoja_signos: HojaSignos[];
@@ -359,6 +363,10 @@ export interface HojaEnfermeriaQuirofano {
     hora_fin_cirugia: string;
     hora_fin_anestesia: string;
     hora_fin_paciente: string;
+
+    estado: string;
+
+    formulario_instancia: FormularioInstancia;
 
     servicios_especiales: {
         torre: boolean;
@@ -609,6 +617,7 @@ export interface SolicitudEstudio {
     user_llena?: User;
     solicitud_items?: SolicitudItem[]; 
 
+    formulario_instancia: FormularioInstancia;
     user_solicita: User;
     user_llena?: User;
 }
@@ -622,6 +631,10 @@ export interface SolicitudDieta {
     horario_entrega: string;
     user_entrega_id: number;
     observaciones: string;
+
+    estado: string;
+
+    hoja_enfermeria: HojaEnfermeria;
 
     dieta: Dieta;
     user_supervisa?: User; 

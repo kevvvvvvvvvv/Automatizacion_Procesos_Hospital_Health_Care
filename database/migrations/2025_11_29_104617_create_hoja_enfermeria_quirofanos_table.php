@@ -22,6 +22,8 @@ return new class extends Migration
             $table->json('anestesia')->nullable();
             $table->json('servicios_especiales')->nullable();
 
+            $table->string('estado')->default('Abierto');
+
             $table->datetime('hora_inicio_cirugia')->nullable();
             $table->datetime('hora_inicio_anestesia')->nullable();
             $table->datetime('hora_inicio_paciente')->nullable();

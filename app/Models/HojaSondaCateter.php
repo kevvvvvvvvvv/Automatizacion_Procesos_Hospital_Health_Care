@@ -30,6 +30,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|HojaSondaCateter whereProductoServicioId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|HojaSondaCateter whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|HojaSondaCateter whereUserId($value)
+ * @property-read \App\Models\User $user
  * @mixin \Eloquent
  */
 class HojaSondaCateter extends Model
@@ -53,9 +54,9 @@ class HojaSondaCateter extends Model
         return $this->belongsTo(HojaEnfermeria::class);
     }
 
-    public function user():BelongsTo
+    public function user(): BelongsTo
     {
-        return $this->belongs(User::class,'user_id','id');
+        return $this->belongsTo(User::class,'user_id','id');
     }
 
     public function productoServicio(): BelongsTo
