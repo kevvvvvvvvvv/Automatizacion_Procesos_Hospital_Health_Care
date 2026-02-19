@@ -22,6 +22,8 @@ use App\Notifications\NuevaSolicitudEstudios;
 use Inertia\Inertia;
 use App\Services\TwilioWhatsAppService;
 use App\Services\PdfGeneratorService;
+use App\Services\VentaService;
+use App\Models\Venta;
 
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Routing\Controllers\HasMiddleware;
@@ -133,7 +135,7 @@ class SolicitudEstudioController extends Controller implements HasMiddleware
         ]);
     }
 
-    public function update(Request $request, SolicitudEstudio $solicitudes_estudio)
+    public function update(Request $request, SolicitudEstudio $solicitudes_estudio, VentaService $venta)
     {
         $validated = $request->validate([
             'grupos' => 'required|array',
@@ -149,6 +151,7 @@ class SolicitudEstudioController extends Controller implements HasMiddleware
         ]);
 
         $solicitudes_estudio->load('formularioInstancia.estancia');
+        $estancia_id = $solicitudes_estudio->formularioInstancia->estancia->id;
 
         try {
             DB::transaction(function () use ($request) {
@@ -184,7 +187,17 @@ class SolicitudEstudioController extends Controller implements HasMiddleware
                             } else {
                                 $datosActualizar['estado'] = 'PENDIENTE'; 
                             }
+
                             $item->update($datosActualizar);
+                            $ventaExisente = Venta::where('estancia_id',$estancia_id)
+                                ->where('estado', Venta::ESTADO_PENDIENTE)
+                                ->first();
+                            
+                            if($ventaExisente){
+                                $venta->addItemToVenta($ventaExisente, $itemParaVenta);
+                            } else {
+                                $venta->crearVenta([$itemParaVenta],$estancia_id, Auth::id());
+                            }
                         }
                     }
                 }
@@ -192,7 +205,7 @@ class SolicitudEstudioController extends Controller implements HasMiddleware
 
             });
 
-            return redirect()->route('estancias.show',$solicitudes_estudio->formularioInstancia['estancia_id'])
+            return redirect()->route('estancias.show',$solicitudes_estudio->formularioInstancia->estancia_id)
                 ->with('success', 'Resultados guardados correctamente.');            
 
         }catch(\Exception $e){

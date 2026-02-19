@@ -109,8 +109,8 @@ Route::post('hojasterapiasiv/{hojasenfermeria}',[FormularioHojaTerapiaIVControll
 Route::patch('hojasterapiasiv/{hojasenfermeria}/{hojasterapiasiv}',[FormularioHojaTerapiaIVController::class,'update'])->name('hojasterapiasiv.update')->middleware('auth');
 
 //Route::resource('hojasenfermerias.solicitudes-dietas',FormularioHojaDietaController::class)->shallow()->middleware('auth');
-
 Route::get('solicitudes-dietas',[FormularioHojaDietaController::class,'index'])->name('solicitudes-dietas.index')->middleware('auth');
+Route::post('solicitudes-dietas/{hojasenfermeria}',[FormularioHojaDietaController::class,'store'])->name('hojasenfermerias.solicitudes-dietas.store')->middleware('auth');
 Route::get('solicitudes-dietas/{estancia}',[FormularioHojaDietaController::class, 'show'])->name('solicitudes-dietas.show')->middleware('auth');
 Route::put('solicitudes-dietas/{solicitudes-dieta}',[FormularioHojaDietaController::class, 'update'])->name('solicitudes-dietas.update')->middleware('auth');
 
