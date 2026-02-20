@@ -37,8 +37,9 @@ export default function Ticket({ venta }:{ venta: Venta}) {
                     <thead>
                         <tr className="border-b border-dashed border-black">
                             <th className="w-[15%] text-left align-top">Cant.</th>
-                            <th className="w-[55%] text-left align-top">Desc.</th>
-                            <th className="w-[30%] text-right align-top">Importe</th>
+                            <th className="w-[25%] text-left align-top">CPS</th>
+                            <th className="w-[35%] text-left align-top">Desc.</th>
+                            <th className="w-[25%] text-right align-top">Importe</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -59,6 +60,9 @@ export default function Ticket({ venta }:{ venta: Venta}) {
                                         <td className="text-left align-top">
                                             {detalle.cantidad}
                                         </td>
+                                        <td className="text-left align-top">
+                                            {detalle.clave_producto_servicio ? detalle.clave_producto_servicio : ''}
+                                        </td>                                        
                                         <td className="text-left align-top break-words pr-1">
                                             {nombreItem}
                                         </td>
