@@ -24,7 +24,7 @@ class RoleAndPermissionSeeder extends Seeder
         $roleCocina = Role::create(['name' => 'cocina']);
         $roleMantenimiento = Role::create(['name' => 'mantenimiento']);
         $roleFarmacia = Role::create(['name' => 'farmacia']);
-        $roleTecnicoRadiologo = Role::create(['name' => 'técnico radiólogo']);
+        $roleRadiologo = Role::create(['name' => 'radiólogo']);
         $roleTecnicoLaboratorio = Role::create(['name' => 'técnico de laboratorio']);
         $roleFisoterapeuta = Role::create(['name' => 'fisoterapeuta']);
         $roleRecepcion = Role::create(['name' => 'recepcion']);
@@ -96,7 +96,6 @@ class RoleAndPermissionSeeder extends Seeder
         $roleCaja->syncPermissions([
             'consultar pacientes',
             'consultar estancias',
-
             
             'consultar ventas',
             'crear ventas',
@@ -167,6 +166,16 @@ class RoleAndPermissionSeeder extends Seeder
 
             'consultar peticion dietas',
             'editar peticion dietas',
+        ]);
+
+        $roleRadiologo->syncPermissions([
+            'consultar pacientes',
+            'consultar estancias',
+
+            'consultar solicitudes estudios',
+            'crear solicitudes estudios',
+            'editar solicitudes estudios',
+            'eliminar solicitudes estudios'
         ]);
     }
 }

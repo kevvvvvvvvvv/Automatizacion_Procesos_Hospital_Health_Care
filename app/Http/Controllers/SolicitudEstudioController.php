@@ -52,6 +52,16 @@ class SolicitudEstudioController extends Controller implements HasMiddleware
         ];
     }
 
+    public function create(Estancia $estancia)
+    {
+        $catalogo_estudios = CatalogoEstudio::all();
+
+        return Inertia::render('estudios/create',[
+            'estancia' => $estancia,
+            'catalogoEstudios' =>  $catalogo_estudios,
+            'modeloTipo' => 'App\Models\Estancia',
+        ]);
+    }
 
     public function store(SolicitudEstudioRequest $request, Estancia $estancia, TwilioWhatsAppService $twilio)
     {
@@ -135,16 +145,17 @@ class SolicitudEstudioController extends Controller implements HasMiddleware
             'personal' => $personal,
         ]);
     }
-
+    
     public function update(Request $request, SolicitudEstudio $solicitudes_estudio, VentaService $venta)
     {
-        $validated = $request->validate([
+        $request->validate([
             'grupos' => 'required|array',
             'grupos.*.fecha_hora_grupo' => 'nullable|date',
             'grupos.*.problema_clinico' => 'nullable|string|max:500',
             'grupos.*.incidentes_accidentes' => 'nullable|string|max:500',
-
-            'grupos.*.archivo_grupo' => 'nullable|file|mimes:pdf,jpg,jpeg,png,xlsx,xls|max:10240', 
+            // Cambiado a array de archivos
+            'grupos.*.archivos' => 'nullable|array',
+            'grupos.*.archivos.*' => 'file|mimes:pdf,jpg,jpeg,png,xlsx,xls|max:10240',
             
             'grupos.*.items' => 'required|array',
             'grupos.*.items.*.id' => 'required|exists:solicitud_items,id',
@@ -152,63 +163,69 @@ class SolicitudEstudioController extends Controller implements HasMiddleware
             'grupos.*.items.*.catalogo_estudio_id' => 'required|exists:catalogo_estudios,id',
         ]);
 
-
         $solicitudes_estudio->load('formularioInstancia.estancia');
         $estancia_id = $solicitudes_estudio->formularioInstancia->estancia->id;
-
 
         try {
             DB::transaction(function () use ($request, $estancia_id, $venta) {
                 foreach ($request->grupos as $index => $grupoData) {
                     
-                    $rutaArchivo = null;
+                    $rutasArchivos = [];
 
-                    if ($request->hasFile("grupos.{$index}.archivo_grupo")) {
-                        $archivo = $request->file("grupos.{$index}.archivo_grupo");
-                        $rutaArchivo = $archivo->store('resultados_estudios', 'public');
+                    // 1. Subir todos los archivos del grupo y guardar sus rutas
+                    if ($request->hasFile("grupos.{$index}.archivos")) {
+                        foreach ($request->file("grupos.{$index}.archivos") as $archivo) {
+                            $rutasArchivos[] = $archivo->store('resultados_estudios', 'public');
+                        }
                     }
+
                     foreach ($grupoData['items'] as $itemData) {
                         $item = SolicitudItem::findOrFail($itemData['id']);
 
                         if ($itemData['cancelado']) {
-
                             $item->update([
                                 'estado' => 'CANCELADO',
                                 'fecha_realizacion' => now(),
-                                
                             ]);
                         } else {
-
                             $datosActualizar = [
                                 'fecha_realizacion' => $grupoData['fecha_hora_grupo'] ?? now(),
                                 'problema_clinico' => $grupoData['problema_clinico'],
                                 'incidentes_accidentes' => $grupoData['incidentes_accidentes'],
                             ];
 
-                            if ($rutaArchivo) {
-                                $datosActualizar['ruta_archivo_resultado'] = $rutaArchivo;
-
-                                if ($item['estado'] == 'SOLICITADO' || $item['estado'] == 'PENDIENTE'){
-                                    $this->procesarVenta($venta,$estancia_id,$itemData['catalogo_estudio_id']);
-                                    $datosActualizar['estado'] = 'FINALIZADO';
+                            // 2. Si hay archivos nuevos, crear los registros en la tabla relacionada
+                            if (!empty($rutasArchivos)) {
+                                foreach ($rutasArchivos as $ruta) {
+                                    $item->archivos()->create([
+                                        'ruta_archivo_resultado' => $ruta
+                                    ]);
                                 }
 
-                                $item->update($datosActualizar);
-                                
+                                // Lógica de venta y finalización
+                                if ($item->estado == 'SOLICITADO' || $item->estado == 'PENDIENTE') {
+                                    $this->procesarVenta($venta, $estancia_id, $itemData['catalogo_estudio_id']);
+                                    $datosActualizar['estado'] = 'FINALIZADO';
+                                }
                             } else {
-                                $datosActualizar['estado'] = 'PENDIENTE'; 
+                                // Si no hay archivos y no estaba finalizado, queda en pendiente
+                                if ($item->estado != 'FINALIZADO') {
+                                    $datosActualizar['estado'] = 'PENDIENTE';
+                                }
                             }
+
+                            $item->update($datosActualizar);
                         }
                     }
                 }
             });
 
-            return redirect()->route('estancias.show',$solicitudes_estudio->formularioInstancia->estancia_id)
-                ->with('success', 'Resultados guardados correctamente.');            
+            return redirect()->route('estancias.show', $solicitudes_estudio->formularioInstancia->estancia_id)
+                ->with('success', 'Resultados y archivos guardados correctamente.');            
 
-        }catch(\Exception $e){
-            Log::error('Error al registrar los resultados de los estudios: '. $e->getMessage());
-            return Redirect::back()->with('error','Error al registrar los resultados de los estudios.');
+        } catch (\Exception $e) {
+            Log::error('Error al registrar resultados: ' . $e->getMessage());
+            return Redirect::back()->with('error', 'Ocurrió un error al procesar la solicitud.');
         }
     }
 

@@ -13,6 +13,10 @@ return new class extends Migration
     {
         Schema::create('solicitud_item_archivos', function (Blueprint $table) {
             $table->id();
+            $table->text('ruta_archivo_resultado')->nullable();
+            $table->foreignId('solicitud_item_id')
+                ->constrained('solicitud_items')
+                ->onDelete('cascade');
             $table->timestamps();
         });
     }

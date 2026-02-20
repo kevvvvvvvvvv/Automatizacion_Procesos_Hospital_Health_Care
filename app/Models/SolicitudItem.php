@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
+use App\Models\Estudio\SolicitudItemArchivo;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
@@ -55,7 +57,6 @@ class SolicitudItem extends Model
         'fecha_realizacion',
         'problema_clinico',
         'incidentes_accidentes',
-        'ruta_archivo_resultado'
     ];
 
     protected $casts = [
@@ -75,5 +76,10 @@ class SolicitudItem extends Model
     public function catalogoEstudio(): BelongsTo
     {
         return $this->belongsTo(CatalogoEstudio::class);
+    }
+
+    public function archivos(): HasMany
+    {
+        return $this->hasMany(SolicitudItemArchivo::class);
     }
 }
