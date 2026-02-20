@@ -105,7 +105,7 @@ class SolicitudEstudioController extends Controller implements HasMiddleware
 
         $departamentosPermitidos = match(true) {
             $user->hasRole('técnico de laboratorio') => ['*'],
-            $user->hasRole('radiólogo') => ['*'],
+            $user->hasRole('radiólogo') => ['RADIOLOGÍA GENERAL'],
             $user->hasRole('administrador') => ['*'], 
             default => [] 
         };
