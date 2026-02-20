@@ -31,8 +31,9 @@ const ResultadosComponent = ({ solicitud_estudio, grupos_estudios }: Props) => {
                 problema_clinico: primerItem.problema_clinico || '',
                 incidentes_accidentes: primerItem.incidentes_accidentes || '',
                 ruta_archivo_actual: primerItem.ruta_archivo_resultado || null,
-                archivo_grupo: null,
+                archivos: [] as File[],
                 
+                archivos_existentes: grupo.items.flatMap((item: any) => item.archivos || []),
                 // Formatear fecha para el input datetime-local (YYYY-MM-DDTHH:mm)
                 fecha_hora_grupo: primerItem.fecha_realizacion 
                     ? new Date(primerItem.fecha_realizacion).toISOString().slice(0, 16) 
@@ -48,6 +49,14 @@ const ResultadosComponent = ({ solicitud_estudio, grupos_estudios }: Props) => {
             };
         })
     });
+
+    const handleMultipleFiles = (gIndex: number, e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files) {
+            // Convertimos el FileList de HTML en un Array de JavaScript
+            const filesArray = Array.from(e.target.files);
+            updateGroupField(gIndex, 'archivos', filesArray);
+        }
+    };
 
     const updateGroupField = (groupIndex: number, field: string, value: any) => {
         const newGrupos = [...data.grupos];
@@ -133,36 +142,51 @@ const ResultadosComponent = ({ solicitud_estudio, grupos_estudios }: Props) => {
                                         <label className="block text-sm font-bold text-gray-700 mb-2">
                                             Adjuntar resultados ({grupo.nombre_grupo})
                                         </label>
+                                        
+                                        {/* Input con atributo 'multiple' */}
                                         <input 
                                             type="file" 
-                                            accept=".pdf,.jpg,.png"
+                                            multiple 
+                                            accept=".pdf,.jpg,.png,.jpeg,.xlsx,.xls"
                                             className="block w-full text-sm text-gray-500 file:bg-blue-600 file:text-white file:rounded file:border-0 file:px-4 file:py-2 cursor-pointer bg-white rounded border border-gray-300"
-                                            onChange={(e) => updateGroupField(gIndex, 'archivo_grupo', e.target.files ? e.target.files[0] : null)}
+                                            onChange={(e) => handleMultipleFiles(gIndex, e)}
                                         />
-                                        {errors[`grupos.${gIndex}.archivo_grupo` as keyof typeof errors] && (
-                                            <p className="text-red-500 text-sm mt-2">{errors[`grupos.${gIndex}.archivo_grupo` as keyof typeof errors]}</p>
-                                        )}
 
-                                        {grupo.ruta_archivo_actual && (
-                                            <div className="mb-3 p-2 bg-white rounded border border-blue-200 flex items-center justify-between">
-                                                <div className="flex items-center gap-2">
-                                                    <span className="text-blue-600">📄</span>
-                                                    <a 
-                                                        href={`/storage/${grupo.ruta_archivo_actual}`} 
-                                                        target="_blank" 
-                                                        className="text-xs font-semibold text-blue-700 hover:underline"
-                                                    >
-                                                        Ver archivo actual
-                                                    </a>
-                                                </div>
-                                                <span className="text-[10px] bg-blue-100 text-blue-800 px-2 py-0.5 rounded">Guardado</span>
+                                        {/* Feedback de archivos seleccionados */}
+                                        {grupo.archivos.length > 0 && (
+                                            <div className="mt-3 space-y-1">
+                                                <p className="text-xs font-bold text-gray-600">Archivos nuevos a subir:</p>
+                                                {grupo.archivos.map((file, fIndex) => (
+                                                    <div key={fIndex} className="text-xs text-blue-700 bg-blue-100 px-2 py-1 rounded flex items-center gap-2">
+                                                        📎 {file.name}
+                                                    </div>
+                                                ))}
                                             </div>
                                         )}
-                                        <p className="text-xs text-gray-500 mt-2">
-                                            {grupo.ruta_archivo_actual 
-                                                ? 'Si seleccionas un archivo nuevo, se reemplazará el anterior.' 
-                                                : 'Sube un único archivo con los resultados.'}
-                                        </p>
+
+                                        {/* Errores dinámicos para el array de archivos */}
+                                        {errors[`grupos.${gIndex}.archivos` as keyof typeof errors] && (
+                                            <p className="text-red-500 text-sm mt-2">{errors[`grupos.${gIndex}.archivos` as keyof typeof errors]}</p>
+                                        )}
+
+                                        {/* Mostrar archivos ya guardados (si tu relación los trae) */}
+                                        {grupo.archivos_existentes && grupo.archivos_existentes.length > 0 && (
+                                            <div className="mt-4 border-t border-blue-200 pt-3">
+                                                <p className="text-[10px] uppercase font-bold text-gray-400 mb-2">Archivos en plataforma:</p>
+                                                <div className="grid grid-cols-1 gap-2">
+                                                    {grupo.archivos_existentes.map((archivo: any) => (
+                                                        <a 
+                                                            key={archivo.id}
+                                                            href={`/storage/${archivo.ruta_archivo_resultado}`} 
+                                                            target="_blank" 
+                                                            className="text-xs font-semibold text-blue-700 hover:underline flex items-center gap-2"
+                                                        >
+                                                            📄 Ver archivo guardado
+                                                        </a>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        )}
                                     </div>
                                 </div>
 
