@@ -170,7 +170,8 @@ class RoleAndPermissionSeeder extends Seeder
 
         $roleRadiologo->syncPermissions([
             'consultar pacientes',
-            'consultar estancias',
+            'crear pacientes',
+            'editar pacientes',
 
             'consultar solicitudes estudios',
             'crear solicitudes estudios',
