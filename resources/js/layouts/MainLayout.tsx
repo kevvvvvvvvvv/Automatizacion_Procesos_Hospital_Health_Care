@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, usePage, router } from '@inertiajs/react';
 import { route } from 'ziggy-js';
+
 import { SharedProps, LaravelNotification } from '@/types';
 
 const formatTime = (time: string): string => {
@@ -59,6 +60,20 @@ const BellIcon = () => (
         strokeLinejoin="round" 
         d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 00-5-5.917V5a1 1 0 00-2 0v.083A6 6 0 006 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" 
         />
+    </svg>
+);
+const Tools = () =>(
+    <svg 
+    xmlns="http://www.w3.org/2000/svg" 
+    fill="none" 
+    viewBox="0 0 24 24" 
+    strokeWidth="1.5" 
+    stroke="currentColor" 
+    className="size-6">
+    <path 
+    strokeLinecap="round" 
+    strokeLinejoin="round" 
+    d="M11.42 15.17 17.25 21A2.652 2.652 0 0 0 21 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655 5.653a2.548 2.548 0 1 1-3.586-3.586l6.837-5.63m5.108-.233c.55-.164 1.163-.188 1.743-.14a4.5 4.5 0 0 0 4.486-6.336l-3.276 3.277a3.004 3.004 0 0 1-2.25-2.25l3.276-3.276a4.5 4.5 0 0 0-6.336 4.486c.091 1.076-.071 2.264-.904 2.95l-.102.085m-1.745 1.437L5.909 7.5H4.5L2.25 3.75l1.5-1.5L7.5 4.5v1.409l4.26 4.26m-1.745 1.437 1.745-1.437m6.615 8.206L15.75 15.75M4.867 19.125h.008v.008h-.008v-.008Z" />
     </svg>
 );
 
@@ -301,7 +316,11 @@ const MainLayout = ({ pageTitle, children, link, linkParams }: MainLayoutProps) 
                     </ul>
 
                     <div className="p-2 text-center border-t">
-                        <Link href="/notificaciones" className="text-sm text-blue-600 hover:underline" onClick={() => setIsPanelOpen(false)}>
+                        <Link 
+                            href={route('notificaciones.index')} 
+                            className="text-sm text-blue-600 hover:underline font-medium" 
+                            onClick={() => setIsPanelOpen(false)}
+                        >
                             Ver todas las notificaciones
                         </Link>
                         
@@ -318,10 +337,18 @@ const MainLayout = ({ pageTitle, children, link, linkParams }: MainLayoutProps) 
                         title="Cerrar Sesión"
                     >
 
-                    <LogOut/>
-                    <span className='text-xs mt-1 select-none hidden md:block'>Cerrar Sesión</span>
-                </Link>
-                        </div>
+                        <LogOut/>
+                        <span className='text-xs mt-1 select-none hidden md:block'>Cerrar Sesión</span>
+                    </Link>
+                    </div>
+                    <Link
+                    href={route("mantenimiento.index")}
+                    className="flex flex-col items-center justify-center p-3 rounded-md text-black hover:bg-gray-100 transition"
+                    title="Inicio"
+                    >
+                        <Tools />
+                        <span className="text-xs mt-1 select-none hidden md:block">Reportar</span>
+                    </Link>
             </aside>
 
             <FlashAlert 

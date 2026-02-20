@@ -395,5 +395,19 @@ class UserSeeder extends Seeder
 
         $userCocina->assignRole('cocina');
 
+        $userRadiologo = User::create([
+            'curp' => 'GOLJ900325HDFLNR05', 
+            'nombre' => 'Jorge',
+            'apellido_paterno' => 'Gómez',
+            'apellido_materno' => 'López',
+            'sexo' => 'Masculino',
+            'fecha_nacimiento' => '1990-03-25',
+            'email' => 'radiologo@test.com', 
+            'telefono' => '7771234567',
+            'password' => Hash::make('12345678'),
+        ]);
+
+        $userRadiologo->assignRole('radiólogo');
+
     }
 }
