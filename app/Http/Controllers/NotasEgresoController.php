@@ -82,7 +82,7 @@ class NotasEgresoController extends Controller implements HasMiddleware
      * @return RedirectResponse Redirección a la vista de la estancia o atrás en caso de error.
      */
     public function store(NotaEgresoRequest $request, Paciente $paciente, Estancia $estancia)
-    {
+    { 
         $validateData = $request->validated();
 
         if ($validateData['motivo_egreso'] === 'otro') {

@@ -89,4 +89,5 @@ class NuevaSolicitudMedicamentos extends Notification implements ShouldBroadcast
             'items' => $itemsMensaje,
         ];
     }
+    
 }
