@@ -124,8 +124,8 @@ class FormularioCatalogoSeeder extends Seeder
         FormularioCatalogo::create([
             'id' => 16,
             'nombre_formulario' => 'Encuesta satisfacción',
-            'nombre_tabla_fisica' => 'encuesta_satisfacccions',
-            'route_prefix' => 'encuesta-satifaccions',
+            'nombre_tabla_fisica' => 'encuesta_satisfaccions',
+            'route_prefix' => 'encuesta-satisfaccions',
         ]);
         
     }

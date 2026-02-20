@@ -49,11 +49,16 @@ use App\Http\Controllers\HojaControlLiquidoController;
 use App\Http\Controllers\HojaEscalaValoracionController;
 use App\Http\Controllers\PeticionesController;
 use App\Http\Controllers\BackupsRestauration\BackupsController;
+use App\Http\Controllers\RestauracionController;
 use App\Http\Controllers\Encuestas\EncuestaSatisfaccionController;
+use App\Http\Controllers\MantenimientoController;
+use App\Http\Controllers\EncuestaPersonalController;
 use App\Models\HojaContolLiquido;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;
+
+use App\Http\Controllers\NotificacionController;
 
 Route::get('/', function () {
     return Inertia::render('auth/login');
@@ -74,7 +79,7 @@ Route::resource('reservaciones', ReservacionController::class)->middleware('auth
 Route::resource('quirofanos', ReservacionQuirofanoController::class)->middleware('auth');
 Route::post('/reservaciones/{reservacione}/pagar',[ReservacionController::class,'pagar'])->middleware('auth');
 Route::resource('dietas',DietaController::class)->middleware('auth');
-
+Route::resource('mantenimiento', MantenimientoController::class)->middleware('auth');
 
 
 Route::resource('respaldo', BackupsController::class)->middleware('auth');
@@ -100,6 +105,9 @@ Route::resource('pacientes.estancias.notaspreanestesicas', NotaPreAnestesicaCont
 Route::resource('pacientes.estancias.hojasenfermeriasquirofanos',HojaEnfemeriaQuirofanoController::class)->shallow()->middleware('auth');
 Route::resource('pacientes.estancias.consentimientos', ConsentimientoController::class)->shallow()->middleware('auth');
 Route::resource('estancias.encuesta-satisfaccions', EncuestaSatisfaccionController::class)->shallow()->middleware('auth');
+Route::resource('notificaciones', NotificacionController::class)->shallow()->middleware('auth');
+Route::resource('estancias.encuestapersonal', EncuestaPersonalController::class)->shallow()->middleware('auth');
+
 
 Route::post('/checklist/toggle', [ChecklistController::class, 'toggle'])->name('checklist.toggle')->middleware('auth');
 
@@ -136,6 +144,10 @@ Route::post('hojas-riesgo-caidas/{hojasenfermeria}',[FormularioHojaRiesgoCaidaCo
 
 Route::post('hojas-habitus-exterior/{hojasenfermeria}', [FormularioHojaHabitusExteriorController::class,'store'])->name('hojas-habitus-exterior.store')->middleware('auth');
 
+
+
+
+Route::post('/notificaciones/marcar-leidas', [NotificacionController::class, 'markAllAsRead'])->name('notificaciones.read');
 //Rutas Hoja de enfermeria en quirofano
 Route::post('hojasinsumosbasicos/{hojasenfermeriasquirofano}', [FormularioHojaInsumosBasicosController::class, 'store'])->name('hojasinsumosbasicos.store')->middleware('auth');
 Route::patch('hojasinsumosbasicos/{hojasinsumosbasico}', [FormularioHojaInsumosBasicosController::class, 'update'])->name('hojasinsumosbasicos.update')->middleware('auth');
@@ -242,8 +254,13 @@ Route::get('/consentimientos/pdf/{file}', [ConsentimientoController::class, 'gen
     ->where('file', '.*')
     ->name('consentimientos.pdf')
     ->middleware('auth');
+Route::get('/encuesta-satisfaccions/{encuesta-satisfaccions}/pdf', [EncuestaSatisfaccionController::class, 'generarPDF'])
+    ->name('encuesta-satisfaccions.pdf')
+    ->middleware('auth');
 
-
+Route::get('/encuestapersonal/{encuestapersonal}/pdf', [EncuestaPersonalController::class, 'generarPDF'])
+    ->name('encuestapersonal.pdf')
+    ->middleware('auth');
 
 // Farmacia
 Route::get('farmacia/solicitudes-medicamentos/{hojasenfermeria}', [FarmaciaController::class, 'show'])
@@ -268,6 +285,15 @@ Route::get('/historial', [HistoryController::class, 'index'])->name('historiales
 Route::get ('/rerservacion/reserva', [ReservacionController::class, 'reserva'])->name('rerservaciones.reserva')->middleware('auth');
 
 
+//RESTAURACIÓN DE LA BASE DE DATOS
+Route::get('/bd/respaldo/restauracion/', [RestauracionController::class, 'showView'])
+    ->name('bd.restauracion'); 
+
+Route::get('/bd/respaldo/restauracion', [RestauracionController::class, 'showView'])
+    ->name('bd.restauracion'); 
+
+Route::post('/bd/respaldo/restauracion', [RestauracionController::class, 'restore'])
+    ->name('bd.restauracion.store');
 
 require __DIR__.'/settings.php';
 require __DIR__.'/auth.php';
