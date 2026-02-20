@@ -389,7 +389,7 @@ class SolicitudEstudioController extends Controller implements HasMiddleware
             // --- GRUPO: RAYOS X / IMAGENOLOGÍA ---
             'RADIOLOGÍA GENERAL',
             'TOMOGRAFÍA COMPUTADA',
-            'ULTRASONIDO' => User::role('técnico radiólogo')->get(),
+            'ULTRASONIDO' => User::role('radiólogo')->get(),
 
             // --- GRUPO: RESONANCIA (O puedes unirlo al anterior) ---
             'RESONANCIA MAGNÉTICA' => User::all(),
