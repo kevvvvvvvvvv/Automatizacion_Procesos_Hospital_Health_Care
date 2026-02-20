@@ -43,6 +43,7 @@ const ResultadosComponent = ({ solicitud_estudio, grupos_estudios }: Props) => {
                     id: item.id,
                     nombre_estudio: item.catalogo_estudio?.nombre || item.otro_estudio,
                     cancelado: item.estado === 'CANCELADO', 
+                    catalogo_estudio_id: item.catalogo_estudio_id,
                 }))
             };
         })

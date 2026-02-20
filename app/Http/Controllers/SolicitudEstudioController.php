@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\SolicitudEstudioRequest;
+use App\Models\CatalogoEstudio;
 use Illuminate\Http\Request;
 
 use App\Models\Estancia;
@@ -148,13 +149,16 @@ class SolicitudEstudioController extends Controller implements HasMiddleware
             'grupos.*.items' => 'required|array',
             'grupos.*.items.*.id' => 'required|exists:solicitud_items,id',
             'grupos.*.items.*.cancelado' => 'boolean',
+            'grupos.*.items.*.catalogo_estudio_id' => 'required|exists:catalogo_estudios,id',
         ]);
+
 
         $solicitudes_estudio->load('formularioInstancia.estancia');
         $estancia_id = $solicitudes_estudio->formularioInstancia->estancia->id;
 
+
         try {
-            DB::transaction(function () use ($request) {
+            DB::transaction(function () use ($request, $estancia_id, $venta) {
                 foreach ($request->grupos as $index => $grupoData) {
                     
                     $rutaArchivo = null;
@@ -183,33 +187,27 @@ class SolicitudEstudioController extends Controller implements HasMiddleware
 
                             if ($rutaArchivo) {
                                 $datosActualizar['ruta_archivo_resultado'] = $rutaArchivo;
-                                $datosActualizar['estado'] = 'FINALIZADO';
+
+                                if ($item['estado'] == 'SOLICITADO' || $item['estado'] == 'PENDIENTE'){
+                                    $this->procesarVenta($venta,$estancia_id,$itemData['catalogo_estudio_id']);
+                                    $datosActualizar['estado'] = 'FINALIZADO';
+                                }
+
+                                $item->update($datosActualizar);
+                                
                             } else {
                                 $datosActualizar['estado'] = 'PENDIENTE'; 
-                            }
-
-                            $item->update($datosActualizar);
-                            $ventaExisente = Venta::where('estancia_id',$estancia_id)
-                                ->where('estado', Venta::ESTADO_PENDIENTE)
-                                ->first();
-                            
-                            if($ventaExisente){
-                                $venta->addItemToVenta($ventaExisente, $itemParaVenta);
-                            } else {
-                                $venta->crearVenta([$itemParaVenta],$estancia_id, Auth::id());
                             }
                         }
                     }
                 }
-                
-
             });
 
             return redirect()->route('estancias.show',$solicitudes_estudio->formularioInstancia->estancia_id)
                 ->with('success', 'Resultados guardados correctamente.');            
 
         }catch(\Exception $e){
-            Log::error('Error al registrar los resultados de los estudios: ', $e->getMessage());
+            Log::error('Error al registrar los resultados de los estudios: '. $e->getMessage());
             return Redirect::back()->with('error','Error al registrar los resultados de los estudios.');
         }
     }
@@ -380,6 +378,29 @@ class SolicitudEstudioController extends Controller implements HasMiddleware
 
             default => User::role('administrador')->get(),
         };
+    }
+
+    private function procesarVenta(VentaService $venta,Int $estancia_id ,Int $catalogo_estudio_id){
+
+        $ventaExisente = Venta::where('estancia_id',$estancia_id)
+            ->where('estado', Venta::ESTADO_PENDIENTE)
+            ->first();
+
+        $estudio = CatalogoEstudio::findOrFail($catalogo_estudio_id);
+        
+        $itemParaVenta = [
+            'id' => $estudio->id,
+            'cantidad' => 1,
+            'tipo' => 'estudio',
+            'nombre' => $estudio->nombre,
+        ];
+
+        if($ventaExisente){
+            $venta->addItemToVenta($ventaExisente, $itemParaVenta);
+        } else {
+            $venta->crearVenta([$itemParaVenta],$estancia_id, Auth::id());
+        }
+
     }
 
     public function enviarRecordatorioCita(TwilioWhatsAppService $twilio)

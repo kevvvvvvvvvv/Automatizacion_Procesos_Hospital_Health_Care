@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
 
             $table->string('nombre_producto_servicio')->nullable();
+            $table->string('clave_producto_servicio')->nullable();
             $table->decimal('precio_unitario',8,2);
             $table->integer('cantidad');
             $table->decimal('subtotal',8,2);

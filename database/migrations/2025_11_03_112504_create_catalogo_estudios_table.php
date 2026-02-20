@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('departamento');
             $table->integer('tiempo_entrega')->nullable();
             $table->decimal('costo')->default('0.01');
+            $table->string('clave_producto_servicio')->nullable();
             $table->timestamps();
         });
     }
