@@ -3,7 +3,7 @@ import { FaUser } from "react-icons/fa";
 import { LuBedSingle } from "react-icons/lu";
 import { RiArchiveDrawerFill , } from "react-icons/ri";
 import {FaRegCheckCircle} from "react-icons/fa";
-import {FaDatabase} from "react-icons/fa";
+import {FaDatabase, FaRegWindowRestore} from "react-icons/fa";
 import { MdCalendarMonth,  } from "react-icons/md"
 import { MdHistory, MdAdd,  } from "react-icons/md";
 import { FaUserDoctor, FaBowlFood,  } from "react-icons/fa6";
@@ -117,7 +117,21 @@ export default function Dashboard() {
                         onClick={() => router.visit(route('respaldo.index'))}
                     />
                     )}
-                </div>                 
+                    
+                </div>
+                <div>
+                    {can('Resturar la base de datos') && (
+                     <CardButton
+                        icon={FaRegWindowRestore}
+                        text="Restauraciòn de la base de datos"
+                        onClick={() => router.visit(route('bd.restauracion'))}
+                    />
+                    )}
+                    
+                </div>
+                <div>
+                    
+                </div>                   
             </MainLayout>
         </>
     );

@@ -104,7 +104,8 @@ class SolicitudEstudioController extends Controller implements HasMiddleware
         ];
 
         $departamentosPermitidos = match(true) {
-            $user->hasRole('técnico de laboratorio') => $grupoLaboratorio,
+            $user->hasRole('técnico de laboratorio') => ['*'],
+            $user->hasRole('radiólogo') => ['*'],
             $user->hasRole('administrador') => ['*'], 
             default => [] 
         };
@@ -145,7 +146,7 @@ class SolicitudEstudioController extends Controller implements HasMiddleware
             'personal' => $personal,
         ]);
     }
-    
+
     public function update(Request $request, SolicitudEstudio $solicitudes_estudio, VentaService $venta)
     {
         $request->validate([
