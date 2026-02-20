@@ -409,5 +409,19 @@ class UserSeeder extends Seeder
 
         $userRadiologo->assignRole('radiólogo');
 
+        $userRadiologo = User::create([
+            'curp' => 'GURJ990310HMSTBS01', 
+            'nombre' => 'Josue Israel',
+            'apellido_paterno' => 'Gutierrez',
+            'apellido_materno' => 'Robles',
+            'sexo' => 'Masculino',
+            'fecha_nacimiento' => '1999-03-10',
+            'email' => 'gtzjosuerobles@hotmail.com', 
+            'telefono' => '7772342396',
+            'password' => Hash::make('12345678'), 
+        ]);
+
+        $userRadiologo->assignRole('radiólogo');
+
     }
 }
