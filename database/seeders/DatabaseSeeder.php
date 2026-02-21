@@ -34,6 +34,7 @@ class DatabaseSeeder extends Seeder
             CategoriaDietaSeeder::class,
             DietaSeeder::class,
             CatalogoViaAdministracionSeeder::class,
+            MetodoPagoSeeder::class,
         ]);
 
     }

@@ -79,10 +79,10 @@ class EstanciaController extends Controller
             'habitacion',
             'estanciaAnterior'
         );
-
+        
         $paciente = $estancia->paciente;
         $paciente->load('estancias','familiarResponsables');
-        $habitaciones = Habitacion::where('estado','Libre')->get();
+        $habitaciones = Habitacion::where('estado','Libre')->where('tipo','Habitación')->get();
         $habitacionActualId = $estancia->habitacion_id;
 
         if ($habitacionActualId && !$habitaciones->contains('id', $habitacionActualId)) {
