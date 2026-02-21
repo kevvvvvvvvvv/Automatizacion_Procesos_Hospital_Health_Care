@@ -153,6 +153,9 @@ class VentaController extends Controller implements HasMiddleware
             $montoAbonado = $validatedData['total_pagado'];
 
             $ventaService->registrarPago($venta, $montoAbonado);
+            $venta->update(
+                ['requiere_factura' => $validatedData['requiere_factura']]
+            );
 
             return Redirect::back()->with('success', 'Se ha registrado el pago correctamente.');
 

@@ -7,6 +7,12 @@ interface Props {
     tipo: 'ORIGINAL' | 'COPIA';
 }
 
+const formatter = new Intl.NumberFormat('es-MX', {
+    style: 'currency',
+    currency: 'MXN',
+    minimumFractionDigits: 2
+});
+
 export default function Ticket({ 
     venta, 
     tipo,
@@ -77,7 +83,7 @@ export default function Ticket({
                                         </td>
                                         
                                         <td className="text-right align-top">
-                                            ${Number(detalle.subtotal).toFixed(2)}
+                                            {formatter.format(detalle.subtotal)}
                                         </td>
                                     </tr>
                                 );
@@ -87,17 +93,17 @@ export default function Ticket({
                 </table>
 
                 <div className="border-t border-black pt-2 text-right text-xs">
-                    <p>Subtotal: ${venta.subtotal}</p>
-                    <p>IVA: ${venta.total - venta.subtotal}</p>
-                    <p className="font-bold text-sm mt-1">TOTAL: ${venta.total}</p>
+                    <p>Subtotal: {formatter.format(venta.subtotal)}</p>
+                    <p>IVA: {formatter.format(venta.total - venta.subtotal)}</p>
+                    <p className="font-bold text-sm mt-1">TOTAL: {formatter.format(venta.total)}</p>
 
                     <div className="mt-2 border-t border-dashed border-black pt-1">
-                        <p>Pagado: ${venta.total_pagado}</p>
+                        <p>Pagado: {formatter.format(venta.total_pagado)}</p>
                         
-                        {venta.total_pagado > venta.total ? (
-                            <p>Cambio: ${venta.cambio}</p>
+                        {Number(venta.total_pagado) >= Number(venta.total) ? (
+                            <p>Cambio: {formatter.format(venta.cambio)}</p>
                         ) : (
-                            <p>Pendiente: ${venta.saldo_pendiente}</p>
+                            <p>Pendiente: {formatter.format(venta.saldo_pendiente)}</p>
                         )}
                     </div>
                 </div>
@@ -105,6 +111,16 @@ export default function Ticket({
                 <div className="text-center mt-4 text-[10px]">
                     <p>¡Gracias por su preferencia!</p>
                     <p>Conserve este ticket para aclaraciones.</p>
+                </div>
+                <div className='text-left mt-2 text-[10px]'>
+                    {venta.requiere_factura ? (
+                        <>
+                            <p>Tiene 72 horas para el envío de la siguiente información al número 7779756696 o al correo cmc1.facturacion@gmail.com </p> 
+                            <p>1. Nombre/Razón social, 2. RFC, 3. Código postal, 4. Regimen fiscal, 5. Uso de CFDI, 6. Correo electrónico, 7. Número de teléfono</p>
+                        </>
+                    ):(
+                        <p>El cliente no solicitó factura</p>
+                    )}
                 </div>
             </div>
         </div>
