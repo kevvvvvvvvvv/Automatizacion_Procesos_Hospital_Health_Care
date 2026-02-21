@@ -57,11 +57,15 @@ class Venta extends Model
         'descuento',
         'estado',
         'total_pagado',
+        'requiere_factura',
         'estancia_id',
         'user_id',
     ];
 
     protected $appends = ['saldo_pendiente', 'pagado_completo', 'cambio'];
+    protected $casts = [
+        'requiere_factura' => 'boolean',
+    ];
 
     // Calcula cuánto falta por pagar
     public function getSaldoPendienteAttribute()

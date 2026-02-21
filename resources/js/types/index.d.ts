@@ -282,6 +282,7 @@ export interface Venta{
     created_at: string;
     updated_at: string;
     user: User | null;
+    requiere_factura: boolean;
     
     estancia: Estancia;
     detalles: DetalleVenta[];

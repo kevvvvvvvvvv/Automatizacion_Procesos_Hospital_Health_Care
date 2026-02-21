@@ -22,7 +22,8 @@ class RegistroPagoVentaRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'total_pagado' => 'required|numeric|min:0.01'
+            'total_pagado' => 'required|numeric|min:0.01',
+            'requiere_factura' => 'required',
         ];
     }
 
@@ -30,7 +31,8 @@ class RegistroPagoVentaRequest extends FormRequest
     {
         return [
             'total_pagado.required' => 'El pago a registrar es obligatorio',
-            'total_pagado.number'   => 'El pago debe ser un número'
+            'total_pagado.number'   => 'El pago debe ser un número',
+            'requiere_factura.required' => 'Debe seleccionar una opción de facturación',
         ];
     }
 }

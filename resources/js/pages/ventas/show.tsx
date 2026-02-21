@@ -9,6 +9,7 @@ import InputText from '@/components/ui/input-text';
 import PrimaryButton from '@/components/ui/primary-button';
 import MainLayout from '@/layouts/MainLayout';
 import Ticket from '@/components/ticket';
+import InputBoolean from '@/components/ui/input-boolean';
 
 
 const formatCurrency = (amount: number | string) => {
@@ -63,7 +64,8 @@ const Show = ({ venta }: Props) => {
     const [showModal, setShowModal] = useState(false);
     
     const { data, setData, post, processing, errors, reset } = useForm({
-        total_pagado: ''
+        total_pagado: '',
+        requiere_factura: venta.requiere_factura || false,
     });
 
     const handleSubmitPago = (e: React.FormEvent) => {
@@ -77,6 +79,8 @@ const Show = ({ venta }: Props) => {
     };
 
     const ivaCalculado = Number(venta.total) - Number(venta.subtotal);
+
+    console.log(venta);
 
     return (
         <MainLayout 
@@ -188,6 +192,13 @@ const Show = ({ venta }: Props) => {
                                     Puede ser menor al total para dejarlo como anticipo.
                                 </p>
 
+                                <InputBoolean
+                                    label='Requiere factura'
+                                    value={data.requiere_factura}
+                                    onChange={e=>setData('requiere_factura',e)}
+                                    error={errors.requiere_factura}
+                                />
+
                                 <InputText
                                     id='total_pagado'
                                     name='total_pagado'
@@ -210,11 +221,6 @@ const Show = ({ venta }: Props) => {
                 </Modal>
             </div>
 
-            <Ticket 
-                venta={venta}
-                tipo='ORIGINAL'
-            />
-            
             <Ticket 
                 venta={venta}
                 tipo='COPIA'
