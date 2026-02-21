@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { route } from 'ziggy-js';
 import { useForm, Head } from '@inertiajs/react';
 import { CreditCard, Hash, X } from 'lucide-react'; 
-import { Venta } from '@/types';
+import { MetodoPago, Venta } from '@/types';
 
 import Modal from '@/components/modal';
 import InputText from '@/components/ui/input-text';
@@ -10,6 +10,7 @@ import PrimaryButton from '@/components/ui/primary-button';
 import MainLayout from '@/layouts/MainLayout';
 import Ticket from '@/components/ticket';
 import InputBoolean from '@/components/ui/input-boolean';
+import InputSelect from '@/components/ui/input-select';
 
 
 const formatCurrency = (amount: number | string) => {
@@ -57,15 +58,24 @@ const MoneyRow = ({ label, amount, isTotal = false, isDeduction = false }: any) 
 
 interface Props {
     venta: Venta; 
+    metodosPago: MetodoPago[];
 }
 
-const Show = ({ venta }: Props) => { 
+const Show = ({ 
+    venta,
+    metodosPago,
+}: Props) => { 
+
+    const metodoPagoOptions = metodosPago.map((mp)=>
+        ({label: mp.nombre, value: mp.id})  
+    )
 
     const [showModal, setShowModal] = useState(false);
     
     const { data, setData, post, processing, errors, reset } = useForm({
         total_pagado: '',
-        requiere_factura: venta.requiere_factura || false,
+        requiere_factura: venta.requiere_factura || false, 
+        metodo_pago_id: '',
     });
 
     const handleSubmitPago = (e: React.FormEvent) => {
@@ -197,6 +207,13 @@ const Show = ({ venta }: Props) => {
                                     value={data.requiere_factura}
                                     onChange={e=>setData('requiere_factura',e)}
                                     error={errors.requiere_factura}
+                                />
+
+                                <InputSelect
+                                    options={metodoPagoOptions}
+                                    label='Método de pago'
+                                    value={data.metodo_pago_id}
+                                    onChange={e=>setData('metodo_pago_id',e)}
                                 />
 
                                 <InputText
