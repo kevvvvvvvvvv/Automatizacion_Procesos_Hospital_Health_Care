@@ -46,6 +46,7 @@ class VentaController extends Controller implements HasMiddleware
     public function show(Venta $venta)
     {
         $venta->load('estancia.paciente','detalles.itemable');
+        //dd($venta->toArray());
         return Inertia::render('ventas/show', ['venta' => $venta]);
     }
 
@@ -90,7 +91,6 @@ class VentaController extends Controller implements HasMiddleware
     // Actualiza solo el descuento y recalcula total
     public function update(Request $request, Venta $venta)
     {
-        // Validación
         $validator = Validator::make($request->all(), [
             'descuento_tipo' => ['required', 'string', 'in:monto,porcentaje'],
             'descuento' => ['required', 'numeric', 'min:0'],
@@ -138,7 +138,6 @@ class VentaController extends Controller implements HasMiddleware
         $venta->total = round($venta->subtotal - $descuentoMonto, 2);
         $venta->save();
 
-        // redirige a index de ventas (ajusta la ruta según tu configuración)
         return redirect()->route('pacientes.estancias.ventas.index', [
             'paciente' => $venta->estancia->paciente_id,
             'estancia' => $venta->estancia_id,

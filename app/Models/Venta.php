@@ -61,7 +61,7 @@ class Venta extends Model
         'user_id',
     ];
 
-    protected $appends = ['saldo_pendiente', 'pagado_completo'];
+    protected $appends = ['saldo_pendiente', 'pagado_completo', 'cambio'];
 
     // Calcula cuánto falta por pagar
     public function getSaldoPendienteAttribute()
