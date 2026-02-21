@@ -209,7 +209,17 @@ const Show = ({ venta }: Props) => {
                     </div>
                 </Modal>
             </div>
-            <Ticket venta={venta}/>
+
+            <Ticket 
+                venta={venta}
+                tipo='ORIGINAL'
+            />
+            
+            <Ticket 
+                venta={venta}
+                tipo='COPIA'
+            />
+
         </MainLayout>
     );
 }
