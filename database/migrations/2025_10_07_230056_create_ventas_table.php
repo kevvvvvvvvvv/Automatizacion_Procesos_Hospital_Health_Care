@@ -21,6 +21,8 @@ return new class extends Migration
 
             $table->decimal('total_pagado',10,2)->default(0);
             //$table->string('descripcion');
+
+            $table->boolean('requiere_factura')->default(False);
             $table->foreignId('estancia_id')
                 ->nullable()
                 ->constrained('estancias')

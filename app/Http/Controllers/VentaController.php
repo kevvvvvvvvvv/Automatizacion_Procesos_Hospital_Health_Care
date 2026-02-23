@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Models\Paciente;
 use App\Models\Venta;
+use App\Models\Venta\MetodoPago;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests; 
 use Illuminate\Routing\Controllers\HasMiddleware;
@@ -15,6 +16,8 @@ use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Log;
 use App\Services\VentaService;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class VentaController extends Controller implements HasMiddleware
 {
@@ -46,7 +49,12 @@ class VentaController extends Controller implements HasMiddleware
     public function show(Venta $venta)
     {
         $venta->load('estancia.paciente','detalles.itemable');
-        return Inertia::render('ventas/show', ['venta' => $venta]);
+        $metodosPago = MetodoPago::all();
+        
+        return Inertia::render('ventas/show', [
+            'venta' => $venta,
+            'metodosPago' => $metodosPago,
+        ]);
     }
 
     public function edit(Venta $venta)
@@ -90,7 +98,6 @@ class VentaController extends Controller implements HasMiddleware
     // Actualiza solo el descuento y recalcula total
     public function update(Request $request, Venta $venta)
     {
-        // Validación
         $validator = Validator::make($request->all(), [
             'descuento_tipo' => ['required', 'string', 'in:monto,porcentaje'],
             'descuento' => ['required', 'numeric', 'min:0'],
@@ -138,7 +145,6 @@ class VentaController extends Controller implements HasMiddleware
         $venta->total = round($venta->subtotal - $descuentoMonto, 2);
         $venta->save();
 
-        // redirige a index de ventas (ajusta la ruta según tu configuración)
         return redirect()->route('pacientes.estancias.ventas.index', [
             'paciente' => $venta->estancia->paciente_id,
             'estancia' => $venta->estancia_id,
@@ -149,15 +155,25 @@ class VentaController extends Controller implements HasMiddleware
     public function registrarPago(RegistroPagoVentaRequest $request, Venta $venta, VentaService $ventaService)
     {
         $validatedData = $request->validated();
-
+        
+        DB::beginTransaction();
         try {
             $montoAbonado = $validatedData['total_pagado'];
 
             $ventaService->registrarPago($venta, $montoAbonado);
+            $venta->update(
+                ['requiere_factura' => $validatedData['requiere_factura']]
+            );
 
+            $venta->pagos()->create([
+                'metodo_pago_id' => $validatedData['metodo_pago_id'],
+                'monto' => $validatedData['total_pagado'],
+                'user_id' => Auth::id(),
+            ]);
+            DB::commit();
             return Redirect::back()->with('success', 'Se ha registrado el pago correctamente.');
-
         } catch (\Exception $e) {
+            DB::rollBack();
             Log::error('Error al registrar el pago: ' . $e->getMessage());
             return Redirect::back()->with('error', 'Error al registrar el pago.');
         }
