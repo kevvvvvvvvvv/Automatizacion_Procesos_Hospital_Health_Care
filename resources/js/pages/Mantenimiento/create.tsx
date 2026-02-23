@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import MainLayout from '@/layouts/MainLayout';
-import { Head, useForm, router } from '@inertiajs/react';
+import { Head, useForm, router, usePage } from '@inertiajs/react';
 import { Play, CheckCircle, XCircle, Home, Save, Clock, Edit3 } from 'lucide-react';
 import InputText from '@/components/ui/input-text';
-import { Habitacion, Mantenimiento as MantenimientoType } from '@/types';
+import { Habitacion, Mantenimiento as MantenimientoType, PageProps } from '@/types';
+import { usePermission } from '@/hooks/use-permission';
 
 interface Props {
     mantenimiento?: MantenimientoType;
@@ -11,7 +12,9 @@ interface Props {
     tipo?: string;
 }
 
-const MantenimientoCreate: React.FC<Props> = ({ mantenimiento, habitaciones, tipo }) => {    
+const MantenimientoCreate: React.FC<Props> = ({ mantenimiento, habitaciones, tipo }) => {  
+    const {can, hasRole} = usePermission();
+    const {auth} = usePage <PageProps>().props;  
     const isEditing = !!mantenimiento?.id;
 
     const [tiempoEspera, setTiempoEspera] = useState(mantenimiento?.duracion_espera || 0);
@@ -178,6 +181,7 @@ const MantenimientoCreate: React.FC<Props> = ({ mantenimiento, habitaciones, tip
                                     </button>
                                 )}
                             </div>
+                            {can('editar reportes') &&
                             <div className={`p-6 rounded-2xl border-2 ${estado === 'alto' || 'en_progreso' ? 'bg-emerald-50 border-emerald-400' : 'bg-gray-50 opacity-60'}`}>
                                 <p className="text-xs font-bold text-emerald-600 uppercase mb-2">Ejecución (Trabajo)</p>
                                 <div className="text-4xl font-black text-gray-800 mb-4 font-mono">{formatTime(tiempoActividad)}</div>
@@ -192,6 +196,7 @@ const MantenimientoCreate: React.FC<Props> = ({ mantenimiento, habitaciones, tip
                                     </button>
                                 )}
                             </div>
+                            }
                         </div>
                     )}
 

@@ -1,14 +1,17 @@
 import React from 'react';
 import MainLayout from '@/layouts/MainLayout';
-import { Head, router, Link } from '@inertiajs/react';
+import { Head, router, Link, usePage } from '@inertiajs/react';
 import { Trash2, Settings, Monitor, ChevronRight, Clock, PlayCircle, CheckCircle2, Pencil, Eye } from 'lucide-react';
-import { Mantenimiento } from '@/types';
+import { Mantenimiento, PageProps } from '@/types';
+import { usePermission } from '@/hooks/use-permission';
 
 interface Props {
     mantenimientos: Mantenimiento[];
 }
 
 export default function Index({ mantenimientos }: Props) {
+    const {can, hasRole} = usePermission();
+    const {auth} = usePage<PageProps>().props;
     
     const categorias = [
         {
@@ -118,25 +121,29 @@ export default function Index({ mantenimientos }: Props) {
                                         </td>
                                        <td className="px-6 py-4">
                                             <div className="flex items-center justify-center gap-4">
-                                                {/* Botón Editar/Continuar */}
+                                                
+                                                {can ('editar reportes') && 
+                                                
                                                 <Link
                                                     href={route('mantenimiento.create', { id: m.id })}
                                                     className="p-2 text-blue-600 hover:bg-blue-100 rounded-full transition-colors"
                                                     title="Editar o Continuar"
-                                                    onClick={(e) => e.stopPropagation()} // Evita que se dispare el click de la fila
+                                                    onClick={(e) => e.stopPropagation()} 
                                                 >
                                                     <Pencil size={18} />
                                                 </Link>
-
-                                                {/* Botón Ver Detalles */}
+                                                }
+                                                {can ('consultar reportes') &&
+                                                
                                                 <Link
                                                     href={route('mantenimiento.show', m.id)}
                                                     className="p-2 text-gray-600 hover:bg-gray-100 rounded-full transition-colors"
                                                     title="Ver Detalles"
-                                                    onClick={(e) => e.stopPropagation()} // Evita que se dispare el click de la fila
+                                                    onClick={(e) => e.stopPropagation()} 
                                                 >
                                                     <Eye size={18} />
                                                 </Link>
+                                                }
                                             </div>
                                         </td>
                                         
