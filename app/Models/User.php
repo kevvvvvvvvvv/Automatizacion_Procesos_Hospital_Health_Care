@@ -132,6 +132,10 @@ class User extends Authenticatable
         'fecha_nacimiento' => 'date',
     ];
 
+    protected $appends = [
+        'nombre_completo',
+    ];
+
     public function cargo() 
     { 
         return $this->belongsTo(Cargo::class); 
@@ -149,7 +153,7 @@ class User extends Authenticatable
 
     public function getNombreCompletoAttribute()
     {
-        return trim($this->nombre . ' ' . $this->apellido_paterno . ' ' . ($this->apellido_materno ?? ''));
+        return trim($this->nombre . ' ' . ($this->apellido_paterno ?? '') . ' ' . ($this->apellido_materno ?? ''));
     }
 
 
@@ -196,4 +200,5 @@ class User extends Authenticatable
     {
         return $this->hasMany(Backups::class, 'user_id', 'id');
     }
+
 }

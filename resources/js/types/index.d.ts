@@ -109,6 +109,7 @@ export interface User {
     credenciales:string | null | CredencialEmpleado [];
     password: string;
     password_confirmation: string;
+    nombre_completo: string;
 
     cargo_id: number;
     permissions?: string[]; 
