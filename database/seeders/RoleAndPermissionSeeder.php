@@ -22,7 +22,7 @@ class RoleAndPermissionSeeder extends Seeder
         $roleEnfermera = Role::create(['name' => 'enfermera(o)']);
         $roleAdministrativos = Role::create(['name' => 'administrativos']);
         $roleCocina = Role::create(['name' => 'cocina']);
-        $roleMantenimiento = Role::create(['name' => 'mantenimiento']);
+        
         $roleFarmacia = Role::create(['name' => 'farmacia']);
         $roleTecnicoRadiologo = Role::create(['name' => 'técnico radiólogo']);
         $roleTecnicoLaboratorio = Role::create(['name' => 'técnico de laboratorio']);
@@ -31,7 +31,15 @@ class RoleAndPermissionSeeder extends Seeder
         $roleCaja = Role::create(['name'  => 'caja']);
         $roleQuimico = Role::create(['name' => 'químico']);
 
+        $roleMantenimiento = Role::create(['name' => 'mantenimiento']);
+        $roleLimpieza = Role::create(['name' => 'limpieza']);
+        $roleSistemas = Role::create(['name' => 'sistemas']);
+
         $permissions = [
+            'limpieza' => ['crear', 'consultar', 'editar', 'eliminar'],
+            'mantenimiento' => [ 'consultar', 'editar'],
+            'sistemas' => ['consultar', 'editar'],
+
             'pacientes' => ['crear', 'consultar', 'editar', 'eliminar'],
             'estancias' => ['crear', 'consultar', 'editar', 'eliminar'],
             'hojas frontales' => ['crear', 'consultar', 'editar', 'eliminar'],
@@ -65,6 +73,17 @@ class RoleAndPermissionSeeder extends Seeder
         }
 
         $roleAdmin->syncPermissions(Permission::all());
+        $roleSistemas->syncPermissions(Permission::all());
+
+        $roleLimpieza->syncPermissions([
+            'editar reportes',
+            'consultar reportes'
+
+        ]);
+        $roleMantenimiento->syncPermissions([
+            'editar reportes',
+            'consultar reportes'
+        ]);
 
         $roleRecepcion->syncPermissions([
             'consultar pacientes',

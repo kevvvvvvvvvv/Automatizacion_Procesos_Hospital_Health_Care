@@ -1060,19 +1060,21 @@ export interface EncuestaPersonal {
 
     formulario_instancia: FormularioInstancia;
 }
-
-
-export interface SolicitudSoporte {
+// Sugerencia para tu archivo types.ts
+export interface Mantenimiento {
     id: number;
     tipo_servicio: string;
     comentarios: string;
-    resultados_aceptado: string;
     observaciones: string;
-    duracion_espera: string;
-    duracion_actividad: string;
-
+    resultado_aceptado: boolean | null;
+    duracion_espera: number; // Cambiado a number porque en BD es integer
+    duracion_actividad: number; // Cambiado a number porque en BD es integer
+    fecha_solicita: string | null; 
+    fecha_arregla: string | null; 
     habitacion_id: number | null;
-
+    user_solicita_id: number;
+    user_ejecuta_id: number | null;
     created_at: string;
     updated_at: string;
+
 }
