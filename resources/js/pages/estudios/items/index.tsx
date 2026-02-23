@@ -153,9 +153,10 @@ const EstudioDetalle = ({ solicitud }: Props) => {
                                                     <StatusBadge estado={item.estado} />
                                                 </td>
                                                 <td className='text-center'>
-                                                    {item.ruta_archivo_resultado ? (
+                                                    {item.archivos.length > 0 ? item.archivos.map((a)=>(
+                                                        
                                                         <a 
-                                                            href={`/storage/${item.ruta_archivo_resultado}`} 
+                                                            href={`/storage/${a.ruta_archivo_resultado}`} 
                                                             target="_blank" 
                                                             rel="noopener noreferrer"
                                                             className="inline-flex items-center justify-center text-blue-600 hover:text-blue-800 transition-colors"
@@ -163,8 +164,9 @@ const EstudioDetalle = ({ solicitud }: Props) => {
                                                         >
                                                             <Printer className="w-4 h-4"/>
                                                         </a>
-                                                    ) : (
-                                                        <span className="text-gray-400 text-xs italic">Sin archivo</span>
+                                                        
+                                                    )) : (
+                                                        <span className="text-gray-400 text-xs italic">Sin archivos</span>
                                                     )}
                                                 </td> 
                                             </tr>
