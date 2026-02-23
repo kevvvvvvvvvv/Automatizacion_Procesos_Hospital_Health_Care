@@ -91,7 +91,8 @@ class SolicitudEstudioController extends Controller implements HasMiddleware
             'userSolicita',
             'userLlena',
             'itemable', 
-            'formularioInstancia.estancia'
+            'formularioInstancia.estancia',
+            'solicitudItems.archivos',
         ]);
         
         $personal = User::all();
@@ -154,7 +155,6 @@ class SolicitudEstudioController extends Controller implements HasMiddleware
             'grupos.*.fecha_hora_grupo' => 'nullable|date',
             'grupos.*.problema_clinico' => 'nullable|string|max:500',
             'grupos.*.incidentes_accidentes' => 'nullable|string|max:500',
-            // Cambiado a array de archivos
             'grupos.*.archivos' => 'nullable|array',
             'grupos.*.archivos.*' => 'file|mimes:pdf,jpg,jpeg,png,xlsx,xls|max:10240',
             
@@ -173,7 +173,6 @@ class SolicitudEstudioController extends Controller implements HasMiddleware
                     
                     $rutasArchivos = [];
 
-                    // 1. Subir todos los archivos del grupo y guardar sus rutas
                     if ($request->hasFile("grupos.{$index}.archivos")) {
                         foreach ($request->file("grupos.{$index}.archivos") as $archivo) {
                             $rutasArchivos[] = $archivo->store('resultados_estudios', 'public');
@@ -195,7 +194,6 @@ class SolicitudEstudioController extends Controller implements HasMiddleware
                                 'incidentes_accidentes' => $grupoData['incidentes_accidentes'],
                             ];
 
-                            // 2. Si hay archivos nuevos, crear los registros en la tabla relacionada
                             if (!empty($rutasArchivos)) {
                                 foreach ($rutasArchivos as $ruta) {
                                     $item->archivos()->create([
@@ -203,13 +201,11 @@ class SolicitudEstudioController extends Controller implements HasMiddleware
                                     ]);
                                 }
 
-                                // Lógica de venta y finalización
                                 if ($item->estado == 'SOLICITADO' || $item->estado == 'PENDIENTE') {
                                     $this->procesarVenta($venta, $estancia_id, $itemData['catalogo_estudio_id']);
                                     $datosActualizar['estado'] = 'FINALIZADO';
                                 }
                             } else {
-                                // Si no hay archivos y no estaba finalizado, queda en pendiente
                                 if ($item->estado != 'FINALIZADO') {
                                     $datosActualizar['estado'] = 'PENDIENTE';
                                 }
