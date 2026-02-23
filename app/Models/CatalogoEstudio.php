@@ -31,6 +31,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CatalogoEstudio whereTiempoEntrega($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CatalogoEstudio whereTipoEstudio($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CatalogoEstudio whereUpdatedAt($value)
+ * @property string|null $clave_producto_servicio
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CatalogoEstudio whereClaveProductoServicio($value)
  * @mixin \Eloquent
  */
 class CatalogoEstudio extends Model
