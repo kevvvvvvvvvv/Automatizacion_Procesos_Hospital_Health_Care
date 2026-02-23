@@ -70,6 +70,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     })->name('dashboard');
 });
 
+Route::get('dashboard/reportes', function () {
+    return Inertia::render('dashboard-reportes');
+})->middleware(['auth', 'verified'])->name('expedientes.dashboard');
+
 Route::post('/cargos', [CargoController::class, 'store'])->name('cargos.store')->middleware('auth');
 Route::resource('habitaciones', HabitacionController::class)->middleware('auth');
 Route::resource('producto-servicios', ProductoServicioController::class)->middleware('auth');
