@@ -613,23 +613,6 @@ export interface CatalogoEstudio {
     updated_at: string;
 }
 
-export interface SolicitudItem {
-    id: number;
-    solicitud_estudio_id: number;
-    catalogo_estudio_id: number;
-    user_realiza_id: number | null;
-    estado: string;
-    resultados: string | null;
-    created_at: string;
-    updated_at: string;
-    catalogo_estudio?: CatalogoEstudio;
-    otro_estudio: string;
-
-    ruta_archivo_resultado: string;
-    
-    user_realiza?: User;
-}
-
 export interface SolicitudEstudio {
     id: number;
     user_solicita_id: number;
@@ -646,6 +629,29 @@ export interface SolicitudEstudio {
     formulario_instancia: FormularioInstancia;
     user_solicita: User;
     user_llena?: User;
+}
+
+export interface SolicitudItem {
+    id: number;
+    solicitud_estudio_id: number;
+    catalogo_estudio_id: number;
+    user_realiza_id: number | null;
+    estado: string;
+    resultados: string | null;
+    created_at: string;
+    updated_at: string;
+    catalogo_estudio?: CatalogoEstudio;
+    otro_estudio: string;
+
+    archivos: SolicitudItemArchivo[];
+    
+    user_realiza?: User;
+}
+
+export interface SolicitudItemArchivo {
+    id: number;
+    ruta_archivo_resultado: string;
+    solicitud_item_id: number;
 }
 
 export interface SolicitudDieta {

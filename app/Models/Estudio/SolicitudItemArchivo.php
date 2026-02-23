@@ -28,6 +28,7 @@ class SolicitudItemArchivo extends Model
     protected $fillable = [ 
         'id',
         'ruta_archivo_resultado',
+        'nombre_archivo',
         'solicitud_item_id',
     ];
 

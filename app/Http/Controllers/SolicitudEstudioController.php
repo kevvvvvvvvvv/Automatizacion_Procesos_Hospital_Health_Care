@@ -197,6 +197,7 @@ class SolicitudEstudioController extends Controller implements HasMiddleware
                             if (!empty($rutasArchivos)) {
                                 foreach ($rutasArchivos as $ruta) {
                                     $item->archivos()->create([
+                                        //'nombre_archivo' => 
                                         'ruta_archivo_resultado' => $ruta
                                     ]);
                                 }
@@ -234,6 +235,7 @@ class SolicitudEstudioController extends Controller implements HasMiddleware
             'solicitudItems.catalogoEstudio',
             'solicitudItems.userRealiza',
             'formularioInstancia.estancia',
+            'solicitudItems.archivos',
         );
 
         return Inertia::render('estudios/items/index', [
