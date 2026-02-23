@@ -282,6 +282,7 @@ export interface Venta{
     created_at: string;
     updated_at: string;
     user: User | null;
+    requiere_factura: boolean;
     
     estancia: Estancia;
     detalles: DetalleVenta[];
@@ -304,6 +305,30 @@ export interface DetalleVenta{
     };
 
     nombre_producto_servicio: string;
+    clave_producto_servicio?: string;
+}
+
+export interface MetodoPago {
+    id: number;
+    nombre: string;
+    tipo_ajuste: string;
+    valor_ajuste: number;
+    activo: string;
+    created_at: string;
+    updated_at: string;
+}
+
+export interface Pago{
+    id: number;
+    venta_id: number;
+    metodo_pago_id: number;
+    referencia: string;
+    user_id: number;
+
+    venta: Venta;
+    user: User;
+    metodo_pago: MetodoPago;
+    
 }
 
 export interface HojaEnfermeria {

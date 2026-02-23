@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Venta\Pago;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -57,11 +58,15 @@ class Venta extends Model
         'descuento',
         'estado',
         'total_pagado',
+        'requiere_factura',
         'estancia_id',
         'user_id',
     ];
 
-    protected $appends = ['saldo_pendiente', 'pagado_completo'];
+    protected $appends = ['saldo_pendiente', 'pagado_completo', 'cambio'];
+    protected $casts = [
+        'requiere_factura' => 'boolean',
+    ];
 
     // Calcula cuánto falta por pagar
     public function getSaldoPendienteAttribute()
@@ -95,4 +100,9 @@ class Venta extends Model
     {
         return $this->hasMany(DetalleVenta::class);
     } 
+
+    public function pagos(): HasMany
+    {
+        return $this->hasMany(Pago::class);
+    }
 }

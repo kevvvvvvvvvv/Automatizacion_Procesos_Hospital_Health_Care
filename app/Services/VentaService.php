@@ -121,6 +121,10 @@ class VentaService
                 ? ($modelo->nombre_prestacion ?? $modelo->nombre ?? 'Sin nombre') 
                 : ($itemData['nombre'] ?? 'Producto Manual'),
                 
+            'clave_producto_servicio'=> $modelo 
+                ? ($modelo->clave_producto_servicio ?? $modelo->codigo_prestacion ?? 'Sin nombre') 
+                : ($itemData['nombre'] ?? 'Producto Manual'),
+                
             'iva_aplicado'   => $iva,
         ]);
     }

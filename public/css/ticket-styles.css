@@ -7,10 +7,6 @@
     font-size: 12px;
 }
 
-#printable-ticket {
-    /*display: none;*/
-}
-
 @media print {
     body * {
         visibility: hidden;

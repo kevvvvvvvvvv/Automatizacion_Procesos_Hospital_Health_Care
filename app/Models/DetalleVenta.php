@@ -58,8 +58,8 @@ class DetalleVenta extends Model
         'venta_id',
         'itemable_id',
         'itemable_type',
-        'nombre_producto_servicio'
-        
+        'nombre_producto_servicio',
+        'clave_producto_servicio',
     ];
 
     public function venta(): BelongsTo

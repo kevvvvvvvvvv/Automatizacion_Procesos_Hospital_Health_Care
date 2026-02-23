@@ -43,6 +43,7 @@ class CatalogoEstudio extends Model
         'departamento',
         'tiempo_entrega',
         'costo',
+        'clave_producto_servicio',
     ];
 
     public function solicitudItem(): HasMany

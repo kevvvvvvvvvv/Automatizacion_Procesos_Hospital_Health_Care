@@ -44,6 +44,7 @@ class CatalogoEstudioSeeder extends Seeder
                     
                     'tiempo_entrega' => is_numeric($tiempoRaw) ? (int)$tiempoRaw : null,
                     'costo'          => (is_numeric($costoRaw)) ? (float)$costoRaw : 0.00,
+                    'clave_producto_servicio' => trim($record['clave_producto_servicio']),
 
                     'created_at'     => now(),
                     'updated_at'     => now(),
