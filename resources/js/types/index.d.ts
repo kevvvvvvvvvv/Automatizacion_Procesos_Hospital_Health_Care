@@ -652,6 +652,7 @@ export interface SolicitudItemArchivo {
     id: number;
     ruta_archivo_resultado: string;
     solicitud_item_id: number;
+    nombre_archivo: string;
 }
 
 export interface SolicitudDieta {

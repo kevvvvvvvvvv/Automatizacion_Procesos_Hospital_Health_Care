@@ -171,11 +171,14 @@ class SolicitudEstudioController extends Controller implements HasMiddleware
             DB::transaction(function () use ($request, $estancia_id, $venta) {
                 foreach ($request->grupos as $index => $grupoData) {
                     
-                    $rutasArchivos = [];
+                    $archivosProcesados = [];
 
                     if ($request->hasFile("grupos.{$index}.archivos")) {
                         foreach ($request->file("grupos.{$index}.archivos") as $archivo) {
-                            $rutasArchivos[] = $archivo->store('resultados_estudios', 'public');
+                            $archivosProcesados[] = [
+                                'nombre' => $archivo->getClientOriginalName(),
+                                'ruta'   => $archivo->store('resultados_estudios', 'public') 
+                            ];
                         }
                     }
 
@@ -194,11 +197,11 @@ class SolicitudEstudioController extends Controller implements HasMiddleware
                                 'incidentes_accidentes' => $grupoData['incidentes_accidentes'],
                             ];
 
-                            if (!empty($rutasArchivos)) {
-                                foreach ($rutasArchivos as $ruta) {
+                            if (!empty($archivosProcesados)) {
+                                foreach ($archivosProcesados as $archivoData) {
                                     $item->archivos()->create([
-                                        //'nombre_archivo' => 
-                                        'ruta_archivo_resultado' => $ruta
+                                        'nombre_archivo' => $archivoData['nombre'],
+                                        'ruta_archivo_resultado' => $archivoData['ruta'],
                                     ]);
                                 }
 
