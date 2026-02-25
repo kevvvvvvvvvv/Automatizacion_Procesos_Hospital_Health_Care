@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreignId('solicitud_item_id')
                 ->constrained('solicitud_items')
                 ->onDelete('cascade');
-            $table->text('nombre_archvio')->nullable();
+            $table->text('nombre_archivo');
             $table->timestamps();
         });
     }

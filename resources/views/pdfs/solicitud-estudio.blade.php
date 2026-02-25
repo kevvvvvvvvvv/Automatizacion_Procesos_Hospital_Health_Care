@@ -265,7 +265,7 @@
                                     <a href="{{ asset('storage/' . $archivo->ruta_archivo_resultado) }}" 
                                     target="_blank" 
                                     class="inline-flex items-center px-4 py-2 border border-blue-600 text-blue-600 text-xs font-bold rounded-md bg-white hover:bg-blue-100 transition duration-150 ease-in-out">
-                                        Visualizar resultados
+                                        {{ $archivo->nombre_archivo }}
                                     </a>
                                 @endforeach
                             @else
