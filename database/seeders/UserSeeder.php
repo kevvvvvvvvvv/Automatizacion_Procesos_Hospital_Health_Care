@@ -423,5 +423,17 @@ class UserSeeder extends Seeder
 
         $userRadiologo->assignRole('radiólogo');
 
+        $userRadiologo = User::create([
+            'curp' => 'GUPA010808MMSTNNA1', 
+            'nombre' => 'Ana Karen',
+            'apellido_paterno' => 'Gutiérrez',
+            'apellido_materno' => 'Pineda',
+            'sexo' => 'Femenino',
+            'fecha_nacimiento' => '2001-08-08',
+            'email' => 'anakaren@test.com',
+            'telefono' => '7771599766',
+            'password' => Hash::make('12345678'), 
+        ]);
+
     }
 }
