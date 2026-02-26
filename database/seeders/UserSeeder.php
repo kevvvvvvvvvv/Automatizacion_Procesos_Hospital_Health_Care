@@ -431,12 +431,26 @@ class UserSeeder extends Seeder
             'apellido_materno' => 'Pineda',
             'sexo' => 'Femenino',
             'fecha_nacimiento' => '2001-08-08',
-            'email' => 'anakaren@test.com',
+            'email' => 'karengtzpi14@gmail.com',
             'telefono' => '7771599766',
             'password' => Hash::make('12345678'), 
         ]);
 
         $userAna->assignRole('administrativo');
+
+        $userAna = User::create([
+            'curp' => 'GUPA010808MMSTNNA1', 
+            'nombre' => 'Luz María',
+            'apellido_paterno' => 'Salazar',
+            'apellido_materno' => 'Silva',
+            'sexo' => 'Femenino',
+            'fecha_nacimiento' => '1975-06-11',
+            'email' => 'silvazulairam@gmail.com',
+            'telefono' => '7701701250',
+            'password' => Hash::make('12345678'), 
+        ]);
+
+        $userAna->assignRole('administrativo');        
 
     }
 }
