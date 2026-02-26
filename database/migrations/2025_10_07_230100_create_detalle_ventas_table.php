@@ -22,6 +22,7 @@ return new class extends Migration
             $table->decimal('descuento',8,2)->nullable();
             $table->string('estado');
             $table->decimal('iva_aplicado');
+            $table->decimal('monto_pagado',8,2)->default(0);
 
             $table->foreignId('venta_id')
                 ->constrained('ventas')
