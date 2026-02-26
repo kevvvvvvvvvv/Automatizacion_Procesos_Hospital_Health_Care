@@ -36,6 +36,7 @@ class Pago extends Model
 {
     protected $fillable = [
         'id',
+        'folio',
         'venta_id',
         'metodo_pago_id',
         'monto',
