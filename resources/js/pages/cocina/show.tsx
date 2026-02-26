@@ -1,21 +1,27 @@
 import React from 'react';
-import { Head, router } from '@inertiajs/react';
-import { SolicitudDieta } from '@/types';
+import { Head, useForm } from '@inertiajs/react';
+import { SolicitudDieta, User } from '@/types';
 import MainLayout from '@/layouts/MainLayout';
 import PrimaryButton from '@/components/ui/primary-button';
 import { route } from 'ziggy-js';
 import Swal from 'sweetalert2';
+import SelectInput from '@/components/ui/input-select';
 
-interface Props {
-    solicitud_dietas: SolicitudDieta[];
+
+interface DietaPendienteRowProps {
+    dieta: SolicitudDieta;
+    userOptions:{ label: string; value: number }[];
 }
 
-const Show = ({ solicitud_dietas = [] }: Props) => {
+const DietaPendienteRow = ({ dieta, userOptions }: DietaPendienteRowProps) => {
 
-    const pendientes = solicitud_dietas.filter(d => d.estado === 'PENDIENTE');
-    const completadas = solicitud_dietas.filter(d => d.estado === 'SURTIDA');
+    const { data, setData, errors, processing, put } = useForm({
+        user_supervisa_id: dieta.hoja_enfermeria.formulario_instancia.user_id || '',
+    });
 
-    const handleActualizarEstado = (dietaId: number) => {
+    const handleActualizarEstado = (e: React.FormEvent) => {
+        e.preventDefault();
+
         Swal.fire({
             title: '¿Confirmar entrega?',
             text: "¿Estás seguro de marcar esta dieta como entregada?",
@@ -27,21 +33,62 @@ const Show = ({ solicitud_dietas = [] }: Props) => {
             cancelButtonText: 'Cancelar'
         }).then((result) => {
             if (result.isConfirmed) {
-                router.patch(route('solicitudes-dietas.update', { solicitudes_dieta: dietaId }), {
-                    estado: 'SURTIDA',
-                }, {
+                put(route('solicitudes-dietas.update', { solicitud_dieta: dieta.id }), {
                     preserveScroll: true,
-                    onSuccess: () => Swal.fire('¡Actualizado!', 'La dieta ha sido marcada como entregada.', 'success')
                 });
             }
         });
-    }
+    };
 
     return (
-        <MainLayout 
-            pageTitle='Gestión de dietas' 
-            link='solicitudes-dietas.index'
-        >
+        <form onSubmit={handleActualizarEstado} className="grid grid-cols-1 md:grid-cols-2 items-center py-4">
+            <div className="space-y-1">
+                <p className="font-bold text-lg text-slate-700">
+                    {dieta.hoja_enfermeria?.formulario_instancia?.estancia?.paciente?.nombre} {dieta.hoja_enfermeria?.formulario_instancia?.estancia?.paciente?.apellido_paterno}
+                </p>
+                <p className='text-emerald-900'>Tipo de dieta: {dieta.dieta.categoria_dieta.categoria}</p>
+                <p className="text-blue-600 font-medium">Dieta: {dieta.dieta.alimento}</p>
+                <p className="text-sm text-gray-500 italic">
+                    Obs: {dieta.observaciones || 'Sin observaciones adicionales'}
+                </p>
+            </div>
+            <div>
+                <SelectInput
+                    options={userOptions}
+                    label='Personal que supervisa'
+                    value={data.user_supervisa_id}
+                    onChange={e => setData('user_supervisa_id', e)}
+                    error={errors.user_supervisa_id}
+                />
+
+                <PrimaryButton 
+                    type="submit" 
+                    disabled={processing} 
+                >
+                    {processing ? 'Enviando...' : 'Marcar como surtido'}
+                </PrimaryButton>
+            </div>
+        </form>
+    );
+};
+
+interface Props {
+    solicitud_dietas: SolicitudDieta[];
+    users: User[];
+}
+
+const Show = ({ 
+    solicitud_dietas = [],
+    users = [], 
+}: Props) => {
+
+    const userOptions = users.map((u) => ({ label: u.nombre_completo, value: u.id }));
+
+    const pendientes = solicitud_dietas.filter(d => d.estado === 'PENDIENTE');
+    const completadas = solicitud_dietas.filter(d => d.estado === 'SURTIDA');
+
+    return (
+        <MainLayout pageTitle='Gestión de dietas' link='solicitudes-dietas.index'>
             <Head title="Consulta de solicitudes de dietas" />
 
             <div className="mb-6">
@@ -55,32 +102,17 @@ const Show = ({ solicitud_dietas = [] }: Props) => {
                 </h2>
                 <div className="divide-y">
                     {pendientes.length > 0 ? pendientes.map((dieta) => (
-                        <div key={dieta.id} className="flex justify-between items-center py-4">
-                            <div className="space-y-1">
-                                <p className="font-bold text-lg text-slate-700">
-
-                                    {dieta.hoja_enfermeria?.formulario_instancia?.estancia?.paciente?.nombre} {dieta.hoja_enfermeria?.formulario_instancia?.estancia?.paciente?.apellido_paterno}
-                                </p>
-                                <p className='text-emerald-900'>Tipo de dieta: {dieta.dieta.categoria_dieta.categoria}</p>
-                                <p className="text-blue-600 font-medium">Dieta: {dieta.dieta.alimento}</p>
-                                <p className="text-sm text-gray-500 italic">
-                                    Obs: {dieta.observaciones || 'Sin observaciones adicionales'}
-                                </p>
-                            </div>
-                            <PrimaryButton 
-                                onClick={() => handleActualizarEstado(dieta.id)}
-                                className="bg-blue-600 hover:bg-blue-700"
-                            >
-                                Marcar como entregada
-                            </PrimaryButton>
-                        </div>
+                        <DietaPendienteRow 
+                            key={dieta.id} 
+                            dieta={dieta} 
+                            userOptions={userOptions} 
+                        />
                     )) : (
                         <p className="text-gray-500 py-2">No hay dietas pendientes de surtir.</p>
                     )}
                 </div>
             </div>
 
-            {/* SECCIÓN: SURTIDAS */}
             <div className="bg-gray-50 p-6 rounded-lg shadow-sm border-l-4 border-green-500 mt-8">
                 <h2 className="text-xl font-semibold mb-4 text-green-700 flex items-center">
                     Recientemente entregadas

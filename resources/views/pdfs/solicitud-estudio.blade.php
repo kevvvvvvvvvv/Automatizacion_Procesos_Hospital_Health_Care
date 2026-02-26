@@ -260,12 +260,14 @@
                         </td>
                         <td>{{$item->estado}}</td>
                         <td>
-                            @if($item->ruta_archivo_resultado)
-                                <a href="{{ asset('storage/' . $item->ruta_archivo_resultado) }}" 
-                                target="_blank" 
-                                class="inline-flex items-center px-4 py-2 border border-blue-600 text-blue-600 text-xs font-bold rounded-md bg-white hover:bg-blue-100 transition duration-150 ease-in-out">
-                                    Visualizar resultados (PDF)
-                                </a>
+                            @if(!$item->archivos->isEmpty())
+                                @foreach ($item->archivos as $archivo)
+                                    <a href="{{ asset('storage/' . $archivo->ruta_archivo_resultado) }}" 
+                                    target="_blank" 
+                                    class="inline-flex items-center px-4 py-2 border border-blue-600 text-blue-600 text-xs font-bold rounded-md bg-white hover:bg-blue-100 transition duration-150 ease-in-out">
+                                        {{ $archivo->nombre_archivo }}
+                                    </a>
+                                @endforeach
                             @else
                                 <p class="text-gray-300 italic"> No se han cargado resultados</p>
                             @endif
@@ -276,7 +278,7 @@
         </table>
     </section>
 
-    <p><strong>Resultados: </strong>Los resultados se encuentran en este documento</p>
+    <p><strong>Resultados: </strong>Los resultados se encuentran adjuntados en este documento</p>
    
     @if(isset($medico))
         <div class="signature-section">

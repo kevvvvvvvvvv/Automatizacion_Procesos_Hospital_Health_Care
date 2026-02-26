@@ -48,6 +48,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property-read int|null $nota_egreso_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\NotaPreAnestesica> $notaPreAnestesica
  * @property-read int|null $nota_pre_anestesica_count
+ * @property-read \App\Models\EncuestaPersonal|null $encuestaPersonal
  * @mixin \Eloquent
  */
 class FormularioInstancia extends Model
