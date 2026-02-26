@@ -6,7 +6,7 @@ import {FaRegCheckCircle} from "react-icons/fa";
 import {FaDatabase, FaRegWindowRestore} from "react-icons/fa";
 import { MdCalendarMonth,  } from "react-icons/md"
 import { MdHistory, MdAdd,  } from "react-icons/md";
-import { FaUserDoctor, FaBowlFood,  } from "react-icons/fa6";
+import { FaUserDoctor, FaBowlFood,  FaFileSignature} from "react-icons/fa6";
 import { route } from 'ziggy-js';
 import { Head, usePage, router } from '@inertiajs/react';
 import { usePermission } from '@/hooks/use-permission';
@@ -129,6 +129,18 @@ export default function Dashboard() {
                     )}
                     
                 </div>
+                
+                {/*<div>
+                    {can('Reportes') && (
+                     <CardButton
+                        icon={FaFileSignature}
+                        text="Reportes"
+                        onClick={() => router.visit(route('expedientes.dashboard'))}
+                    />
+                    )}
+                    
+                </div>
+                */ }
                 <div>
                     
                 </div>                   

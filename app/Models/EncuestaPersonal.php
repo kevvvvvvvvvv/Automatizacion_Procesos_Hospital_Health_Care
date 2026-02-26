@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+<<<<<<< HEAD
+=======
 
 /**
  * @property-read \App\Models\Estancia|null $estancia
@@ -14,30 +16,21 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|EncuestaPersonal query()
  * @mixin \Eloquent
  */
+>>>>>>> 2ef01794c18fa32c70560810b695e85dcec8e15b
 class EncuestaPersonal extends Model
 {
-    use HasFactory;
+    protected $table = 'encuesta_personal'; // Asegúrate que coincida con la migración
 
-    // Nombre de la tabla si no sigue la convención plural
-    protected $table = 'encuestas_personal';
+    // 1. IMPORTANTE: Dile a Laravel que el ID no es autoincremental
+    public $incrementing = false;
 
+    // 2. IMPORTANTE: Permite que el 'id' se guarde manualmente
     protected $fillable = [
-        'estancia_id', // Para saber a qué paciente/visita pertenece
-        'trato_claro',
-        'presentacion_personal',
-        'tiempo_atencion',
-        'informacion_tratamiento',
-        'comentarios',
-        'usuario_id' // Quién registró la encuesta
+        'id', 
+        'trato_claro', 
+        'presentacion_personal', 
+        'tiempo_atencion', 
+        'informacion_tratamiento', 
+        'comentarios'
     ];
-
-    public function estancia(): BelongsTo
-    {
-        return $this->belongsTo(Estancia::class);
-    }
-
-    public function formularioInstancia(): BelongsTo
-    {
-        return $this->belongsTo(FormularioInstancia::class, 'id', 'id');
-    }
 }

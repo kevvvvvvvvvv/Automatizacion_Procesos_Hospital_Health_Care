@@ -15,6 +15,9 @@ class CargoSeeder extends Seeder
             ['nombre' => 'Licenciado(a) en Enfermería', 'descripcion' => 'Profesional universitario responsable de la planificación, ejecución y evaluación de los cuidados del paciente.'],
             ['nombre' => 'Técnico(a) en Enfermería', 'descripcion' => 'Asiste al personal de enfermería en procedimientos, toma de signos vitales y cuidados básicos del paciente.'],
             ['nombre' => 'Auxiliar de Enfermería', 'descripcion' => 'Apoya en tareas de cuidados básicos, movilización de pacientes, higiene, confort y alimentación.'],
+            ['nombre' => 'Mantenimiento', 'descripcion' => 'Darle mantenimiento a la infraestructura'],
+            ['nombre' => 'Limpieza', 'descripcion' => 'Limpiar y mantener limpio los espacios'],
+            ['nombre' => 'Sistema', 'descripcion' => 'Los chicos del software'],
             
             ['nombre' => 'Técnico(a) Radiólogo(a)', 'descripcion' => 'Opera equipos de diagnóstico por imagen (Rayos X, Tomografías, etc.) y asiste en procedimientos.'],
             ['nombre' => 'Técnico(a) de Laboratorio', 'descripcion' => 'Realiza la toma de muestras y el procesamiento de análisis clínicos solicitados.'],

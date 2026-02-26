@@ -33,8 +33,8 @@ return new class extends Migration
 
             $table->string('telefono', 20);
             $table->enum('estado_civil', ['Soltero(a)', 'Casado(a)', 'Divorciado(a)', 'Viudo(a)', 'Union libre']);
-            $table->string('ocupacion', 100);
-            $table->string('lugar_origen', 100);
+            $table->string('ocupacion', 100)->nullable();
+            $table->string('lugar_origen', 100)->nullable();
             $table->string('nombre_padre')->nullable();
             $table->string('nombre_madre')->nullable();
 

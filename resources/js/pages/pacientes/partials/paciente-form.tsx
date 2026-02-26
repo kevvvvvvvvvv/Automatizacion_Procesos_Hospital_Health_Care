@@ -97,7 +97,7 @@ export const PacienForm = ({
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <InputField
                 id="curp"
-                label="CURP"
+                label="CURP *"
                 name="curp"
                 value={data.curp}
                 onChange={handleChange}
@@ -107,7 +107,7 @@ export const PacienForm = ({
             />
             <InputField
                 id="nombre"
-                label="Nombre"
+                label="Nombre *"
                 name="nombre"
                 value={data.nombre}
                 onChange={handleChange}
@@ -117,7 +117,7 @@ export const PacienForm = ({
             />
             <InputField
                 id="apellido_paterno"
-                label="Apellido Paterno"
+                label="Apellido Paterno *"
                 name="apellido_paterno"
                 value={data.apellido_paterno}
                 onChange={handleChange}
@@ -127,7 +127,7 @@ export const PacienForm = ({
             />
             <InputField
                 id="apellido_materno"
-                label="Apellido Materno"
+                label="Apellido Materno *"
                 name="apellido_materno"
                 value={data.apellido_materno}
                 onChange={handleChange}
@@ -136,7 +136,7 @@ export const PacienForm = ({
                 error={errors.apellido_materno}
             />
             <div className="flex flex-col">
-                <label htmlFor="sexo" className="mb-1 font-medium">Sexo</label>
+                <label htmlFor="sexo" className="mb-1 font-medium">Sexo *</label>
                 <select
                 id="sexo"
                 name="sexo"
@@ -153,7 +153,7 @@ export const PacienForm = ({
             </div>
             <InputField
                 id="fecha_nacimiento"
-                label="Fecha de Nacimiento"
+                label="Fecha de Nacimiento *"
                 name="fecha_nacimiento"
                 value={data.fecha_nacimiento}
                 onChange={handleChange}
@@ -169,7 +169,7 @@ export const PacienForm = ({
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <InputField
                 id="calle"
-                label="Calle"
+                label="Calle *"
                 name="calle"
                 value={data.calle}
                 onChange={handleChange}
@@ -179,7 +179,7 @@ export const PacienForm = ({
             />
             <InputField
                 id="numero_exterior"
-                label="Número Exterior"
+                label="Número Exterior *"
                 name="numero_exterior"
                 value={data.numero_exterior}
                 onChange={handleChange}
@@ -189,7 +189,7 @@ export const PacienForm = ({
             />
             <InputField
                 id="numero_interior"
-                label="Número Interior"
+                label="Número Interior *"
                 name="numero_interior"
                 value={data.numero_interior}
                 onChange={handleChange}
@@ -198,7 +198,7 @@ export const PacienForm = ({
             />
             <InputField
                 id="colonia"
-                label="Colonia"
+                label="Colonia *"
                 name="colonia"
                 value={data.colonia}
                 onChange={handleChange}
@@ -207,7 +207,7 @@ export const PacienForm = ({
             />
             <InputField
                 id="municipio"
-                label="Municipio"
+                label="Municipio *"
                 name="municipio"
                 value={data.municipio}
                 onChange={handleChange}
@@ -217,7 +217,7 @@ export const PacienForm = ({
             />
             <InputField
                 id="estado"
-                label="Estado"
+                label="Estado *"
                 name="estado"
                 value={data.estado}
                 onChange={handleChange}
@@ -227,7 +227,7 @@ export const PacienForm = ({
             />
             <InputField
                 id="pais"
-                label="País"
+                label="País *"
                 name="pais"
                 value={data.pais}
                 onChange={handleChange}
@@ -237,7 +237,7 @@ export const PacienForm = ({
             />
             <InputField
                 id="cp"
-                label="Código Postal"
+                label="Código Postal *"
                 name="cp"
                 value={data.cp}
                 onChange={handleChange}
@@ -253,7 +253,7 @@ export const PacienForm = ({
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <InputField
                 id="telefono"
-                label="Teléfono"
+                label="Teléfono *"
                 name="telefono"
                 value={data.telefono}
                 onChange={handleChange}
@@ -262,7 +262,7 @@ export const PacienForm = ({
                 error={errors.telefono}
             />
             <div className="flex flex-col">
-                <label htmlFor="estado_civil" className="mb-1 font-medium">Estado Civil</label>
+                <label htmlFor="estado_civil" className="mb-1 font-medium">Estado Civil *</label>
                 <select
                 id="estado_civil"
                 name="estado_civil"
