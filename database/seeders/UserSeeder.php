@@ -439,7 +439,7 @@ class UserSeeder extends Seeder
         $userAna->assignRole('administrativo');
 
         $userAna = User::create([
-            'curp' => 'GUPA010808MMSTNNA1', 
+            'curp' => 'SLSLLZ75061117M000', 
             'nombre' => 'Luz María',
             'apellido_paterno' => 'Salazar',
             'apellido_materno' => 'Silva',
