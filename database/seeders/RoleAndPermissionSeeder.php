@@ -20,7 +20,7 @@ class RoleAndPermissionSeeder extends Seeder
         $roleMedico = Role::create(['name' => 'medico']);
         $roleMedicoEspecialista = Role::create(['name' => 'medico especialista']);
         $roleEnfermera = Role::create(['name' => 'enfermera(o)']);
-        $roleAdministrativos = Role::create(['name' => 'administrativos']);
+        $roleAdministrativos = Role::create(['name' => 'administrativo']);
         $roleCocina = Role::create(['name' => 'cocina']);
         $roleMantenimiento = Role::create(['name' => 'mantenimiento']);
         $roleFarmacia = Role::create(['name' => 'farmacia']);
