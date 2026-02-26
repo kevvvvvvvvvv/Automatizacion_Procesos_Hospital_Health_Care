@@ -55,7 +55,6 @@ class BackupsController extends Controller
             return back()->with('error', 'El archivo físico no se encuentra en el servidor.');
         }
 
-        // 4. Retornar la descarga
         return response()->download($filePath, $backup->file_name);
     }
 }

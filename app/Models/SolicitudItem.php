@@ -41,6 +41,8 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|SolicitudItem whereSolicitudEstudioId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|SolicitudItem whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|SolicitudItem whereUserRealizaId($value)
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, SolicitudItemArchivo> $archivos
+ * @property-read int|null $archivos_count
  * @mixin \Eloquent
  */
 class SolicitudItem extends Model

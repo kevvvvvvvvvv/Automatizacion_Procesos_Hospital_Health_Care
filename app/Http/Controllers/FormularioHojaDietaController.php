@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Dieta\UpdateHojaDietaRequest;
 use App\Http\Requests\HojaDietaRequest;
 use App\Models\HojaEnfermeria;
 use Illuminate\Http\Request;
@@ -63,26 +64,38 @@ class FormularioHojaDietaController extends Controller
 
         
         $dietas = SolicitudDieta::with(['hojaEnfermeria.formularioInstancia.estancia.paciente','dieta.categoriaDieta'])
-            ->where('estado', 'PENDIENTE')
             ->whereHas('hojaEnfermeria.formularioInstancia.estancia', function ($query) use ($estancia) {
                 $query->where('id', $estancia->id);
             })
             ->get();
+        $users = User::all();
 
         return Inertia::render('cocina/show',[
-            'solicitud_dietas' => $dietas
+            'solicitud_dietas' => $dietas,
+            'users' => $users, 
         ]);
         
     }
 
-    public function update(SolicitudDieta $solicitudes_dieta){
+    public function update(UpdateHojaDietaRequest $request, SolicitudDieta $solicitud_dieta){
+        
+        $validatedData = $request->validated();
+
         try{
-            
+            $solicitud_dieta->update([
+                'estado' => 'SURTIDA',
+                'user_entrega_id' => Auth::id(),
+                'horario_entrega' => now(),
+                'user_supervisa_id' => $validatedData['user_supervisa_id'],
+            ]);
 
+            return Redirect::back()->with('success','Se ha marcado la hora de entrega.');
         }catch(\Exception $e){
-
+            \Log::error('Error al marcar la hora de entrega');
+            return Redirect::back()->with('error','Error al marcar la hora de entrega.');
         }
     }
+
 
 
     private function enviarNotificacion(HojaEnfermeria $hojasenfermeria, SolicitudDieta $dieta){

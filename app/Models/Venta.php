@@ -40,6 +40,10 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Venta whereTotalPagado($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Venta whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Venta whereUserId($value)
+ * @property bool $requiere_factura
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, Pago> $pagos
+ * @property-read int|null $pagos_count
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Venta whereRequiereFactura($value)
  * @mixin \Eloquent
  */
 class Venta extends Model

@@ -36,9 +36,10 @@ class RoleAndPermissionSeeder extends Seeder
         $roleSistemas = Role::create(['name' => 'sistemas']);
 
         $permissions = [
-            'limpieza' => ['crear', 'consultar', 'editar', 'eliminar'],
+            'sistemas' => ['crear', 'consultar', 'editar', 'eliminar'],
             'mantenimiento' => [ 'consultar', 'editar'],
-            'sistemas' => ['consultar', 'editar'],
+            'limpieza' => ['consultar', 'editar'],
+            'reportes' => ['consultar', 'editar'],
 
             'pacientes' => ['crear', 'consultar', 'editar', 'eliminar'],
             'estancias' => ['crear', 'consultar', 'editar', 'eliminar'],
@@ -75,14 +76,14 @@ class RoleAndPermissionSeeder extends Seeder
         $roleAdmin->syncPermissions(Permission::all());
         $roleSistemas->syncPermissions(Permission::all());
 
-        $roleLimpieza->syncPermissions([
-            'editar reportes',
-            'consultar reportes'
-
+       $roleLimpieza->syncPermissions([
+            'editar limpieza',    // Cambiado de 'editar reportes'
+            'consultar limpieza'  // Cambiado de 'consultar reportes'
         ]);
+
         $roleMantenimiento->syncPermissions([
-            'editar reportes',
-            'consultar reportes'
+            'editar mantenimiento',    // Cambiado de 'editar reportes'
+            'consultar mantenimiento'  // Cambiado de 'consultar reportes'
         ]);
 
         $roleRecepcion->syncPermissions([

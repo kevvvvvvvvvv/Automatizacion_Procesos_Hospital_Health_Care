@@ -28,6 +28,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|SolicitudDieta whereObservaciones($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|SolicitudDieta whereUserEntregaId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|SolicitudDieta whereUserSupervisaId($value)
+ * @property string $estado
+ * @property-read \App\Models\HojaEnfermeria $hojaEnfermeria
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SolicitudDieta whereEstado($value)
  * @mixin \Eloquent
  */
 class SolicitudDieta extends Model

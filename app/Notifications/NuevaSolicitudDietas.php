@@ -64,7 +64,7 @@ class NuevaSolicitudDietas extends Notification implements ShouldBroadcast, Shou
             'dieta_id' => $this->dieta->id,
             'paciente_id' => $this->paciente->id,
             'paciente_nombre' => $nombreCompleto,
-            'action_url' => "/dietas/{$this->dieta->id}/edit", 
+            'action_url' => "/solicitudes-dietas/{$this->dieta->hojaEnfermeria->formularioInstancia->estancia_id}", 
             'action_text' => 'Ver solicitud'
         ];
     }

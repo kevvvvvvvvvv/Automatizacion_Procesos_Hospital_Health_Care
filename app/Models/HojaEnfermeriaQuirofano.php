@@ -42,6 +42,8 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
  * @property array<array-key, mixed>|null $servicios_especiales
  * @method static \Illuminate\Database\Eloquent\Builder<static>|HojaEnfermeriaQuirofano whereAnestesia($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|HojaEnfermeriaQuirofano whereServiciosEspeciales($value)
+ * @property string $estado
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|HojaEnfermeriaQuirofano whereEstado($value)
  * @mixin \Eloquent
  */
 class HojaEnfermeriaQuirofano extends Model

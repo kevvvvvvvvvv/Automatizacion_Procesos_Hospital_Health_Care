@@ -2,7 +2,6 @@ import React from 'react';
 import { SolicitudEstudio } from '@/types';
 import MainLayout from '@/layouts/MainLayout';
 import { Head } from '@inertiajs/react';
-import { Printer } from 'lucide-react'; 
 
 interface Props {
     solicitud: SolicitudEstudio; 
@@ -153,18 +152,20 @@ const EstudioDetalle = ({ solicitud }: Props) => {
                                                     <StatusBadge estado={item.estado} />
                                                 </td>
                                                 <td className='text-center'>
-                                                    {item.ruta_archivo_resultado ? (
-                                                        <a 
-                                                            href={`/storage/${item.ruta_archivo_resultado}`} 
-                                                            target="_blank" 
-                                                            rel="noopener noreferrer"
-                                                            className="inline-flex items-center justify-center text-blue-600 hover:text-blue-800 transition-colors"
-                                                            title="Ver archivo de resultados"
-                                                        >
-                                                            <Printer className="w-4 h-4"/>
-                                                        </a>
-                                                    ) : (
-                                                        <span className="text-gray-400 text-xs italic">Sin archivo</span>
+                                                    {item.archivos.length > 0 ? item.archivos.map((a)=>(
+                                                        <div className='text-sm'>
+                                                            <a 
+                                                                href={`/storage/${a.ruta_archivo_resultado}`} 
+                                                                target="_blank" 
+                                                                rel="noopener noreferrer"
+                                                                className="inline-flex items-center text-sm justify-center text-blue-600 hover:text-blue-800 transition-colors"
+                                                                title="Ver archivo de resultados"
+                                                            >
+                                                                {a.nombre_archivo}
+                                                            </a>
+                                                        </div>
+                                                    )) : (
+                                                        <span className="text-gray-400 text-xs italic">Sin archivos</span>
                                                     )}
                                                 </td> 
                                             </tr>

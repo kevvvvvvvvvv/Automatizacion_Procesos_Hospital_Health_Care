@@ -70,10 +70,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     })->name('dashboard');
 });
 
-Route::get('dashboard/reportes', function () {
-    return Inertia::render('dashboard-reportes');
-})->middleware(['auth', 'verified'])->name('expedientes.dashboard');
-
 Route::post('/cargos', [CargoController::class, 'store'])->name('cargos.store')->middleware('auth');
 Route::resource('habitaciones', HabitacionController::class)->middleware('auth');
 Route::resource('producto-servicios', ProductoServicioController::class)->middleware('auth');
@@ -120,11 +116,10 @@ Route::post('/pacientes/{paciente}/estancias/{estancia}/consentimientos', [Conse
 Route::post('hojasterapiasiv/{hojasenfermeria}',[FormularioHojaTerapiaIVController::class,'store'])->name('hojasterapiasiv.store')->middleware('auth');
 Route::patch('hojasterapiasiv/{hojasenfermeria}/{hojasterapiasiv}',[FormularioHojaTerapiaIVController::class,'update'])->name('hojasterapiasiv.update')->middleware('auth');
 
-//Route::resource('hojasenfermerias.solicitudes-dietas',FormularioHojaDietaController::class)->shallow()->middleware('auth');
 Route::get('solicitudes-dietas',[FormularioHojaDietaController::class,'index'])->name('solicitudes-dietas.index')->middleware('auth');
 Route::post('solicitudes-dietas/{hojasenfermeria}',[FormularioHojaDietaController::class,'store'])->name('hojasenfermerias.solicitudes-dietas.store')->middleware('auth');
 Route::get('solicitudes-dietas/{estancia}',[FormularioHojaDietaController::class, 'show'])->name('solicitudes-dietas.show')->middleware('auth');
-Route::put('solicitudes-dietas/{solicitudes-dieta}',[FormularioHojaDietaController::class, 'update'])->name('solicitudes-dietas.update')->middleware('auth');
+Route::put('solicitudes-dietas/{solicitud_dieta}',[FormularioHojaDietaController::class, 'update'])->name('solicitudes-dietas.update')->middleware('auth');
 
 Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
 

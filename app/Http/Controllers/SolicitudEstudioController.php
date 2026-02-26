@@ -91,7 +91,8 @@ class SolicitudEstudioController extends Controller implements HasMiddleware
             'userSolicita',
             'userLlena',
             'itemable', 
-            'formularioInstancia.estancia'
+            'formularioInstancia.estancia',
+            'solicitudItems.archivos',
         ]);
         
         $personal = User::all();
@@ -154,7 +155,6 @@ class SolicitudEstudioController extends Controller implements HasMiddleware
             'grupos.*.fecha_hora_grupo' => 'nullable|date',
             'grupos.*.problema_clinico' => 'nullable|string|max:500',
             'grupos.*.incidentes_accidentes' => 'nullable|string|max:500',
-            // Cambiado a array de archivos
             'grupos.*.archivos' => 'nullable|array',
             'grupos.*.archivos.*' => 'file|mimes:pdf,jpg,jpeg,png,xlsx,xls|max:10240',
             
@@ -171,12 +171,14 @@ class SolicitudEstudioController extends Controller implements HasMiddleware
             DB::transaction(function () use ($request, $estancia_id, $venta) {
                 foreach ($request->grupos as $index => $grupoData) {
                     
-                    $rutasArchivos = [];
+                    $archivosProcesados = [];
 
-                    // 1. Subir todos los archivos del grupo y guardar sus rutas
                     if ($request->hasFile("grupos.{$index}.archivos")) {
                         foreach ($request->file("grupos.{$index}.archivos") as $archivo) {
-                            $rutasArchivos[] = $archivo->store('resultados_estudios', 'public');
+                            $archivosProcesados[] = [
+                                'nombre' => $archivo->getClientOriginalName(),
+                                'ruta'   => $archivo->store('resultados_estudios', 'public') 
+                            ];
                         }
                     }
 
@@ -195,21 +197,19 @@ class SolicitudEstudioController extends Controller implements HasMiddleware
                                 'incidentes_accidentes' => $grupoData['incidentes_accidentes'],
                             ];
 
-                            // 2. Si hay archivos nuevos, crear los registros en la tabla relacionada
-                            if (!empty($rutasArchivos)) {
-                                foreach ($rutasArchivos as $ruta) {
+                            if (!empty($archivosProcesados)) {
+                                foreach ($archivosProcesados as $archivoData) {
                                     $item->archivos()->create([
-                                        'ruta_archivo_resultado' => $ruta
+                                        'nombre_archivo' => $archivoData['nombre'],
+                                        'ruta_archivo_resultado' => $archivoData['ruta'],
                                     ]);
                                 }
 
-                                // Lógica de venta y finalización
                                 if ($item->estado == 'SOLICITADO' || $item->estado == 'PENDIENTE') {
                                     $this->procesarVenta($venta, $estancia_id, $itemData['catalogo_estudio_id']);
                                     $datosActualizar['estado'] = 'FINALIZADO';
                                 }
                             } else {
-                                // Si no hay archivos y no estaba finalizado, queda en pendiente
                                 if ($item->estado != 'FINALIZADO') {
                                     $datosActualizar['estado'] = 'PENDIENTE';
                                 }
@@ -238,6 +238,7 @@ class SolicitudEstudioController extends Controller implements HasMiddleware
             'solicitudItems.catalogoEstudio',
             'solicitudItems.userRealiza',
             'formularioInstancia.estancia',
+            'solicitudItems.archivos',
         );
 
         return Inertia::render('estudios/items/index', [

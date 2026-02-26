@@ -21,20 +21,17 @@ const ResultadosComponent = ({ solicitud_estudio, grupos_estudios }: Props) => {
     const { data, setData, post, processing, errors } = useForm({
         _method: 'PUT',
         grupos: gruposSeguros.map(grupo => {
-            // Tomamos el primer item del grupo para extraer los datos generales 
-            // que se guardaron previamente (fecha, problema clínico, etc.)
+
             const primerItem = grupo.items[0] || {};
 
             return {
                 nombre_grupo: grupo.nombre_grupo,
-                // Si existe el dato en el primer item, úsalo; si no, pon vacío
                 problema_clinico: primerItem.problema_clinico || '',
                 incidentes_accidentes: primerItem.incidentes_accidentes || '',
                 ruta_archivo_actual: primerItem.ruta_archivo_resultado || null,
                 archivos: [] as File[],
                 
                 archivos_existentes: grupo.items.flatMap((item: any) => item.archivos || []),
-                // Formatear fecha para el input datetime-local (YYYY-MM-DDTHH:mm)
                 fecha_hora_grupo: primerItem.fecha_realizacion 
                     ? new Date(primerItem.fecha_realizacion).toISOString().slice(0, 16) 
                     : '', 
@@ -164,12 +161,10 @@ const ResultadosComponent = ({ solicitud_estudio, grupos_estudios }: Props) => {
                                             </div>
                                         )}
 
-                                        {/* Errores dinámicos para el array de archivos */}
                                         {errors[`grupos.${gIndex}.archivos` as keyof typeof errors] && (
                                             <p className="text-red-500 text-sm mt-2">{errors[`grupos.${gIndex}.archivos` as keyof typeof errors]}</p>
                                         )}
 
-                                        {/* Mostrar archivos ya guardados (si tu relación los trae) */}
                                         {grupo.archivos_existentes && grupo.archivos_existentes.length > 0 && (
                                             <div className="mt-4 border-t border-blue-200 pt-3">
                                                 <p className="text-[10px] uppercase font-bold text-gray-400 mb-2">Archivos en plataforma:</p>
