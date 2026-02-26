@@ -436,7 +436,7 @@ class UserSeeder extends Seeder
             'password' => Hash::make('12345678'), 
         ]);
 
-        $userAna->assignRole('administrativo');
+        $userAna->assignRole('administrador');
 
         $userAna = User::create([
             'curp' => 'SLSLLZ75061117M000', 
@@ -450,7 +450,7 @@ class UserSeeder extends Seeder
             'password' => Hash::make('12345678'), 
         ]);
 
-        $userAna->assignRole('administrativo');        
+        $userAna->assignRole('administrador');        
 
     }
 }
