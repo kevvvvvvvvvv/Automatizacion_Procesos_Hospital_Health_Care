@@ -152,16 +152,17 @@ class HojaEnfemeriaQuirofanoController extends Controller implements HasMiddlewa
 
     }
 
-    /* private function cerrarHoja(HojaEnfermeriaQuirofano $hoja)
+    private function cerrarHoja(HojaEnfermeriaQuirofano $hoja)
     {
         try{
-        $hoja->update([
-            'estado' => 'Cerrado'
-        ]);
-        }catch(){
-
+            $hoja->update([
+                'estado' => 'Cerrado'
+            ]);
+            return redirect()->route('estancias.show');
+        }catch(\Exception $e){
+            return redirect()->back()->with('error','Error al cerrar la hoja de enfermería en quirófano');
         }
-        return redirect()->route('estancias.show');
-    } */
+        
+    }
 
 }
