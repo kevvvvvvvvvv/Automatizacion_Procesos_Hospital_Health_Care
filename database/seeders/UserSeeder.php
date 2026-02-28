@@ -7,7 +7,8 @@ use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
-
+use PhpParser\Node\Expr\Assign;
+use Spatie\Permission\Commands\AssignRole;
 
 class UserSeeder extends Seeder
 {
@@ -423,7 +424,7 @@ class UserSeeder extends Seeder
 
         $userRadiologo->assignRole('radiólogo');
 
-        $userRadiologo = User::create([
+        $userAna = User::create([
             'curp' => 'GUPA010808MMSTNNA1', 
             'nombre' => 'Ana Karen',
             'apellido_paterno' => 'Gutiérrez',
@@ -434,6 +435,8 @@ class UserSeeder extends Seeder
             'telefono' => '7771599766',
             'password' => Hash::make('12345678'), 
         ]);
+
+        $userAna->assignRole('administrativo');
 
     }
 }
