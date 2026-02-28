@@ -25,6 +25,8 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
 
+use function Pest\Laravel\call;
+
 class HojaEnfemeriaQuirofanoController extends Controller implements HasMiddleware
 {
     use AuthorizesRequests;
@@ -149,5 +151,17 @@ class HojaEnfemeriaQuirofanoController extends Controller implements HasMiddlewa
         );
 
     }
+
+    /* private function cerrarHoja(HojaEnfermeriaQuirofano $hoja)
+    {
+        try{
+        $hoja->update([
+            'estado' => 'Cerrado'
+        ]);
+        }catch(){
+
+        }
+        return redirect()->route('estancias.show');
+    } */
 
 }
