@@ -16,11 +16,11 @@ class DetallePago extends Model
 
     public function pagos(): BelongsTo
     {
-        return $this->belongsTo('');
+        return $this->belongsTo(Pago::class);
     }
 
     public function detalleVenta(): BelongsTo
     {
-        return $this->detalleVenta('');
+        return $this->detalleVenta(DetalleVenta::class);
     }   
 }

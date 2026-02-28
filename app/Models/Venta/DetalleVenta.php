@@ -4,6 +4,8 @@ namespace App\Models\Venta;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+
 
 class DetalleVenta extends Model
 {
@@ -33,6 +35,11 @@ class DetalleVenta extends Model
     public function venta(): BelongsTo
     {
         return $this->belongsTo(Venta::class);
+    }
+
+    public function detallePagos(): HasMany
+    {
+        return $this->hasMany(DetallePago::class);
     }
 
     public function itemable()

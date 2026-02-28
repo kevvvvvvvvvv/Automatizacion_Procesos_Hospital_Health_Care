@@ -19,7 +19,7 @@ return new class extends Migration
                 ->onDelete('cascade');
 
             $table->foreignId('detalle_venta_id')
-                ->constrained('detalles_ventas')
+                ->constrained('detalle_ventas')
                 ->onDelete('cascade');
 
             $table->decimal('monto_aplicado',10,2); 

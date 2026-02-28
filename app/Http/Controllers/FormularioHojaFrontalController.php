@@ -12,7 +12,7 @@ use App\Models\Estancia;
 use App\Models\FormularioInstancia;
 use App\Models\HojaFrontal;
 use App\Models\ProductoServicio;
-use App\Models\Venta;
+use App\Models\Venta\Venta;
 use App\Services\VentaService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
@@ -53,7 +53,7 @@ class FormularioHojaFrontalController extends Controller implements HasMiddlewar
         DB::beginTransaction();
         try{
 
-            $itemParaVenta = [  
+            /*$itemParaVenta = [  
                 'id' => 661,
                 'cantidad' => 1,
                 'tipo' => 'producto'
@@ -67,7 +67,7 @@ class FormularioHojaFrontalController extends Controller implements HasMiddlewar
                 $ventaService->addItemToVenta($ventaExistente, $itemParaVenta);
             } else {
                 $ventaService->crearVenta([$itemParaVenta], $estancia->id, Auth::id());
-            }
+            } */
 
             $estancia->load(['paciente', 'creator', 'updater','formularioInstancias.catalogo','formularioInstancias.user']);
 
@@ -124,6 +124,7 @@ class FormularioHojaFrontalController extends Controller implements HasMiddlewar
         return Redirect::route('estancias.show', ['estancia' => $estancia])
             ->with('success', 'Hoja frontal actualizada exitosamente.');
     }
+
     public function show(HojaFrontal $hojaFrontal){
         $hojaFrontal->load([
             'formularioInstancia.estancia.paciente',

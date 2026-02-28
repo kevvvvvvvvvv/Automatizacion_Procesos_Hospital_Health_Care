@@ -21,6 +21,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|SolicitudItemArchivo whereRutaArchivoResultado($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|SolicitudItemArchivo whereSolicitudItemId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|SolicitudItemArchivo whereUpdatedAt($value)
+ * @property string $nombre_archivo
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|SolicitudItemArchivo whereNombreArchivo($value)
  * @mixin \Eloquent
  */
 class SolicitudItemArchivo extends Model

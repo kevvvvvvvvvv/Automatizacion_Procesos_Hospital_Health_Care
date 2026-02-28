@@ -66,31 +66,41 @@ const Show = ({
     metodosPago,
 }: Props) => { 
 
-    const metodoPagoOptions = metodosPago.map((mp)=>
-        ({label: mp.nombre, value: mp.id})  
-    )
-
     const [showModal, setShowModal] = useState(false);
-    
+    const metodoPagoOptions = metodosPago.map((mp) => ({label: mp.nombre, value: mp.id}));
+
     const { data, setData, post, processing, errors, reset } = useForm({
-        total_pagado: '',
         requiere_factura: venta.requiere_factura || false, 
         metodo_pago_id: '',
+        detalles_pago: venta.detalles?.map(detalle => ({
+            detalle_venta_id: detalle.id,
+            monto_aplicado: ''
+        })) || []
     });
+
+    const handleDetalleChange = (index: number, value: string) => {
+        const nuevosDetalles = [...data.detalles_pago];
+        nuevosDetalles[index].monto_aplicado = value;
+        setData('detalles_pago', nuevosDetalles);
+    };
+
+    const totalAbonoActual = data.detalles_pago.reduce((sum, item) => {
+        return sum + (Number(item.monto_aplicado) || 0);
+    }, 0);
 
     const handleSubmitPago = (e: React.FormEvent) => {
         e.preventDefault();
+        if (totalAbonoActual <= 0) return alert('Debes ingresar un monto a pagar');
+
         post(route('ventas.pagar', venta.id), {
             onSuccess: () => {
                 setShowModal(false);
                 reset();
             }
         });
-    };
+    }    
 
     const ivaCalculado = Number(venta.total) - Number(venta.subtotal);
-
-    console.log(venta);
 
     return (
         <MainLayout 
@@ -178,70 +188,138 @@ const Show = ({
                     </InfoCard>
                 </div>
 
-                <Modal show={showModal} onClose={() => setShowModal(false)} maxWidth="md">
-                    <div className="p-6">
-                        <div className="flex justify-between items-center mb-4">
-                            <h2 className="text-lg font-bold text-gray-900">Registrar abono</h2>
-                            <button onClick={() => setShowModal(false)} className="text-gray-400 hover:text-gray-600">
-                                <X size={20} />
-                            </button>
+               <Modal show={showModal} onClose={() => setShowModal(false)} maxWidth="2xl">
+                <div className="p-6">
+                    <div className="flex justify-between items-center mb-4">
+                        <h2 className="text-lg font-bold text-gray-900">Registrar abono por concepto</h2>
+                        <button onClick={() => setShowModal(false)} className="text-gray-400 hover:text-gray-600">
+                            <X size={20} />
+                        </button>
+                    </div>
+
+                    <form onSubmit={handleSubmitPago}>
+                        <div className="mb-6 max-h-64 overflow-y-auto pr-2">
+                            <table className="w-full text-sm text-left text-gray-500">
+                                <thead className="text-xs text-gray-700 uppercase bg-gray-50">
+                                    <tr>
+                                        <th className="px-4 py-3">Concepto</th>
+                                        <th className="px-4 py-3 text-right">Saldo pendiente</th>
+                                        <th className="px-4 py-3 text-right w-40">Abonar ahora</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {venta.detalles?.map((detalle, index) => {
+                                        const saldoItem = (Number(detalle.subtotal) + Number(detalle.iva_aplicado || 0) - Number(detalle.descuento || 0)) - Number(detalle.monto_pagado);
+
+                                        if (saldoItem <= 0) return null;
+
+                                        return (
+                                            <tr key={detalle.id} className="border-b">
+                                                <td className="px-4 py-3 font-medium text-gray-900">
+                                                    {detalle.nombre_producto_servicio}
+                                                </td>
+                                                <td className="px-4 py-3 text-right text-red-600 font-medium">
+                                                    {formatCurrency(saldoItem)}
+                                                </td>
+                                                <td className="px-4 py-3">
+                                                    <InputText
+                                                        id={`monto_${detalle.id}`}
+                                                        name={`monto_${detalle.id}`}
+                                                        label=''
+                                                        value={data.detalles_pago[index].monto_aplicado}
+                                                        onChange={(e) => handleDetalleChange(index, e.target.value)}
+                                                        type="number"
+                                                        placeholder="0.00"
+                                                        error={errors.detalles_pago}
+                                                        max={saldoItem} 
+                                                    />
+                                                </td>
+                                            </tr>
+                                        )
+                                    })}
+                                </tbody>
+                            </table>
                         </div>
 
-                        <div className="mb-6 p-4 bg-blue-50 rounded-lg border border-blue-100">
-                            <p className="text-sm text-blue-800 mb-1">Saldo pendiente actual:</p>
-                            <p className="text-2xl font-bold text-blue-900">{formatCurrency(venta.saldo_pendiente)}</p>
-                        </div>
-                        <form onSubmit={handleSubmitPago}>
-                            <div className="mb-4">
-                                <label className="block text-sm font-medium text-gray-700 mb-1">
-                                    Cantidad a recibir ahora:
-                                </label>
-                            
-                                <p className="text-xs text-gray-500 mb-2">
-                                    Ingresa el monto que el cliente está pagando en este momento. 
-                                    Puede ser menor al total para dejarlo como anticipo.
-                                </p>
-
-                                <InputBoolean
-                                    label='Requiere factura'
-                                    value={data.requiere_factura}
-                                    onChange={e=>setData('requiere_factura',e)}
-                                    error={errors.requiere_factura}
-                                />
-
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6 p-4 bg-gray-50 rounded-lg">
+                            <div>
                                 <InputSelect
                                     options={metodoPagoOptions}
                                     label='Método de pago'
                                     value={data.metodo_pago_id}
                                     onChange={e=>setData('metodo_pago_id',e)}
+                                    error={errors.metodo_pago_id}
                                 />
-
-                                <InputText
-                                    id='total_pagado'
-                                    name='total_pagado'
-                                    label="Monto a pagar"
-                                    value={data.total_pagado}
-                                    onChange={value=>setData('total_pagado',value.target.value)}
-                                    type='number'
-                                    error={errors.total_pagado}
-                                />
+                                <div className="mt-4">
+                                    <InputBoolean
+                                        label='Requiere factura'
+                                        value={data.requiere_factura}
+                                        onChange={e=>setData('requiere_factura',e)}
+                                        error={errors.requiere_factura}
+                                    />
+                                </div>
                             </div>
-
-                            <div className="flex justify-end gap-3 mt-6">
-
-                                <PrimaryButton type="submit" disabled={processing}>
-                                    {processing ? 'Procesando...' : 'Confirmar pago'}
-                                </PrimaryButton>
+                            <div className="flex flex-col justify-center items-end bg-blue-50 p-4 rounded-lg border border-blue-100">
+                                <span className="text-sm font-semibold text-blue-800">Total a cobrar ahora:</span>
+                                <span className="text-3xl font-bold text-blue-900">{formatCurrency(totalAbonoActual)}</span>
                             </div>
-                        </form>
-                    </div>
-                </Modal>
+                        </div>
+
+                        <div className="flex justify-end gap-3 mt-6">
+                            <PrimaryButton type="submit" disabled={processing || totalAbonoActual <= 0}>
+                                {processing ? 'Procesando...' : 'Confirmar pago'}
+                            </PrimaryButton>
+                        </div>
+                    </form>
+                </div>
+            </Modal>
             </div>
 
-            <Ticket 
-                venta={venta}
-                tipo='COPIA'
-            />
+            <InfoCard title="Historial de Recibos / Pagos" icon={CreditCard}>
+                {venta.pagos && venta.pagos.length > 0 ? (
+                    <div className="space-y-4">
+                        {venta.pagos.map((pago) => (
+                            <div key={pago.id} className="flex justify-between items-center p-4 border border-gray-200 rounded-lg bg-white shadow-sm">
+                                <div>
+                                    <div className="flex items-center gap-2">
+                                        <span className="font-bold text-gray-800">{pago.folio}</span>
+                                        <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded">
+                                            {pago.metodo_pago?.nombre}
+                                        </span>
+                                    </div>
+                                    <p className="text-sm text-gray-500 mt-1">
+                                        {new Date(pago.created_at).toLocaleDateString('es-MX')} - {pago.detalles?.length} concepto(s)
+                                    </p>
+                                </div>
+                                
+                                <div className="flex items-center gap-4">
+                                    <span className="font-bold text-green-600 text-lg">
+                                        + {formatCurrency(pago.monto)}
+                                    </span>
+                                    
+                                    <button 
+                                        onClick={() => {
+                                            window.print();
+                                        }}
+                                        className="text-blue-600 hover:bg-blue-50 p-2 rounded-lg transition-colors text-sm font-medium"
+                                    >
+                                        Imprimir recibo
+                                    </button>
+                                </div>
+
+                               <Ticket 
+                                    pago={pago} 
+                                    tipo='COPIA'
+                                />
+                            </div>
+                        ))}
+                    </div>
+                ) : (
+                    <div className="text-center p-6 text-gray-400">
+                        No hay pagos registrados para esta venta.
+                    </div>
+                )}
+            </InfoCard>
 
         </MainLayout>
     );

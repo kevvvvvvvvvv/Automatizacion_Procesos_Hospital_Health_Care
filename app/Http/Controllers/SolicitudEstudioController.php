@@ -24,7 +24,7 @@ use Inertia\Inertia;
 use App\Services\TwilioWhatsAppService;
 use App\Services\PdfGeneratorService;
 use App\Services\VentaService;
-use App\Models\Venta;
+use App\Models\Venta\Venta;
 
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Routing\Controllers\HasMiddleware;
