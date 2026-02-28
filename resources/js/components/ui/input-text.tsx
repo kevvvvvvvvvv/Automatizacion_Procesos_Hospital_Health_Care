@@ -1,6 +1,7 @@
 import type { ChangeEvent } from 'react';
+import React, { InputHTMLAttributes } from 'react';
 
-interface InputTextProps {
+interface InputTextProps extends InputHTMLAttributes<HTMLInputElement>{
   id: string;
   name: string;
   label: string;

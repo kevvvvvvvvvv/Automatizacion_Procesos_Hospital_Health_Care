@@ -285,6 +285,8 @@ export interface Venta{
     user: User | null;
     requiere_factura: boolean;
     
+    pagos: Pago[];
+    detalle: DetalleVenta[];
     estancia: Estancia;
     detalles: DetalleVenta[];
 }
@@ -304,6 +306,8 @@ export interface DetalleVenta{
         nombre_prestacion?: string; 
         nombre?: string;
     };
+    iva_aplicado: number;
+    monto_pagado: number;
 
     nombre_producto_servicio: string;
     clave_producto_servicio?: string;
@@ -321,15 +325,31 @@ export interface MetodoPago {
 
 export interface Pago{
     id: number;
+    folio: string;
     venta_id: number;
     metodo_pago_id: number;
     referencia: string;
     user_id: number;
+    monto: number;
 
     venta: Venta;
     user: User;
     metodo_pago: MetodoPago;
+    detalles: DetallePago[];
+
+    created_at: string;
+    updated_at: string;
     
+}
+
+export interface DetallePago {
+    id: number;
+    pago_id: number;
+    detalle_venta_id: number;
+    monto_aplicado: number;
+
+    detalle_venta: DetalleVenta;
+    pago: Pago;
 }
 
 export interface HojaEnfermeria {

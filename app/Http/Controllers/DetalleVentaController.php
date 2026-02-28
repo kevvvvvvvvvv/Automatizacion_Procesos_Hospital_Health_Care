@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Paciente;
 use App\Models\Estancia;
-use App\Models\Venta;
+use App\Models\Venta\Venta;
 use App\Models\DetalleVenta;
 
 use Illuminate\Http\Request;

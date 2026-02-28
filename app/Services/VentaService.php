@@ -2,8 +2,8 @@
 
 namespace App\Services;
 
-use App\Models\Venta;
-use App\Models\DetalleVenta;
+use App\Models\Venta\Venta;
+use App\Models\Venta\DetalleVenta;
 use App\Models\ProductoServicio;
 use App\Models\CatalogoEstudio;
 use Illuminate\Support\Facades\DB;
