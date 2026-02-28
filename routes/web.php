@@ -53,6 +53,10 @@ use App\Http\Controllers\RestauracionController;
 use App\Http\Controllers\Encuestas\EncuestaSatisfaccionController;
 use App\Http\Controllers\MantenimientoController;
 use App\Http\Controllers\EncuestaPersonalController;
+use App\Http\Controllers\ReporteInterconsultaController;
+use App\Http\Controllers\ReporteConcienciaController;
+
+use App\Http\Controllers\ReporteEstanciaController;
 use App\Models\HojaContolLiquido;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -70,6 +74,44 @@ Route::middleware(['auth', 'verified'])->group(function () {
     })->name('dashboard');
 });
 
+Route::middleware(['auth', 'verified'])->group(function (){
+    Route::get('dashboard-reporte', function (){
+        return Inertia::render('dashboard-reportes');
+    })->name('dashboard-reporte');
+});
+
+//Reportes 
+// REPORTE DE TIPO DE ESTANCIA
+Route::get('/reportes/tipo-estancia', [ReporteEstanciaController::class, 'showReporteEstancia'])
+    ->name('reporte.estancias.show')
+    ->middleware('auth'); 
+
+Route::get('/reportes/tipo-estancia/generacionPDF', [ReporteEstanciaController::class, 'descargarReporteEstanciaPdf'])
+    ->name('reporte.estancias.pdf')
+    ->middleware('auth');
+
+    // REPORTE DE MOTIVOS DE INTERCONSULTA
+Route::get('/reportes/motivos-frecuentes', [ReporteInterconsultaController::class, 'showFrecuenciaMotivos'])
+    ->name('reporte.motivos.show')
+    ->middleware('auth');
+
+Route::get('/reportes/motivos-frecuentes/pdf', [ReporteInterconsultaController::class, 'descargarPdfMotivos'])
+    ->name('reporte.motivos.pdf')
+    ->middleware('auth');
+
+    // REPORTE DE ESCALAS DE VALORACIÓN
+Route::get('/reportes/escalas-valoracion', [ReporteConcienciaController::class, 'showReporteEscalas'])
+    ->name('reporte.escalas.show')
+    ->middleware('auth');
+
+Route::get('/reportes/escalas-valoracion/pdf', [ReporteConcienciaController::class, 'descargarPdfEscalas'])
+    ->name('reporte.escalas.pdf')
+    ->middleware('auth');
+
+
+
+
+    
 Route::post('/cargos', [CargoController::class, 'store'])->name('cargos.store')->middleware('auth');
 Route::resource('habitaciones', HabitacionController::class)->middleware('auth');
 Route::resource('producto-servicios', ProductoServicioController::class)->middleware('auth');

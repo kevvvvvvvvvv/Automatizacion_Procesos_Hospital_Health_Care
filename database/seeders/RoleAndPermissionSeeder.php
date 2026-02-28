@@ -79,7 +79,7 @@ class RoleAndPermissionSeeder extends Seeder
        $roleLimpieza->syncPermissions([
             'editar limpieza',    // Cambiado de 'editar reportes'
             'consultar limpieza'  // Cambiado de 'consultar reportes'
-        ]);
+        ]); 
 
         $roleMantenimiento->syncPermissions([
             'editar mantenimiento',    // Cambiado de 'editar reportes'

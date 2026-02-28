@@ -41,7 +41,7 @@ class EncuestaPersonalController extends Controller
             'formulario_catalogo_id' => FormularioCatalogo::ID_ENCUESTA_PERSONAL,
             'user_id' => Auth::id(),
         ]);
-
+       
         // Creamos la encuesta usando el mismo ID
         // Esto fallará si 'id' no está en el fillable del modelo arriba
         EncuestaPersonal::create([
