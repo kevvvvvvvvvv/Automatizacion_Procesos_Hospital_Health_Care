@@ -59,6 +59,7 @@ class ProductoServicio extends Model
     public $incrementing = true;
 
     protected $fillable = [
+        'id',
         'tipo',
         'subtipo',
         'codigo_prestacion',
@@ -77,16 +78,19 @@ class ProductoServicio extends Model
         return $this->morphMany(DetalleVenta::class, 'itemable');
     }
 
-    public function medicamento()
+    public function medicamento(): HasOne
     {
         return $this->hasOne(Medicamento::class, 'id', 'id');
     }
 
-
-
     public function insumo(): HasOne
     {
         return $this->hasOne(Insumo::class, 'id','id');
+    }
+
+    public function estudio(): HasOne
+    {
+        return $this->hasOne(CatalogoEstudio::class, 'id', 'id');
     }
     
     public function getListaViasAttribute()

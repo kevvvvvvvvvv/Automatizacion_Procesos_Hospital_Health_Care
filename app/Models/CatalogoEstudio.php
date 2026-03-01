@@ -3,7 +3,10 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Stripe\Product;
 
 /**
  * @property int $id
@@ -37,15 +40,12 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  */
 class CatalogoEstudio extends Model
 {
-    
     protected $fillable = [
         'id',
         'nombre',
         'tipo_estudio',
         'departamento',
         'tiempo_entrega',
-        'costo',
-        'clave_producto_servicio',
     ];
 
     public function solicitudItem(): HasMany
@@ -53,8 +53,13 @@ class CatalogoEstudio extends Model
         return $this->hasMany(SolicitudItem::class);
     }
 
-    public function detallesVenta()
+    public function detallesVenta(): MorphMany
     {
         return $this->morphMany(DetalleVenta::class, 'itemable');
     }
+
+    /* public function productoServicio(): BelongsTo
+    {
+        return $this->belongsTo(ProductoServicio::class, 'id', 'id');
+    } */
 }
