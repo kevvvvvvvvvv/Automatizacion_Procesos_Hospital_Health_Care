@@ -21,8 +21,8 @@ return(
                 <div>
                     <CardButton
                         icon={FaRegHeart}
-                        text="Reporte de signos vitales"
-                            onClick={() => router.visit(route('reporte.estancias.show'))}
+                        text="Reporte de frecuencia cardiaca"
+                        onClick={() => router.visit(route('reporte.fc.show'))}
                      />
                 </div>
                 <div>

@@ -55,6 +55,7 @@ use App\Http\Controllers\MantenimientoController;
 use App\Http\Controllers\EncuestaPersonalController;
 use App\Http\Controllers\ReporteInterconsultaController;
 use App\Http\Controllers\ReporteConcienciaController;
+use App\Http\Controllers\ReporteSignosController;
 
 use App\Http\Controllers\ReporteEstanciaController;
 use App\Models\HojaContolLiquido;
@@ -108,7 +109,14 @@ Route::get('/reportes/escalas-valoracion/pdf', [ReporteConcienciaController::cla
     ->name('reporte.escalas.pdf')
     ->middleware('auth');
 
+// REPORTE UNIFICADO DE SIGNOS VITALES (FC)
+Route::get('/reportes/frecuencia-cardiaca', [ReporteSignosController::class, 'showFrecuenciaCardiaca'])
+    ->name('reporte.fc.show')
+    ->middleware('auth');
 
+Route::get('/reportes/frecuencia-cardiaca/pdf', [ReporteSignosController::class, 'descargarPdfFrecuencia'])
+    ->name('reporte.fc.pdf')
+    ->middleware('auth');
 
 
     
