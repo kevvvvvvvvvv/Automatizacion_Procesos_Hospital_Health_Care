@@ -130,17 +130,17 @@ export default function Dashboard() {
                     
                 </div>
                 
-                {/*<div>
+                <div>
                     {can('Reportes') && (
                      <CardButton
                         icon={FaFileSignature}
                         text="Reportes"
-                        onClick={() => router.visit(route('expedientes.dashboard'))}
+                        onClick={() => router.visit(route('dashboard-reporte'))}
                     />
                     )}
                     
                 </div>
-                */ }
+                
                 <div>
                     
                 </div>                   

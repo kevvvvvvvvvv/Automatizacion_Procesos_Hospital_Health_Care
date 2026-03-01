@@ -1,5 +1,5 @@
 import React, { useState} from 'react';
-import { Head, useForm } from '@inertiajs/react';
+import { Head, useForm, Link } from '@inertiajs/react';
 import MainLayout from '@/layouts/MainLayout';
 import InputDate from '@/components/ui/input-date';
 import SelectInput from '@/components/ui/input-select'; 
@@ -115,14 +115,28 @@ const Create = ({
             />
 
             <SelectInput
-                label="Tipo de estancia"
+                label="Tipo de estancia (En caso de ser necesario agregar los datos faltantes del paciente)"
                 options={optionsTipoEstancia}
                 value={data.tipo_estancia}
                 onChange={(value) => setData('tipo_estancia', value as "Hospitalizacion" | "Interconsulta" )}
                 error={errors.tipo_estancia}
             />
-
-            {data.tipo_estancia === 'Hospitalizacion' && (
+            
+            {data.tipo_estancia === 'Hospitalizacion' && (  
+            <Link
+            
+            href={route('pacientes.edit', { 
+            paciente: paciente.id 
+            })}
+            method="get" 
+            className={'bg-blue-500 text-white text-gray-900 group flex rounded-md text-center w-30 px-2 py-2 text-sm'}
+            >
+            Editar paciente
+            </Link>
+            
+            )}
+            {data.tipo_estancia === 'Hospitalizacion' && (  
+                
                 <SelectInput
                     label="Habitación asignada"
                     options={optionsHabitaciones}
@@ -131,7 +145,9 @@ const Create = ({
                     error={errors.habitacion_id}
                     placeholder="Seleccione la habitación"
                 />
+                
             )}
+            
 
             <SelectInput
                 label="Tipo de ingreso"
@@ -140,7 +156,8 @@ const Create = ({
                 onChange={(value) => setData('tipo_ingreso', value )}
                 error={errors.tipo_ingreso}
             />
-
+            {data.tipo_estancia == 'Hospitalizacion'}
+            
             {(data.tipo_ingreso == 'Reingreso') && (
                 <SelectInput
                     label="Estancia de referencia para reingreso"
