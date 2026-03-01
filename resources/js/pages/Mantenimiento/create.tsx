@@ -5,7 +5,8 @@ import { Play, CheckCircle, XCircle, Home, Save, Clock, Edit3 } from 'lucide-rea
 import InputText from '@/components/ui/input-text';
 import { Habitacion, Mantenimiento as MantenimientoType, PageProps } from '@/types';
 import { usePermission } from '@/hooks/use-permission';
-
+import { route } from 'ziggy-js';
+    
 interface Props {
     mantenimiento?: MantenimientoType;
     habitaciones: Habitacion[];
