@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Head, router, useForm } from '@inertiajs/react';
+import { useForm } from '@inertiajs/react';
 import { Plus, Trash2 } from 'lucide-react';
 import { Paciente } from '@/types';
 
@@ -7,7 +7,6 @@ import { Paciente } from '@/types';
 import FormLayout from '@/components/form-layout';
 import InputField from "@/components/ui/input-text";
 import PrimaryButton from '@/components/ui/primary-button';
-import { FaPlusMinus } from "react-icons/fa6";
 
 interface Props {
     paciente?: Paciente; 
@@ -99,42 +98,42 @@ export const PacienForm = ({
                 id="curp"
                 label="CURP *"
                 name="curp"
-                value={data.curp}
+                value={data.curp.toUpperCase()}
                 onChange={handleChange}
-                required
                 maxLength={18}
                 error={errors.curp}
             />
+
             <InputField
                 id="nombre"
                 label="Nombre *"
                 name="nombre"
-                value={data.nombre}
+                value={data.nombre.toUpperCase()}
                 onChange={handleChange}
-                required
                 maxLength={100}
                 error={errors.nombre}
             />
+
             <InputField
                 id="apellido_paterno"
                 label="Apellido Paterno *"
                 name="apellido_paterno"
-                value={data.apellido_paterno}
+                value={data.apellido_paterno.toUpperCase()}
                 onChange={handleChange}
-                required
                 maxLength={100}
                 error={errors.apellido_paterno}
             />
+
             <InputField
                 id="apellido_materno"
                 label="Apellido Materno *"
                 name="apellido_materno"
-                value={data.apellido_materno}
+                value={data.apellido_materno.toUpperCase()}
                 onChange={handleChange}
-                required
                 maxLength={100}
                 error={errors.apellido_materno}
             />
+
             <div className="flex flex-col">
                 <label htmlFor="sexo" className="mb-1 font-medium">Sexo *</label>
                 <select
@@ -142,7 +141,6 @@ export const PacienForm = ({
                 name="sexo"
                 value={data.sexo}
                 onChange={handleChange}
-                required
                 className="bg-white border border-gray-600 rounded-md px-3 py-2 text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#2a2b56]"
                 >
                 <option value="">Seleccione</option>
@@ -151,13 +149,13 @@ export const PacienForm = ({
                 ))}
                 </select>
             </div>
+
             <InputField
                 id="fecha_nacimiento"
                 label="Fecha de Nacimiento *"
                 name="fecha_nacimiento"
                 value={data.fecha_nacimiento}
                 onChange={handleChange}
-                required
                 type="date"
                 error={errors.fecha_nacimiento}
             />
@@ -171,78 +169,77 @@ export const PacienForm = ({
                 id="calle"
                 label="Calle *"
                 name="calle"
-                value={data.calle}
+                value={data.calle.toUpperCase()}
                 onChange={handleChange}
-                required
                 maxLength={100}
                 error={errors.calle}
             />
+
             <InputField
                 id="numero_exterior"
-                label="Número Exterior *"
+                label="Número exterior *"
                 name="numero_exterior"
                 value={data.numero_exterior}
                 onChange={handleChange}
-                required
                 maxLength={50}
                 error={errors.numero_exterior}
             />
+
             <InputField
                 id="numero_interior"
-                label="Número Interior *"
+                label="Número interior *"
                 name="numero_interior"
                 value={data.numero_interior}
                 onChange={handleChange}
                 maxLength={50}
                 error={errors.numero_interior}
             />
+
             <InputField
                 id="colonia"
                 label="Colonia *"
                 name="colonia"
-                value={data.colonia}
+                value={data.colonia.toUpperCase()}
                 onChange={handleChange}
-                required
                 maxLength={100}
             />
+
             <InputField
                 id="municipio"
                 label="Municipio *"
                 name="municipio"
-                value={data.municipio}
+                value={data.municipio.toUpperCase()}
                 onChange={handleChange}
-                required
                 maxLength={100}
                 error={errors.municipio}
             />
+
             <InputField
                 id="estado"
                 label="Estado *"
                 name="estado"
-                value={data.estado}
+                value={data.estado.toUpperCase()}
                 onChange={handleChange}
-                required
                 maxLength={100}
                 error={errors.estado}
             />
+
             <InputField
                 id="pais"
                 label="País *"
                 name="pais"
-                value={data.pais}
+                value={data.pais.toUpperCase()}
                 onChange={handleChange}
-                required
                 maxLength={100}
                 error={errors.pais}
             />
             
             <InputField
                 id="cp"
-                label="Código Postal *"
+                label="Código postal *"
                 name="cp"
                 value={data.cp}
                 onChange={handleChange}
-                required
                 maxLength={10}
                 error={errors.cp}
             />
@@ -250,7 +247,7 @@ export const PacienForm = ({
         
 
         {/* Contacto y Estado Civil */}
-            <legend className="text-lg font-semibold mb-4">Contacto y Estado Civil</legend>
+            <legend className="text-lg font-semibold mb-4">Contacto y estado civil</legend>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <InputField
                 id="telefono"
@@ -258,18 +255,17 @@ export const PacienForm = ({
                 name="telefono"
                 value={data.telefono}
                 onChange={handleChange}
-                required
                 maxLength={20}
                 error={errors.telefono}
             />
+
             <div className="flex flex-col">
-                <label htmlFor="estado_civil" className="mb-1 font-medium">Estado Civil *</label>
+                <label htmlFor="estado_civil" className="mb-1 font-medium">Estado civil *</label>
                 <select
                 id="estado_civil"
                 name="estado_civil"
                 value={data.estado_civil}
                 onChange={handleChange}
-                required
                 className="bg-white border border-gray-600 rounded-md px-3 py-2 text-gray-900    focus:outline-none focus:ring-2 focus:ring-[#2a2b56]"
                 >
                 <option value="">Seleccione</option>
@@ -278,13 +274,13 @@ export const PacienForm = ({
                 ))}
                 </select>
             </div>
+
             <InputField 
                 id="ocupacion"
                 label="Ocupación"
                 name="ocupacion"
-                value={data.ocupacion}
+                value={data.ocupacion.toUpperCase()}
                 onChange={handleChange}
-                required
                 maxLength={100}
                 error={errors.ocupacion}
             />
@@ -294,30 +290,31 @@ export const PacienForm = ({
         
             <legend className="text-lg font-semibold mb-4">Otros Datos</legend>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+
             <InputField
                 id="lugar_origen"
-                label="Lugar de Origen"
+                label="Lugar de origen"
                 name="lugar_origen"
-                value={data.lugar_origen}
+                value={data.lugar_origen.toUpperCase()}
                 onChange={handleChange}
-                required
                 maxLength={100}
                 error={errors.lugar_origen}
             />
+
             <InputField
                 id="nombre_padre"
-                label="Nombre del Padre"
+                label="Nombre del padre"
                 name="nombre_padre"
-                value={data.nombre_padre}
+                value={data.nombre_padre.toUpperCase()}
                 onChange={handleChange}
                 maxLength={100}
                 error={errors.nombre_padre}
             />
             <InputField
                 id="nombre_madre"
-                label="Nombre de la Madre"
+                label="Nombre de la madre"
                 name="nombre_madre"
-                value={data.nombre_madre}
+                value={data.nombre_madre.toUpperCase()}
                 onChange={handleChange}
                 maxLength={100}
                 error={errors.nombre_madre}
@@ -329,16 +326,16 @@ export const PacienForm = ({
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end bg-gray-50 p-4 rounded-lg border">
                     <InputField
                         id="nombre_completo"
-                        label="Nombre del Familiar"
+                        label="Nombre del familiar"
                         name="nombre_completo"
-                        value={responsable.nombre_completo}
+                        value={responsable.nombre_completo.toUpperCase()}
                         onChange={handleResponsableChange}
                     />
                     <InputField
                         id="parentesco"
                         label="Parentesco"
                         name="parentesco"
-                        value={responsable.parentesco}
+                        value={responsable.parentesco.toUpperCase()}
                        onChange={handleResponsableChange}
                     />
                     <button
@@ -351,45 +348,42 @@ export const PacienForm = ({
                 </div>
 
                 {/* TABLA DE FAMILIARES */}
-{/* TABLA DE FAMILIARES */}
-<div className="mt-6">
-    <table className="w-full border-collapse bg-white rounded-lg overflow-hidden shadow-sm border border-gray-200">
-        <thead className="bg-gray-100">
-            <tr>
-                <th className="px-4 py-2 text-left text-sm font-bold text-gray-700 border-b">Nombre Completo</th>
-                <th className="px-4 py-2 text-left text-sm font-bold text-gray-700 border-b">Parentesco</th>
-                <th className="px-4 py-2 text-center text-sm font-bold text-gray-700 border-b w-20">Acción</th>
-            </tr>
-        </thead>
-        <tbody>
-            {/* CAMBIO AQUÍ: Usamos data.responsables */}
-            {data.responsables.length > 0 ? (
-                data.responsables.map((f: any, index: number) => (
-                    <tr key={index} className="border-b hover:bg-gray-50">
-                        <td className="px-4 py-2 text-sm">{f.nombre_completo}</td>
-                        <td className="px-4 py-2 text-sm">{f.parentesco}</td>
-                        <td className="px-4 py-2 text-center">
-                            <button
-                                type="button"
-                                // Asegúrate que removeFamiliar use setData('responsables', ...)
-                                onClick={() => removeFamiliar(index)} 
-                                className="text-red-500 hover:text-red-700"
-                            >
-                                <Trash2 size={18} />
-                            </button>
-                        </td>
-                    </tr>
-                ))
-            ) : (
-                <tr>
-                    <td colSpan={3} className="px-4 py-4 text-center text-gray-400 text-sm italic">
-                        No se han agregado familiares responsables aún.
-                    </td>
-                </tr>
-            )}
-        </tbody>
-    </table>
-</div>
+                <div className="mt-6">
+                    <table className="w-full border-collapse bg-white rounded-lg overflow-hidden shadow-sm border border-gray-200">
+                        <thead className="bg-gray-100">
+                            <tr>
+                                <th className="px-4 py-2 text-left text-sm font-bold text-gray-700 border-b">Nombre completo</th>
+                                <th className="px-4 py-2 text-left text-sm font-bold text-gray-700 border-b">Parentesco</th>
+                                <th className="px-4 py-2 text-center text-sm font-bold text-gray-700 border-b w-20">Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {data.responsables.length > 0 ? (
+                                data.responsables.map((f: any, index: number) => (
+                                    <tr key={index} className="border-b hover:bg-gray-50">
+                                        <td className="px-4 py-2 text-sm">{f.nombre_completo}</td>
+                                        <td className="px-4 py-2 text-sm">{f.parentesco}</td>
+                                        <td className="px-4 py-2 text-center">
+                                            <button
+                                                type="button"
+                                                onClick={() => removeFamiliar(index)} 
+                                                className="text-red-500 hover:text-red-700"
+                                            >
+                                                <Trash2 size={18} />
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))
+                            ) : (
+                                <tr>
+                                    <td colSpan={3} className="px-4 py-4 text-center text-gray-400 text-sm italic">
+                                        No se han agregado familiares responsables aún.
+                                    </td>
+                                </tr>
+                            )}
+                        </tbody>
+                    </table>
+                </div>
             </FormLayout>
     );
 };
