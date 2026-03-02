@@ -4,10 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\PersonalEmpleadoRequest;
 use Illuminate\Http\Request;
-use App\Models\PersonalEmpleado;
 use Exception;
 use Illuminate\Support\Facades\Redirect;
 use Log;
+
+use App\Models\Formulario\PersonalEmpleado;
+use App\Models\Formulario\HojaEnfermeriaQuirofano\HojaEnfermeriaQuirofano;
+use App\Models\Formulario\NotaPostoperatoria\NotaPostoperatoria;
 
 class PersonalEmpleadoController extends Controller
 {
@@ -18,8 +21,8 @@ class PersonalEmpleadoController extends Controller
         try{
 
             $modelMap = [
-                'hoja' => \App\Models\HojaEnfermeriaQuirofano::class,
-                'nota' => \App\Models\NotaPostoperatoria::class,
+                'hoja' => HojaEnfermeriaQuirofano::class,
+                'nota' => NotaPostoperatoria::class,
             ];
 
             $modelClass = $modelMap[$validated['itemable_type']];

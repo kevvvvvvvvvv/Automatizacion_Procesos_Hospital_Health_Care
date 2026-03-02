@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\HojaEnfermeria;
-use App\Models\ProductoServicio;
-use App\Models\HojaTerapiaIV;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Carbon\Carbon;
+
+use App\Models\Formulario\HojaEnfermeria\HojaEnfermeria;
+use App\Models\Formulario\HojaEnfermeria\HojaTerapiaIV;
 
 class FormularioHojaTerapiaIVController extends Controller
 {
@@ -23,7 +23,6 @@ class FormularioHojaTerapiaIVController extends Controller
 
         foreach ($validatedData['terapias_agregadas'] as $terapia) {
 
-            //$producto = ProductoServicio::findOrFail($terapia);
             $hojasenfermeria->hojasTerapiaIV()->create([
                 'solucion' => $terapia['solucion_id'],
                 'flujo_ml_hora' => $terapia['flujo'],

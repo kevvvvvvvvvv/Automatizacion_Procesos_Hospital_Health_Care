@@ -17,9 +17,6 @@ class CatalogoEstudioSeeder extends Seeder
     public function run(): void
     {
         DB::transaction(function () {
-            // Limpiar tablas para evitar duplicados si es necesario
-            DB::table('catalogo_estudios')->delete();
-            DB::table('producto_servicios')->delete();
 
             $path = database_path('seeders/data/catalogo_laboratorios.csv');
             $stream = fopen($path, 'r');

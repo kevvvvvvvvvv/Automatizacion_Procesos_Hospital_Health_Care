@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\NotaPostanestesicaRequest;
 use App\Models\Estancia;
 use App\Models\Paciente;
-use App\Models\FormularioInstancia;
-use App\Models\FormularioCatalogo;
-use App\Models\NotaPostanestesica;
+use App\Models\Formulario\FormularioInstancia;
+use App\Models\Formulario\FormularioCatalogo;
+use App\Models\Formulario\NotaPostanestesica\NotaPostanestesica;
+
+use App\Http\Requests\NotaPostanestesicaRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;

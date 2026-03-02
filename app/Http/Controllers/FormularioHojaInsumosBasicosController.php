@@ -3,12 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\HojaInsumosBasicosRequest;
-use App\Models\HojaEnfermeriaQuirofano;
-use App\Models\HojaInsumosBasicos;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Log;
+
+use App\Models\Formulario\HojaEnfermeriaQuirofano\HojaEnfermeriaQuirofano;
+use App\Models\Formulario\HojaEnfermeriaQuirofano\HojaInsumosBasicos;
 
 class FormularioHojaInsumosBasicosController extends Controller
 {

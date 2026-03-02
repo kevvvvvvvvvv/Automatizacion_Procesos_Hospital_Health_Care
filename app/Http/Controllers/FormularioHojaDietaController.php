@@ -4,19 +4,18 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Dieta\UpdateHojaDietaRequest;
 use App\Http\Requests\HojaDietaRequest;
-use App\Models\HojaEnfermeria;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use App\Notifications\NuevaSolicitudDietas;
 use Illuminate\Support\Facades\Notification;
-use App\Models\User;
-use App\Models\Dieta;
-use App\Models\Estancia;
-
-use App\Models\SolicitudDieta;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
+
+use App\Models\Formulario\HojaEnfermeria\SolicitudDieta;
+use App\Models\User;
+use App\Models\Estancia;
+use App\Models\Formulario\HojaEnfermeria\HojaEnfermeria;
 
 class FormularioHojaDietaController extends Controller
 {

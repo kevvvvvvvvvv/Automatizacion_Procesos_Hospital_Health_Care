@@ -3,21 +3,20 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\NotaPostoperatoriaRequest;
-use App\Models\CatalogoEstudio;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 use App\Models\Paciente;
 use App\Models\Estancia;
-use App\Models\FormularioCatalogo;
-use App\Models\FormularioInstancia;
-use App\Models\NotaPostoperatoria;
-use App\Models\PersonalEmpleado;
-use App\Models\ProductoServicio;
-use App\Models\SolicitudPatologia;
-use App\Models\TransfusionRealizada;
+use App\Models\Formulario\FormularioCatalogo;
+use App\Models\Formulario\FormularioInstancia;
+use App\Models\Formulario\NotaPostoperatoria\NotaPostoperatoria;
+use App\Models\Inventario\ProductoServicio;
+use App\Models\Estudio\SolicitudPatologia;
 use App\Models\User;
-use App\Models\Venta;
+use App\Models\Venta\Venta;
+use App\Models\Estudio\CatalogoEstudio;
+
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redirect;

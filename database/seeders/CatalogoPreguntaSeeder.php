@@ -2,8 +2,9 @@
 
 namespace Database\Seeders;
 
-use App\Models\CatalogoPregunta;
 use Illuminate\Database\Seeder;
+
+use App\Models\Formulario\HistoriaClinica\CatalogoPregunta;
 
 class CatalogoPreguntaSeeder extends Seeder
 {

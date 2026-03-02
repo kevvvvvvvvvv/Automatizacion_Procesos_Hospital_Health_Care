@@ -1,11 +1,17 @@
 <?php
+
+use App\Http\Controllers\BackupsRestauration\BackupsController;
+use App\Http\Controllers\BackupsRestauration\RestaurationController;
+use App\Http\Controllers\Inventario\ProductoServicioController;
+
+
 use App\Http\Controllers\PacienteController;
 use App\Http\Controllers\EstanciaController;
 use App\Http\Controllers\HabitacionController;
 use App\Http\Controllers\FormularioHojaFrontalController;
 use App\Http\Controllers\FormularioHistoriaClinicaController;
 use App\Http\Controllers\DoctorController; 
-use App\Http\Controllers\ProductoServicioController;
+
 use App\Http\Controllers\InterconsultaController;
 use App\Http\Controllers\CargoController;
 use App\Http\Controllers\FamiliarResponsableController;
@@ -23,7 +29,7 @@ use App\Http\Controllers\FormularioHojaDietaController;
 use App\Http\Controllers\HojaMedicamentoController;
 use App\Http\Controllers\TrasladoController;
 use App\Http\Controllers\AplicacionMedicamentoController;
-use App\Http\Controllers\FormularioHojaGeneralController;
+
 use App\Http\Controllers\FormularioHojaInsumosBasicosController;
 use App\Http\Controllers\FormularioNotaPostoperatorioController;
 use App\Http\Controllers\HojaEnfemeriaQuirofanoController;
@@ -47,9 +53,12 @@ use App\Http\Controllers\FormularioHojaHabitusExteriorController;
 use App\Http\Controllers\FormularioHojaRiesgoCaidaController;
 use App\Http\Controllers\HojaControlLiquidoController;
 use App\Http\Controllers\HojaEscalaValoracionController;
-use App\Http\Controllers\PeticionesController;
-use App\Http\Controllers\BackupsRestauration\BackupsController;
-use App\Http\Controllers\RestauracionController;
+
+
+
+
+
+
 use App\Http\Controllers\Encuestas\EncuestaSatisfaccionController;
 use App\Http\Controllers\MantenimientoController;
 use App\Http\Controllers\EncuestaPersonalController;
@@ -287,13 +296,13 @@ Route::get ('/rerservacion/reserva', [ReservacionController::class, 'reserva'])-
 
 
 //RESTAURACIÓN DE LA BASE DE DATOS
-Route::get('/bd/respaldo/restauracion/', [RestauracionController::class, 'showView'])
+Route::get('/bd/respaldo/restauracion/', [RestaurationController::class, 'showView'])
     ->name('bd.restauracion'); 
 
-Route::get('/bd/respaldo/restauracion', [RestauracionController::class, 'showView'])
+Route::get('/bd/respaldo/restauracion', [RestaurationController::class, 'showView'])
     ->name('bd.restauracion'); 
 
-Route::post('/bd/respaldo/restauracion', [RestauracionController::class, 'restore'])
+Route::post('/bd/respaldo/restauracion', [RestaurationController::class, 'restore'])
     ->name('bd.restauracion.store');
 
 require __DIR__.'/settings.php';

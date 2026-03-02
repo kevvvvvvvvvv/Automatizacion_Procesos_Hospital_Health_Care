@@ -3,11 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\RegistroPagoVentaRequest;
-use App\Models\Estancia;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
-use App\Models\Paciente;
-use App\Models\Venta\MetodoPago;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests; 
 use Illuminate\Routing\Controllers\HasMiddleware;
@@ -17,10 +14,16 @@ use Illuminate\Support\Facades\Log;
 use App\Services\VentaService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+
 use App\Models\Venta\Venta;
 use App\Models\Venta\DetalleVenta;
 use App\Models\Venta\Pago;
 use App\Models\Venta\DetallePago;
+use App\Models\Paciente;
+use App\Models\Venta\MetodoPago;
+use App\Models\Estancia;
+use App\Models\Inventario\ProductoServicio;
+use App\Models\Estudio\CatalogoEstudio;
 
 class VentaController extends Controller implements HasMiddleware
 {
@@ -74,7 +77,7 @@ class VentaController extends Controller implements HasMiddleware
             'user',
             'detalles.itemable');
 
-        $productos = \App\Models\ProductoServicio::all()->map(function($p) {
+        $productos = ProductoServicio::all()->map(function($p) {
             return [
                 'value' => 'producto-' . $p->id, 
                 'label' => $p->nombre_prestacion,
@@ -84,7 +87,7 @@ class VentaController extends Controller implements HasMiddleware
             ];
         });
 
-        $estudios = \App\Models\CatalogoEstudio::all()->map(function($e) {
+        $estudios = CatalogoEstudio::all()->map(function($e) {
             return [
                 'value' => 'estudio-' . $e->id,
                 'label' => $e->nombre,

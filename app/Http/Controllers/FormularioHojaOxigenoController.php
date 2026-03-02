@@ -3,9 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\HojaOxigenoRequest;
-use App\Models\Estancia;
-use App\Models\HojaEnfermeria;
-use App\Models\HojaOxigeno;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Relations\Relation;
@@ -13,6 +10,10 @@ use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
+
+use App\Models\Estancia;
+use App\Models\Formulario\HojaEnfermeria\HojaEnfermeria;
+use App\Models\Formulario\HojaOxigeno;
 
 class FormularioHojaOxigenoController extends Controller
 {

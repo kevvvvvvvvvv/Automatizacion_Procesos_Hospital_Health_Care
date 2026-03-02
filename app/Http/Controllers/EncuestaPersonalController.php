@@ -2,25 +2,23 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\EncuestaPersonal;
-use App\Models\Estancia;
-use App\Models\FormularioCatalogo;
-use App\Models\FormularioInstancia;
 use App\Http\Requests\PersonalRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
+use App\Models\Encuestas\EncuestaPersonal;
+use App\Models\Estancia;
+use App\Models\Formulario\FormularioCatalogo;
+use App\Models\Formulario\FormularioInstancia;
+
 class EncuestaPersonalController extends Controller
 {
     public function create(Estancia $estancia)
     {   
-        /*$encuesta_personal->load(['formularioInstancia.user', 
-            'formularioInstancia.estancia.paciente'
-        ]);*/
         $estancia->load('paciente');
-        //dd($estancia);
+
         return Inertia::render('formularios/encuestas-personal/create', [
             'estancia' => $estancia,
             
@@ -34,7 +32,6 @@ class EncuestaPersonalController extends Controller
     try {
         DB::beginTransaction();
         
-        // Creamos la instancia principal
         $formularioInstancia = FormularioInstancia::create([
             'fecha_hora' => now(),
             'estancia_id' => $estancia->id,
@@ -42,8 +39,6 @@ class EncuestaPersonalController extends Controller
             'user_id' => Auth::id(),
         ]);
 
-        // Creamos la encuesta usando el mismo ID
-        // Esto fallará si 'id' no está en el fillable del modelo arriba
         EncuestaPersonal::create([
             'id' => $formularioInstancia->id,
             'trato_claro' => $validatedData['trato_claro'],
@@ -60,8 +55,8 @@ class EncuestaPersonalController extends Controller
 
     } catch (\Exception $e) {
         DB::rollBack();
-        // Agregamos dd($e->getMessage()) aquí si quieres ver el error exacto en pantalla
-        return back()->withErrors(['error' => 'Error: ' . $e->getMessage()]);
+        \Log::error('Error al registrar la encuesta.' . $e->getMessage());
+        return back()->withErrors(['error' => 'Error al registrar la encuesta']);
     }
 }
     public function show(){

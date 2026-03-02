@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Honorario;
-use App\Models\Paciente;
-use App\Models\Estancia;
-use App\Models\Interconsulta;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+
+use App\Models\Formulario\Interconsulta\Honorario;
+use App\Models\Paciente;
+use App\Models\Estancia;
+use App\Models\Formulario\Interconsulta\Interconsulta;
 
 class HonorarioController extends Controller
 {
