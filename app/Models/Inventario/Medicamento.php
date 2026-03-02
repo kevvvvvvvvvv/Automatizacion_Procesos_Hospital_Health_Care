@@ -5,10 +5,9 @@ namespace App\Models\Inventario;
 use App\Models\MedicamentoVia;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use App\Models\ProductoServicio;
-use App\Models\CatalogoViaAdministracion;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+
+use App\Models\Inventario\ProductoServicio;
 
 /**
  * @property int $id

@@ -2,19 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Reservacion;
-use App\Models\Habitacion;
-use App\Models\ReservacionHorario;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Laravel\Cashier\Exceptions\IncompletePayment;
-
 use App\Http\Requests\ReservacionRequest;
-use App\Models\HabitacionPrecio;
 use Illuminate\Support\Facades\Redirect;
+
+use App\Models\Habitacion\HabitacionPrecio;
+use App\Models\Reservacion\ReservacionConsultorio\Reservacion;
+use App\Models\Habitacion\Habitacion;
+use App\Models\Reservacion\ReservacionConsultorio\ReservacionHorario;
 
 class ReservacionController extends Controller
 {

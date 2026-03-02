@@ -3,11 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\HojaSondaCateteresRequest;
-use App\Models\HojaEnfermeria;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Auth;
-use App\Models\HojaSondaCateter;
+
+use App\Models\Formulario\HojaEnfermeria\HojaSondaCateter;
+use App\Models\Formulario\HojaEnfermeria\HojaEnfermeria;
 
 use Carbon\Carbon;
 

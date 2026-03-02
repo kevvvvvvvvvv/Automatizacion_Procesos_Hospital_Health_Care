@@ -3,33 +3,33 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\SolicitudEstudioRequest;
-use App\Models\CatalogoEstudio;
 use Illuminate\Http\Request;
-
-use App\Models\Estancia;
-use App\Models\FormularioInstancia; 
-use App\Models\SolicitudEstudio;
-use App\Models\SolicitudItem;
 use Illuminate\Support\Facades\Auth;
-use App\Models\FormularioCatalogo;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 use Spatie\Browsershot\Browsershot;
 use Spatie\LaravelPdf\Facades\Pdf;
 use Illuminate\Support\Facades\Notification;
-use App\Models\User;
 use App\Notifications\NuevaSolicitudEstudios;
 use Inertia\Inertia;
 use App\Services\TwilioWhatsAppService;
 use App\Services\PdfGeneratorService;
 use App\Services\VentaService;
-use App\Models\Venta;
+
 
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
 
+use App\Models\Estancia;
+use App\Models\Formulario\FormularioInstancia;
+use App\Models\Estudio\SolicitudEstudio;
+use App\Models\Estudio\SolicitudItem;
+use App\Models\Venta\Venta;
+use App\Models\Estudio\CatalogoEstudio;
+use App\Models\User;
+use App\Models\Formulario\FormularioCatalogo;
 
 class SolicitudEstudioController extends Controller implements HasMiddleware
 {

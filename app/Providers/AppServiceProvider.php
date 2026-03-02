@@ -5,14 +5,16 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\DB;  
 use Illuminate\Support\Facades\Log;
-use App\Models\Paciente;
-use App\Models\Estancia;
-use App\Models\Habitacion;
-use App\Models\HojaFrontal;
-use App\Models\ProductoServicio;
-use App\Models\User;
 use App\Observers\HistoryObserver;
 use Laravel\Cashier\Cashier;
+
+use App\Models\Paciente;
+use App\Models\Estancia;
+use App\Models\Habitacion\Habitacion;
+use App\Models\Formulario\HojaFrontal\HojaFrontal;
+use App\Models\Inventario\ProductoServicio;
+use App\Models\User;
+
 
 class AppServiceProvider extends ServiceProvider
 {

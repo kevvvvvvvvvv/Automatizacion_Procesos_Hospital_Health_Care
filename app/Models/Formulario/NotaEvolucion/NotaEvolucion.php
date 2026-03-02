@@ -1,0 +1,59 @@
+<?php
+
+namespace App\Models\Formulario\NotaEvolucion;
+
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
+
+use App\Models\Formulario\FormularioInstancia;
+use App\Models\Formulario\CheckListItem;
+
+class NotaEvolucion extends Model
+{
+    public const CATALOGO_ID = 12;
+    protected $table = 'notas_evoluciones';
+    protected $fillable = [
+        'id',
+        'evolucion_actualizacion',
+        'ta',
+        'fc',
+        'fr',
+        'temp',
+        'peso',
+        'talla',
+        'resultado_estudios',
+        'resumen_del_interrogatorio',
+        'exploracion_fisica',
+        'diagnostico_o_problemas_clinicos',
+        'plan_de_estudio',
+        'tratamiento',
+
+        // Pronóstico
+        'pronostico',
+
+        'manejo_dieta',
+        'manejo_soluciones',
+        'manejo_medicamentos',
+        'manejo_laboratorios',
+        'manejo_medidas_generales',
+        
+    ];
+
+    public function formularioInstancia(): BelongsTo
+    {
+        return $this->belongsTo(FormularioInstancia::class, 'id', 'id');
+    }
+
+    public function checklistItems(): MorphMany
+    {
+        return $this->morphMany(CheckListItem::class, 'nota');
+    }
+
+    protected $appends = ['model_type'];
+
+    public function getModelTypeAttribute()
+    {
+        return self::class; 
+    }
+}

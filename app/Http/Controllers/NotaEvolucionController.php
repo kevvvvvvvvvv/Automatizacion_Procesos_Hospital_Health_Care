@@ -1,26 +1,24 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Models\CatalogoEstudio;
-use Illuminate\Http\Request;
-use App\Models\NotaEvolucion;   
-use App\Models\Paciente;
-use App\Models\Estancia;
-USE App\Models\FormularioCatalogo;
-use App\Models\FormularioInstancia;
+
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
-use Spatie\LaravelPdf\Facades\Pdf;
-use App\Models\ProductoServicio;
 use App\Http\Requests\NotaEvolucionRequest;  
-
 use App\Services\PdfGeneratorService;
 use Redirect;
-
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
+
+use App\Models\Formulario\NotaEvolucion\NotaEvolucion;  
+use App\Models\Paciente;
+use App\Models\Estancia;
+use App\Models\Formulario\FormularioCatalogo;
+use App\Models\Formulario\FormularioInstancia;
+use App\Models\Estudio\CatalogoEstudio;
+use App\Models\Inventario\ProductoServicio;
 
 class NotaEvolucionController extends Controller implements HasMiddleware
 {
@@ -86,41 +84,42 @@ class NotaEvolucionController extends Controller implements HasMiddleware
     }
 
       public function show( NotaEvolucion $notasevolucione)
-{
-    $notasevolucione->load([
-        'formularioInstancia.estancia.paciente',
-        'formularioInstancia.user'
-    ]);
-    
-    return Inertia::render('formularios/notaevolucion/show', [
+    {
+        $notasevolucione->load([
+            'formularioInstancia.estancia.paciente',
+            'formularioInstancia.user'
+        ]);
+        
+        return Inertia::render('formularios/notaevolucion/show', [
 
-        'paciente' => $notasevolucione->formularioInstancia->estancia->paciente, // El paciente que llega por parámetro
-        'estancia' => $notasevolucione->formularioinstancia->estancia, // ¡Asegúrate de que esta línea exista!
-                'notasevolucione' => $notasevolucione,
-    ]);
-}
+            'paciente' => $notasevolucione->formularioInstancia->estancia->paciente, 
+            'estancia' => $notasevolucione->formularioinstancia->estancia, 
+                    'notasevolucione' => $notasevolucione,
+        ]);
+    }
+
     public function edit(NotaEvolucion $notasevolucione)
-{
-    $notasevolucione->load([
-        'formularioInstancia.estancia.paciente',
-        'formularioInstancia.user'
-    ]);
+    {
+        $notasevolucione->load([
+            'formularioInstancia.estancia.paciente',
+            'formularioInstancia.user'
+        ]);
 
-    // Necesitas traer estas listas para que el formulario tenga opciones que mostrar
-    $soluciones = ProductoServicio::where('tipo','INSUMOS')->get();
-    $medicamentos = ProductoServicio::where('tipo','INSUMOS')->get();
-    $estudios = CatalogoEstudio::where('tipo_estudio','Laboratorio')->get();
+        // Necesitas traer estas listas para que el formulario tenga opciones que mostrar
+        $soluciones = ProductoServicio::where('tipo','INSUMOS')->get();
+        $medicamentos = ProductoServicio::where('tipo','INSUMOS')->get();
+        $estudios = CatalogoEstudio::where('tipo_estudio','Laboratorio')->get();
 
-    return Inertia::render('formularios/notaevolucion/edit', [
-        // Cambiamos 'notasevolucione' por 'evolucion' para que coincida con tu React Props
-        'evolucion' => $notasevolucione, 
-        'paciente' => $notasevolucione->formularioInstancia->estancia->paciente,
-        'estancia' => $notasevolucione->formularioInstancia->estancia,
-        'soluciones' => $soluciones,
-        'medicamentos' => $medicamentos,
-        'estudios' => $estudios,
-    ]);
-}// NotaEvolucionController.php
+        return Inertia::render('formularios/notaevolucion/edit', [
+
+            'evolucion' => $notasevolucione, 
+            'paciente' => $notasevolucione->formularioInstancia->estancia->paciente,
+            'estancia' => $notasevolucione->formularioInstancia->estancia,
+            'soluciones' => $soluciones,
+            'medicamentos' => $medicamentos,
+            'estudios' => $estudios,
+        ]);
+    }
 
         public function update(
             NotaEvolucionRequest $request, 

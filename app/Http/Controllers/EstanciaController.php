@@ -4,15 +4,16 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\EstanciaRequest;
 use Illuminate\Http\Request;
-use App\Models\Estancia;
-use App\Models\Habitacion;
 use Inertia\Inertia;
-use App\Models\Paciente;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\DB;
+
+use App\Models\Paciente;
+use App\Models\Estancia;
+use App\Models\Habitacion\Habitacion;
 
 class EstanciaController extends Controller
 {

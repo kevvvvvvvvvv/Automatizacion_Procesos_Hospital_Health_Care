@@ -1,24 +1,23 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Models\Interconsulta;
-use App\Models\Paciente;
-use App\Models\Estancia;
-use App\Models\FormularioInstancia;
+
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests\InterconsultasRequest;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
-use Spatie\LaravelPdf\Facades\Pdf;
 use Illuminate\Support\Facades\Log;
 use App\Services\PdfGeneratorService;
-
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
-
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
+
+use App\Models\Formulario\Interconsulta\Interconsulta;
+use App\Models\Paciente;
+use App\Models\Estancia;
+use App\Models\Formulario\FormularioInstancia;
 
 class InterconsultaController extends Controller implements HasMiddleware
 {

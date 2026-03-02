@@ -2,10 +2,11 @@
 
 namespace App\Services;
 
-use App\Models\Venta;
-use App\Models\DetalleVenta;
-use App\Models\ProductoServicio;
-use App\Models\CatalogoEstudio;
+use App\Models\Venta\Venta;
+use App\Models\Venta\DetalleVenta;
+use App\Models\Inventario\ProductoServicio;
+use App\Models\Estudio\CatalogoEstudio;
+
 use Illuminate\Support\Facades\DB;
 use Exception;
 

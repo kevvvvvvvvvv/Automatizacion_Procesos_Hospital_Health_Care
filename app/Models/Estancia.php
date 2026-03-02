@@ -9,6 +9,14 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use App\Auditable;
 
+use App\Models\Venta\Venta;
+use App\Models\Formulario\FormularioInstancia;
+use App\Models\Formulario\Interconsulta\Interconsulta;
+use App\Models\Formulario\NotaPostoperatoria\NotaPostoperatoria;
+use App\Models\Formulario\NotaEvolucion\NotaEvolucion;
+use App\Models\Formulario\HojaOxigeno;
+use App\Models\Habitacion\Habitacion;
+
 /**
  * @property int $id
  * @property string $folio

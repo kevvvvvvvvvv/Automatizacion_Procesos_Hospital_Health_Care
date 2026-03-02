@@ -5,8 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
-use App\Models\HojaMedicamento;
 use Illuminate\Support\Facades\Redirect;
+
+use App\Models\Formulario\HojaEnfermeria\HojaMedicamento;
 
 class AplicacionMedicamentoController extends Controller
 {

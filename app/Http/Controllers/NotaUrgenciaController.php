@@ -3,24 +3,22 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\NotaUrgencia;
-use App\Models\Paciente;
-use App\Models\Estancia;
-use App\Models\FormularioCatalogo;
-use App\Models\FormularioInstancia;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Spatie\LaravelPdf\Facades\Pdf; 
 use App\Services\PdfGeneratorService;
-
 use App\Http\Requests\NotaUrgenciaRequest;
-
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
-
 use Redirect;
+
+use App\Models\Formulario\NotaUrgencia\NotaUrgencia;
+use App\Models\Paciente;
+use App\Models\Estancia;
+use App\Models\Formulario\FormularioCatalogo;
+use App\Models\Formulario\FormularioInstancia;
 
 class NotaUrgenciaController extends Controller implements HasMiddleware
 {

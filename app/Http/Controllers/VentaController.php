@@ -3,12 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\RegistroPagoVentaRequest;
-use App\Models\Estancia;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
-use App\Models\Paciente;
-use App\Models\Venta;
-use App\Models\Venta\MetodoPago;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests; 
 use Illuminate\Routing\Controllers\HasMiddleware;
@@ -18,6 +14,16 @@ use Illuminate\Support\Facades\Log;
 use App\Services\VentaService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+
+use App\Models\Venta\Venta;
+use App\Models\Venta\DetalleVenta;
+use App\Models\Venta\Pago;
+use App\Models\Venta\DetallePago;
+use App\Models\Paciente;
+use App\Models\Venta\MetodoPago;
+use App\Models\Estancia;
+use App\Models\Inventario\ProductoServicio;
+use App\Models\Estudio\CatalogoEstudio;
 
 class VentaController extends Controller implements HasMiddleware
 {
@@ -48,7 +54,13 @@ class VentaController extends Controller implements HasMiddleware
 
     public function show(Venta $venta)
     {
-        $venta->load('estancia.paciente','detalles.itemable');
+        $venta->load(
+            'estancia.paciente',
+            'detalles.itemable',
+            'pagos.detalles',
+            'pagos.metodoPago',
+            'pagos.venta.detalles',
+        );
         $metodosPago = MetodoPago::all();
         
         return Inertia::render('ventas/show', [
@@ -65,7 +77,7 @@ class VentaController extends Controller implements HasMiddleware
             'user',
             'detalles.itemable');
 
-        $productos = \App\Models\ProductoServicio::all()->map(function($p) {
+        $productos = ProductoServicio::all()->map(function($p) {
             return [
                 'value' => 'producto-' . $p->id, 
                 'label' => $p->nombre_prestacion,
@@ -75,7 +87,7 @@ class VentaController extends Controller implements HasMiddleware
             ];
         });
 
-        $estudios = \App\Models\CatalogoEstudio::all()->map(function($e) {
+        $estudios = CatalogoEstudio::all()->map(function($e) {
             return [
                 'value' => 'estudio-' . $e->id,
                 'label' => $e->nombre,
@@ -152,30 +164,54 @@ class VentaController extends Controller implements HasMiddleware
     }
 
 
-    public function registrarPago(RegistroPagoVentaRequest $request, Venta $venta, VentaService $ventaService)
+    public function registrarPago(Request $request, Venta $venta)
     {
-        $validatedData = $request->validated();
-        
+        $request->validate([
+            'metodo_pago_id' => 'required|exists:metodo_pagos,id',
+            'detalles_pago' => 'required|array',
+        ]);
+
         DB::beginTransaction();
         try {
-            $montoAbonado = $validatedData['total_pagado'];
+            $totalAbono = collect($request->detalles_pago)->sum('monto_aplicado');
 
-            $ventaService->registrarPago($venta, $montoAbonado);
-            $venta->update(
-                ['requiere_factura' => $validatedData['requiere_factura']]
-            );
+            if ($totalAbono <= 0) {
+                return back()->withErrors(['error' => 'El monto debe ser mayor a 0']);
+            }
 
-            $venta->pagos()->create([
-                'metodo_pago_id' => $validatedData['metodo_pago_id'],
-                'monto' => $validatedData['total_pagado'],
+            $ultimoPago = Pago::latest('id')->first();
+            $siguienteId = $ultimoPago ? $ultimoPago->id + 1 : 1;
+            $folioPago = str_pad($siguienteId, 6, '0', STR_PAD_LEFT);
+
+            $pago = Pago::create([
+                'folio' => $folioPago,
+                'venta_id' => $venta->id,
+                'metodo_pago_id' => $request->metodo_pago_id,
+                'monto' => $totalAbono,
                 'user_id' => Auth::id(),
             ]);
+
+            foreach ($request->detalles_pago as $item) {
+                if ($item['monto_aplicado'] > 0) {
+                    DetallePago::create([
+                        'pago_id' => $pago->id,
+                        'detalle_venta_id' => $item['detalle_venta_id'],
+                        'monto_aplicado' => $item['monto_aplicado'],
+                    ]);
+
+                    $detalleVenta = DetalleVenta::find($item['detalle_venta_id']);
+                    $detalleVenta->increment('monto_pagado', $item['monto_aplicado']);
+                }
+            }
+
+            $venta->increment('total_pagado', $totalAbono);
+
             DB::commit();
-            return Redirect::back()->with('success', 'Se ha registrado el pago correctamente.');
+            return back()->with('success', 'Pago registrado correctamente.');
+
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('Error al registrar el pago: ' . $e->getMessage());
-            return Redirect::back()->with('error', 'Error al registrar el pago.');
+            return back()->withErrors(['error' => 'Hubo un problema al registrar el pago: ' . $e->getMessage()]);
         }
     }
 }

@@ -4,7 +4,8 @@ namespace App\Models\Inventario;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use App\Models\ProductoServicio;
+
+use App\Models\Inventario\ProductoServicio;
 
 /**
  * @property int $id
