@@ -90,7 +90,9 @@ const Create: CreateComponent = ({ preguntas, paciente, estancia }) => {
             try {
                 const parsed = JSON.parse(opciones);
                 return Array.isArray(parsed) ? parsed : [];
-            } catch (e) { return []; }
+            } catch (e) { 
+                return []; 
+            }
         }
         return [];
     };

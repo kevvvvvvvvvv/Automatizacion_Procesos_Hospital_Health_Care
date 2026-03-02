@@ -42,7 +42,8 @@ class PacienteController extends Controller implements HasMiddleware
     }
  
     public function store(Request $request)
-    { $validated = $request->validate([
+    { 
+        $validated = $request->validate([
             'curp' => 'required|string|max:18|unique:pacientes,curp',
             'nombre' => 'required|string|max:100',
             'apellido_paterno' => 'required|string|max:100',
@@ -66,7 +67,9 @@ class PacienteController extends Controller implements HasMiddleware
             'responsables' => 'nullable|array',
             'responsables.*.nombre_completo' => 'nullable|string|max:100',
             'responsables.*.parentesco' => 'nullable|string|max:100',
-        ]);return DB::transaction(function () use ($validated) {
+        ]);
+        
+        return DB::transaction(function () use ($validated) {
             try {
                 $pacienteData = Arr::except($validated, ['responsables']);
                 $paciente = Paciente::create($pacienteData);
