@@ -38,7 +38,7 @@ class RestauracionController extends Controller
             // 2. Obtener configuración de la base de datos
             $dbConfig = config('database.connections.mysql');
             
-            // Forzar 127.0.0.1 para evitar el error "Unknown MySQL server host localhost"
+            // Forzar 127.0.0.1 es una buena práctica para evitar problemas con el socket local
             $dbHost = ($dbConfig['host'] === 'localhost' || $dbConfig['host'] === '127.0.0.1') 
                       ? '127.0.0.1' 
                       : $dbConfig['host'];
@@ -51,10 +51,11 @@ class RestauracionController extends Controller
             // 3. Obtener la ruta temporal del archivo subido
             $filePath = $request->file('sql_file')->getRealPath();
 
-            // 4. Construir el comando para Windows (usando cmd /c y el operador <)
-            // Usamos comillas dobles para manejar espacios en rutas o contraseñas
+            // 4. Construir el comando para LINUX
+            // Usamos comillas simples ('') para evitar que Bash interprete caracteres 
+            // especiales en las contraseñas (como el símbolo $)
             $command = sprintf(
-                'mysql --user="%s" --password="%s" --host="%s" --port="%s" "%s" < "%s"',
+                "mysql --user='%s' --password='%s' --host='%s' --port='%s' '%s' < '%s'",
                 $dbUser,
                 $dbPass,
                 $dbHost,
@@ -63,11 +64,10 @@ class RestauracionController extends Controller
                 $filePath
             );
 
-            // Envolvemos todo en cmd /c para que Windows procese la redirección de flujo <
-            $fullCommand = "cmd /c $command";
-
-            // 5. Ejecutar el proceso con un tiempo de espera extendido (5 minutos)
-            $process = Process::timeout(300)->run($fullCommand);
+            // 5. Ejecutar el proceso. 
+            // En Laravel 10+, Process::run() con un string automáticamente usa la shell 
+            // del sistema (bash/sh), por lo que el operador de redirección '<' funcionará.
+            $process = Process::timeout(300)->run($command);
 
             // 6. Verificar resultado
             if ($process->successful()) {
@@ -79,10 +79,10 @@ class RestauracionController extends Controller
                 $errorOutput = $process->errorOutput();
                 Log::error("Error restaurando BD: " . $errorOutput);
 
-                // Si el error es por el comando mysql, intentamos con mariadb como fallback
-                if (str_contains($errorOutput, 'not found') || str_contains($errorOutput, 'no se reconoce')) {
+                // Adaptamos la validación de errores a la salida común de Linux
+                if (str_contains(strtolower($errorOutput), 'command not found') || str_contains(strtolower($errorOutput), 'not found')) {
                     return to_route('bd.restauracion')
-                        ->with('error', 'El sistema no encuentra el ejecutable "mysql". Verifica que esté en el PATH de Windows.');
+                        ->with('error', 'El servidor no encuentra el comando "mysql". Verifica que el cliente de MySQL esté instalado en tu servidor Linux.');
                 }
 
                 return to_route('bd.restauracion')

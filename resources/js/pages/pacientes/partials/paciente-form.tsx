@@ -235,6 +235,7 @@ export const PacienForm = ({
                 maxLength={100}
                 error={errors.pais}
             />
+            
             <InputField
                 id="cp"
                 label="Código Postal *"
