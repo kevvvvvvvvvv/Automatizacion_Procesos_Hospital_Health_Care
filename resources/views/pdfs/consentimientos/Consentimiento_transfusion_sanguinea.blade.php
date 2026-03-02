@@ -151,17 +151,15 @@
                 {{-- 1. Paciente --}}
                 <td>
                     <div class="signature-line"></div>
-                    <p>{{ $paciente->nombre ?? 'Sin datos.' }}</p>
+                    <p>{{ $paciente->nombre_completo ?? 'Sin datos.' }}</p>
                     <p style="font-size: 9pt; color: #555;">Nombre y firma del paciente</p>
                 </td>
 
                 {{-- 2. Familiar responsable --}}
                 <td>
                     <div class="signature-line"></div>
-                    <p>Nombre y firma del familiar responsable</p>
-                    <p style="font-size: 9pt; color: #555;">
-                        {{ $paciente->familiar_responsable ?? 'Sin datos.' }}
-                    </p>
+                    <p>{{ $estancia->nombre_completo ?? 'Sin datos.' }}</p>
+                    <p style="font-size: 9pt; color: #555;">Nombre y firma del familiar responsable</p>
                 </td>
 
                 {{-- 3. Testigo 1 --}}

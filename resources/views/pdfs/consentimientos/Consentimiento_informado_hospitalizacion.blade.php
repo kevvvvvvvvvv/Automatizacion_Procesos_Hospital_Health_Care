@@ -109,7 +109,7 @@
         {{-- CUERPO DEL CONSENTIMIENTO --}}
         <h3>Cuerpo del Consentimiento</h3>
         <div class="section-content">
-            <p>Yo {{ $paciente->nombre ?? 'Sin datos.' }} expreso mi libre voluntad para el ingreso al servicio de Hospitalización después de haberme proporcionado información completa sobre mi estado actual de salud la cual fue realizada de forma amplia, siempre utilizando un lenguaje claro y preciso, complementando sobre los beneficios, posibles riesgos, complicaciones y secuelas, derivados de la terapéutica empleada.</p>
+            <p>Yo {{ $paciente->nombre_completo ?? 'Sin datos.' }} expreso mi libre voluntad para el ingreso al servicio de Hospitalización después de haberme proporcionado información completa sobre mi estado actual de salud la cual fue realizada de forma amplia, siempre utilizando un lenguaje claro y preciso, complementando sobre los beneficios, posibles riesgos, complicaciones y secuelas, derivados de la terapéutica empleada.</p>
             <p>Hago constar que el médico me informo sobre la existencia de procedimientos alternativos, el derecho a cambiar mi decisión en cualquier momento y manifestarla con el propósito de que mi atención sea adecuada, me comprometo además a proporcionar información completa y veraz, así como seguir las indicaciones médicas empleadas.</p>
             <p>Autorización al personal de salud para la atención de contingencias y urgencias derivadas del acto autorizado, atendiendo al principio de libertad prescriptiva. Acepto y autorizo a los profesionales de la salud de Hospitalidad Health Care (Comprehensive Medical Solutions de México SA de CV), para que me apliquen los procedimientos o medidas terapéuticas adicionales, incluyendo el uso de sangre y sus derivados que sean necesarios para el mantenimiento de mi salud, en caso de que ocurriera alguna contingencia durante el procedimiento. Estoy enterado que abre de requerir vigilancia y control médico hasta mi total recuperación.</p>
             <p>Habiendo leído por mí mismo este documento, siendo su contenido perfectamente entendible para mí, y enterado de que los médicos antes mencionados se comprometen a la máxima diligencia en la prestación de los servicios profesionales al nivel tecnológico actual, sin que puedan por otra parte, garantizar absolutamente el resultado, firmo al calce en la ciudad de Cuernavaca, Morelos,a {{ $fecha['dia'] }} del mes {{ $fecha['mes'] }} del año {{ $fecha['anio'] }}.        
@@ -147,17 +147,15 @@
                 {{-- 1. Paciente --}}
                 <td>
                     <div class="signature-line"></div>
-                    <p>{{ $paciente->nombre ?? 'Sin datos.' }}</p>
+                    <p>{{ $paciente->nombre_completo ?? 'Sin datos.' }}</p>
                     <p style="font-size: 9pt; color: #555;">Nombre y firma del paciente</p>
                 </td>
 
                 {{-- 2. Familiar responsable --}}
                 <td>
                     <div class="signature-line"></div>
-                    <p>Nombre y firma del familiar responsable</p>
-                    <p style="font-size: 9pt; color: #555;">
-                        {{ $paciente->familiar_responsable ?? 'Sin datos.' }}
-                    </p>
+                    <p>{{ $estancia->nombre_completo ?? 'Sin datos.' }}</p>
+                    <p style="font-size: 9pt; color: #555;">Nombre y firma del familiar responsable</p>
                 </td>
 
                 {{-- 3. Testigo 1 --}}
@@ -182,7 +180,7 @@
                     @if(isset($medico))
                         <div class="signature-line"></div>
 
-                        <p>{{ $medico->nombre }} {{ $medico->apellido_paterno }} {{ $medico->apellido_materno }}</p>
+                        <p>{{ $medico->nombre_completo }} </p>
                         <p style="font-size: 9pt; color: #555;">Nombre y Firma del Médico</p>
 
                         @if($medico->credenciales->isNotEmpty())

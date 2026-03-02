@@ -100,7 +100,10 @@ class Paciente extends Model
         'fecha_nacimiento' => 'date:Y-m-d', 
     ];
 
-    protected $appends = ['age']; 
+    protected $appends = [
+        'age',
+        'nombre_completo',
+    ]; 
 
     public function getAgeAttribute(): ?int
     {
@@ -112,6 +115,11 @@ class Paciente extends Model
     public function estancias(): HasMany
     {
         return $this->hasMany(Estancia::class);
+    }
+
+    public function getNombreCompletoAttribute()
+    {
+        return trim($this->nombre . ' ' . ($this->apellido_paterno ?? '') . ' ' . ($this->apellido_materno ?? ''));
     }
 
     public function familiarResponsables(): HasMany

@@ -63,6 +63,7 @@ export interface Paciente {
     nombre: string;
     apellido_paterno: string;
     apellido_materno: string;
+    nombre_completo: string;
     sexo: string;
     fecha_nacimiento: string;
     calle: string;
