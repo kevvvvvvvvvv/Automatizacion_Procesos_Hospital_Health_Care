@@ -3,10 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\UserRequest;
-use App\Models\CredencialEmpleado;
-use App\Models\User;
 use Illuminate\Http\Request;
-use App\Models\Cargo;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Hash;  
 use Illuminate\Routing\Controllers\HasMiddleware;
@@ -16,6 +13,10 @@ use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Exception;
+
+use App\Models\Cargo;
+use App\Models\CredencialEmpleado;
+use App\Models\User;
 
 class DoctorController extends Controller implements HasMiddleware
 {

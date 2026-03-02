@@ -4,23 +4,31 @@ namespace App\Http\Controllers\Encuestas;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\FormularioCatalogo;
-use App\Models\FormularioInstancia;
 use App\Http\Requests\Encuestas\EncuestaSatisfaccionRequest;
-use App\Models\Estancia;
 use Illuminate\Support\Facades\Auth;
-use App\Models\Encuestas\EncuestaSatisfaccion;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
+
+use App\Models\Formulario\FormularioCatalogo;
+use App\Models\Formulario\FormularioInstancia;
+use App\Models\Encuestas\EncuestaSatisfaccion;
+use App\Models\Estancia;
 
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
 
+use App\Services\PdfGeneratorService;
+
 class EncuestaSatisfaccionController extends Controller implements HasMiddleware
 {
     use AuthorizesRequests;
+    protected PdfGeneratorService $pdfGenerator;
+
+    public function __construct(PdfGeneratorService $pdfGenerator){
+        $this->pdfGenerator = $pdfGenerator;
+    }
 
     public static function middleware(): array
     {
@@ -32,7 +40,7 @@ class EncuestaSatisfaccionController extends Controller implements HasMiddleware
         ];
     }
 
-        public function create(Estancia $estancia)
+    public function create(Estancia $estancia)
         {
          $estancia->load('paciente');
 
@@ -131,10 +139,12 @@ class EncuestaSatisfaccionController extends Controller implements HasMiddleware
             'paciente' => $paciente,
             'estancia' => $estancia,
         ];
+
         $viewData = [
             'notaData' => $encuesta_satisfaccion,
             'pacientte' => $paciente,
         ];
+
         return $this->pdfGenerator->generateStandardPdf(
             'pdfs.encuesta-satisfaccions',
             $viewData,

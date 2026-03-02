@@ -2,25 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\NotaPreAnestesica;
-use App\Models\Paciente;
-use App\Models\Estancia;
-use App\Models\FormularioCatalogo;
-use App\Models\FormularioInstancia;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;              
-use Spatie\LaravelPdf\Facades\Pdf;              
-use Spatie\Browsershot\Browsershot;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Redirect;
 use App\Http\Requests\NotaPreanestesicaRequest;
 use App\Services\PdfGeneratorService;
-
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
+
+use App\Models\Formulario\NotaPreAnestesica\NotaPreAnestesica;
+use App\Models\Paciente;
+use App\Models\Estancia;
+use App\Models\Formulario\FormularioCatalogo;
+use App\Models\Formulario\FormularioInstancia;
 
 class NotaPreAnestesicaController extends Controller implements HasMiddleware
 {

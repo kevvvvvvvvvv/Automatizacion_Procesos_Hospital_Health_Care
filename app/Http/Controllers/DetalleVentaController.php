@@ -2,11 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Paciente;
-use App\Models\Estancia;
-use App\Models\Venta\Venta;
-use App\Models\DetalleVenta;
-
 use Illuminate\Http\Request;
 use inertia\Inertia;
 use App\Services\VentaService;
@@ -14,6 +9,11 @@ use Illuminate\Support\Facades\Redirect;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests; 
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
+
+use App\Models\Paciente;
+use App\Models\Estancia;
+use App\Models\Venta\Venta;
+use App\Models\Venta\DetalleVenta;
 
 class DetalleVentaController extends Controller implements HasMiddleware
 {

@@ -14,10 +14,10 @@ use Illuminate\Support\Facades\Auth;
 
 use App\Models\Paciente;
 use App\Models\Estancia;
-use App\Models\FormularioCatalogo;
-use App\Models\FormularioInstancia;
-use App\Models\HojaEnfermeriaQuirofano;
-use App\Models\ProductoServicio;
+use App\Models\Formulario\FormularioCatalogo;
+use App\Models\Formulario\FormularioInstancia;
+use App\Models\Formulario\HojaEnfermeriaQuirofano\HojaEnfermeriaQuirofano;
+use App\Models\Inventario\ProductoServicio;
 use App\Models\User;
 use App\Services\PdfGeneratorService;
 

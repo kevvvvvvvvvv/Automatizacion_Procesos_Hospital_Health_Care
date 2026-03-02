@@ -3,10 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\HojaRiesgoCaidaRequest;
-use App\Models\HojaEnfermeria;
-use App\Models\HojaRiesgoCaida;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
+
+use App\Models\Formulario\HojaEnfermeria\HojaEnfermeria;
 
 class FormularioHojaRiesgoCaidaController extends Controller
 {

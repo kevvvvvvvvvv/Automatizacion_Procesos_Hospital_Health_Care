@@ -10,8 +10,8 @@ use Illuminate\Http\Request;
 use App\Services\VentaService; 
 use Illuminate\Support\Facades\DB;
 
-use App\Models\HojaMedicamento;
-use App\Models\Venta;
+use App\Models\Formulario\HojaEnfermeria\HojaMedicamento;
+use App\Models\Venta\Venta;
  
 class HojaMedicamentoController extends Controller
 {

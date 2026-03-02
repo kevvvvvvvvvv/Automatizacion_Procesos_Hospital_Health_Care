@@ -5,13 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\HistoriaClinicaRequest;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
-use App\Models\CatalogoPregunta;
 use Illuminate\Support\Facades\DB;
-use App\Models\Paciente;
-use App\Models\Estancia;
-use App\Models\HistoriaClinica;
-use App\Models\RespuestaFormulario;
-use App\Models\FormularioInstancia;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redirect;
@@ -19,10 +13,16 @@ use Spatie\Browsershot\Browsershot;
 use Spatie\LaravelPdf\Facades\Pdf;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Redis;
-
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
+
+use App\Models\Paciente;
+use App\Models\Estancia;
+use App\Models\Formulario\HistoriaClinica\HistoriaClinica;
+use App\Models\Formulario\HistoriaClinica\RespuestaFormulario;
+use App\Models\Formulario\FormularioInstancia;
+use App\Models\Formulario\HistoriaClinica\CatalogoPregunta;
 
 class FormularioHistoriaClinicaController extends Controller implements HasMiddleware
 {

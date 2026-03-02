@@ -3,11 +3,12 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\HojaControlLiquido;
 use App\Http\Requests\HojaControlLiquidoRequest;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redirect;
-use App\Models\HojaEnfermeria;
+
+use App\Models\Formulario\HojaEnfermeria\HojaEnfermeria;
+use App\Models\Formulario\HojaEnfermeria\HojaControlLiquido;
 
 class HojaControlLiquidoController extends Controller
 {

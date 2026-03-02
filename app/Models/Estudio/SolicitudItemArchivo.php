@@ -2,9 +2,10 @@
 
 namespace App\Models\Estudio;
 
-use App\Models\SolicitudItem;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+
+use App\Models\Estudio\SolicitudItem;
 
 /**
  * @property int $id

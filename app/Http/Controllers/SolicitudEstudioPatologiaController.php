@@ -3,21 +3,17 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\SolicitudPatologiaRequest;
-use Illuminate\Http\Request;
 use DB;
 use Exception;
 use Redirect;
 use Auth;
 use Log;
+use App\Services\PdfGeneratorService;
 
 use App\Models\Estancia;
-use App\Models\FormularioCatalogo;
-use App\Models\FormularioInstancia;
-use App\Models\SolicitudPatologia;
-use App\Services\VentaService;
-use App\Services\PdfGeneratorService;
-use Spatie\LaravelPdf\Facades\Pdf;
-use Spatie\Browsershot\Browsershot;
+use App\Models\Formulario\FormularioCatalogo;
+use App\Models\Formulario\FormularioInstancia;
+use App\Models\Estudio\SolicitudPatologia;
 
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Routing\Controllers\HasMiddleware;
