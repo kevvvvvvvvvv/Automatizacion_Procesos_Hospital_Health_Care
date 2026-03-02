@@ -126,7 +126,7 @@
             <p>Quedo en el entendido de que en todo momento habrá de mediar una comunicación expedita y una relación respetuosa con mi médico tratante a quien voluntariamente he acudido en busca de ayuda profesional. Autorizó al personal de salud para la atención de contingencias y urgencias derivadas del acto autorizado.</p>
             <p>La anulación o cancelación de estos consentimientos prestados, deberá constar necesariamente por escrito, firmado personalmente por mí y deberá ser personalmente recibida por los facultativos afectados antes de producirse el acto médico quirúrgico.</p>
             <p>De encontrarme en un momento dado incapacitado para consentir o modificar mi consentimiento, delego todas mis facultades en _________________________________________________________________________.</p>
-            <p>Habiendo leído por mí mismo este documento, siendo su contenido perfectamente entendible para mí, y enterado de que los médicos antes mencionados se comprometen a la máxima diligencia en la prestación de los servicios profesionales al nivel tecnológico actual, sin que puedan por otra parte, garantizar absolutamente el resultado, firmo al calce en la ciudad de Cuernavaca, Morelos, a _______ del mes _______ de del año _______.</p>
+            <p>Habiendo leído por mí mismo este documento, siendo su contenido perfectamente entendible para mí, y enterado de que los médicos antes mencionados se comprometen a la máxima diligencia en la prestación de los servicios profesionales al nivel tecnológico actual, sin que puedan por otra parte, garantizar absolutamente el resultado, firmo al calce en la ciudad de Cuernavaca, Morelos, a {{ $fecha['dia'] }} del mes {{ $fecha['mes'] }} del año {{ $fecha['anio']}}</p>
         </div>
         <style>
                .table-signatures {
@@ -159,17 +159,15 @@
                 {{-- 1. Paciente --}}
                 <td>
                     <div class="signature-line"></div>
-                    <p>{{ $paciente->nombre ?? 'Sin datos.' }}</p>
+                    <p>{{ $paciente->nombre_completo ?? 'Sin datos.' }}</p>
                     <p style="font-size: 9pt; color: #555;">Nombre y firma del paciente</p>
                 </td>
 
                 {{-- 2. Familiar responsable --}}
                 <td>
                     <div class="signature-line"></div>
-                    <p>Nombre y firma del familiar responsable</p>
-                    <p style="font-size: 9pt; color: #555;">
-                        {{ $paciente->familiar_responsable ?? 'Sin datos.' }}
-                    </p>
+                    <p>{{ $estancia->nombre_completo ?? 'Sin datos.' }}</p>
+                    <p style="font-size: 9pt; color: #555;">Nombre y firma del familiar responsable</p>
                 </td>
 
                 {{-- 3. Testigo 1 --}}

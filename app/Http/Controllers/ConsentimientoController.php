@@ -103,7 +103,8 @@ class ConsentimientoController extends Controller
         $viewData = ['user' => Auth::user()];
         if ($request->has('consentimiento_id')) {
             $consentimientoId = intval($request->query('consentimiento_id'));
-            $consentimiento = Consentimiento::with('estancia.paciente', 'user.credenciales')->find($consentimientoId);
+            $consentimiento = Consentimiento::with('estancia.paciente','estancia.familiarResponsable' ,'user.credenciales')->find($consentimientoId);
+
             if (! $consentimiento) abort(404, "Consentimiento no encontrado.");
             $fecha = $consentimiento->created_at;
                 $meses = [
@@ -125,16 +126,18 @@ class ConsentimientoController extends Controller
                 $mes = $meses[$fecha->month];
                 $anio = $fecha->year;
                 $viewData = [
-                'notaData' => $consentimiento,
-                'paciente' => $consentimiento->estancia?->paciente,
-                'medico' => $consentimiento->user,
+                    'notaData' => $consentimiento,
+                    'paciente' => $consentimiento->estancia->paciente,
+                    'medico' => $consentimiento->user,
+                    'estancia' => $consentimiento->estancia->familiarResponsable,
+                    'fecha' => [
+                        'dia' => $dia,
+                        'mes' => $mes,
+                        'anio' => $anio,
+                    ],
+                ];
+                
 
-                'fecha' => [
-                    'dia' => $dia,
-                    'mes' => $mes,
-                    'anio' => $anio,
-                ],
-            ];
         } else {
             $consentimiento->load('estancia', 'user.credenciales');
             $viewData = [

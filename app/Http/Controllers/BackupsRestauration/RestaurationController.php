@@ -22,6 +22,7 @@ class RestaurationController extends Controller
         ]);
     }
 
+    
     /**
      * Procesa el archivo SQL y restaura la base de datos.
      */
