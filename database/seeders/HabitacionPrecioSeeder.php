@@ -2,10 +2,10 @@
 
 namespace Database\Seeders;
 
-use App\Models\HabitacionPrecio;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Carbon;
+
+use App\Models\Habitacion\HabitacionPrecio;
 
 class HabitacionPrecioSeeder extends Seeder
 {

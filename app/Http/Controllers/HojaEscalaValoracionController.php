@@ -5,12 +5,13 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Log;
-use App\Models\HojaEscalaValoracion;
-use App\Http\Requests\HojaEscalaValoracionRequest;
-use App\Models\HojaEnfermeria;
-use App\Models\ValoracionDolor;
 use Illuminate\Support\Facades\DB;
 
+use App\Http\Requests\HojaEscalaValoracionRequest;
+
+use App\Models\Formulario\HojaEnfermeria\HojaEscalaValoracion;
+use App\Models\Formulario\HojaEnfermeria\HojaEnfermeria;
+use App\Models\Formulario\HojaEnfermeria\ValoracionDolor;
 
 class HojaEscalaValoracionController extends Controller
 {

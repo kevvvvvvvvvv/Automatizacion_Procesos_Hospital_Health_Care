@@ -2,25 +2,24 @@
 
 namespace App\Http\Controllers;
 
-
-use Illuminate\Http\Request;
-use App\Models\NotaEgreso;
-use App\Models\Paciente;
-use App\Models\Estancia;
-use App\Models\FormularioInstancia;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use App\Http\Requests\NotaEgresoRequest;
-use App\Models\FormularioCatalogo;
+
 use App\Services\PdfGeneratorService;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Log;
-use App\Models\Habitacion;
-
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
+
+use App\Models\Formulario\FormularioCatalogo;
+use App\Models\Formulario\NotaEgreso\NotaEgreso;
+use App\Models\Paciente;
+use App\Models\Estancia;
+use App\Models\Formulario\FormularioInstancia;
+use App\Models\Habitacion\Habitacion;
 
 /**
  * Controlador para la gestión de Notas de egreso.

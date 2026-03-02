@@ -5,14 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Requests\HojaFrontalRequest;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
-use App\Models\FormularioCatalogo;
-use App\Models\User;
-use App\Models\Paciente;
-use App\Models\Estancia;
-use App\Models\FormularioInstancia;
-use App\Models\HojaFrontal;
-use App\Models\ProductoServicio;
-use App\Models\Venta;
 use App\Services\VentaService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
@@ -20,10 +12,15 @@ use Spatie\LaravelPdf\Facades\Pdf;
 use Illuminate\Support\Facades\DB; 
 use Illuminate\Support\Facades\Log;
 use Spatie\Browsershot\Browsershot;
-
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
+
+use App\Models\User;
+use App\Models\Paciente;
+use App\Models\Estancia;
+use App\Models\Formulario\FormularioInstancia;
+use App\Models\Formulario\HojaFrontal\HojaFrontal;
 
 class FormularioHojaFrontalController extends Controller implements HasMiddleware
 {
@@ -53,7 +50,7 @@ class FormularioHojaFrontalController extends Controller implements HasMiddlewar
         DB::beginTransaction();
         try{
 
-            $itemParaVenta = [  
+            /*$itemParaVenta = [  
                 'id' => 661,
                 'cantidad' => 1,
                 'tipo' => 'producto'
@@ -67,7 +64,7 @@ class FormularioHojaFrontalController extends Controller implements HasMiddlewar
                 $ventaService->addItemToVenta($ventaExistente, $itemParaVenta);
             } else {
                 $ventaService->crearVenta([$itemParaVenta], $estancia->id, Auth::id());
-            }
+            } */
 
             $estancia->load(['paciente', 'creator', 'updater','formularioInstancias.catalogo','formularioInstancias.user']);
 
@@ -124,6 +121,7 @@ class FormularioHojaFrontalController extends Controller implements HasMiddlewar
         return Redirect::route('estancias.show', ['estancia' => $estancia])
             ->with('success', 'Hoja frontal actualizada exitosamente.');
     }
+
     public function show(HojaFrontal $hojaFrontal){
         $hojaFrontal->load([
             'formularioInstancia.estancia.paciente',

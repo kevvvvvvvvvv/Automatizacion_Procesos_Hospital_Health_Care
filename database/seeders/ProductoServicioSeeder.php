@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\DB;
 use League\Csv\Reader;
 use Carbon\Carbon;
 
-use App\Models\ProductoServicio;
+use App\Models\Inventario\ProductoServicio;
 
 class ProductoServicioSeeder extends Seeder
 {

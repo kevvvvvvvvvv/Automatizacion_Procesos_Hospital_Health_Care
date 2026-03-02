@@ -3,11 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\DietaRequest;
-use App\Models\CategoriaDieta;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
-use App\Models\Dieta;
 use Illuminate\Support\Facades\Redirect;
+
+use App\Models\Cocina\CategoriaDieta;
+use App\Models\Cocina\Dieta;
 
 class DietaController extends Controller
 {

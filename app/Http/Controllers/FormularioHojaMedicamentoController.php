@@ -2,27 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\HojaEnfermeria;
-use App\Models\HojaMedicamento;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use App\Services\VentaService;
 
-use App\Events\MedicamentosSolicitados;
+use App\Models\Formulario\HojaEnfermeria\HojaEnfermeria;
+use App\Models\Formulario\HojaEnfermeria\HojaMedicamento;
 use App\Http\Requests\HojaMedicamentoRequest;
-use App\Models\ProductoServicio;
+use App\Models\Inventario\ProductoServicio;
 use App\Models\User; 
-use App\Models\Venta;
-use App\Models\DetalleVenta;
 
 use App\Notifications\NuevaSolicitudMedicamentos;
 use Exception;
 use Illuminate\Support\Facades\Notification;
-use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
-
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Redis;
 
 class FormularioHojaMedicamentoController extends Controller
 {

@@ -3,18 +3,18 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Traslado;
-use App\Models\Paciente;
-use App\Models\Estancia;
-use App\Models\FormularioInstancia;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Spatie\LaravelPdf\Facades\Pdf;
 use App\Services\PdfGeneratorService;
-
 use App\Http\Requests\TrasladoRequest;
-use App\Models\FormularioCatalogo;
+
+use App\Models\Formulario\FormularioCatalogo;
+use App\Models\Formulario\Traslado\Traslado;
+use App\Models\Paciente;
+use App\Models\Estancia;
+use App\Models\Formulario\FormularioInstancia;
 
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Routing\Controllers\HasMiddleware;

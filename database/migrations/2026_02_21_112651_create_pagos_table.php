@@ -13,6 +13,9 @@ return new class extends Migration
     {
         Schema::create('pagos', function (Blueprint $table) {
             $table->id();
+
+            $table->string('folio')->unique();
+
             $table->foreignId('venta_id')->constrained()->onDelete('cascade');
             $table->foreignId('metodo_pago_id')
                 ->constrained('metodo_pagos');

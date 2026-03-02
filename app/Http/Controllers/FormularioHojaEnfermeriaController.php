@@ -3,16 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\HojaEnfermeriaRequest;
-use App\Models\CatalogoEstudio;
-use App\Models\CatalogoViaAdministracion;
-use App\Models\CategoriaDieta;
+use App\Models\Estudio\CatalogoEstudio;
+use App\Models\Inventario\CatalogoViaAdministracion;
+use App\Models\Cocina\CategoriaDieta;
 use App\Models\Paciente;
 use App\Models\Estancia;
-use App\Models\FormularioCatalogo;
-use App\Models\FormularioInstancia;
-use App\Models\HojaEnfermeria;
-use App\Models\ProductoServicio;
-use App\Models\HojaSignos;
+use App\Models\Formulario\FormularioCatalogo;
+use App\Models\Formulario\FormularioInstancia;
+use App\Models\Formulario\HojaEnfermeria\HojaEnfermeria;
+use App\Models\Inventario\ProductoServicio;
+use App\Models\Formulario\HojaEnfermeria\HojaSignos;
 use App\Models\User;
 
 use Inertia\Inertia;

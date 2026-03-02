@@ -3,23 +3,19 @@
 namespace App\Http\Controllers;
 
 use App\Services\PdfGeneratorService;
-use Illuminate\Http\Request;
-use App\Models\Preoperatoria;
-use App\Models\Paciente;
-use App\Models\Estancia;
-use App\Models\FormularioInstancia;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
-use Spatie\LaravelPdf\Facades\Pdf;
 use App\Http\Requests\PreoperatoriaRequest;
-use App\Models\FormularioCatalogo;
-use Spatie\Browsershot\Browsershot;
-use Redirect;
-
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
+
+use App\Models\Formulario\FormularioCatalogo;
+use App\Models\Formulario\Preoperatoria\Preoperatoria;
+use App\Models\Paciente;
+use App\Models\Estancia;
+use App\Models\Formulario\FormularioInstancia;
 
 class PreoperatoriaController extends Controller implements HasMiddleware
 {

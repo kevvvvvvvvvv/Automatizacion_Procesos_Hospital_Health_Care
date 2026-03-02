@@ -2,9 +2,9 @@
 
 namespace Database\Seeders;
 
-use App\Models\Habitacion;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+
+use App\Models\Habitacion\Habitacion;
 
 class HabitacionSeeder extends Seeder
 {

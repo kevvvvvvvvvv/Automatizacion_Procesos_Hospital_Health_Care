@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\HojaHabitusExteriorRequest;
-use App\Models\HojaEnfermeria;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
+
+use App\Models\Formulario\HojaEnfermeria\HojaEnfermeria;
 
 class FormularioHojaHabitusExteriorController extends Controller
 {

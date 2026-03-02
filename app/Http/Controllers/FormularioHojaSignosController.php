@@ -4,10 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\HojaSignosRequest;
 use Illuminate\Http\Request;
-use App\Models\HojaEnfermeria;
-use App\Models\HojaSignos;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Log;
+
+use App\Models\Formulario\HojaEnfermeria\HojaEnfermeria;
+use App\Models\Formulario\HojaEnfermeria\HojaSignos;
 
 class FormularioHojaSignosController extends Controller
 {

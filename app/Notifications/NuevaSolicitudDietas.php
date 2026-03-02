@@ -7,10 +7,10 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
-use App\Models\Paciente;
-
-use App\Models\SolicitudDieta;
 use Illuminate\Notifications\Messages\BroadcastMessage;
+
+use App\Models\Paciente;
+use App\Models\Formulario\HojaEnfermeria\SolicitudDieta;
 
 class NuevaSolicitudDietas extends Notification implements ShouldBroadcast, ShouldQueue
 {

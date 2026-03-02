@@ -10,22 +10,17 @@ use Inertia\Inertia;
 
 class CargoController extends Controller
 {
-    /**
-     * Display a listing of the resource (para pasar cargos al frontend).
-     */
+
     public function index()
     {
         $cargos = Cargo::select('id', 'nombre')->orderBy('nombre')->get();
-        return Inertia::render('Cargos/Index', compact('cargos')); // O tu vista; para Inertia
-        // Si usas API-like: return response()->json($cargos);
+        return Inertia::render('Cargos/Index', compact('cargos')); 
+
     }
 
-    /**
-     * Store a newly created resource in storage (CREACIÓN DE CARGO).
-     */
     public function store(Request $request): JsonResponse
     {
-        // Validación
+
         $validated = $request->validate([
             'nombre' => [
                 'required',
@@ -33,27 +28,22 @@ class CargoController extends Controller
                 'max:255',
                 Rule::unique('cargos', 'nombre'), // Evita duplicados
             ],
-            // 'descripcion' => 'nullable|string|max:500', // Si agregas este campo al modelo
+
         ], [
             'nombre.required' => 'El nombre del cargo es obligatorio.',
             'nombre.unique' => 'Este cargo ya existe.',
             'nombre.max' => 'El nombre no puede exceder 255 caracteres.',
         ]);
 
-        // Crear el cargo
         $cargo = Cargo::create($validated);
 
-        //return route()->withResponse
-
-        // Respuesta JSON para el frontend (Inertia lo maneja bien)
         return response()->json([
             'success' => true,
             'message' => 'Cargo creado exitosamente.',
-            'cargo' => $cargo->only(['id', 'nombre']), // Retorna el cargo nuevo con ID real
+            'cargo' => $cargo->only(['id', 'nombre']), 
         ]);
     }
 
-    // Opcionales: Otros métodos si los necesitas (e.g., para editar/eliminar)
     public function show(Cargo $cargo)
     {
         return Inertia::render('Cargos/Show', compact('cargo'));
@@ -80,7 +70,7 @@ class CargoController extends Controller
 
     public function destroy(Cargo $cargo): JsonResponse
     {
-        $cargo->delete(); // Opcional: Verifica si tiene usuarios asignados antes de borrar
+        $cargo->delete();
 
         return response()->json([
             'success' => true,

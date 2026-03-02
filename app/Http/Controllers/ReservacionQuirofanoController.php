@@ -2,14 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\ReservacionQuirofano;
-use App\Models\Paciente;
-use App\Models\User;
-use App\Models\Habitacion;
-use App\Models\Estancia;
 use App\Http\Requests\ReservacionQuirofanoRequest;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Auth;
+
+use App\Models\Reservacion\ReservacionQuirofano\ReservacionQuirofano;
+use App\Models\Paciente;
+use App\Models\User;
+use App\Models\Habitacion\Habitacion;
+use App\Models\Estancia;
 
 class ReservacionQuirofanoController extends Controller
 {
@@ -92,7 +94,7 @@ public function store(ReservacionQuirofanoRequest $request)
         $reservacion = new ReservacionQuirofano();
         
         $reservacion->habitacion_id    = $habitacionAsignada;
-        $reservacion->user_id          = auth()->id();
+        $reservacion->user_id          = Auth::id();
         $reservacion->localizacion     = $LOCALIZACION;
         
         $reservacion->paciente         = $request->paciente;

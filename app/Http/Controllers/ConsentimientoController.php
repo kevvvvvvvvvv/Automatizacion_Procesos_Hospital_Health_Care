@@ -3,9 +3,6 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Estancia;
-use App\Models\Consentimiento;
-use App\Models\Paciente;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
@@ -16,7 +13,9 @@ use App\Http\Requests\consentimientoRequest;
 use Spatie\Browsershot\Browsershot;
 use Carbon\Carbon;
 
-
+use App\Models\Estancia;
+use App\Models\Consentimiento;
+use App\Models\Paciente;
 
 class ConsentimientoController extends Controller
 

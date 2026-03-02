@@ -14,16 +14,18 @@ use Illuminate\Support\Facades\Auth;
 
 use App\Models\Paciente;
 use App\Models\Estancia;
-use App\Models\FormularioCatalogo;
-use App\Models\FormularioInstancia;
-use App\Models\HojaEnfermeriaQuirofano;
-use App\Models\ProductoServicio;
+use App\Models\Formulario\FormularioCatalogo;
+use App\Models\Formulario\FormularioInstancia;
+use App\Models\Formulario\HojaEnfermeriaQuirofano\HojaEnfermeriaQuirofano;
+use App\Models\Inventario\ProductoServicio;
 use App\Models\User;
 use App\Services\PdfGeneratorService;
 
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
+
+use function Pest\Laravel\call;
 
 class HojaEnfemeriaQuirofanoController extends Controller implements HasMiddleware
 {
@@ -148,6 +150,19 @@ class HojaEnfemeriaQuirofanoController extends Controller implements HasMiddlewa
             $hojasenfermeriasquirofano->formularioInstancia->estancia->id
         );
 
+    }
+
+    private function cerrarHoja(HojaEnfermeriaQuirofano $hoja)
+    {
+        try{
+            $hoja->update([
+                'estado' => 'Cerrado'
+            ]);
+            return redirect()->route('estancias.show');
+        }catch(\Exception $e){
+            return redirect()->back()->with('error','Error al cerrar la hoja de enfermería en quirófano');
+        }
+        
     }
 
 }
