@@ -7,6 +7,7 @@ use App\Models\Paciente;
 use App\Models\FamiliarResponsable;  
 use App\Models\Estancia;
 use Inertia\Inertia;
+use Carbon\Carbon;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests; 
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
@@ -63,8 +64,8 @@ class PacienteController extends Controller implements HasMiddleware
             'nombre_padre' => 'nullable|string|max:100',
             'nombre_madre' => 'nullable|string|max:100',
             'responsables' => 'nullable|array',
-            'responsables.*.nombre_completo' => 'required|string|max:100',
-            'responsables.*.parentesco' => 'required|string|max:100',
+            'responsables.*.nombre_completo' => 'nullable|string|max:100',
+            'responsables.*.parentesco' => 'nullable|string|max:100',
         ]);return DB::transaction(function () use ($validated) {
             try {
                 $pacienteData = Arr::except($validated, ['responsables']);
