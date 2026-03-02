@@ -116,7 +116,7 @@ export const PacienForm = ({
 
             <InputField
                 id="apellido_paterno"
-                label="Apellido Paterno *"
+                label="Apellido paterno *"
                 name="apellido_paterno"
                 value={data.apellido_paterno.toUpperCase()}
                 onChange={handleChange}
@@ -126,7 +126,7 @@ export const PacienForm = ({
 
             <InputField
                 id="apellido_materno"
-                label="Apellido Materno *"
+                label="Apellido materno *"
                 name="apellido_materno"
                 value={data.apellido_materno.toUpperCase()}
                 onChange={handleChange}
@@ -152,7 +152,7 @@ export const PacienForm = ({
 
             <InputField
                 id="fecha_nacimiento"
-                label="Fecha de Nacimiento *"
+                label="Fecha de nacimiento *"
                 name="fecha_nacimiento"
                 value={data.fecha_nacimiento}
                 onChange={handleChange}
@@ -187,7 +187,7 @@ export const PacienForm = ({
 
             <InputField
                 id="numero_interior"
-                label="Número interior *"
+                label="Número interior"
                 name="numero_interior"
                 value={data.numero_interior}
                 onChange={handleChange}
