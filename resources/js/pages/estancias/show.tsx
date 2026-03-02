@@ -154,6 +154,7 @@ const Show = ({ estancia }: ShowEstanciaProps) => {
                                     </Menu.Item>
                                     </>
                                     )}
+
                                     <Menu.Item>
                                         {({ active }) => (
                                             <Link
@@ -292,6 +293,9 @@ const Show = ({ estancia }: ShowEstanciaProps) => {
                                             </Link>
                                         )}
                                     </Menu.Item>
+                                   
+                                    </>
+                                    )}
                                     {can('crear consentimientos') && (
                                     <Menu.Item>
                                         {({ active }) => (
@@ -309,9 +313,6 @@ const Show = ({ estancia }: ShowEstanciaProps) => {
                                             </Link>
                                         )}
                                     </Menu.Item>
-                                    )}
-                                   
-                                    </>
                                     )}
                                 </div>
                             </Menu.Items>

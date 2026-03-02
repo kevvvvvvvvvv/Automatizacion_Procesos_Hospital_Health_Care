@@ -16,24 +16,22 @@ class RoleAndPermissionSeeder extends Seeder
     public function run(): void
     {
         //Roles
-        $roleAdmin = Role::create(['name' => 'administrador']);
-        $roleMedico = Role::create(['name' => 'medico']);
-        $roleMedicoEspecialista = Role::create(['name' => 'medico especialista']);
-        $roleEnfermera = Role::create(['name' => 'enfermera(o)']);
-        $roleAdministrativos = Role::create(['name' => 'administrativo']);
-        $roleCocina = Role::create(['name' => 'cocina']);
-        
-        $roleFarmacia = Role::create(['name' => 'farmacia']);
-        $roleRadiologo = Role::create(['name' => 'radiólogo']);
-        $roleTecnicoLaboratorio = Role::create(['name' => 'técnico de laboratorio']);
-        $roleFisoterapeuta = Role::create(['name' => 'fisoterapeuta']);
-        $roleRecepcion = Role::create(['name' => 'recepcion']);
-        $roleCaja = Role::create(['name'  => 'caja']);
-        $roleQuimico = Role::create(['name' => 'químico']);
-
-        $roleMantenimiento = Role::create(['name' => 'mantenimiento']);
-        $roleLimpieza = Role::create(['name' => 'limpieza']);
-        $roleSistemas = Role::create(['name' => 'sistemas']);
+        $roleAdmin = Role::firstOrCreate(['name' => 'administrador']);
+        $roleMedico = Role::firstOrCreate(['name' => 'medico']);
+        $roleMedicoEspecialista = Role::firstOrCreate(['name' => 'medico especialista']);
+        $roleEnfermera = Role::firstOrCreate(['name' => 'enfermera(o)']);
+        $roleAdministrativos = Role::firstOrCreate(['name' => 'administrativo']);
+        $roleCocina = Role::firstOrCreate(['name' => 'cocina']);
+        $roleFarmacia = Role::firstOrCreate(['name' => 'farmacia']);
+        $roleRadiologo = Role::firstOrCreate(['name' => 'radiólogo']);
+        $roleTecnicoLaboratorio = Role::firstOrCreate(['name' => 'técnico de laboratorio']);
+        $roleFisoterapeuta = Role::firstOrCreate(['name' => 'fisoterapeuta']);
+        $roleRecepcion = Role::firstOrCreate(['name' => 'recepcion']);
+        $roleCaja = Role::firstOrCreate(['name'  => 'caja']);
+        $roleQuimico = Role::firstOrCreate(['name' => 'químico']);
+        $roleMantenimiento = Role::firstOrCreate(['name' => 'mantenimiento']);
+        $roleLimpieza = Role::firstOrCreate(['name' => 'limpieza']);
+        $roleSistemas = Role::firstOrCreate(['name' => 'sistemas']);
 
         $permissions = [
             'sistemas' => ['crear', 'consultar', 'editar', 'eliminar'],
@@ -91,7 +89,14 @@ class RoleAndPermissionSeeder extends Seeder
             'consultar pacientes',
             'crear pacientes',
             'editar pacientes',
-            'crear estancias'
+
+            'crear estancias',
+            'consultar estancias',
+            
+            'crear consentimientos',
+
+            'crear hojas frontales',
+            'consultar hojas frontales',
         ]);
         
         $roleEnfermera->syncPermissions([
@@ -143,10 +148,24 @@ class RoleAndPermissionSeeder extends Seeder
             'editar estancias',
             'consultar estancias',
 
+            'consultar hojas',
+            'crear hojas',
+            'eliminar hojas', 
+
             'consultar hojas enfermerias',
             
             'consultar documentos medicos',
             'crear documentos medicos',
+
+            'consultar solicitudes estudios',
+            'crear solicitudes estudios',
+
+            'consultar solicitudes estudios patologicos',
+            'crear solicitudes estudios patologicos',
+
+            'crear consentimientos',
+            
+            'consultar habitaciones',
         ]);
         
         $roleMedico->syncPermissions([
@@ -171,7 +190,11 @@ class RoleAndPermissionSeeder extends Seeder
             'crear solicitudes estudios',
 
             'consultar solicitudes estudios patologicos',
-            'crear solicitudes estudios patologicos'
+            'crear solicitudes estudios patologicos',
+
+            'crear consentimientos',
+            
+            'consultar habitaciones',
         ]);
 
         $roleFarmacia->syncPermissions([
