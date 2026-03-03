@@ -217,27 +217,11 @@ class DoctorController extends Controller implements HasMiddleware
         ]);
     }
 
-   public function update(Request $request, $id)
+   public function update(UserRequest $request, $id)
 {
     $doctor = User::findOrFail($id);  
 
-    $validated = $request->validate([
-        'nombre' => 'required|string|max:100',
-        'apellido_paterno' => 'required|string|max:100',
-        'apellido_materno' => 'nullable|string|max:100',  
-        'curp' => 'nullable|string|max:18|unique:users,curp,' . $id, 
-        'sexo' => 'nullable|in:Masculino,Femenino',
-        'fecha_nacimiento' => 'required|date',
-        'cargo_id' => 'required|exists:roles,id', 
-        'colaborador_responsable_id' => 'nullable|exists:users,id',
-        'email' => 'required|email|unique:users,email,' . $id,  
-        // Password es nullable. Si llega vacío, la validación 'min:8' no se dispara
-        'password' => 'nullable|string|min:8|confirmed',  
-        'professional_qualifications' => 'nullable|array',  
-        'professional_qualifications.*.titulo' => 'required|string|max:100',
-        'professional_qualifications.*.cedula_profesional' => 'nullable|string|max:20',
-        'professional_qualifications.*.cedula' => 'nullable|string|max:20', // Por si llega con el nombre corto
-    ]);
+    $validated = $request->validated();
 
     DB::beginTransaction();
     try {
