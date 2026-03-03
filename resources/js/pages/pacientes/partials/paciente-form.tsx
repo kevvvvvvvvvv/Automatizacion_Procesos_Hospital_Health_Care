@@ -80,6 +80,9 @@ export const PacienForm = ({
         e.preventDefault();
         onSubmit(form);
     };
+
+    console.log(errors);
+
     return (
 <FormLayout title='Registrar paciente'
         onSubmit={handleSubmit}
