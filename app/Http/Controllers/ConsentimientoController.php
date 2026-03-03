@@ -155,13 +155,13 @@ class ConsentimientoController extends Controller
             $logo = 'data:' . $imageMime . ';base64,' . $imageData;
         }
 
-        $headerData = [
+        /*$headerData = [
             'logoDataUri' => $logo,
             'notaData' => $consentimiento,
             'paciente' => $consentimiento->estancia?->paciente,
             'medico' => $consentimiento->user,
             'estancia'=> $consentimiento->estancia
-        ];
+        ];*/
 
 
         return Pdf::view($consentimiento->route_pdf, $viewData)
@@ -170,7 +170,7 @@ class ConsentimientoController extends Controller
             ->withBrowsershot(function (Browsershot $browsershot) {
                 $this->configureBrowsershot($browsershot);
             })
-            ->headerView('headerConsentimiento', $headerData)
+            //->headerView('headerConsentimiento', $headerData)
             ->inline(); 
     }
 
