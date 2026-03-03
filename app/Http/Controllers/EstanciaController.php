@@ -58,7 +58,7 @@ class EstanciaController extends Controller
                 'estancia_anterior_id' => $validatedData['estancia_anterior_id'] ?? null,
                 'modalidad_ingreso' => $validatedData['modalidad_ingreso'],
                 'habitacion_id' =>  $request['habitacion_id'] ?? null,
-                'familiar_responsable_id' => $request['familiar_responsable_id'] ?? null,
+                'familiar_responsable_id' => $validatedData['familiar_responsable_id'] ?? null,
             ];
 
             $paciente->estancias()->create($dataToCreate);

@@ -242,22 +242,32 @@
         <p><strong>Plan de manejo y tratamiento inmediato, incluyendo protocolo de analgesia y control de signos y
             síntomas asociados a la anestesia: </strong> {{$notaData['plan_manejo']}}</p>
 
+
         @if(isset($medico))
+            @php
+                $firmante = $medico->colaborador_responsable ?? $medico;
+            @endphp
+
             <div class="signature-section">
                 <div class="signature-line"></div>
                 <p style="font-size: 9pt; color: #555;">Nombre completo, cédula profesional y firma del médico</p>
-                <p>{{ $medico->nombre . " " . $medico->apellido_paterno . " " . $medico->apellido_materno}}</p>
-                @if($medico->credenciales->isNotEmpty())
+                
+                <p>
+                    {{ $firmante->nombre_completo }} 
+                </p>
+
+                @if($firmante->credenciales->isNotEmpty())
                     <div class="credentials-list">
-                        @foreach($medico->credenciales as $credencial)
+                        @foreach($firmante->credenciales as $credencial)
                             <p>
-                                <strong>Título:</strong> {{ $credencial->titulo }} | <strong>Cédula Profesional:</strong> {{ $credencial->cedula_profesional }}
+                                <strong>Título:</strong> {{ $credencial->titulo }} | 
+                                <strong>Cédula Profesional:</strong> {{ $credencial->cedula_profesional }}
                             </p>
                         @endforeach
                     </div>
                 @endif
             </div>
-        @endif  
+        @endif 
        
     </main>
 </body>
