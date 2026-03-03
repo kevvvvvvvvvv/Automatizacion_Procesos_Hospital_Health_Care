@@ -176,28 +176,28 @@
                 </td>
 
                 {{-- 5. Médico --}}
-                <td>
-                    @if(isset($medico))
-                        <div class="signature-line"></div>
+                {{-- 5. Médico Responsable (Creador de la Estancia) --}}
+<td>
+    @if(isset($medico))
+        <div class="signature-line"></div>
+        {{-- Usamos el nombre completo del objeto médico (User) --}}
+        <p>{{ $medico->nombre }} {{ $medico->apellido_paterno }} {{ $medico->apellido_materno }}</p>
+        <p style="font-size: 9pt; color: #555;">Nombre y Firma del Médico Responsable</p>
 
-                        <p>{{ $medico->nombre_completo }} </p>
-                        <p style="font-size: 9pt; color: #555;">Nombre y Firma del Médico</p>
-
-                        @if($medico->credenciales->isNotEmpty())
-                            <div style="font-size: 10pt; margin-top: 10px;">
-                                @foreach($medico->credenciales as $credencial)
-                                    <p>
-                                        <strong>Título:</strong> {{ $credencial->titulo }}
-                                        |
-                                        <strong>Cédula:</strong> {{ $credencial->cedula_profesional }}
-                                    </p>
-                                @endforeach
-                            </div>
-                        @endif
-                    @else
-                        <p style="font-size: 9pt; color: #555;">Sin datos de médico</p>
-                    @endif
-                </td>
+        @if($medico->credenciales && $medico->credenciales->isNotEmpty())
+            <div class="credentials-list">
+                @foreach($medico->credenciales as $credencial)
+                    <p style="margin: 2px 0;">
+                        {{ $credencial->titulo }} - Cédula: {{ $credencial->cedula_profesional }}
+                    </p>
+                @endforeach
+            </div>
+        @endif
+    @else
+        <div class="signature-line"></div>
+        <p style="font-size: 9pt; color: #555;">Sin datos de médico responsable</p>
+    @endif
+</td>
 
                 {{-- 6. Vacío o espacio adicional --}}
                 <td>

@@ -13,6 +13,7 @@ use App\Http\Requests\consentimientoRequest;
 use Spatie\Browsershot\Browsershot;
 use Carbon\Carbon;
 
+use App\Model\FormularioInstancia;
 use App\Models\Estancia;
 use App\Models\Consentimiento;
 use App\Models\Paciente;
@@ -64,7 +65,7 @@ class ConsentimientoController extends Controller
 
         $diagnostico = $validated['diagnostico'] ?? null;
         $selections = $validated['route_pdf'];
-
+        
         DB::beginTransaction();
 
         try {
@@ -98,62 +99,43 @@ class ConsentimientoController extends Controller
         }
     }
 
-    public function generarPDF(string $file, Request $request, Paciente $paciente, Estancia $estancia, Consentimiento $consentimiento)
-    {   
-        $viewData = ['user' => Auth::user()];
-        if ($request->has('consentimiento_id')) {
-            $consentimientoId = intval($request->query('consentimiento_id'));
-            $consentimiento = Consentimiento::with('estancia.paciente','estancia.familiarResponsable' ,'user.credenciales')->find($consentimientoId);
+   public function generarPDF(string $file, Request $request, Paciente $paciente, Estancia $estancia, Consentimiento $consentimiento)
+{   
+    if ($request->has('consentimiento_id')) {
+        $consentimientoId = intval($request->query('consentimiento_id'));
+        
+        // Cargamos las relaciones: Consentimiento -> Estancia -> Todas sus Instancias -> La Hoja Frontal -> El Médico y sus Credenciales
+        $consentimiento = Consentimiento::with([
+            'estancia.paciente',
+            'estancia.familiarResponsable',
+            'estancia.formularioInstancias.hojaFrontal.medico.credenciales'
+        ])->find($consentimientoId);
 
-            if (! $consentimiento) abort(404, "Consentimiento no encontrado.");
-            $fecha = $consentimiento->created_at;
-                $meses = [
-                    1 => 'enero',
-                    2 => 'febrero',
-                    3 => 'marzo',
-                    4 => 'abril',
-                    5 => 'mayo',
-                    6 => 'junio',
-                    7 => 'julio',
-                    8 => 'agosto',
-                    9 => 'septiembre',
-                    10 => 'octubre',
-                    11 => 'noviembre',
-                    12 => 'diciembre',
-                ];
-                
-                $dia = $fecha->day;
-                $mes = $meses[$fecha->month];
-                $anio = $fecha->year;
-                $viewData = [
-                    'notaData' => $consentimiento,
-                    'paciente' => $consentimiento->estancia->paciente,
-                    'medico' => $consentimiento->user,
-                    'estancia' => $consentimiento->estancia->familiarResponsable,
-                    'fecha' => [
-                        'dia' => $dia,
-                        'mes' => $mes,
-                        'anio' => $anio,
-                    ],
-                ];
-                
+        if (!$consentimiento) abort(404, "Consentimiento no encontrado.");
 
-        } else {
-            $consentimiento->load('estancia', 'user.credenciales');
-            $viewData = [
-                'notaData' => $consentimiento, 
-                'user' => Auth::user()
-            ];
-        }
+        // Buscamos la instancia que realmente tiene la Hoja Frontal
+        $instanciaConFrontal = $consentimiento->estancia->formularioInstancias
+            ->whereNotNull('hojaFrontal')
+            ->first();
 
-        $imagePath = public_path('images/Logo_HC_2.png');
-        $logo = null; 
+        // Extraemos el médico de la Hoja Frontal
+        $medicoFrontal = $instanciaConFrontal ? $instanciaConFrontal->hojaFrontal->medico : null;
 
-        if (file_exists($imagePath)) {
-            $imageData = base64_encode(file_get_contents($imagePath));
-            $imageMime = mime_content_type($imagePath);
-            $logo = 'data:' . $imageMime . ';base64,' . $imageData;
-        }
+        $fecha = $consentimiento->created_at;
+        $meses = [1 => 'enero', 2 => 'febrero', 3 => 'marzo', 4 => 'abril', 5 => 'mayo', 6 => 'junio', 
+                  7 => 'julio', 8 => 'agosto', 9 => 'septiembre', 10 => 'octubre', 11 => 'noviembre', 12 => 'diciembre'];
+        
+        $viewData = [
+            'notaData' => $consentimiento,
+            'paciente' => $consentimiento->estancia->paciente,
+            'medico'   => $medicoFrontal, // <--- Este es el médico de la Hoja Frontal
+            'estancia' => $consentimiento->estancia->familiarResponsable,
+            'fecha' => [
+                'dia' => $fecha->day,
+                'mes' => $meses[$fecha->month],
+                'anio' => $fecha->year,
+            ],
+        ];
 
         $headerData = [
             'logoDataUri' => $logo,
@@ -173,6 +155,7 @@ class ConsentimientoController extends Controller
             ->headerView('headerConsentimiento', $headerData)
             ->inline(); 
     }
+}
 
     protected function configureBrowsershot(Browsershot $browsershot)
     {
