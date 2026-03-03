@@ -214,7 +214,7 @@
             <div class="field-row">
                  <div class="field full-width">
                     <label for="medico">Médico tratante:</label>
-                    <div class="data" id="medico">{{ $medico['nombre'] . " " . $medico['apellido_paterno'] . " " . $medico['apellido_materno']}}</div>
+                    <div class="data" id="medico">Dr. {{ $medico['nombre'] . " " . $medico['apellido_paterno'] . " " . $medico['apellido_materno']}}</div>
                 </div>
             </div>
             
