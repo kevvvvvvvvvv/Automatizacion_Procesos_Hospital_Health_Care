@@ -39,7 +39,7 @@ class VentaSeeder extends Seeder
             'estado'                   => 'completado',
             'iva_aplicado'             => 0, 
             'itemable_id'              => 774,
-            'itemable_type'            => 'App\Models\ProductoServicio',
+            'itemable_type'            => 'App\Models\Inventario\ProductoServicio',
             'nombre_producto_servicio' => 'VENDA DE ALGODON 15 CM',
             'clave_producto_servicio'  => 'GENERAL', 
         ]);
@@ -52,7 +52,7 @@ class VentaSeeder extends Seeder
             'estado'                   => 'completado',
             'iva_aplicado'             => 0, 
             'itemable_id'              => 55,
-            'itemable_type'            => 'App\Models\ProductoServicio',
+            'itemable_type'            => 'App\Models\Inventario\ProductoServicio',
             'nombre_producto_servicio' => 'USO DE RAYOS X PORTATIL',
             'clave_producto_servicio'  => '85121808_22',
         ]);
