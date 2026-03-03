@@ -180,7 +180,7 @@
                     @if(isset($medico))
                         <div class="signature-line"></div>
 
-                        <p>{{ $medico->nombre_completo }} </p>
+                        <p> </p>
                         <p style="font-size: 9pt; color: #555;">Nombre y Firma del Médico</p>
 
                         @if($medico->credenciales->isNotEmpty())

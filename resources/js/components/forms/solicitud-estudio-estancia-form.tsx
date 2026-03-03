@@ -185,6 +185,7 @@ const SolicitudEstudiosForm = ({
         setData('estudios_agregados_ids',PREOPERATORIOS);
     }
 
+    console.log(errors);
     return (
         <div>
 
