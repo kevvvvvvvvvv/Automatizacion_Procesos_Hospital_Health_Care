@@ -41,8 +41,10 @@ class HojaFrontal extends Model
         return $this->belongsTo(FormularioInstancia::class, 'id', 'id');
     }
 
-    public function medico(): BelongsTo
-    {
-        return $this->belongsTo(User::class, 'medico_id','id');
-    }
+   // En App\Models\Formulario\HojaFrontal\HojaFrontal.php
+public function medico()
+{
+    // Asumiendo que hoja_frontales tiene una columna medico_id o user_id
+    return $this->belongsTo(\App\Models\User::class, 'medico_id'); 
+}
 }
