@@ -94,8 +94,7 @@ class DoctorController extends Controller implements HasMiddleware
     }
 
    
-
-   public function store(UserRequest $request)
+public function store(UserRequest $request)
 {
     // 1. Obtener datos validados
     $validatedData = $request->validated();
