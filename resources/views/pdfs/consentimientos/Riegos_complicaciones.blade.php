@@ -160,7 +160,7 @@
             <div class="signature-columns" style="margin-top: 40px;">
                 <div class="signature-box">
                     <div class="signature-line"></div>
-                    <p>{{ $medico->nombre . " " . $medico->apellido_paterno . " " . $medico->apellido_materno }}</p>
+                    <p></p>
                     <p style="font-size: 9pt; color: #555;">Nombre y firma del médico</p>
 
                     @if($medico->credenciales->isNotEmpty())
