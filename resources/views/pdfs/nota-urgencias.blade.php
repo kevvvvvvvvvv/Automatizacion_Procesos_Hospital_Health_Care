@@ -186,22 +186,30 @@
             <p><strong>Tratamiento y Pronóstico:</strong> {{ $notaData['tratamiento_y_pronostico'] ?? 'Sin datos.' }}</p>
         </div>
 
+
         @if(isset($medico))
+            @php
+                $firmante = $medico->colaborador_responsable ?? $medico;
+            @endphp
+
             <div class="signature-section">
                 <div class="signature-line"></div>
-                <p>{{ $medico->name ?? 'Médico no especificado' }}</p>  
-                <p style="font-size: 9pt; color: #555;">Nombre y Firma del Médico</p>
+                <p style="font-size: 9pt; color: #555;">Nombre completo, cédula profesional y firma del médico</p>
+                
+                <p>
+                    {{ $firmante->nombre_completo }} 
+                </p>
 
-                 
-                 @if($medico->credenciales->isNotEmpty()) 
-                     <div class="credentials-list"> 
-                         @foreach($medico->credenciales as $credencial) 
-                             <p> 
-                                 <strong>Título:</strong> {{ $credencial->titulo }} | <strong>Cédula Profesional:</strong> {{ $credencial->cedula_profesional }} 
-                             </p> 
-                         @endforeach
-                     </div>
-                 @endif 
+                @if($firmante->credenciales->isNotEmpty())
+                    <div class="credentials-list">
+                        @foreach($firmante->credenciales as $credencial)
+                            <p>
+                                <strong>Título:</strong> {{ $credencial->titulo }} | 
+                                <strong>Cédula Profesional:</strong> {{ $credencial->cedula_profesional }}
+                            </p>
+                        @endforeach
+                    </div>
+                @endif
             </div>
         @endif  
        

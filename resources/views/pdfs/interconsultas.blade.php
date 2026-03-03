@@ -120,22 +120,32 @@
         <p><strong>Plan de estudio: </strong>{{$notaData['plan_de_estudio']}}</p>
         <p><strong>Sugerencia diagnostica: </strong>{{$notaData['sugerencia_diagnostica']}}</p>    
         </div>
-         @if(isset($medico))
+
+        @if(isset($medico))
+            @php
+                $firmante = $medico->colaborador_responsable ?? $medico;
+            @endphp
+
             <div class="signature-section">
                 <div class="signature-line"></div>
                 <p style="font-size: 9pt; color: #555;">Nombre completo, cédula profesional y firma del médico</p>
-                <p>{{ $medico->nombre . " " . $medico->apellido_paterno . " " . $medico->apellido_materno}}</p>
-                @if($medico->credenciales->isNotEmpty())
+                
+                <p>
+                    {{ $firmante->nombre_completo }} 
+                </p>
+
+                @if($firmante->credenciales->isNotEmpty())
                     <div class="credentials-list">
-                        @foreach($medico->credenciales as $credencial)
+                        @foreach($firmante->credenciales as $credencial)
                             <p>
-                                <strong>Título:</strong> {{ $credencial->titulo }} | <strong>Cédula Profesional:</strong> {{ $credencial->cedula_profesional }}
+                                <strong>Título:</strong> {{ $credencial->titulo }} | 
+                                <strong>Cédula Profesional:</strong> {{ $credencial->cedula_profesional }}
                             </p>
                         @endforeach
                     </div>
                 @endif
             </div>
-        @endif  
+        @endif 
        
     </main>
 </body>

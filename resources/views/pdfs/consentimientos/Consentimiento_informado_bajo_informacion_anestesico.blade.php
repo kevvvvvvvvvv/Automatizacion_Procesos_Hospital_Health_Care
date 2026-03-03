@@ -110,7 +110,7 @@
         {{-- CAMPOS ESPECÍFICOS --}}
         <h3>Campos Específicos</h3>
         <div class="section-content">
-            <p>Familiar Responsable y/o Representante legal: {{ $paciente->familiar_responsable ?? 'Sin datos.' }}</p>
+            <p>Familiar Responsable y/o Representante legal: {{ $estancia->nombre_completo ?? 'Sin datos.' }}</p>
             <p>Diagnóstico Preoperatorio: {{ $paciente->diagnostico_preoperatorio ?? 'Sin datos.' }}</p>
             <p>Cirugía Programada: {{ $paciente->cirugia_programada ?? 'Sin datos.' }} Carácter de la Cirugía o Procedimiento: Electiva: {{ $paciente->caracter_cirugia == 'Electiva' ? 'X' : '' }} o Urgente: {{ $paciente->caracter_cirugia == 'Urgente' ? 'X' : '' }}</p>
         </div>
