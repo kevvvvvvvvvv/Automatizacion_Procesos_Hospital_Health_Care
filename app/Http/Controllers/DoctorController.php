@@ -95,46 +95,62 @@ class DoctorController extends Controller implements HasMiddleware
 
    
 
-    public function store(UserRequest $request)
-    {
-        $validatedData = $request->validated();
-        Log::info('QUALIFICATIONS', $validatedData['professional_qualifications']);
+   public function store(UserRequest $request)
+{
+    // 1. Obtener datos validados
+    $validatedData = $request->validated();
 
-        DB::beginTransaction();
-        try {
-            $user = User::create([
-                'nombre'             => $validatedData['nombre'],
-                'apellido_paterno'   => $validatedData['apellido_paterno'],
-                'apellido_materno'   => $validatedData['apellido_materno'],
-                'curp'               => $validatedData['curp'],
-                'sexo'               => $validatedData['sexo'],
-                'fecha_nacimiento'   => $validatedData['fecha_nacimiento'],
-                'telefono'           => $validatedData['telefono'],
-                'colaborador_responsable_id' => $validatedData['colaborador_responsable_id'],
-                'email'              => $validatedData['email'],
-                'password'           => Hash::make($validatedData['password']),
-            ]);
+    // 2. LOG DE DEPURACIÓN (Revisa tu archivo storage/logs/laravel.log)
+    Log::info('Datos de calificaciones recibidos:', [
+        'qualifications' => $validatedData['professional_qualifications'] ?? 'No llegaron calificaciones'
+    ]);
 
-            $role = Role::find($validatedData['cargo_id']);
-            $user->assignRole($role);
+    DB::beginTransaction();
+    try {
+        $user = User::create([
+            'nombre'           => $validatedData['nombre'],
+            'apellido_paterno' => $validatedData['apellido_paterno'],
+            'apellido_materno' => $validatedData['apellido_materno'],
+            'curp'             => $validatedData['curp'],
+            'sexo'             => $validatedData['sexo'],
+            'fecha_nacimiento' => $validatedData['fecha_nacimiento'],
+            'telefono'         => $validatedData['telefono'],
+            'colaborador_responsable_id' => $validatedData['colaborador_responsable_id'],
+            'email'            => $validatedData['email'],
+            'password'         => Hash::make($validatedData['password']),
+        ]);
 
-            if (isset($validatedData['professional_qualifications'])) {
-                foreach ($validatedData['professional_qualifications'] as $qual) {
+        $role = Role::find($validatedData['cargo_id']);
+        $user->assignRole($role);
+
+        // 3. GUARDAR CREDENCIALES
+        if (!empty($validatedData['professional_qualifications'])) {
+            foreach ($validatedData['professional_qualifications'] as $qual) {
+                
+                // Extraemos el valor de la cédula buscando en ambos nombres posibles
+                $cedulaValor = $qual['cedula_profesional'] ?? ($qual['cedula'] ?? null);
+
+                // IMPORTANTE: Si el título no está vacío, intentamos guardar
+                if (!empty($qual['titulo'])) {
                     CredencialEmpleado::create([
                         'user_id'            => $user->id,
                         'titulo'             => $qual['titulo'],
-                        'cedula_profesional' => $qual['cedula'] ?? null,
+                        // Si el valor sigue siendo null, ponemos un string vacío para evitar el error de SQL
+                        'cedula_profesional' => $cedulaValor ?? '', 
                     ]);
                 }
             }
-            DB::commit();
-            return redirect()->route('doctores.index')->with('success', 'Doctor creado correctamente.');
-        } catch (Exception $e) {
-            DB::rollBack();
-            Log::error("Fallo al crear doctor: " . $e->getMessage());
-            return back()->withInput()->with('error', 'Error al registrar al colaborador');
         }
+
+        DB::commit();
+        return redirect()->route('doctores.index')->with('success', 'Doctor creado correctamente.');
+
+    } catch (Exception $e) {
+        DB::rollBack();
+        Log::error("Error detallado en store: " . $e->getMessage());
+        return back()->withInput()->with('error', 'Error al registrar: ' . $e->getMessage());
     }
+}
 
 
     public function create()
