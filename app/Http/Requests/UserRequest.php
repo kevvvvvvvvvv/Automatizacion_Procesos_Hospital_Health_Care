@@ -23,16 +23,16 @@ class UserRequest extends FormRequest
     {
         return [
             'nombre' => 'required|string|max:100',
-            'apellido_paterno' => 'required|string|max:100',
-            'apellido_materno' => 'required|string|max:100',
-            'curp' => 'required|string|max:18|unique:users,curp', 
+            'apellido_paterno' => 'nullable|string|max:100',
+            'apellido_materno' => 'nullable|string|max:100',
+            'curp' => 'nullable|string|max:18|unique:users,curp', 
             'sexo' => 'required|in:Masculino,Femenino',
-            'fecha_nacimiento' => 'required|date',
+            'fecha_nacimiento' => 'nullable|date',
             'cargo_id' => 'required', 
             'colaborador_responsable_id' => 'nullable|exists:users,id', 
             'email' => 'required|email|email',
             'password' => 'required|min:8|confirmed', 
-            'telefono' => 'required',
+            'telefono' => 'nullable',
 
             'professional_qualifications' => 'nullable|array',
             'professional_qualifications.*.titulo' => 'nullable|string|max:100',
