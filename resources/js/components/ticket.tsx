@@ -1,9 +1,9 @@
 import React from 'react';
 import '../../../public/css/ticket-styles.css';
-import { Pago } from '@/types'; // Asegúrate de importar o definir el tipo Pago
+import { Pago } from '@/types';
 
 interface Props {
-    pago: Pago; // Ahora recibimos el pago específico
+    pago: Pago; 
     tipo: 'ORIGINAL' | 'COPIA';
 }
 
@@ -22,7 +22,6 @@ export default function TicketPago({
         window.print();
     };
 
-    // Obtenemos la venta general a través de la relación del pago
     const venta = pago.venta;
 
     console.log(pago);
@@ -36,13 +35,12 @@ export default function TicketPago({
                 🖨️ Imprimir recibo
             </button>
 
-            <div id={`printable-ticket-${pago.id}`} className="ticket-container text-black font-bold">
+            <div id={`printable-ticket-${pago.id}`} className="ticket-container printable-ticket text-black font-bold">
                 
                 <div className="text-center mb-2 border-b border-black pb-2">
                     <img src="/images/Logo_HC_Negativo_2.png" alt="Logo Health Care" className="w-45 mx-auto"/>
                     <p className="text-[10px]">CALLE PLAN DE AYUTLA NÚMERO 13 COLONIA REFORMA</p>
                     <p className="text-[10px]">CUERNAVACA, MORELOS, CÓDIGO POSTAL 62260 TÉLEFONO 777 323 0371</p>
-                    {/* Usamos la fecha en la que se realizó este pago específico */}
                     <p className="text-[10px] mt-1">
                         {new Date(pago.created_at).toLocaleString('es-MX')}
                     </p>
@@ -51,7 +49,6 @@ export default function TicketPago({
                 </div>
 
                 <div className="text-[10px] mb-2">
-                    {/* Mostramos el folio del pago y referenciamos la cuenta general */}
                     <p>Folio Recibo: <span className="font-extrabold">{pago.folio}</span></p>
                     <p>Cuenta General: #{venta?.id}</p>
                     <p>Paciente: {venta?.estancia?.paciente?.nombre} {venta?.estancia?.paciente?.apellido_paterno} {venta?.estancia?.paciente?.apellido_materno}</p>
@@ -75,8 +72,6 @@ export default function TicketPago({
                             </tr>
                         ) : (
                             pago.detalles.map((detallePago) => {
-                                // Accedemos al detalle de la venta original para sacar el nombre
-
                                 const detalleVenta = pago.venta?.detalles?.find(
                                     (dv) => dv.id === detallePago.detalle_venta_id
                                 );
@@ -88,7 +83,7 @@ export default function TicketPago({
 
                                 return (
                                     <tr key={detallePago.id}>
-                                        <td className="text-left align-top">1</td> {/* En pagos parciales la cantidad suele representarse como 1 abono */}
+                                        <td className="text-left align-top">1</td>
                                         <td className="text-left align-top">
                                             {detalleVenta?.clave_producto_servicio || ''}
                                         </td>                                     
@@ -96,7 +91,6 @@ export default function TicketPago({
                                             {nombreItem}
                                         </td>
                                         <td className="text-right align-top">
-                                            {/* Mostramos lo que se abonó a este concepto en este pago */}
                                             {formatter.format(detallePago.monto_aplicado)}
                                         </td>
                                     </tr>
@@ -107,14 +101,11 @@ export default function TicketPago({
                 </table>
 
                 <div className="border-t border-black pt-2 text-right text-xs">
-                    {/* El total ahora refleja el monto de ESTE recibo */}
                     <p className="font-bold text-sm mt-1">SU PAGO: {formatter.format(pago.monto)}</p>
 
                     <div className="mt-2 border-t border-dashed border-black pt-1 text-[10px]">
                         <p>Método de pago: {pago.metodo_pago?.nombre || 'N/A'}</p>
                     </div>
-                    
-                    {/* Opcional: Mostrar un pequeño resumen de cómo quedó la cuenta */}
                     {venta && (
                         <div className="mt-2 border-t border-dashed border-black pt-1 text-[10px]">
                             <p>Total de la cuenta: {formatter.format(venta.total)}</p>

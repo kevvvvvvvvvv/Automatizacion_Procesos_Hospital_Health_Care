@@ -12,11 +12,11 @@
         visibility: hidden;
     }
 
-    #printable-ticket, #printable-ticket * {
+    .printable-ticket, .printable-ticket * {
         visibility: visible;
     }
 
-    #printable-ticket {
+    .printable-ticket {
         display: block !important; 
         position: fixed;
         left: 0;
