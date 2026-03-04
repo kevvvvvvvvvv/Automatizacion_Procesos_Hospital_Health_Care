@@ -383,7 +383,7 @@ const Show = ({ estancia }: ShowEstanciaProps) => {
                                 </div>
                                 <div className="flex items-center space-x-2">
                     
-                    {/*
+                    
                     {(formulario.catalogo.route_prefix.includes('interconsultas') || 
                       formulario.catalogo.route_prefix.includes('notasurgencias')) && (
                         <Link
@@ -399,7 +399,7 @@ const Show = ({ estancia }: ShowEstanciaProps) => {
                             
                         </Link>
                     )}
-                    - */}
+                    - 
                                     {(formulario.user_id === auth.user.id || hasRole('administrador')) && (
                                     <Link
                                         href={route(`${formulario.catalogo.route_prefix}.edit`, formulario.id)}
