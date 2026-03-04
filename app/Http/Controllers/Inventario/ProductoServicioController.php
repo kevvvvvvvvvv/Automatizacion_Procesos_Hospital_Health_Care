@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Requests\ProductoServicioRequest;
 use App\Http\Request\MedicamentoRequest;
-use App\Http\Request\InsumoRequest;
+use App\Http\Request\InsumoRequest; 
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Redirect;
