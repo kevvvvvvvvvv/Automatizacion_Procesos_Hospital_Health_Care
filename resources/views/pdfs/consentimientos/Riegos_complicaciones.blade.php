@@ -177,7 +177,7 @@
                 </div>
 
                 <div class="signature-box">
-                    <!-- Espacio disponible (sello, segunda firma, etc.) -->
+                    
                 </div>
             </div>
         @endif
