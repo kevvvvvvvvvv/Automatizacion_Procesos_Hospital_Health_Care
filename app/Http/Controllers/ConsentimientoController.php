@@ -104,7 +104,6 @@ class ConsentimientoController extends Controller
     if ($request->has('consentimiento_id')) {
         $consentimientoId = intval($request->query('consentimiento_id'));
         
-        // Cargamos las relaciones: Consentimiento -> Estancia -> Todas sus Instancias -> La Hoja Frontal -> El Médico y sus Credenciales
         $consentimiento = Consentimiento::with([
             'estancia.paciente',
             'estancia.familiarResponsable',
@@ -113,12 +112,11 @@ class ConsentimientoController extends Controller
 
         if (!$consentimiento) abort(404, "Consentimiento no encontrado.");
 
-        // Buscamos la instancia que realmente tiene la Hoja Frontal
+        
         $instanciaConFrontal = $consentimiento->estancia->formularioInstancias
             ->whereNotNull('hojaFrontal')
             ->first();
 
-        // Extraemos el médico de la Hoja Frontal
         $medicoFrontal = $instanciaConFrontal ? $instanciaConFrontal->hojaFrontal->medico : null;
 
         $fecha = $consentimiento->created_at;
@@ -136,6 +134,15 @@ class ConsentimientoController extends Controller
                 'anio' => $fecha->year,
             ],
         ];
+
+                $imagePath = public_path('images/Logo_HC_2.png');
+        $logo = null; 
+
+        if (file_exists($imagePath)) {
+            $imageData = base64_encode(file_get_contents($imagePath));
+            $imageMime = mime_content_type($imagePath);
+            $logo = 'data:' . $imageMime . ';base64,' . $imageData;
+        }
 
         $headerData = [
             'logoDataUri' => $logo,
