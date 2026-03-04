@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class PacienteRequest extends FormRequest
 {
@@ -19,14 +20,53 @@ class PacienteRequest extends FormRequest
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
+
+     protected function prepareForValidation()
+    {
+        $camposTexto = [
+            'curp',
+            'nombre',
+            'apellido_paterno',
+            'apellido_materno',
+            'calle',
+            'colonia',
+            'municipio',
+            'estado',
+            'pais',
+            'ocupacion',
+            'lugar_origen',
+            'nombre_padre',
+            'nombre_madre',
+            'sexo',
+            'estado_civil'
+        ];
+
+        $datosAjustados = [];
+        
+        foreach ($camposTexto as $campo) {
+            if ($this->has($campo) && $this->$campo !== null) {
+                $datosAjustados[$campo] = mb_strtoupper($this->$campo, 'UTF-8');
+            }
+        }
+
+        $this->merge($datosAjustados);
+    }
+
     public function rules(): array
     {
+        $pacienteId = $this->route('paciente')->id ?? $this->route('paciente');
+
         return [
-            'curp' => 'required|string|max:18|unique:pacientes,curp',
+            'curp' => [
+                'required',
+                'string',
+                'max:18',
+                Rule::unique('pacientes', 'curp')->ignore($pacienteId),
+            ],
             'nombre' => 'required|string|max:100',
             'apellido_paterno' => 'required|string|max:100',
             'apellido_materno' => 'required|string|max:100',
-            'sexo' => 'required|string|in:Masculino,Femenino',
+            'sexo' => 'required|string',
             'fecha_nacimiento' => 'required|date',
             'calle' => 'required|string|max:100',
             'numero_exterior' => 'required|string|max:50',

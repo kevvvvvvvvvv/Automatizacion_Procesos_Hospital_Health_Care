@@ -123,6 +123,11 @@ export const PacienForm = ({
         onSubmit(form);
     };
 
+<<<<<<< HEAD
+=======
+    console.log(errors);
+
+>>>>>>> 9c636271c5b38c73cbd3cbca14b92ee0003cb2cf
     return (
         <FormLayout 
             title='Registrar paciente'

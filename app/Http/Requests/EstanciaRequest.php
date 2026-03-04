@@ -3,6 +3,9 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
+
+use App\Models\Paciente;
 
 class EstanciaRequest extends FormRequest
 {
@@ -22,16 +25,29 @@ class EstanciaRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'fecha_ingreso'           => 'required|date',
+            'fecha_ingreso'          => 'required|date',
             'tipo_estancia'          => 'required|string|in:Hospitalizacion,Interconsulta',
             'tipo_ingreso'           => 'required|string|in:Ingreso,Reingreso',
             'modalidad_ingreso'      => 'required|string',
-            'estancia_anterior_id' => 'nullable|required_if:tipo_ingreso,Reingreso|exists:estancias,id',
+            'estancia_anterior_id'   => 'nullable|required_if:tipo_ingreso,Reingreso|exists:estancias,id',
+            
+            
+
+/*             Rule::requiredIf(function () {
+                $pacienteId = request('paciente_id');
+                $paciente = Paciente::find($pacienteId);    
+                return $paciente && $paciente->age < 18;
+            }), */
+
+            'familiar_responsable_id' => ['required_if:tipo_estancia,Hospitalizacion'],
+            
+
         ];
     }
 
     public function messages()
     {
+
         return [
             'fechaIngreso.required' => 'La fecha de ingreso es obligatoria.',
             'fechaIngreso.date' => 'El campo fecha de ingreso debe ser una fecha válida.',
@@ -48,7 +64,9 @@ class EstanciaRequest extends FormRequest
             'estancia_referencia_id.required_if' => 'La estancia de referencia es obligatoria cuando el tipo de ingreso es "Reingreso".',
             'estancia_referencia_id.exists' => 'La estancia de referencia seleccionada no existe o no es válida.',
         
-            'modalidad_ingreso' => 'El campo de modalidad de ingreso es obligatorio.'
+            'modalidad_ingreso' => 'El campo de modalidad de ingreso es obligatorio.',
+            'familiar_responsable_id.required' => 'El familiar responsable es obligatorio',
+
         ];
     }
 }

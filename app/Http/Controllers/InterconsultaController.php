@@ -52,6 +52,7 @@ class InterconsultaController extends Controller implements HasMiddleware
      * @param \App\Models\Estancia
      * 
      */
+    
     public function store(InterconsultasRequest $request, Paciente $paciente, Estancia $estancia)
     {
         
@@ -152,7 +153,40 @@ class InterconsultaController extends Controller implements HasMiddleware
     {
         //
     }
+    public function receta(Interconsulta $interconsulta)
+{
+    // Cargamos las relaciones necesarias
+    $interconsulta->load([
+            'formularioInstancia.estancia',
+            'formularioInstancia.user.credenciales'
+        ]);
+        $paciente = $interconsulta->formularioInstancia->estancia->paciente;
+        $medico = $interconsulta->formularioInstancia->user;
+        $estancia = $interconsulta->formularioInstancia->estancia;
 
+
+    /*$headerData = [
+        'historiaclinica' => $interconsulta,
+        'paciente' => $paciente,
+        'estancia' => $estancia
+    ];*/
+
+    $viewData = [
+        'tratamiento' => $interconsulta->tratamiento_y_pronostico, 
+        'paciente' => $interconsulta->formularioInstancia->estancia->paciente,
+        'medico' => $interconsulta->user,
+        'fecha' => $interconsulta->formularioInstancia->fecha_hora,
+    ];
+
+    // Usamos una vista nueva llamada 'pdfs.receta_tratamiento'
+    return $this->pdfGenerator->generateStandardPdf(
+        'pdfs.receta_tratamiento', 
+        $viewData,
+        //$headerData,
+        'receta-',
+        $estancia->folio
+    );
+}
     public function generarPDF(Interconsulta $interconsulta)
     {
         $interconsulta->load([

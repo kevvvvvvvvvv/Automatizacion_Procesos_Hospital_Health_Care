@@ -31,9 +31,9 @@ class FormularioHojaFrontalController extends Controller implements HasMiddlewar
     {
         $permission = \Spatie\Permission\Middleware\PermissionMiddleware::class;
         return [
-            new Middleware($permission . ':consultar hojas', only: ['index', 'show', 'generarPDF']),
-            new Middleware($permission . ':crear hojas', only: ['create', 'store']),
-            new Middleware($permission . ':eliminar hojas', only: ['destroy']),
+            new Middleware($permission . ':consultar hojas frontales', only: ['index', 'show', 'generarPDF']),
+            new Middleware($permission . ':crear hojas frontales', only: ['create', 'store']),
+            new Middleware($permission . ':eliminar hojas frontales', only: ['destroy']),
         ];
     }
 

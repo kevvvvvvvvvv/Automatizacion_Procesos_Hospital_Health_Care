@@ -1117,40 +1117,31 @@
     </table>
 
 
-    @if(isset($medico))
-        @if(!$medico->colaborador_responsable)
-            <div class="signature-section">
-                <div class="signature-line"></div>
-                <p style="font-size: 9pt; color: #555;">Nombre completo, cédula profesional y firma del médico</p>
-                <p>{{ $medico->nombre . " " . $medico->apellido_paterno . " " . $medico->apellido_materno}}</p>
-                @if($medico->credenciales->isNotEmpty())
-                    <div class="credentials-list">
-                        @foreach($medico->credenciales as $credencial)
-                            <p>
-                                <strong>Título:</strong> {{ $credencial->titulo }} | <strong>Cédula Profesional:</strong> {{ $credencial->cedula_profesional }}
-                            </p>
-                        @endforeach
-                    </div>
-                @endif
-            </div>
-        @else
-            <div class="signature-section">
-                <div class="signature-line"></div>
-                <p style="font-size: 9pt; color: #555;">Nombre completo, cédula profesional y firma del médico</p>
-                <p>{{$medico->colaborador_responsable->nombre . " " . $medico->colaborador_responsable->apellido_paterno . " " . $medico->colaborador_responsable->apellido_materno}}</p>
-                @if($medico->colaborador_responsable->credenciales->isNotEmpty())
-                    <div class="credentials-list">
-                        @foreach($medico->colaborador_responsable->credenciales as $credencial)
-                            <p>
-                                <strong>Título:</strong> {{ $credencial->titulo }} | <strong>Cédula Profesional:</strong> {{ $credencial->cedula_profesional }}
-                            </p>
-                        @endforeach
-                    </div>
-                @endif
-            </div>
+        @if(isset($medico))
+            @php
+                $firmante = $medico->colaborador_responsable ?? $medico;
+            @endphp
 
+            <div class="signature-section">
+                <div class="signature-line"></div>
+                <p style="font-size: 9pt; color: #555;">Nombre completo, cédula profesional y firma del médico</p>
+                
+                <p>
+                    {{ $firmante->nombre_completo }} 
+                </p>
+
+                @if($firmante->credenciales->isNotEmpty())
+                    <div class="credentials-list">
+                        @foreach($firmante->credenciales as $credencial)
+                            <p>
+                                <strong>Título:</strong> {{ $credencial->titulo }} | 
+                                <strong>Cédula Profesional:</strong> {{ $credencial->cedula_profesional }}
+                            </p>
+                        @endforeach
+                    </div>
+                @endif
+            </div>
         @endif
-    @endif  
     
-</body>
+    </body>
 </html>
