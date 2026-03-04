@@ -39,7 +39,7 @@ class UserSeeder extends Seeder
             'apellido_paterno' => 'López',
             'apellido_materno' => 'Santos',
             'sexo' => 'Femenino',
-            'fecha_nacimiento' => '1990-02-14',
+            'fecha_nacimiento' => '2010-02-14',
             'email' => 'enfermeralicenciada@hospital.com',
             'telefono' => '7774441234',
             'colaborador_responsable_id' => $userJuan->id, 

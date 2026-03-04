@@ -79,7 +79,6 @@ class VentaService
         $tipo = $itemData['tipo']; 
 
         $modelo = null;
-        // Buscamos el precio y el nombre que vengan en el request por si el producto no existe
         $precioUnitario = $itemData['precio'] ?? 0.1; 
         $iva = $itemData['iva'] ?? 0;
 
@@ -90,9 +89,7 @@ class VentaService
                 $precioUnitario = $modelo->importe ?? $precioUnitario;
                 $iva = $modelo->iva ?? $iva;
 
-                // Solo descontamos stock si el modelo existe y no es servicio
                 if ($modelo->tipo !== 'SERVICIOS') {
-                    // Si hay stock lo descontamos, si no, lo dejamos pasar (ya que quieres permitir la venta)
                     if ($modelo->cantidad >= $cantidad) {
                         $modelo->decrement('cantidad', $cantidad);
                     }

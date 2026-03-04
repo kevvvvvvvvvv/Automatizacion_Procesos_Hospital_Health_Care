@@ -31,7 +31,10 @@ class UserRequest extends FormRequest
             'cargo_id' => 'required', 
             'colaborador_responsable_id' => 'nullable|exists:users,id', 
             'email' => 'required|email|email',
-            'password' => 'required|min:8|confirmed', 
+            'password' => $this->isMethod('post') 
+                    ? 'required|min:8|confirmed' 
+                    : 'nullable|min:8|confirmed', 
+                    
             'telefono' => 'nullable',
 
             'professional_qualifications' => 'nullable|array',

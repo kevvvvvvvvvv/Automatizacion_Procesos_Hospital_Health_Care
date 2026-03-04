@@ -196,24 +196,35 @@
     
     <div class="signature-section">
         @if(isset($medico))
-            <div class="signature-line"></div>
-            <p style="font-size: 9pt; color: #555;">Nombre completo, cédula profesional y firma del médico</p>
-            <p>{{ $medico->nombre . " " . $medico->apellido_paterno . " " . $medico->apellido_materno }}</p>
-            @if($medico->credenciales->isNotEmpty())
-                <div class="credentials-list">
-                    @foreach($medico->credenciales as $credencial)
-                        <p>
-                            <strong>Título:</strong> {{ $credencial->titulo }} | <strong>Cédula Profesional:</strong> {{ $credencial->cedula_profesional }}
-                        </p>
-                    @endforeach
-                </div>
-            @endif
-        @endif
+            @php
+                $firmante = $medico->colaborador_responsable ?? $medico;
+            @endphp
+
+            <div class="signature-section">
+                <div class="signature-line"></div>
+                <p style="font-size: 9pt; color: #555;">Nombre completo, cédula profesional y firma del médico</p>
+                
+                <p>
+                    {{ $firmante->nombre_completo }} 
+                </p>
+
+                @if($firmante->credenciales->isNotEmpty())
+                    <div class="credentials-list">
+                        @foreach($firmante->credenciales as $credencial)
+                            <p>
+                                <strong>Título:</strong> {{ $credencial->titulo }} | 
+                                <strong>Cédula Profesional:</strong> {{ $credencial->cedula_profesional }}
+                            </p>
+                        @endforeach
+                    </div>
+                @endif
+            </div>
+        @endif 
     </div>
     <div class="signature-section">
         @if(isset($familiar_responsable))
             <div class="signature-line"></div>
-            <p>{{ $familiar_responsable->nombre . " " . $familiar_responsable->apellido_paterno . " " . $familiar_responsable->apellido_materno }}</p>
+            <p>{{ $familiar_responsable->nombre_completo . " "  }}</p>
             <p style="font-size: 9pt; color: #555;">Nombre y Firma del Familiar Responsable</p>
         @endif
     </div>
