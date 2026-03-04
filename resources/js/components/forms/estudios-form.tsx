@@ -32,12 +32,12 @@ electrolitos séricos de 6 elementos amilasa, lipasa
 perfil de tiempos de sangrado y coagulación
 */
 const MEDICINA_INTERNA = [
-    1, 35, 3, 63, 60, 61, 80
+    787, 821, 789, 849, 846, 847, 866
 ];
 
 /* perfil preo-operatorio sencillos y clásicos: biometría, química de 6 y electrolitos de 6, tiempos de coagulación*/
 const PREOPERATORIOS = [
-    1, 35, 80
+    787, 821, 866
 ]
 
 const ESTUDIOS_FRECUENTES = [
@@ -177,6 +177,7 @@ const SolicitudEstudiosForm: React.FC<Props> = ({
 
     const handleMedicinaInternaClick = () => {
         setData('estudios_agregados_ids', MEDICINA_INTERNA)
+        
     } 
     
     const handlePreoperatorioClick = () => {
@@ -185,7 +186,7 @@ const SolicitudEstudiosForm: React.FC<Props> = ({
 
     return (
         <div>
-
+            
             <NavegationTab
                 tabs={tabs}
                 activeTab={activeTab}

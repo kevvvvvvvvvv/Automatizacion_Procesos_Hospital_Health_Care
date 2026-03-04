@@ -30,6 +30,7 @@ use App\Models\Venta\Venta;
 use App\Models\Estudio\CatalogoEstudio;
 use App\Models\User;
 use App\Models\Formulario\FormularioCatalogo;
+use App\Models\Inventario\ProductoServicio;
 
 class SolicitudEstudioController extends Controller implements HasMiddleware
 {
@@ -393,7 +394,7 @@ class SolicitudEstudioController extends Controller implements HasMiddleware
             'ULTRASONIDO' => User::role('radiólogo')->get(),
 
             // --- GRUPO: RESONANCIA (O puedes unirlo al anterior) ---
-            'RESONANCIA MAGNÉTICA' => User::all(),
+            'RESONANCIA MAGNÉTICA' => User::role('radiólogo')->get(),
 
             default => User::role('administrador')->get(),
         };
@@ -405,12 +406,12 @@ class SolicitudEstudioController extends Controller implements HasMiddleware
             ->where('estado', Venta::ESTADO_PENDIENTE)
             ->first();
 
-        $estudio = CatalogoEstudio::findOrFail($catalogo_estudio_id);
+        $estudio = ProductoServicio::findOrFail($catalogo_estudio_id);
         
         $itemParaVenta = [
             'id' => $estudio->id,
             'cantidad' => 1,
-            'tipo' => 'estudio',
+            'tipo' => 'producto',
             'nombre' => $estudio->nombre,
         ];
 
