@@ -176,10 +176,15 @@
                 </td>
 
                 {{-- 5. Médico --}}
-                <td>
-                    @if(isset($medico))
-                        <div class="signature-line"></div>
+                {{-- 5. Médico Responsable (Creador de la Estancia) --}}
+<td>
+    @if(isset($medico))
+        <div class="signature-line"></div>
+        {{-- Usamos el nombre completo del objeto médico (User) --}}
+        <p>{{ $medico->nombre }} {{ $medico->apellido_paterno }} {{ $medico->apellido_materno }}</p>
+        <p style="font-size: 9pt; color: #555;">Nombre y Firma del Médico Responsable</p>
 
+<<<<<<< HEAD
                         <p> </p>
                         <p style="font-size: 9pt; color: #555;">Nombre y Firma del Médico</p>
 
@@ -198,6 +203,22 @@
                         <p style="font-size: 9pt; color: #555;">Sin datos de médico</p>
                     @endif
                 </td>
+=======
+        @if($medico->credenciales && $medico->credenciales->isNotEmpty())
+            <div class="credentials-list">
+                @foreach($medico->credenciales as $credencial)
+                    <p style="margin: 2px 0;">
+                        {{ $credencial->titulo }} - Cédula: {{ $credencial->cedula_profesional }}
+                    </p>
+                @endforeach
+            </div>
+        @endif
+    @else
+        <div class="signature-line"></div>
+        <p style="font-size: 9pt; color: #555;">Sin datos de médico responsable</p>
+    @endif
+</td>
+>>>>>>> a6948e983f851a9774ec0da8b15e5eb8e865115e
 
                 {{-- 6. Vacío o espacio adicional --}}
                 <td>
