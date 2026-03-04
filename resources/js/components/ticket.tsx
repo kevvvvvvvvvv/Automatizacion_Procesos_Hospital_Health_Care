@@ -122,7 +122,7 @@ export default function TicketPago({
                     {venta?.requiere_factura ? (
                         <>
                             <p>Tiene 72 horas para el envío de la siguiente información al número 7779756696 o al correo cmc1.facturacion@gmail.com </p> 
-                            <p>1. Nombre/Razón social, 2. RFC, 3. Código postal, 4. Regimen fiscal, 5. Uso de CFDI, 6. Correo electrónico, 7. Número de teléfono</p>
+                            <p>1. Nombre/Razón social, 2. RFC, 3. Código postal, 4. Regimen fiscal, 5. Uso de CFDI, 6. Correo electrónico, 7. Número de teléfono, 8. Copia de este comprobante</p>
                         </>
                     ):(
                         <p>El cliente no solicitó factura para esta cuenta.</p>
