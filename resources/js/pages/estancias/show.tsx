@@ -106,21 +106,61 @@ const Show = ({ estancia }: ShowEstanciaProps) => {
             </InfoCard>
             
             <div className="mt-8">
-                <a href={route('estancia.solicitudes-estudios.create',estancia.id)}>Solicitar estudio</a>
-                {(can('crear hojas enfermerias') || can('crear documentos medicos') || can('crear consentimientos')) && (
-                <div className="flex justify-between items-center mb-4">
-                    <h2 className="text-xl font-semibold">Formularios registrados</h2>
-                   
-                    <div className="relative inline-block text-left">
-                        
-                        <Menu as="div">
-                            <Menu.Button className="inline-flex items-center justify-center w-full px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700 active:bg-blue-900 focus:outline-none focus:border-blue-900 focus:ring focus:ring-blue-300 disabled:opacity-25 transition">
-                                <Plus size={16} className="mr-2"/>
-                                Añadir documento
-                                <ChevronDown size={16} className="ml-2 -mr-1" />
-                            </Menu.Button>
+    <a href={route('estancia.solicitudes-estudios.create', estancia.id)} className="text-blue-600 hover:underline mb-4 inline-block">
+        Solicitar estudio
+    </a>
+    <div>
+    <h2 className="text-xl font-semibold">Formularios registrados</h2>
+    </div>
+    {(can('crear hojas enfermerias') || can('crear documentos medicos') || can('crear consentimientos')) && (
+        <div className="flex justify-between items-center mb-4">
+            {/* GRUPO IZQUIERDA: Título y Menú de Encuestas */}
+            <div className="flex items-center gap-4">
+                
+                
+                <Menu as="div" className="relative inline-block text-left">
+                    <Menu.Button className="inline-flex items-center justify-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700 transition">
+                        <Plus size={16} className="mr-2"/>
+                        Encuesta de satisfacción
+                        <ChevronDown size={16} className="ml-2 -mr-1" />
+                    </Menu.Button>
+                    <Menu.Items className="absolute left-0 w-68 mt-2 origin-top-left bg-white divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-50">
+                        <div className="px-1 py-1">
+                            <Menu.Item>
+                                {({ active }) => (
+                                    <Link
+                                        href={route('estancias.encuesta-satisfaccions.create', { estancia: estancia.id })}
+                                        className={`${active ? 'bg-blue-500 text-white' : 'text-gray-900'} group flex rounded-md items-center w-full px-2 py-2 text-sm`}
+                                    >
+                                        Añadir encuesta de satisfacción
+                                    </Link>
+                                )}
+                            </Menu.Item>
+                            <Menu.Item>
+                                {({ active }) => (
+                                    <Link
+                                        href={route('estancias.encuestapersonal.create', { estancia: estancia.id })}
+                                        className={`${active ? 'bg-blue-500 text-white' : 'text-gray-900'} group flex rounded-md items-center w-full px-2 py-2 text-sm`}
+                                    >
+                                        Añadir encuesta de personal
+                                    </Link>
+                                )}
+                            </Menu.Item>
+                        </div>
+                    </Menu.Items>
+                </Menu>
+            </div>
 
-                            <Menu.Items className="absolute right-0 w-56 mt-2 origin-top-right bg-white divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+            {/* GRUPO DERECHA: Botón Añadir Documento */}
+            <div className="relative inline-block text-left">
+                <Menu as="div">
+                    <Menu.Button className="inline-flex items-center justify-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700 transition">
+                        <Plus size={16} className="mr-2"/>
+                        Añadir documento
+                        <ChevronDown size={16} className="ml-2 -mr-1" />
+                    </Menu.Button>
+
+                    <Menu.Items className="absolute right-0 w-56 mt-2 origin-top-right bg-white divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                                 <div className="px-1 py-1">
                                     {can('crear hojas enfermerias') && (
                                     <>
@@ -317,58 +357,14 @@ const Show = ({ estancia }: ShowEstanciaProps) => {
                                 </div>
                             </Menu.Items>
                         </Menu>
-                    </div>
-                </div>)}
+                        
+                        
             </div>
-
-
-            
-                 <Menu as="div">
-                            <Menu.Button className="inline-flex items-center justify-left w-69.8 px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700 active:bg-blue-900 focus:outline-none focus:border-blue-900 focus:ring focus:ring-blue-300 disabled:opacity-25 transition">
-                                <Plus size={16} className="mr-2"/>
-                                Encuesta de satisfaccion
-                                <ChevronDown size={16} className="ml-2 -mr-1" />
-                            </Menu.Button>
-                             <Menu.Items className="absolute center-50 w-68 mt-2 origin-top-right bg-white divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-                                <div className="px-1 py-1">
-                                    {can('crear hojas enfermerias') && (
-                                    <>
-                                 <Menu.Item>
-                                        {({ active }) => (
-                                            <Link
-                                                href={route('estancias.encuesta-satisfaccions.create', { 
-                                                    estancia: estancia.id 
-                                                })}
-                                                method="get" 
-                                                className={`${
-                                                    active ? 'bg-blue-500 text-white' : 'text-gray-900'
-                                                } group flex rounded-md text-left w-full px-2 py-2 text-sm`}
-                                            >
-                                                Añadir encuesta de satisfacción
-                                            </Link>
-                                        )}
-                                    </Menu.Item>
-                                    <Menu.Item>
-                                        {({ active }) => (
-                                            <Link
-                                                href={route('estancias.encuestapersonal.create', { 
-                                                    estancia: estancia.id 
-                                                })}
-                                                method="get" 
-                                                className={`${
-                                                    active ? 'bg-blue-500 text-white' : 'text-gray-900'
-                                                } group flex rounded-md text-center w-full px-2 py-2 text-sm`}
-                                            >
-                                                Añadir encuesta de personal
-                                            </Link>
-                                        )}
-                                    </Menu.Item>
-
-                                    </>
-                                    )}
-                                </div>
-                            </Menu.Items> 
-                        </Menu>
+        </div>
+    )}
+</div>
+                        
+                        
                 <div className="mt-8">
                 <div className="space-y-4">
                     {formulario_instancias && formulario_instancias.length > 0 ? (
@@ -386,11 +382,29 @@ const Show = ({ estancia }: ShowEstanciaProps) => {
                                     </p>
                                 </div>
                                 <div className="flex items-center space-x-2">
+                    
+                    
+                    {(formulario.catalogo.route_prefix.includes('interconsultas') || 
+                      formulario.catalogo.route_prefix.includes('notasurgencias')) && (
+                        <Link
+                            href={route('receta.pdf', { 
+                                paciente: paciente.id, 
+                                estancia: estancia.id,
+                                origen_id: formulario.id // Opcional: para saber de qué nota viene
+                            })}
+                            className="inline-flex items-center px-3 py-1.5 bg-green-600 text-white text-xs font-medium rounded hover:bg-green-700 transition shadow-sm"
+                            title="Generar Receta Médica"
+                        >
+                            <Plus size={14} className="mr-1" />
+                            
+                        </Link>
+                    )}
+                    - 
                                     {(formulario.user_id === auth.user.id || hasRole('administrador')) && (
                                     <Link
                                         href={route(`${formulario.catalogo.route_prefix}.edit`, formulario.id)}
                                         className="p-2 text-blue-500 hover:bg-blue-100 hover:text-blue-700 rounded-full transition"
-                                        title="Editar Hoja Frontal"
+                                        title="Editar formulario"
                                     > 
                                         <Pencil size={18} />
                                     </Link>
