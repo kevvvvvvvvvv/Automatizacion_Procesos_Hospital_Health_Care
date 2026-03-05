@@ -32,12 +32,12 @@ electrolitos séricos de 6 elementos amilasa, lipasa
 perfil de tiempos de sangrado y coagulación
 */
 const MEDICINA_INTERNA = [
-    1, 35, 3, 63, 60, 61, 80
+    787, 821, 789, 849, 846, 847, 866
 ];
 
 /* perfil preo-operatorio sencillos y clásicos: biometría, química de 6 y electrolitos de 6, tiempos de coagulación*/
 const PREOPERATORIOS = [
-    1, 35, 80
+    787, 821, 866
 ]
 
 const ESTUDIOS_FRECUENTES = [
@@ -80,12 +80,8 @@ const SolicitudEstudiosForm = ({
     const [textoNuevoEstudio, setTextoNuevoEstudio] = useState('');
     const [deptoNuevoEstudio, setDeptoNuevoEstudio] = useState('');
 
-    const optionsMedico = medicos.map(medico => ({
-        value: medico.id.toString(),
-        label: `${medico.nombre} ${medico.apellido_paterno} ${medico.apellido_materno}`
-    }))
-
     const { auth } = usePage<PageProps>().props;
+    
 
     const { data, setData, post, processing, errors, reset } = useForm({
         user_solicita_id: auth.user.id,
@@ -178,14 +174,14 @@ const SolicitudEstudiosForm = ({
     }
 
     const handleMedicinaInternaClick = () => {
-        setData('estudios_agregados_ids', MEDICINA_INTERNA)
+        setData('estudios_agregados_ids', MEDICINA_INTERNA);
     } 
     
     const handlePreoperatorioClick = () => {
         setData('estudios_agregados_ids',PREOPERATORIOS);
     }
 
-    console.log(errors);
+   
     return (
         <div>
 
@@ -194,9 +190,10 @@ const SolicitudEstudiosForm = ({
                 activeTab={activeTab}
                 onTabChange={setActiveTab}
             />
-
             {activeTab === 'estudios' && (
+                
                 <form onSubmit={handleSubmitEstudios} className="space-y-6">
+                    
                     <div className="bg-white p-6 rounded-lg shadow-md">
                         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
                             <div>
@@ -274,7 +271,6 @@ const SolicitudEstudiosForm = ({
                                     </div>
                                 );
                             })}
-                            
                             {Object.keys(gruposEstudios).every(k => gruposEstudios[k].length === 0) && (
                                 <div className="text-center py-8 bg-gray-50 rounded border border-dashed border-gray-300">
                                     <p className="text-gray-500">No se encontraron estudios con el nombre "{filtro}".</p>

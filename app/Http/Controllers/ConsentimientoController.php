@@ -110,6 +110,7 @@ public function generarPDF(string $file, Request $request, Paciente $paciente, E
             'estancia.formularioInstancias.hojaFrontal.medico.credenciales'
         ])->find($consentimientoId);
 
+<<<<<<< HEAD
         if (!$consentimiento) abort(404, "Consentimiento no encontrado.");
 
         // Buscamos la instancia que realmente tiene la Hoja Frontal
@@ -120,11 +121,58 @@ public function generarPDF(string $file, Request $request, Paciente $paciente, E
         // Extraemos el médico de la Hoja Frontal
         $medicoFrontal = $instanciaConFrontal ? $instanciaConFrontal->hojaFrontal->medico : null;
 
+=======
+   public function generarPDF(string $file, Request $request, Paciente $paciente, Estancia $estancia, Consentimiento $consentimiento)
+{   
+    if ($request->has('consentimiento_id')) {
+        $consentimientoId = intval($request->query('consentimiento_id'));
+        
+        $consentimiento = Consentimiento::with([
+            'estancia.paciente',
+            'estancia.familiarResponsable',
+            'estancia.formularioInstancias.hojaFrontal.medico.credenciales'
+        ])->find($consentimientoId);
+
+        if (!$consentimiento) abort(404, "Consentimiento no encontrado.");
+
+        
+        $instanciaConFrontal = $consentimiento->estancia->formularioInstancias
+            ->whereNotNull('hojaFrontal')
+            ->first();
+
+        $medicoFrontal = $instanciaConFrontal ? $instanciaConFrontal->hojaFrontal->medico : null;
+
+>>>>>>> 36c37b51acbf2e5720f25ce4baa7c9807b3a6d56
         $fecha = $consentimiento->created_at;
         $meses = [1 => 'enero', 2 => 'febrero', 3 => 'marzo', 4 => 'abril', 5 => 'mayo', 6 => 'junio', 
                   7 => 'julio', 8 => 'agosto', 9 => 'septiembre', 10 => 'octubre', 11 => 'noviembre', 12 => 'diciembre'];
         
         $viewData = [
+<<<<<<< HEAD
+=======
+            'notaData' => $consentimiento,
+            'paciente' => $consentimiento->estancia->paciente,
+            'medico'   => $medicoFrontal, // <--- Este es el médico de la Hoja Frontal
+            'estancia' => $consentimiento->estancia->familiarResponsable,
+            'fecha' => [
+                'dia' => $fecha->day,
+                'mes' => $meses[$fecha->month],
+                'anio' => $fecha->year,
+            ],
+        ];
+
+                $imagePath = public_path('images/Logo_HC_2.png');
+        $logo = null; 
+
+        if (file_exists($imagePath)) {
+            $imageData = base64_encode(file_get_contents($imagePath));
+            $imageMime = mime_content_type($imagePath);
+            $logo = 'data:' . $imageMime . ';base64,' . $imageData;
+        }
+
+        $headerData = [
+            'logoDataUri' => $logo,
+>>>>>>> 36c37b51acbf2e5720f25ce4baa7c9807b3a6d56
             'notaData' => $consentimiento,
             'paciente' => $consentimiento->estancia->paciente,
             'medico'   => $medicoFrontal, // <--- Este es el médico de la Hoja Frontal
@@ -145,6 +193,10 @@ public function generarPDF(string $file, Request $request, Paciente $paciente, E
             ->inline();
     }
 }
+<<<<<<< HEAD
+=======
+
+>>>>>>> 36c37b51acbf2e5720f25ce4baa7c9807b3a6d56
     protected function configureBrowsershot(Browsershot $browsershot)
     {
         $chromePath = config('services.browsershot.chrome_path');

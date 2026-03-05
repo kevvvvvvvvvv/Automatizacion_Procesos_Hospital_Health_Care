@@ -208,7 +208,8 @@
                             </div>
                         @endif
                     @else
-                        <p style="font-size: 9pt; color: #555;">Sin datos de médico</p>
+        <div class="signature-line"></div>
+        <p style="font-size: 9pt; color: #555;"></p>
                     @endif
                 </td>
 

@@ -175,6 +175,7 @@
                     <p>Nombre y firma de testigo</p>
                 </td>
 
+<<<<<<< HEAD
             {{-- 5. Médico Responsable (Creador de la Estancia) --}}
             <td>
                 @if(isset($medico))
@@ -197,6 +198,31 @@
                     <p style="font-size: 9pt; color: #555;">Sin datos de médico responsable</p>
                 @endif
             </td>
+=======
+                {{-- 5. Médico --}}
+                {{-- 5. Médico Responsable (Creador de la Estancia) --}}
+<td>
+    @if(isset($medico))
+        <div class="signature-line"></div>
+        <p>{{ $medico->nombre_completo }}</p>
+        <p style="font-size: 9pt; color: #555;">Nombre y Firma del Médico</p>
+
+        @if($medico->credenciales && $medico->credenciales->isNotEmpty())
+            <div class="credentials-list">
+                @foreach($medico->credenciales as $credencial)
+                    <p style="margin: 2px 0;">
+                        {{ $credencial->titulo }} - Cédula: {{ $credencial->cedula_profesional }}
+                    </p>
+                @endforeach
+            </div>
+        @endif
+    @else
+        <div class="signature-line"></div>
+        <p style="font-size: 9pt; color: #555;"></p>
+    @endif
+</td>
+
+>>>>>>> 36c37b51acbf2e5720f25ce4baa7c9807b3a6d56
                 {{-- 6. Vacío o espacio adicional --}}
                 <td>
                     {{-- Aquí puedes poner algo o dejarlo vacío --}}
