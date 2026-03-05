@@ -3,6 +3,7 @@ import { Head, router } from '@inertiajs/react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import MainLayout from '@/layouts/MainLayout';
 import {route} from 'ziggy-js';
+
 interface Props {
     registros: any[];
     paciente: any;

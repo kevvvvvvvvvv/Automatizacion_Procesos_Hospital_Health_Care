@@ -48,4 +48,8 @@ class Consentimiento extends Model
     {
         return $this->belongsTo(User::class,'user_id','id');
     }
+    public function formularioInstancia():BelogTo
+    {
+        return $this->belongsTo(FormularioInstancia::class, 'formularioInstancia_id', 'id');
+    }
 }
