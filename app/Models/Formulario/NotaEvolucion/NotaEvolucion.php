@@ -19,6 +19,7 @@ class NotaEvolucion extends Model
         'ta',
         'fc',
         'fr',
+        'spo2',
         'temp',
         'peso',
         'talla',

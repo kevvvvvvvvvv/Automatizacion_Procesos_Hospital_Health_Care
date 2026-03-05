@@ -23,7 +23,8 @@ class NotaPostoperatoria extends Model
 
         'ta',   
         'fc',   
-        'fr',    
+        'fr',
+        'spo2',
         'temp', 
         'peso',   
         'talla',  

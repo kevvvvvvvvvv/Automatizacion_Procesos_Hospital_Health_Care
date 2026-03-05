@@ -18,6 +18,7 @@ class NotaPreAnestesica extends Model
         'ta',
         'fc',
         'fr',
+        'spo2',
         'peso',
         'talla',
         'temp',
