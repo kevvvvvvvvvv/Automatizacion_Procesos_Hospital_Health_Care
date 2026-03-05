@@ -52,6 +52,17 @@ const Generalidades: React.FC<GeneralidadesProps> = ({ data, setData, errors }) 
       />
 
       <InputText
+        id="spo2"
+        label="Saturación de oxígeno"
+        name="spo2"
+        type="number"
+        value={getValue(data.spo2)}
+        onChange={(e) => setData('spo2', e.target.value)}
+        placeholder="Ej: 98"
+        error={errors.spo2}
+      />
+
+      <InputText
         id="temp"
         label="Temperatura (°C)"
         name="temp"

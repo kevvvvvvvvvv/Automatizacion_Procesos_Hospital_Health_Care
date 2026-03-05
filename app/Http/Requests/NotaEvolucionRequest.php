@@ -26,6 +26,7 @@ class NotaEvolucionRequest extends FormRequest
             'ta'    => ['required', 'string', 'max:20'], 
             'fc'    => ['required', 'integer', 'between:0,300'],
             'fr'    => ['required', 'integer', 'between:0,100'],
+            'spo2'  => ['required', 'integer', 'between:0,100'],
             'temp'  => ['required', 'numeric', 'between:30,45'],
             'peso'  => ['required', 'numeric', 'between:0.1,600'],
             'talla' => ['required', 'numeric', 'between:20,300'], 
@@ -105,19 +106,20 @@ class NotaEvolucionRequest extends FormRequest
     public function attributes(): array
     {
         return [
-            'evolucion_actualizacion'          => 'Evolución y Actualización',
-            'ta'                               => 'Tensión Arterial',
-            'fc'                               => 'Frecuencia Cardíaca',
-            'fr'                               => 'Frecuencia Respiratoria',
-            'temp'                             => 'Temperatura',
-            'peso'                             => 'Peso',
-            'talla'                            => 'Talla',
-            'diagnostico_o_problemas_clinicos' => 'Diagnóstico y Problema Clínico',
-            'manejo_dieta'                     => 'Manejo de dieta',
-            'manejo_soluciones'                => 'Manejo de Soluciones',
-            'manejo_medicamentos'              => 'Manejo de Medicamentos',
-            'manejo_laboratorios'              => 'Manejo de Laboratorios',
-            'manejo_medidas_generales'         => 'Manejo de Medidas Generales',
+            'evolucion_actualizacion'          => 'evolución y actualización',
+            'ta'                               => 'tensión arterial',
+            'fc'                               => 'frecuencia cardíaca',
+            'fr'                               => 'frecuencia respiratoria',
+            'temp'                             => 'temperatura',
+            'peso'                             => 'peso',
+            'talla'                            => 'talla',
+            'diagnostico_o_problemas_clinicos' => 'diagnóstico y problema clínico',
+            'manejo_dieta'                     => 'manejo de dieta',
+            'manejo_soluciones'                => 'manejo de soluciones',
+            'manejo_medicamentos'              => 'manejo de medicamentos',
+            'manejo_laboratorios'              => 'manejo de laboratorios',
+            'manejo_medidas_generales'         => 'manejo de medidas generales',
+            'spo2'                             => 'saturación de oxígeno'
         ];
     }
 }
