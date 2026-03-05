@@ -808,7 +808,8 @@ export interface notasEvoluciones {
   evolucion_actualizacion: string;
   ta: string;  
   fc: string;  
-  fr: string;  
+  fr: string;
+  spo2: string;  
   temp: string;  
   peso: string;  
   talla: string; 

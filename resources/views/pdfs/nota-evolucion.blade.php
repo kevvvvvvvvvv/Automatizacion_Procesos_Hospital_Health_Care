@@ -103,6 +103,7 @@
             <strong>Tensión arterial:</strong> {{$notaData['ta']}} mm Hg | 
             <strong>Frecuencia cardiaca:</strong> {{$notaData['fc']}} por minuto | 
             <strong>Frecuencia respiratoria:</strong> {{$notaData['fr']}} por minuto | 
+            <strong>Saturación de oxígeno:</strong> {{$notaData['spo2']}} % |
             <strong>Temperatura:</strong> {{$notaData['temp']}} Celsius (°C) | 
             <strong>Peso:</strong> {{$notaData['peso']}} kilogramos | 
             <strong>Talla:</strong> {{$notaData['talla']}} centímetros
