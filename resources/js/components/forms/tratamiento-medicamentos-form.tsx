@@ -5,6 +5,7 @@ import InputTextArea from '@/components/ui/input-text-area';
 import SelectInput from '@/components/ui/input-select';
 import PrimaryButton from '@/components/ui/primary-button';
 import Swal from 'sweetalert2';
+import InputBoolean from '@/components/ui/input-boolean';
 
 interface Props {
     value: string;
@@ -44,7 +45,7 @@ const PlanMedicamentos: React.FC<Props> = ({ value, onChange, error, medicamento
     })) : [], [medicamentos]);
 
     const [local, setLocal] = useState({
-        id: '', nombre: '', dosis: '', gramaje: '', via: '', via_label: '', duracion: '', unidad: 'horas'
+        id: '', nombre: '', dosis: '', gramaje: '', via: '', via_label: '', duracion: '', unidad: 'horas', razon_necesaria: false,
     });
 
     const handleAdd = () => {
@@ -53,11 +54,11 @@ const PlanMedicamentos: React.FC<Props> = ({ value, onChange, error, medicamento
             return;
         }
         
-        let texto = `• ${local.nombre} ${local.dosis} ${local.gramaje}, ${local.via_label}`;
+        let texto = `• ${local.nombre} ${local.dosis} ${local.gramaje}, ${local.via_label}, ${local.razon_necesaria && 'Razón necesaria'}`;
         texto += local.unidad === 'dosis unica' ? ', Dosis única.' : `, cada ${local.duracion} ${local.unidad}.`;
 
         onChange(value ? `${value}\n${texto}` : texto);
-        setLocal({ id: '', nombre: '', dosis: '', gramaje: '', via: '', via_label: '', duracion: '', unidad: 'horas' });
+        setLocal({ id: '', nombre: '', dosis: '', gramaje: '', via: '', via_label: '', duracion: '', unidad: 'horas', razon_necesaria: false });
     };
 
     return (
@@ -117,6 +118,12 @@ const PlanMedicamentos: React.FC<Props> = ({ value, onChange, error, medicamento
                             onChange={e => setLocal(prev => ({ ...prev, duracion: e.target.value }))}
                         />
                     )}
+
+                    <InputBoolean
+                        label='Razón necesaria'
+                        value={local.razon_necesaria}
+                        onChange={(e) => setLocal(prev => ({ ...prev, razon_necesaria: e }))}
+                    />
                 </div>
                 <div className="flex justify-end">
                     <PrimaryButton type="button" onClick={handleAdd}>+ Agregar al plan</PrimaryButton>
