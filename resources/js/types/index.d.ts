@@ -599,6 +599,7 @@ export interface Traslado{
     fc: number;
     fr: number;
     peso: number;
+    spo2: string;
     talla:number;
     temp: number;
     resultado_estudios:string;
@@ -630,6 +631,7 @@ export interface CatalogoEstudio {
     departamento: string | null;
     tiempo_entrega: number;
     costo: number; 
+    link:string;
     created_at: string;
     updated_at: string;
 }
@@ -710,6 +712,7 @@ export interface Preoperatoria {
     ta: string;
     fc: number;
     fr: number;
+    spo2: string;
     peso: number;
     talla:number;
     temp: number;
@@ -852,6 +855,7 @@ export interface NotaPostoperatoria {
     ta: string;
     fc: number ;
     fr: number ;
+    spo2: string;
     temp: number ;
     peso: number ;
     talla: number ;
@@ -897,6 +901,7 @@ export interface NotaPreAnestesica{
     ta: string;
     fc: number;
     fr: number;
+    spo2: string;
     peso: number;
     talla:number;
     temp: number;
@@ -919,6 +924,7 @@ export interface NotaPostanestesica {
     ta: string;
     fc: number;
     fr: number;
+    spo2: string;
     temp: number;
     peso: number;
     talla: number;
