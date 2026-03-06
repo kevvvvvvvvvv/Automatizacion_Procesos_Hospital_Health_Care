@@ -100,6 +100,7 @@ class HabitacionController extends Controller implements HasMiddleware
     public function index()
     {
         $habitaciones = Habitacion::with('estanciaActiva.paciente')->get();
+        //dd($habitaciones->toArray());
         return Inertia::render('habitaciones/index',['habitaciones' => $habitaciones]);
     }
 }
