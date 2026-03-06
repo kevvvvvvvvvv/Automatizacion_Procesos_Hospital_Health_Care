@@ -9,6 +9,7 @@ use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests; 
 use Redirect;
 use App\Http\Requests\HabitacionRequest;
+use Illuminate\Support\Facades\Auth;
 
 use App\Models\Habitacion\Habitacion;
 use App\Models\Estancia;
@@ -97,10 +98,16 @@ class HabitacionController extends Controller implements HasMiddleware
             'habitacion' => $habitacione,
         ]);
     }
+
     public function index()
     {
-        $habitaciones = Habitacion::with('estanciaActiva.paciente')->get();
-        //dd($habitaciones->toArray());
+        $user = Auth::user();
+        if ($user->hasRole('administrador')) {
+            $habitaciones =  Habitacion::with('estanciaActiva.paciente')->get();
+        } else {
+            $habitaciones = Habitacion::with('estanciaActiva.paciente')->where('tipo','Habitacion')->get();
+
+        }
         return Inertia::render('habitaciones/index',['habitaciones' => $habitaciones]);
     }
 }
