@@ -79,6 +79,8 @@ const SondasCateteresForm: React.FC<Props> = ({ hoja, estancia, sondas_cateters 
         }
     }*/
 
+    console.log(hoja);
+
     return (
         <div>
             <form onSubmit={handleSubmit}>
@@ -128,7 +130,7 @@ const SondasCateteresForm: React.FC<Props> = ({ hoja, estancia, sondas_cateters 
                             </tr>
                         </thead>
                         <tbody className="bg-white divide-y divide-gray-200">
-                            {(hoja.sondas_cateteres ?? []).length === 0 ? (
+                            {(hoja.sondas_activas_completas ?? []).length === 0 ? (
                                 <tr>
                                     <td colSpan={5} className="px-4 py-4 text-sm text-gray-500 text-center">
                                         No hay dispositivos guardados.
@@ -136,7 +138,7 @@ const SondasCateteresForm: React.FC<Props> = ({ hoja, estancia, sondas_cateters 
                                 </tr>
                             ) : (
 
-                                (hoja.sondas_cateteres?? []).map((sonda: HojaSondaCateter) => (
+                                (hoja.sondas_activas_completas?? []).map((sonda: HojaSondaCateter) => (
                                     <tr key={sonda.id}>
                                         <td className="px-4 py-4 text-sm text-gray-900">{sonda.producto_servicio.nombre_prestacion}</td>
                                         <td className="px-4 py-4 text-sm text-gray-500" style={{minWidth: '200px'}}>

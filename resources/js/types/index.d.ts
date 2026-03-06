@@ -369,6 +369,7 @@ export interface HojaEnfermeria {
     sondas_cateteres: HojaSondaCateter[] | null;
     hoja_oxigenos: HojaOxigeno[] | null;
     hoja_riesgo_caida: HojaRiesgoCaida[];
+    sondas_activas_completas: HojaSondaCateter[];
 }
 
 export interface HojaRiesgoCaida {
