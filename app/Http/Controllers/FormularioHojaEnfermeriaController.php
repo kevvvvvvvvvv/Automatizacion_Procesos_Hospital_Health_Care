@@ -48,6 +48,28 @@ class FormularioHojaEnfermeriaController extends Controller implements HasMiddle
         $this->pdfGenerator = $pdfGenerator;
     }
 
+    public function show(HojaEnfermeria $hojasenfermeria)
+    {
+        $hojasenfermeria->load(
+            'formularioInstancia.estancia.paciente', 
+            'hojasTerapiaIV.detalleSoluciones',
+            'hojaMedicamentos.productoServicio',
+            'hojaMedicamentos.aplicaciones',
+            'hojaOxigenos.userInicio',
+            'hojaOxigenos.userFin',
+            'hojaEscalaValoraciones',
+            'hojaControlLiquidos',
+            'hojaSignos',
+            'hojaRiesgoCaida',
+            'solicitudesDieta.dieta.categoriaDieta',
+        );
+        
+        return Inertia::render('formularios/hojas-enfermerias/show', [
+            'hoja' => $hojasenfermeria,
+        ]);
+
+    }
+
     public function create(Paciente $paciente, Estancia $estancia)
     {
         $estancia->load('formularioInstancias.hojaEnfermeria');
@@ -113,10 +135,14 @@ class FormularioHojaEnfermeriaController extends Controller implements HasMiddle
             'hojaControlLiquidos',
             'hojaSignos',
             'hojaRiesgoCaida',
-            'sondasCateteres.productoServicio',
             'solicitudesDieta.dieta.categoriaDieta',
-            
         );
+
+        $sondas = $hojasenfermeria->sondas_activas;
+        if ($sondas && $sondas->isNotEmpty()) {
+            $sondas->load('productoServicio');
+        }
+        $hojasenfermeria->setAttribute('sondas_activas_completas', $sondas);
 
         //dd($hojasenfermeria->toArray());
 

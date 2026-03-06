@@ -4,7 +4,6 @@ import { Head } from '@inertiajs/react';
 import 'sweetalert2/dist/sweetalert2.min.css';
 
 import NavegationTab from '@/components/navegation-tab';
-
 import MainLayout from '@/layouts/MainLayout';
 import PacienteCard from '@/components/paciente-card';
 import TerapiaIVForm from '@/components/terapia-iv-form';
@@ -21,8 +20,6 @@ import ControlLiquidosForm from '@/components/forms/control-liquidos-form';
 import HabitusExteriorForm from '@/components/forms/habitus-exterior-form';
 import RiesgoCaidasForm from '@/components/forms/riesgo-caidas-form';
 import CerrarHoja from '@/components/app-cerrrar-hoja';
-
-
 
 interface CreateProps {
     paciente: Paciente;
