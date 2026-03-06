@@ -150,6 +150,14 @@ const MainLayout = ({ pageTitle, children, link, linkParams }: MainLayoutProps) 
     const buttonRef = useRef<HTMLButtonElement>(null);
     const userId = authUser?.id;
 
+    //Notificaciones mediante navegador
+    useEffect(() => {
+        if ("Notification" in window && Notification.permission === "default") {
+            Notification.requestPermission();
+        }
+    }, []);
+
+
     useEffect(() => {
         if (flash?.success) {
             setAlert({ message: flash.success, type: 'success' });
@@ -172,7 +180,26 @@ const MainLayout = ({ pageTitle, children, link, linkParams }: MainLayoutProps) 
                 };
 
                 setNotifications((prev) => [newNotif, ...prev]);
+
+                if ("Notification" in window && Notification.permission === "granted") {
+                    const titulo = notification.title || "¡Nueva notificación!";
+                    const mensaje = notification.message || "Tienes un nuevo aviso en el sistema.";
+
+                    const alertaNavegador = new Notification(titulo, {
+                        body: mensaje,
+                        icon: '/images/flor.png',
+                    });
+
+                    alertaNavegador.onclick = () => {
+                        window.focus();
+                        alertaNavegador.close();
+                    };
+                }
+
+
             });
+
+        
 
         return () => {
             window.Echo.leave(`App.Models.User.${userId}`);
