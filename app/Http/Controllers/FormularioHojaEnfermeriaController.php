@@ -113,10 +113,14 @@ class FormularioHojaEnfermeriaController extends Controller implements HasMiddle
             'hojaControlLiquidos',
             'hojaSignos',
             'hojaRiesgoCaida',
-            'sondasCateteres.productoServicio',
             'solicitudesDieta.dieta.categoriaDieta',
-            
         );
+
+        $sondas = $hojasenfermeria->sondas_activas;
+        if ($sondas && $sondas->isNotEmpty()) {
+            $sondas->load('productoServicio');
+        }
+        $hojasenfermeria->setAttribute('sondas_activas_completas', $sondas);
 
         //dd($hojasenfermeria->toArray());
 
