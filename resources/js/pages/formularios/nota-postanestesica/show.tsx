@@ -16,7 +16,6 @@ const ShowNotaPostanestesica = (props: ShowNotaPostanestesicaProps) => {
 
   const { nota, paciente, estancia } = props;
 
-  // Validación de carga de datos
   if (!nota || !paciente || !estancia) {
     return (
       <MainLayout>
