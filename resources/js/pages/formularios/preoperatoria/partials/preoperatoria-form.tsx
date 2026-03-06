@@ -31,6 +31,7 @@ export const PreOperatoriaForm = ({
     peso: preoperatoria?.peso || '',
     talla: preoperatoria?.talla || '',
     temp: preoperatoria?.temp || '',
+    spo2: preoperatoria?.spo2 || '',
     resultado_estudios: preoperatoria?.resultado_estudios || '',
     resumen_del_interrogatorio: preoperatoria?.resumen_del_interrogatorio || '',
     exploracion_fisica: preoperatoria?.exploracion_fisica || '',
