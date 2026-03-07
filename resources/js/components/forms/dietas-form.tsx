@@ -9,7 +9,8 @@ import SelectInput from '@/components/ui/input-select';
 import PrimaryButton from '@/components/ui/primary-button';
 import InputText from '../ui/input-text';
 import { DataTable } from '../ui/data-table';
-
+import BooleanInput from '../ui/input-boolean';
+import InputDateTime from '../ui/input-date-time';
 
 interface Props {
     hoja: HojaEnfermeria;
@@ -23,11 +24,19 @@ const DietaForm: React.FC<Props> = ({ hoja, categoria_dietas = [] }) => {
         label: c.categoria
     }));
 
+    const lugaresEntregaOptions = [
+        {value: 'Área cocina', label: 'Área de cocina'},
+        {value: 'Habitación', label: 'Habitación'}, 
+    ]
+
     const [ categoriaData, setCategoriaData] = useState('');
+    const [ horaProgramada, setHoraProgramada] = useState(false);
 
     const { data, setData, post, processing, errors, reset } = useForm({
         dieta_id: '',
         observaciones: '',
+        fecha_hora_programada: '',
+        lugar_entrega: '',
     });
 
     const dietasDisponibles = useMemo(() => {
@@ -166,6 +175,32 @@ const DietaForm: React.FC<Props> = ({ hoja, categoria_dietas = [] }) => {
                         onChange={(value) => setData('dieta_id', value as string)}
                         error={errors.dieta_id}
                     />
+
+                    <BooleanInput
+                        label="¿Entregar a  una hora programada?"
+                        value={horaProgramada}
+                        onChange={(e)=>setHoraProgramada(e)}
+                        error={errors.fecha_hora_programada}
+                    />
+
+                    {horaProgramada && (
+                        <InputDateTime
+                            id='fecha_hora_programada'
+                            label='Fecha y hora programada de entrega'
+                            name='fecha_hora_programada'
+                            value={data.fecha_hora_programada}
+                            onChange={(e)=>(setData('fecha_hora_programada',e))}
+                        />
+                    )}
+
+                    <SelectInput
+                        label='Lugar de entrega de la dieta'
+                        options={lugaresEntregaOptions}
+                        value={data.lugar_entrega}
+                        onChange={e=>setData('lugar_entrega',e)}
+                        error={errors.lugar_entrega}
+                    />
+                    
 
                     <InputText
                         label='Observaciones'

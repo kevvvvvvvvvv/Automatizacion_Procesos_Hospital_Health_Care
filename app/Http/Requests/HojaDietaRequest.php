@@ -23,6 +23,8 @@ class HojaDietaRequest extends FormRequest
     {
         return [
             'dieta_id' => 'required|numeric|exists:dietas,id',
+            'fecha_hora_programada' => ['nullable'],
+            'lugar_entrega' => ['required','string'],
             'observaciones' => 'nullable|string|min:0|max:255' 
         ];
     }
