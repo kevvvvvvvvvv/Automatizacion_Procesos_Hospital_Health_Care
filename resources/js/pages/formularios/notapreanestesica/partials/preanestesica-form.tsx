@@ -28,6 +28,7 @@ export const Preanestesicaform = ({
         peso: preanestesica?.peso || '',
         talla: preanestesica?.talla || '',
         temp: preanestesica?.temp || '',
+        spo2: preanestesica?.spo2 || '',
          resultado_estudios: preanestesica?.resultado_estudios || '',
         resumen_del_interrogatorio: preanestesica?.resumen_del_interrogatorio ||  '',
         exploracion_fisica: preanestesica?.exploracion_fisica || '',

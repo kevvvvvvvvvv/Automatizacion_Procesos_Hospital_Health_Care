@@ -6,16 +6,19 @@ import { route } from 'ziggy-js';
 import PrimaryButton from '@/components/ui/primary-button';
 import InputText from '@/components/ui/input-text';
 import FormLayout from '@/components/form-layout';
-import { Insumos, Medicamento, ProductoServicio } from '@/types';
+import { Insumos, Medicamento, ProductoServicio, CatalogoEstudio } from '@/types';
 import medicamentos from '@/routes/medicamentos';
 import { error } from 'console';
 import InputDate from '@/components/ui/input-date';
+import { Label } from '@radix-ui/react-dropdown-menu';
+import { Target } from 'lucide-react';
 // Interface del modelo que te manda Laravel por props
 
 
 interface Props {
   productoServicio?: ProductoServicio | null; 
   medicamentos?: Medicamento;
+  estudios?: CatalogoEstudio;
   insumos?: Insumos;
   viasCatalogo: { id: number, via_administracion: string }[]; // Nueva Prop
   viaActualId?: number;
@@ -45,9 +48,16 @@ interface FormularioFormData {
   categoria?: string | null;
   especificacion?: string | null;
   categoria_unitaria?: string | null;
+
+  //Campo de laboratorio
+  tipo_estudio: string;
+    departamento: string | null;
+    tiempo_entrega: number;
+    costo: number; 
+    link: string;
 }
 
-const ProductoServicioForm = ({ productoServicio, medicamentos, insumos, viasCatalogo, viaActualId }: Props)=> {
+const ProductoServicioForm = ({ productoServicio, medicamentos, insumos, viasCatalogo, viaActualId, estudios }: Props)=> {
   const isEdit = !!productoServicio;
   const { data, setData, post, put, processing, errors } = useForm<FormularioFormData>({
   
@@ -59,7 +69,7 @@ const ProductoServicioForm = ({ productoServicio, medicamentos, insumos, viasCat
       cantidad: productoServicio?.cantidad ?? null,
       iva: productoServicio?.iva ?? null,
       cantidad_maxima: productoServicio?.cantidad_maxima ?? null,
-    cantidad_minima: productoServicio?.cantidad_minima ?? null,
+     cantidad_minima: productoServicio?.cantidad_minima ?? null,
 
     proveedor: productoServicio?.proveedor ?? null,
     fecha_caducidad: productoServicio?.fecha_caducidad ?? null,
@@ -74,6 +84,11 @@ const ProductoServicioForm = ({ productoServicio, medicamentos, insumos, viasCat
       categoria: insumos?.categoria ?? '',
       especificacion: insumos?.especificacion ?? '',
       categoria_unitaria: insumos?.categoria_unitaria ?? '',
+
+      tipo_estudio: estudios?.tipo_estudio ?? '',
+      departamento: estudios?.departamento ?? '',
+      tiempo_entrega: estudios?.tiempo_entrega ?? '',
+      link: estudios?.link ?? '',
     });
 
   const optionsTipo = [
@@ -84,7 +99,9 @@ const ProductoServicioForm = ({ productoServicio, medicamentos, insumos, viasCat
   const optionsSubtipo = [
     { value: 'MEDICAMENTOS', label: 'MEDICAMENTOS' },
     { value: 'INSUMOS', label: 'INSUMOS' },
+    { value: 'ESTUDIOS', label: 'ESTUDIOS'},
     { value: 'SERVICIOS', label: 'SERVICIOS' },
+    
   ];
   const optionsFraccion = [
     { value: 'True', label: 'Si'},
@@ -122,6 +139,26 @@ const ProductoServicioForm = ({ productoServicio, medicamentos, insumos, viasCat
     {value: "SOLUCION", label: "SOLUCION"},
     {value: 'TUBO ENDOTRAQUEAL', label: 'TUBO ENDOTRAQUEAL'},
     {value: 'VENDA', label: 'VENDA'},
+  ];
+  const optionsTipoEstudio = [
+    {value: 'Laboratorio', label: 'Laboratorio'},
+    {value: 'Imageneología', label: 'Imagenologpia'}
+  ];
+  //Pendiente por tiempo 
+  const optionDepartamento = [
+    {value: 'Hermatologpia', label: 'Hermatología'},
+    {value: 'Parasitología', label: 'Parasitología'},
+    {value: 'Hormonas', label: 'Hormonas'},
+    {value: 'Química Clinica', label: 'Química clinica'},
+    {value: 'Bacterología', label: 'Bacterología'},
+    {value: 'Uroanalisis', label: 'Uroanalisis'},
+    {value: 'Seminograma', label: 'Seminograma'},
+    {value: 'Coagulación', label: 'Coagulación'},
+    {value: 'Radiología general', label: 'Radiología general'},
+    {value: 'Ultrasonido', label: 'Ultrasonido'},
+    {value: 'Resonancia magnetica', label: 'Resonancia magnetica'},
+    {value: 'Tomografía computada', label: 'tomografía computada'},
+    {value: 'Otros estudios y/o perfiles', label: 'Otros estudios y/o perfiles'}
   ];
 
   const optionsVias = viasCatalogo.map(via => ({
@@ -277,6 +314,49 @@ const ProductoServicioForm = ({ productoServicio, medicamentos, insumos, viasCat
                   }
               }}
               error={errors.fecha_caducidad}
+          />
+          </>
+        )}
+        {data.subtipo === 'ESTUDIOS' && (
+          <>
+          
+
+          <SelectInput
+            label='Tipo de eestudio'
+            options={optionsTipoEstudio}
+            value = {data.tipo_estudio ?? ''}
+            onChange={(value) =>
+              setData('tipo_estudio', value as FormularioFormData['tipo_estudio'])
+            }
+            placeholder='Seleccione el tipo de estudio'
+            error={errors.tipo_estudio}
+          />
+          <SelectInput
+          label='Departamento'
+          options={optionDepartamento}
+          value= {data.departamento ?? ''}
+          onChange={(value) => setData('departamento', value as FormularioFormData['departamento'])}
+          placeholder='ingrese el departamento del estudios'
+          error={errors.departamento}
+          />
+          <InputText
+          id='tiempo_entrega'
+          name='tiempo_entrega'
+          label='Tiempo de entrega'
+          value={(data.tiempo_entrega ?? '').toString()}
+          onChange={(e) => setData('tiempo_entrega', e.target.value)}
+          placeholder='Tiempo estimado de entrega'
+          error={errors.tiempo_entrega}
+          />
+
+          <InputText
+          id='link'
+          name='link'
+          label='Link'
+          value={(data.link ?? '')}
+          placeholder='ingrese el link de donde saco la información'
+          onChange={(e) => setData('link', e.target.value)}
+          error={errors.link}
           />
           </>
         )}

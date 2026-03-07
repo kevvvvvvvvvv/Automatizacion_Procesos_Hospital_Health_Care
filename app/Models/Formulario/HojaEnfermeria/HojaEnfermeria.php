@@ -90,6 +90,26 @@ class HojaEnfermeria extends Model
         return $this->hasMany(HojaSondaCateter::class);
     }
 
+    public function getSondasActivasAttribute()
+    {
+        $sondasActuales = $this->sondasCateteres;
+        $estanciaId = $this->formularioInstancia->estancia_id;
+
+        $sondasHeredadas = HojaSondaCateter::whereHas('hojaEnfermeria', function ($query) use ($estanciaId) {
+            $query->where('id', '<', $this->id)
+                  ->whereHas('formularioInstancia', function ($q) use ($estanciaId) {
+                      $q->where('estancia_id', $estanciaId);
+                  });
+        })
+        ->where(function($query) {
+            $query->whereNull('fecha_caducidad')
+                  ->orWhere('fecha_caducidad', '>=', $this->created_at);
+        })
+        ->get();
+
+        return $sondasActuales->merge($sondasHeredadas);
+    }
+
     public function solicitudPatologia(): MorphMany
     {
         return $this->morphMany(SolicitudPatologia::class,'itemable');

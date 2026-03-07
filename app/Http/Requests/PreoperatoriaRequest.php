@@ -27,6 +27,7 @@ class PreoperatoriaRequest extends FormRequest
             'talla' => ['required', 'integer', 'between:20,300'], 
             'peso'  => ['required', 'numeric', 'between:0.1,600'], 
             'temp'  => ['required', 'numeric', 'between:30,45'],   
+            'spo2'  => ['required', 'integer', 'between:0,100'],
 
             'diagnostico_preoperatorio'    => ['required', 'string', 'min:5', 'max:10000'],
             'plan_quirurgico'              => ['required', 'string', 'min:5', 'max:10000'],
