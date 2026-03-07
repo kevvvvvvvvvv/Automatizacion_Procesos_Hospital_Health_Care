@@ -17,6 +17,18 @@ import {PageProps} from '@/types';
 export default function Dashboard() {
     const { can } = usePermission();
     const { auth } = usePage<PageProps>().props;
+    
+    if (!("Notification" in window)) {
+        console.log("Este navegador no soporta notificaciones de escritorio.");
+    } else {
+        if (Notification.permission !== "granted" && Notification.permission !== "denied") {
+            Notification.requestPermission().then(function (permission) {
+                if (permission === "granted") {
+                    console.log("¡Permiso concedido para enviar notificaciones!");
+                }
+            });
+        }
+    }
 
     return (
         <>

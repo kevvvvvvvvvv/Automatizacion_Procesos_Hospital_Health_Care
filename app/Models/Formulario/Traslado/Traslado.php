@@ -14,10 +14,11 @@ class Traslado extends Model
     protected $table = 'traslado';
     protected $fillable = [
         'id',
-         'id',
+        'id',
         'ta',
         'fc',
         'fr',
+        'spo2',
         'peso',
         'talla',
         'temp',

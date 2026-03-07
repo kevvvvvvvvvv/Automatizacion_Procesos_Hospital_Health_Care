@@ -128,7 +128,9 @@ Route::get('/reportes/frecuencia-cardiaca/pdf', [ReporteSignosController::class,
     ->middleware('auth');
 
 
-    
+Route::get('/interconsulta/receta/pdf', [InterconsultaController::class, 'receta'])
+    ->name('receta.pdf')
+    ->middleware('auth');   
 Route::post('/cargos', [CargoController::class, 'store'])->name('cargos.store')->middleware('auth');
 Route::resource('habitaciones', HabitacionController::class)->middleware('auth');
 Route::resource('producto-servicios', ProductoServicioController::class)->middleware('auth');

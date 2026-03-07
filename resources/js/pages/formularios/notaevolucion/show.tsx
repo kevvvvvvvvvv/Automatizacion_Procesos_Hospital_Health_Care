@@ -58,6 +58,9 @@ const Show = ({notasevolucione, paciente, estancia}: ShowNotaEvolucionProps) => 
             label= "Frecuencia respiratoria"
             value= {notasevolucione.fr || 'N/A'}/>
             <InfoField
+            label= "Saturación de oxígeno"
+            value= {notasevolucione.spo2 + '%' || 'N/A'}/>
+            <InfoField
             label= "Temperatura"
             value= {notasevolucione.temp || 'N/A'}/>
             <InfoField

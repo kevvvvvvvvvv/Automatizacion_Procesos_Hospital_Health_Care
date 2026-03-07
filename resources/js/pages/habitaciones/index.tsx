@@ -14,7 +14,7 @@ import {
 } from '@tanstack/react-table';
 import AddButton from '@/components/ui/add-button';
 import { Habitacion } from '@/types';
-import { Eye, Pencil } from 'lucide-react';
+import { Eye, Pencil, Notebook } from 'lucide-react';
 
 type IndexProps = {
   habitaciones: Habitacion[];
@@ -74,10 +74,9 @@ const Index = ({ habitaciones }: IndexProps) => {
           <div className="flex space-x-2">
             <Link
               href={route('habitaciones.edit', row.original.id)}
-              className="p-2 text-blue-500 hover:bg-blue-100 hover:text-blue-700 rounded-full transition"
+              className=" text-blue-500 hover:bg-blue-100 hover:text-blue-700 transition"
               title="Editar habitación"
               onClick={(e) => {
-                // evito que el click suba al TR y dispare router.get(...)
                 e.stopPropagation();
               }}
             >
@@ -90,6 +89,12 @@ const Index = ({ habitaciones }: IndexProps) => {
             title='Ver detalles'
             onClick={(e)=>{ e.stopPropagation();}}>
               <Eye size={18}/>
+            </Link>
+            <Link
+              href={(route('habitaciones.show', row.original.id))}
+              className='text-orange-700 hover:text-orange-900 transition'
+            >
+              <Notebook size={18}/>
             </Link>
           </div>
         ),
@@ -145,7 +150,10 @@ const Index = ({ habitaciones }: IndexProps) => {
               {table.getHeaderGroups().map(headerGroup => (
                 <tr key={headerGroup.id}>
                   {headerGroup.headers.map(header => (
-                    <th key={header.id} scope="col" className="px-6 py-3">
+                    <th 
+                      key={header.id} scope="col" 
+                      className="px-6 py-3"  
+                    >
                       <div
                         className="flex items-center cursor-pointer select-none"
                         onClick={header.column.getToggleSortingHandler()}
@@ -164,7 +172,7 @@ const Index = ({ habitaciones }: IndexProps) => {
                   key={row.id}
                   className="border-b hover:bg-gray-100 cursor-pointer"
                   onClick={() => {
-                    router.get(route('habitaciones.show', row.original.id));
+                    router.get(route('estancias.show', row.original.estancia_activa?.id));
                   }}
                 >
                   {row.getVisibleCells().map(cell => (

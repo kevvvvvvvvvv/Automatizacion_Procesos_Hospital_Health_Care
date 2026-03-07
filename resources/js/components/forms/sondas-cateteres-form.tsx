@@ -119,8 +119,10 @@ const SondasCateteresForm: React.FC<Props> = ({ hoja, estancia, sondas_cateters 
                             <tr className='text-left text-xs font-medium text-gray-500 uppercase'>
                                 <th className="px-4 py-3">Dispositivo</th>
                                 <th className="px-4 py-3">F. instalación</th>
+                                {/* <th className="px-4 py-3">Persona que instaló</th> */}
                                 <th className="px-4 py-3">Tiempo transcurrido</th>
                                 <th className="px-4 py-3">F. caducidad</th>
+                                {/* <th className="px-4 py-3">Perosona que retiró</th> */}
                                 <th className="px-4 py-3">Observaciones</th>
                                 <th className="px-4 py-3">Acciones</th>
                             </tr>

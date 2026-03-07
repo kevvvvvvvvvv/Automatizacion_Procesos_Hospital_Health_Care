@@ -34,7 +34,7 @@ class MetodoPagoSeeder extends Seeder
             [
                 'nombre' => 'Tarjeta de crédito',
                 'tipo_ajuste' => 'recargo',
-                'valor_ajuste' => 0.00, 
+                'valor_ajuste' => 05.00, 
                 'activo' => true,
                 'created_at' => now(),
                 'updated_at' => now(),

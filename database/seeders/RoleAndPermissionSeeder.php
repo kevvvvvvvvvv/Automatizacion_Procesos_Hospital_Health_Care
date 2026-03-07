@@ -195,6 +195,9 @@ class RoleAndPermissionSeeder extends Seeder
             'crear consentimientos',
             
             'consultar habitaciones',
+
+            'crear hojas frontales',
+            'consultar hojas frontales',
         ]);
 
         $roleFarmacia->syncPermissions([
