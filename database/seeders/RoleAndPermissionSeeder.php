@@ -165,6 +165,9 @@ class RoleAndPermissionSeeder extends Seeder
             'eliminar hojas', 
 
             'consultar hojas enfermerias',
+
+            'crear hojas frontales',
+            'consultar hojas frontales',
             
             'consultar documentos medicos',
             'crear documentos medicos',
