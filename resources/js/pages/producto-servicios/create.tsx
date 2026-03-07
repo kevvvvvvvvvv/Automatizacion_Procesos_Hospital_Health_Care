@@ -69,7 +69,7 @@ const ProductoServicioForm = ({ productoServicio, medicamentos, insumos, viasCat
       cantidad: productoServicio?.cantidad ?? null,
       iva: productoServicio?.iva ?? null,
       cantidad_maxima: productoServicio?.cantidad_maxima ?? null,
-    cantidad_minima: productoServicio?.cantidad_minima ?? null,
+     cantidad_minima: productoServicio?.cantidad_minima ?? null,
 
     proveedor: productoServicio?.proveedor ?? null,
     fecha_caducidad: productoServicio?.fecha_caducidad ?? null,
@@ -87,7 +87,7 @@ const ProductoServicioForm = ({ productoServicio, medicamentos, insumos, viasCat
 
       tipo_estudio: estudios?.tipo_estudio ?? '',
       departamento: estudios?.departamento ?? '',
-      tiempo_entrega: estudios?.tiempo_entrega ?? null,
+      tiempo_entrega: estudios?.tiempo_entrega ?? '',
       link: estudios?.link ?? '',
     });
 
@@ -141,13 +141,25 @@ const ProductoServicioForm = ({ productoServicio, medicamentos, insumos, viasCat
     {value: 'VENDA', label: 'VENDA'},
   ];
   const optionsTipoEstudio = [
-    {value: 'Laboratorio', Label: 'Laboratorio'},
-    {value: 'Imageneología', Label: 'Imagenologpia'}
+    {value: 'Laboratorio', label: 'Laboratorio'},
+    {value: 'Imageneología', label: 'Imagenologpia'}
   ];
   //Pendiente por tiempo 
-  /*const optionDepartamento = [
-
-  ];*/
+  const optionDepartamento = [
+    {value: 'Hermatologpia', label: 'Hermatología'},
+    {value: 'Parasitología', label: 'Parasitología'},
+    {value: 'Hormonas', label: 'Hormonas'},
+    {value: 'Química Clinica', label: 'Química clinica'},
+    {value: 'Bacterología', label: 'Bacterología'},
+    {value: 'Uroanalisis', label: 'Uroanalisis'},
+    {value: 'Seminograma', label: 'Seminograma'},
+    {value: 'Coagulación', label: 'Coagulación'},
+    {value: 'Radiología general', label: 'Radiología general'},
+    {value: 'Ultrasonido', label: 'Ultrasonido'},
+    {value: 'Resonancia magnetica', label: 'Resonancia magnetica'},
+    {value: 'Tomografía computada', label: 'tomografía computada'},
+    {value: 'Otros estudios y/o perfiles', label: 'Otros estudios y/o perfiles'}
+  ];
 
   const optionsVias = viasCatalogo.map(via => ({
     value: via.id.toString(),
@@ -307,21 +319,23 @@ const ProductoServicioForm = ({ productoServicio, medicamentos, insumos, viasCat
         )}
         {data.subtipo === 'ESTUDIOS' && (
           <>
-          <InputText
-            id = 'tipo_estudio'
-            name = 'tipo_estudio'
+          
+
+          <SelectInput
             label='Tipo de eestudio'
+            options={optionsTipoEstudio}
             value = {data.tipo_estudio ?? ''}
-            onChange={e => setData('tipo_estudio', e.target.value)}
-            placeholder='Ingrese el tipo de estudio'
+            onChange={(value) =>
+              setData('tipo_estudio', value as FormularioFormData['tipo_estudio'])
+            }
+            placeholder='Seleccione el tipo de estudio'
             error={errors.tipo_estudio}
           />
-          <InputText
-          id='departamento'
-          name='departamento'
+          <SelectInput
           label='Departamento'
+          options={optionDepartamento}
           value= {data.departamento ?? ''}
-          onChange={e => setData('departamento', e.target.value)}
+          onChange={(value) => setData('departamento', value as FormularioFormData['departamento'])}
           placeholder='ingrese el departamento del estudios'
           error={errors.departamento}
           />
@@ -333,7 +347,6 @@ const ProductoServicioForm = ({ productoServicio, medicamentos, insumos, viasCat
           onChange={(e) => setData('tiempo_entrega', e.target.value)}
           placeholder='Tiempo estimado de entrega'
           error={errors.tiempo_entrega}
-          
           />
 
           <InputText
@@ -342,6 +355,7 @@ const ProductoServicioForm = ({ productoServicio, medicamentos, insumos, viasCat
           label='Link'
           value={(data.link ?? '')}
           placeholder='ingrese el link de donde saco la información'
+          onChange={(e) => setData('link', e.target.value)}
           error={errors.link}
           />
           </>
