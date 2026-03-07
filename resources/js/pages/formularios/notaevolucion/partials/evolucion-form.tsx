@@ -37,6 +37,7 @@ export const EvolucionForm =({
     ta: evolucion?.ta || '',
     fc: evolucion?.fc || '',
     fr: evolucion?.fr || '',
+    spo2: evolucion?.spo2 || '',
     temp: evolucion?.temp || '',
     peso: evolucion?.peso || '',
     talla: evolucion?.talla || '',

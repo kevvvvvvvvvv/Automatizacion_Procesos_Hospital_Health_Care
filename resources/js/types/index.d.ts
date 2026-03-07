@@ -146,9 +146,7 @@ export interface Habitacion {
     ubicacion: string;
     piso: string,
     estado: 'Ocupado' | 'Libre',
-    estancia_activa?: { 
-        paciente?: Paciente
-    };
+    estancia_activa?: Estancia;
 
     habitacion_precios: HabitacionPrecio[];
 }
@@ -808,7 +806,8 @@ export interface notasEvoluciones {
   evolucion_actualizacion: string;
   ta: string;  
   fc: string;  
-  fr: string;  
+  fr: string;
+  spo2: string;  
   temp: string;  
   peso: string;  
   talla: string; 
