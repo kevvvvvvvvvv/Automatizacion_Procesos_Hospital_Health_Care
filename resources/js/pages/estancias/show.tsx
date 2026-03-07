@@ -20,6 +20,7 @@ interface ShowEstanciaProps {
         consentimiento: Consentimiento[] | null;
         formulario_instancias: (FormularioInstancia & {
             catalogo: { 
+                id: number;
                 nombre_formulario: string,
                 route_prefix: string,
              };
@@ -398,7 +399,14 @@ const Show = ({ estancia }: ShowEstanciaProps) => {
                             
                         </Link>
                     )}
-                                    {(formulario.user_id === auth.user.id || hasRole('administrador')) && (
+                                    {(
+formulario.user_id === auth.user.id || 
+    hasRole('administrador') || 
+    (
+        formulario.catalogo.id === 15 && 
+        auth.user.roles?.some(rol => ['técnico de laboratorio', 'químico', 'radiólogo'].includes(rol))
+    )
+                                    ) && (
                                     <Link
                                         href={route(`${formulario.catalogo.route_prefix}.edit`, formulario.id)}
                                         className="p-2 text-blue-500 hover:bg-blue-100 hover:text-blue-700 rounded-full transition"
