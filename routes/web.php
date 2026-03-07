@@ -342,6 +342,15 @@ Route::post('/notifications/mark-all-as-read', function () {
     return redirect()->back();
 })->name('notifications.mark-all-as-read')->middleware('auth');
 
+Route::post('/notifications/{id}/mark-as-read', function ($id) {
+    $notification = Auth::user()->notifications()->where('id', $id)->first();
+    if ($notification) {
+        $notification->markAsRead();
+    }
+
+    return redirect()->back();
+})->name('notifications.mark-as-read')->middleware('auth');
+
 // Historial
 Route::get('/historial', [HistoryController::class, 'index'])->name('historiales.index')->middleware('auth');
 Route::get ('/rerservacion/reserva', [ReservacionController::class, 'reserva'])->name('rerservaciones.reserva')->middleware('auth');

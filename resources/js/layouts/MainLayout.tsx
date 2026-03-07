@@ -150,6 +150,19 @@ const MainLayout = ({ pageTitle, children, link, linkParams }: MainLayoutProps) 
     const buttonRef = useRef<HTMLButtonElement>(null);
     const userId = authUser?.id;
 
+    const markAsRead = (id: string) => {
+        setNotifications((prev) =>
+            prev.map((n: LaravelNotification) =>
+                n.id === id ? { ...n, read_at: new Date().toISOString() } : n
+            )
+        );
+        router.post(route('notifications.mark-as-read', id), {}, {
+            preserveScroll: true,
+            preserveState: true, 
+        });
+    };
+
+
     //Notificaciones mediante navegador
     useEffect(() => {
         if ("Notification" in window && Notification.permission === "default") {
@@ -297,7 +310,14 @@ const MainLayout = ({ pageTitle, children, link, linkParams }: MainLayoutProps) 
                                 const targetUrl = notif.data.action_url 
                                     || (notif.data.hoja_id ? route('solicitudes-medicamentos.show', { hojasenfermeria: notif.data.hoja_id }) : null);
                                 const cardContent = (
-                                    <div className={`p-4 hover:bg-gray-50 ${!notif.read_at ? 'bg-blue-50' : ''}`}>
+                                    <div 
+                                        className={`p-4 hover:bg-gray-50 ${!notif.read_at ? 'bg-blue-50' : ''}`}
+                                        onClick={() => {
+                                            if (!notif.read_at) {
+                                                markAsRead(notif.id);
+                                            }
+                                        }}    
+                                    >
                                         {notif.data.title && (
                                             <p className="text-xs font-bold text-gray-500 uppercase mb-1">
                                                 {notif.data.title}
