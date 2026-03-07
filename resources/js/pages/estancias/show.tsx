@@ -195,7 +195,10 @@ const Show = ({ estancia }: ShowEstanciaProps) => {
                                     </>
                                     )}
 
-                                    <Menu.Item>
+                                    
+                                    {(can('crear documentos medicos')) && (
+                                        <>
+                                        <Menu.Item>
                                         {({ active }) => (
                                             <Link
                                                 href={route('pacientes.estancias.hojasfrontales.create', { paciente: paciente.id, estancia: estancia.id })}
@@ -207,8 +210,6 @@ const Show = ({ estancia }: ShowEstanciaProps) => {
                                             </Link>
                                         )}
                                     </Menu.Item>
-                                    {(can('crear documentos medicos')) && (
-                                        <>
                                     <Menu.Item>
                                         {({ active }) => (
                                             <Link
