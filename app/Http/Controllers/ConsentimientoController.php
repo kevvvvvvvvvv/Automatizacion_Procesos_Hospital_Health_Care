@@ -100,7 +100,30 @@ class ConsentimientoController extends Controller
             return back()->with('error', 'Error al guardar: ' . $e->getMessage());
         }
     }
+public function generarPDF(string $file, Request $request, Paciente $paciente, Estancia $estancia, Consentimiento $consentimiento)
+{   
+    if ($request->has('consentimiento_id')) {
+        $consentimientoId = intval($request->query('consentimiento_id'));
+        
+        // Cargamos las relaciones: Consentimiento -> Estancia -> Todas sus Instancias -> La Hoja Frontal -> El Médico y sus Credenciales
+        $consentimiento = Consentimiento::with([
+            'estancia.paciente',
+            'estancia.familiarResponsable',
+            'estancia.formularioInstancias.hojaFrontal.medico.credenciales'
+        ])->find($consentimientoId);
 
+<<<<<<< HEAD
+        if (!$consentimiento) abort(404, "Consentimiento no encontrado.");
+
+        // Buscamos la instancia que realmente tiene la Hoja Frontal
+        $instanciaConFrontal = $consentimiento->estancia->formularioInstancias
+            ->whereNotNull('hojaFrontal')
+            ->first();
+
+        // Extraemos el médico de la Hoja Frontal
+        $medicoFrontal = $instanciaConFrontal ? $instanciaConFrontal->hojaFrontal->medico : null;
+
+=======
    public function generarPDF(string $file, Request $request, Paciente $paciente, Estancia $estancia, Consentimiento $consentimiento)
 {   
     if ($request->has('consentimiento_id')) {
@@ -121,11 +144,14 @@ class ConsentimientoController extends Controller
 
         $medicoFrontal = $instanciaConFrontal ? $instanciaConFrontal->hojaFrontal->medico : null;
 
+>>>>>>> 36c37b51acbf2e5720f25ce4baa7c9807b3a6d56
         $fecha = $consentimiento->created_at;
         $meses = [1 => 'enero', 2 => 'febrero', 3 => 'marzo', 4 => 'abril', 5 => 'mayo', 6 => 'junio', 
                   7 => 'julio', 8 => 'agosto', 9 => 'septiembre', 10 => 'octubre', 11 => 'noviembre', 12 => 'diciembre'];
         
         $viewData = [
+<<<<<<< HEAD
+=======
             'notaData' => $consentimiento,
             'paciente' => $consentimiento->estancia->paciente,
             'medico'   => $medicoFrontal, // <--- Este es el médico de la Hoja Frontal
@@ -148,12 +174,17 @@ class ConsentimientoController extends Controller
 
         $headerData = [
             'logoDataUri' => $logo,
+>>>>>>> 36c37b51acbf2e5720f25ce4baa7c9807b3a6d56
             'notaData' => $consentimiento,
-            'paciente' => $consentimiento->estancia?->paciente,
-            'medico' => $consentimiento->user,
-            'estancia'=> $consentimiento->estancia
+            'paciente' => $consentimiento->estancia->paciente,
+            'medico'   => $medicoFrontal, // <--- Este es el médico de la Hoja Frontal
+            'estancia' => $consentimiento->estancia->familiarResponsable,
+            'fecha' => [
+                'dia' => $fecha->day,
+                'mes' => $meses[$fecha->month],
+                'anio' => $fecha->year,
+            ],
         ];
-
 
         return Pdf::view($consentimiento->route_pdf, $viewData)
             ->format('Letter')
@@ -161,11 +192,13 @@ class ConsentimientoController extends Controller
             ->withBrowsershot(function (Browsershot $browsershot) {
                 $this->configureBrowsershot($browsershot);
             })
-            ->headerView('headerConsentimiento', $headerData)
-            ->inline(); 
+            ->inline();
     }
 }
+<<<<<<< HEAD
+=======
 
+>>>>>>> 36c37b51acbf2e5720f25ce4baa7c9807b3a6d56
     protected function configureBrowsershot(Browsershot $browsershot)
     {
         $chromePath = config('services.browsershot.chrome_path');
