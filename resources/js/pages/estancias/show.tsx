@@ -195,7 +195,10 @@ const Show = ({ estancia }: ShowEstanciaProps) => {
                                     </>
                                     )}
 
-                                    <Menu.Item>
+                                    
+                                    {(can('crear documentos medicos')) && (
+                                        <>
+                                        <Menu.Item>
                                         {({ active }) => (
                                             <Link
                                                 href={route('pacientes.estancias.hojasfrontales.create', { paciente: paciente.id, estancia: estancia.id })}
@@ -207,8 +210,6 @@ const Show = ({ estancia }: ShowEstanciaProps) => {
                                             </Link>
                                         )}
                                     </Menu.Item>
-                                    {(can('crear documentos medicos')) && (
-                                        <>
                                     <Menu.Item>
                                         {({ active }) => (
                                             <Link
@@ -388,9 +389,7 @@ const Show = ({ estancia }: ShowEstanciaProps) => {
                       formulario.catalogo.route_prefix.includes('notasurgencias')) && (
                         <Link
                             href={route('receta.pdf', { 
-                                paciente: paciente.id, 
-                                estancia: estancia.id,
-                                origen_id: formulario.id
+                                formulario: formulario.id
                             })}
                             className="inline-flex items-center px-3 py-1.5 bg-green-600 text-white text-xs font-medium rounded hover:bg-green-700 transition shadow-sm"
                             title="Generar Receta Médica"
