@@ -71,6 +71,9 @@ const Show = ({ preoperatoria, paciente, estancia }: ShowPreoperatorioProps) => 
           label = "Frecuencia respiratoria"
           value = {preoperatoria.fr}/>
           <InfoField 
+          label="Saturación de oxigeno" 
+          value = {preoperatoria.spo2 ? `${preoperatoria.spo2}` : 'N/A'}/>
+          <InfoField 
           label = "Temperatura"
           value = {preoperatoria.temp}/>
           <InfoField

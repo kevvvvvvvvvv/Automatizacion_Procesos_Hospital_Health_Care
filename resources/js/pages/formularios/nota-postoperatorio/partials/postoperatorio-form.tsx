@@ -89,6 +89,7 @@ export const NotaPostoperatoriaForm = ({
     ta: nota?.ta || '',
     fc: nota?.fc || '',
     fr: nota?.fr || '',
+    spo2: nota?.spo2 || '',
     temp: nota?.temp || '',
     peso: nota?.peso || '',
     talla: nota?.talla || '',

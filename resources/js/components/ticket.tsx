@@ -142,6 +142,22 @@ export default function TicketPago({ pago }: Props) {
                 ) : (
                     <p>El cliente no solicitó factura para esta cuenta.</p>
                 )}
+
+            </div>
+
+            <div className="text-center mt-4 text-[10px]">
+                <p>¡Gracias por su preferencia!</p>
+                <p>Conserve este recibo para aclaraciones.</p>
+            </div>
+            
+            <div className='text-left mt-2 text-[10px]'>
+                {venta?.requiere_factura ? (
+                    <>
+                        <p>Tiene 72 horas para el envío de su información a: 7779756696 o cmc1.facturacion@gmail.com</p> 
+                    </>
+                ) : (
+                    <p>El cliente no solicitó factura para esta cuenta.</p>
+                )}
             </div>
         </div>
     );

@@ -30,6 +30,7 @@ class NotaPostoperatoriaRequest extends FormRequest
             'temp'  => ['required', 'numeric', 'between:30,45'],
             'peso'  => ['required', 'numeric', 'between:0.1,600'],
             'talla' => ['required', 'integer', 'between:20,300'],
+            'spo2'  => ['required', 'integer', 'between:0,100'],
 
             'resumen_del_interrogatorio'       => ['required', 'string', 'min:5', 'max:10000'],
             'exploracion_fisica'               => ['required', 'string', 'min:5', 'max:10000'],
