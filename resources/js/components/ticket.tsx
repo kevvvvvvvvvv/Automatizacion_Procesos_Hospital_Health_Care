@@ -84,7 +84,6 @@ export default function TicketPago({ pago }: Props) {
                     )}
                 </tbody>
             </table>    
-<<<<<<< HEAD
 
             <div className="border-t border-black pt-2 text-right text-xs">
                 <p className="font-bold text-sm mt-1">SU PAGO: {formatter.format(pago.monto)}</p>
@@ -113,8 +112,8 @@ export default function TicketPago({ pago }: Props) {
                     ):(
                         <p>El cliente no solicitó factura para esta cuenta.</p>
                     )}
-                </div>
-=======
+                </tbody>
+            </table>    
 
             <div className="border-t border-black pt-2 text-right text-xs">
                 <p className="font-bold text-sm mt-1">SU PAGO: {formatter.format(pago.monto)}</p>
@@ -143,8 +142,47 @@ export default function TicketPago({ pago }: Props) {
                 ) : (
                     <p>El cliente no solicitó factura para esta cuenta.</p>
                 )}
->>>>>>> 2c45198bebd777f8967d5d2abfab34c50c533356
+
             </div>
+
+            <div className="text-center mt-4 text-[10px]">
+                <p>¡Gracias por su preferencia!</p>
+                <p>Conserve este recibo para aclaraciones.</p>
+            </div>
+            
+            <div className='text-left mt-2 text-[10px]'>
+                {venta?.requiere_factura ? (
+                    <>
+                        <p>Tiene 72 horas para el envío de su información a: 7779756696 o cmc1.facturacion@gmail.com</p> 
+                    </>
+                ) : (
+                    <p>El cliente no solicitó factura para esta cuenta.</p>
+                )}
+            </div>
+        </div>
+    );
+
+    return (
+        <div className="p-4">
+            <button 
+                onClick={handlePrint}
+                className="mb-6 bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 no-print rounded-xl shadow-lg transition-colors flex items-center gap-2"
+            >
+                <span>🖨️</span> Imprimir Original y Copia
+                    </button>
+
+        <div id={`printable-area-${pago.id}`} className="flex flex-col">
+            
+            {/* Primera copia: ORIGINAL */}
+            <TicketContent leyenda="ORIGINAL" />
+
+            <div className="page-break manual-cut-space"></div>
+            
+            {/* Segunda copia: COPIA */}
+            <TicketContent leyenda="COPIA" />
+
+            <div className="h-12"></div>
+        </div>
         </div>
     );
 
