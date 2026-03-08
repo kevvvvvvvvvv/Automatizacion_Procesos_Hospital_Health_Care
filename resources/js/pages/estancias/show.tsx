@@ -192,6 +192,18 @@ const Show = ({ estancia }: ShowEstanciaProps) => {
                                             </Link>
                                         )}
                                     </Menu.Item>
+                                    <Menu.Item>
+                                        {({ active }) => (
+                                            <Link
+                                                href={route('pacientes.estancias.hojasfrontales.create', { paciente: paciente.id, estancia: estancia.id })}
+                                                className={`${
+                                                    active ? 'bg-blue-500 text-white' : 'text-gray-900'
+                                                } group flex rounded-md items-center w-full px-2 py-2 text-sm`}
+                                            >
+                                                Añadir hoja frontal
+                                            </Link>
+                                        )}
+                                    </Menu.Item>
                                     </>
                                     )}
 
@@ -384,20 +396,20 @@ const Show = ({ estancia }: ShowEstanciaProps) => {
                                 </div>
                                 <div className="flex items-center space-x-2">
                     
-                    
-                    {(formulario.catalogo.route_prefix.includes('interconsultas') || 
-                      formulario.catalogo.route_prefix.includes('notasurgencias')) && (
-                        <Link
-                            href={route('receta.pdf', { 
-                                formulario: formulario.id
-                            })}
-                            className="inline-flex items-center px-3 py-1.5 bg-green-600 text-white text-xs font-medium rounded hover:bg-green-700 transition shadow-sm"
-                            title="Generar Receta Médica"
-                        >
-                            <Plus size={14} className="mr-1" />
-                            
-                        </Link>
-                    )}
+                                    
+                                    {(formulario.catalogo.route_prefix.includes('interconsultas') || 
+                                    formulario.catalogo.route_prefix.includes('notasurgencias')) && (
+                                        <Link
+                                            href={route('receta.pdf', { 
+                                                formulario: formulario.id
+                                            })}
+                                            className="inline-flex items-center px-3 py-1.5 bg-green-600 text-white text-xs font-medium rounded hover:bg-green-700 transition shadow-sm"
+                                            title="Generar Receta Médica"
+                                        >
+                                            <Plus size={14} className="mr-1" />
+                                            
+                                        </Link>
+                                    )}
                                     {(formulario.user_id === auth.user.id || hasRole('administrador')) && (
                                     <Link
                                         href={route(`${formulario.catalogo.route_prefix}.edit`, formulario.id)}
@@ -407,7 +419,7 @@ const Show = ({ estancia }: ShowEstanciaProps) => {
                                         <Pencil size={18} />
                                     </Link>
                                     )}
-
+                                    {(formulario.user_id === auth.user.id || hasRole('medico') || hasRole('medico especialista')) && ( 
                                     <Link 
                                         href={route(`${formulario.catalogo.route_prefix}.show`, formulario.id)}
                                         className="p-2 text-gray-500 hover:bg-gray-200 hover:text-gray-800 rounded-full transition"
@@ -415,7 +427,8 @@ const Show = ({ estancia }: ShowEstanciaProps) => {
                                     >
                                         <Eye size={18} />
                                     </Link>
-
+                                    )}
+                                    {( hasRole('medico') || hasRole('medico especialista')) && ( 
                                     <a 
                                         href={route(`${formulario.catalogo.route_prefix}.pdf`, formulario.id)}
                                         target="_blank"
@@ -424,6 +437,8 @@ const Show = ({ estancia }: ShowEstanciaProps) => {
                                     >
                                         <Printer size={18} />
                                     </a>
+                                    )}
+                                    
                                 </div>
                             </div>
        
