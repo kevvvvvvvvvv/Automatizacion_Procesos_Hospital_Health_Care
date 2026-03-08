@@ -57,13 +57,13 @@ class FormularioHojaEnfermeriaController extends Controller implements HasMiddle
             'hojaMedicamentos.aplicaciones',
             'hojaOxigenos.userInicio',
             'hojaOxigenos.userFin',
-            'hojaEscalaValoraciones',
+            'hojaEscalaValoraciones.valoracionDolor',
             'hojaControlLiquidos',
             'hojaSignos',
             'hojaRiesgoCaida',
             'solicitudesDieta.dieta.categoriaDieta',
         );
-        
+
         return Inertia::render('formularios/hojas-enfermerias/show', [
             'hoja' => $hojasenfermeria,
         ]);

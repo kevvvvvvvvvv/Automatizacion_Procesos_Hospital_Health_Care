@@ -3,10 +3,14 @@ import { Head } from '@inertiajs/react';
 import { HojaEnfermeria } from '@/types';
 
 import InfoCard from '@/components/ui/info-card';
-import InfoField from '@/components/ui/info-field';
 import MainLayout from '@/layouts/MainLayout';
 import NavegationTab from '@/components/navegation-tab';
-import SignosVitalesForm from '@/components/forms/signos-vitales-form';
+import HojaSignosTable from '@/components/forms/hoja-enfermeria-hospitalizacion-tables/signos-table';
+import RiesgoCaidasTable from '@/components/forms/hoja-enfermeria-hospitalizacion-tables/riesgo-caidas-table';
+import ControlLiquidosTable from '@/components/forms/hoja-enfermeria-hospitalizacion-tables/control-liquidos-table';
+import EscalaValoracionTable from '@/components/forms/hoja-enfermeria-hospitalizacion-tables/escala-valoracion-table';
+import MedicamentosTable from '@/components/forms/hoja-enfermeria-hospitalizacion-tables/ministracion-medicamentos-table';
+
 
 interface Props{
     hoja: HojaEnfermeria;
@@ -19,7 +23,6 @@ const secciones: { id: SeccionHoja, label: string }[] = [
     { id: 'control_liquidos', label:'Control de liquidos'},
     { id: 'escalas_valoracion', label:'Escalas de valoracion'},
     { id: 'riesgo_caidas', label: 'Riesgo de caídas'},
-
     { id: 'medicamentos', label: 'Ministración de medicamentos' },
     { id: 'terapia_iv', label: 'Terapia intravenosa' },
     { id: 'estudios', label: 'Ordenar estudios' },
@@ -49,31 +52,28 @@ const Show = ({
     const renderActiveSection = () => {
         switch (activeSection) {
             case 'signos':
-/*                 return <SignosVitalesForm 
-                            hoja={hoja}
-                        />; */
+                return <HojaSignosTable
+                            hoja  = {hoja}                
+                        />;
             case 'riesgo_caidas':
-/*                 return <RiesgoCaidasForm
-                            hoja={hojaenfermeria} 
-                        />*/
+                 return <RiesgoCaidasTable
+                            hoja={hoja} 
+                        />;
             case 'control_liquidos': 
-/*                 return <ControlLiquidosForm
-                            hoja={hojaenfermeria} 
-                        />;*/
+                return <ControlLiquidosTable
+                            hoja={hoja} 
+                        />;
             case 'escalas_valoracion':
-/*                 return <EscalaValoracionForm 
-                            hoja={hojaenfermeria}  
-                        />;*/
+                return <EscalaValoracionTable 
+                            hoja={hoja}  
+                        />;
             case 'medicamentos':
-/*                 return <MedicamentosForm 
-                            hoja={hojaenfermeria}
-                            medicamentos={medicamentos}
-                            vias_administracion={vias_administracion} 
-                        />;*/
+                return <MedicamentosTable 
+                            hoja={hoja}
+                        />;
             case 'terapia_iv':
-                /* return <TerapiaIVForm
-                            hoja={hojaenfermeria}
-                            soluciones={soluciones}
+/*                 return <TerapiaIVTable
+                            hoja={hoja}
                         />; */
             case 'estudios':
 /*                 return <EstudiosForm

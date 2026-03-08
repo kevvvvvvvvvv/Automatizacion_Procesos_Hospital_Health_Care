@@ -100,6 +100,7 @@ class ConsentimientoController extends Controller
             return back()->with('error', 'Error al guardar: ' . $e->getMessage());
         }
     }
+
 public function generarPDF(string $file, Request $request, Paciente $paciente, Estancia $estancia, Consentimiento $consentimiento)
 {   
     if ($request->has('consentimiento_id')) {
