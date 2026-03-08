@@ -166,6 +166,7 @@ class RoleAndPermissionSeeder extends Seeder
 
             'consultar hojas enfermerias',
 
+            
             'crear hojas frontales',
             'consultar hojas frontales',
             
@@ -206,6 +207,9 @@ class RoleAndPermissionSeeder extends Seeder
 
             'consultar solicitudes estudios',
             'crear solicitudes estudios',
+            
+            'crear hojas frontales',
+            'consultar hojas frontales',
 
             'consultar solicitudes estudios patologicos',
             'crear solicitudes estudios patologicos',
@@ -214,8 +218,7 @@ class RoleAndPermissionSeeder extends Seeder
             
             'consultar habitaciones',
 
-            'crear hojas frontales',
-            'consultar hojas frontales',
+
 
             'crear reservaciones',
             'consultar reservaciones',
