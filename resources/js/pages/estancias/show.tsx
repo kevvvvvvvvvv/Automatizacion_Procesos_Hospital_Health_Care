@@ -193,6 +193,18 @@ const Show = ({ estancia }: ShowEstanciaProps) => {
                                             </Link>
                                         )}
                                     </Menu.Item>
+                                    <Menu.Item>
+                                        {({ active }) => (
+                                            <Link
+                                                href={route('pacientes.estancias.hojasfrontales.create', { paciente: paciente.id, estancia: estancia.id })}
+                                                className={`${
+                                                    active ? 'bg-blue-500 text-white' : 'text-gray-900'
+                                                } group flex rounded-md items-center w-full px-2 py-2 text-sm`}
+                                            >
+                                                Añadir hoja frontal
+                                            </Link>
+                                        )}
+                                    </Menu.Item>
                                     </>
                                     )}
 
@@ -415,7 +427,7 @@ formulario.user_id === auth.user.id ||
                                         <Pencil size={18} />
                                     </Link>
                                     )}
-
+                                    {(formulario.user_id === auth.user.id || hasRole('medico') || hasRole('medico especialista')) && ( 
                                     <Link 
                                         href={route(`${formulario.catalogo.route_prefix}.show`, formulario.id)}
                                         className="p-2 text-gray-500 hover:bg-gray-200 hover:text-gray-800 rounded-full transition"
@@ -423,7 +435,8 @@ formulario.user_id === auth.user.id ||
                                     >
                                         <Eye size={18} />
                                     </Link>
-
+                                    )}
+                                    {( hasRole('medico') || hasRole('medico especialista')) && ( 
                                     <a 
                                         href={route(`${formulario.catalogo.route_prefix}.pdf`, formulario.id)}
                                         target="_blank"
@@ -432,6 +445,8 @@ formulario.user_id === auth.user.id ||
                                     >
                                         <Printer size={18} />
                                     </a>
+                                    )}
+                                    
                                 </div>
                             </div>
        
