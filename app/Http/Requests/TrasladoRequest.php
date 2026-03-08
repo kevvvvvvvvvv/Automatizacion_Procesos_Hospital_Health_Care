@@ -15,12 +15,12 @@ class TrasladoRequest extends FormRequest
     {
         return [
             'ta'   => ['required', 'string', 'max:20'], 
-            'fc'   => ['required', 'integer', 'between:0,300'], 
-            'fr'   => ['required', 'integer', 'between:0,100'], 
+            'fc'   => ['required', 'integer', 'between:0,1000'], 
+            'fr'   => ['required', 'integer', 'between:0,300'], 
             'temp' => ['required', 'numeric', 'between:30,45'], 
             'peso' => ['required', 'numeric', 'between:0.1,600'], 
             'talla'=> ['required', 'integer', 'between:20,300'], 
-            'spo2'  => ['required', 'integer', 'between:0,100'],
+            'spo2'  => ['required', 'integer', 'between:0,500'],
 
             'resultado_estudios'               => ['required', 'string', 'min:5', 'max:10000'],
             'resumen_del_interrogatorio'       => ['required', 'string', 'min:5', 'max:10000'],

@@ -24,12 +24,12 @@ class NotaPostanestesicaRequest extends FormRequest
         return [
             // ---- Signos Vitales ----
             'ta'    => ['required', 'string', 'max:20'], 
-            'fc'    => ['required', 'integer', 'between:0,300'], 
-            'fr'    => ['required', 'integer', 'between:0,100'], 
+            'fc'    => ['required', 'integer', 'between:0,3000'], 
+            'fr'    => ['required', 'integer', 'between:0,1000'], 
             'temp'  => ['required', 'numeric', 'between:30,45'],  
-            'spo2'  => ['required', 'integer', 'between:0,100'],
+            'spo2'  => ['required', 'integer', 'between:0,1000'],
             'peso'  => ['required', 'numeric', 'between:0.1,600'], 
-            'talla' => ['required', 'integer', 'between:20,300'],  
+            'talla' => ['required', 'integer', 'between:20,3000'],  
 
             // Campos de texto (Clínicos)
             'resumen_del_interrogatorio'     => ['required', 'string', 'max:1000'],
