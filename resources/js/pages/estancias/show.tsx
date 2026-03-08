@@ -400,7 +400,7 @@ const Show = ({ estancia }: ShowEstanciaProps) => {
                                     
                                     {(formulario.catalogo.route_prefix.includes('interconsultas') || 
                                     formulario.catalogo.route_prefix.includes('notasurgencias')) && (
-                                        <Link
+                                        <a
                                             href={route('receta.pdf', { 
                                                 tipo: formulario.catalogo.route_prefix.includes('interconsultas') ? 'interconsulta' : 'urgencia', 
                                                 id: formulario.id 
@@ -411,7 +411,7 @@ const Show = ({ estancia }: ShowEstanciaProps) => {
                                         >
                                             <Plus size={14} className="mr-1" />
                                             Receta
-                                        </Link>
+                                        </a>
                                     )}
                                     {(formulario.user_id === auth.user.id || hasRole('administrador')) && (
                                     <Link
