@@ -64,7 +64,7 @@ class RoleAndPermissionSeeder extends Seeder
             'peticion dietas' => ['consultar','editar'],
 
             'reservaciones' => ['crear','consultar'],
-        ];
+        ];  
 
         foreach ($permissions as $module => $actions) {
             foreach ($actions as $action) {
