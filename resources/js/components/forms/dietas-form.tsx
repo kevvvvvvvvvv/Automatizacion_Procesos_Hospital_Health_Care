@@ -96,8 +96,20 @@ const DietaForm: React.FC<Props> = ({ hoja, categoria_dietas = [] }) => {
             key: 'horario_solicitud',
             render: (reg: SolicitudDieta) => (
             <div className="text-xs">
-                <span className="block font-medium">Pedido: {reg.horario_solicitud}</span>
+                <span className="block font-medium">Hora del pedido: {reg.horario_solicitud}</span>
                 <span className="text-gray-400">Supervisa: {reg.user_supervisa?.nombre || 'Pendiente'}</span>
+            </div>
+            )
+        },
+        { 
+            header: 'Información de entrega', 
+            key: 'informacion_entrega',
+            render: (reg: SolicitudDieta) => (
+            <div className="text-xs">
+                <>
+                    <span className="block font-medium">Horario de entrega programado: {reg.fecha_hora_programada ? reg.fecha_hora_programada : 'N/A'}</span>
+                    <span className="text-gray-400 font font-medium">Área de entrega: {reg.lugar_entrega}</span>
+                </>
             </div>
             )
         },
