@@ -228,7 +228,7 @@ class UserSeeder extends Seeder
             'nombre' => 'Juan Manuel',
             'apellido_paterno' => 'Ahumada',
             'apellido_materno' => 'Trujillo',
-            'sexo' => 'Masculino',
+            'sexo' => 'Masculino',   
             'fecha_nacimiento' => '1980-01-01',
             'telefono' => '7771002030',
             'email' => 'juan.ahumada@test.com',
