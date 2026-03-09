@@ -64,7 +64,7 @@ class RoleAndPermissionSeeder extends Seeder
             'peticion dietas' => ['consultar','editar'],
 
             'reservaciones' => ['crear','consultar'],
-        ];
+        ];  
 
         foreach ($permissions as $module => $actions) {
             foreach ($actions as $action) {
@@ -165,6 +165,10 @@ class RoleAndPermissionSeeder extends Seeder
             'eliminar hojas', 
 
             'consultar hojas enfermerias',
+
+            
+            'crear hojas frontales',
+            'consultar hojas frontales',
             
             'consultar documentos medicos',
             'crear documentos medicos',
@@ -206,6 +210,9 @@ class RoleAndPermissionSeeder extends Seeder
 
             'consultar solicitudes estudios',
             'crear solicitudes estudios',
+            
+            'crear hojas frontales',
+            'consultar hojas frontales',
 
             'consultar solicitudes estudios patologicos',
             'crear solicitudes estudios patologicos',
@@ -214,8 +221,7 @@ class RoleAndPermissionSeeder extends Seeder
             
             'consultar habitaciones',
 
-            'crear hojas frontales',
-            'consultar hojas frontales',
+
 
             'crear reservaciones',
             'consultar reservaciones',
@@ -244,6 +250,15 @@ class RoleAndPermissionSeeder extends Seeder
             'consultar pacientes',
             'crear pacientes',
             'editar pacientes',
+
+            'crear estancias',
+            'editar estancias',
+            'consultar estancias',
+
+            'crear hojas frontales',
+            'consultar hojas frontales',
+
+            'crear consentimientos',
 
             'consultar solicitudes estudios',
             'crear solicitudes estudios',
