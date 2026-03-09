@@ -160,6 +160,7 @@ class HojaEnfemeriaQuirofanoController extends Controller implements HasMiddlewa
             ]);
             return redirect()->route('estancias.show');
         }catch(\Exception $e){
+            \Log::error('Error al cerrar la hoja de enfermería en quirófano: ' .$e->getMessage());
             return redirect()->back()->with('error','Error al cerrar la hoja de enfermería en quirófano');
         }
         
