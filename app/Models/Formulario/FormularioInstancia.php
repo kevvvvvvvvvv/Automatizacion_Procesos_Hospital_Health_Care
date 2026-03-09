@@ -24,6 +24,49 @@ use App\Models\Formulario\HojaEnfermeriaQuirofano\HojaEnfermeriaQuirofano;
 use App\Models\Encuestas\EncuestaSatisfaccion;
 use App\Models\Encuestas\EncuestaPersonal;
 
+/**
+ * @property int $id
+ * @property string $fecha_hora
+ * @property int $estancia_id
+ * @property int $formulario_catalogo_id
+ * @property int $user_id
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\Formulario\FormularioCatalogo $catalogo
+ * @property-read EncuestaPersonal|null $encuestaPersonal
+ * @property-read EncuestaSatisfaccion|null $encuestaSatisfaccion
+ * @property-read Estancia $estancia
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, SolicitudPatologia> $estudioPatologia
+ * @property-read int|null $estudio_patologia_count
+ * @property-read HojaEnfermeria|null $hojaEnfermeria
+ * @property-read HojaEnfermeriaQuirofano|null $hojaEnfermeriaQuirofano
+ * @property-read HojaFrontal|null $hojaFrontal
+ * @property-read Interconsulta|null $interconsulta
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, NotaEgreso> $notaEgreso
+ * @property-read int|null $nota_egreso_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, NotaEvolucion> $notaEvolucion
+ * @property-read int|null $nota_evolucion_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, NotaPreAnestesica> $notaPreAnestesica
+ * @property-read int|null $nota_pre_anestesica_count
+ * @property-read NotaUrgencia|null $notaUrgencia
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, NotaPostoperatoria> $postoperatoria
+ * @property-read int|null $postoperatoria_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, Preoperatoria> $preoperatoria
+ * @property-read int|null $preoperatoria_count
+ * @property-read Traslado|null $traslado
+ * @property-read User $user
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|FormularioInstancia newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|FormularioInstancia newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|FormularioInstancia query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|FormularioInstancia whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|FormularioInstancia whereEstanciaId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|FormularioInstancia whereFechaHora($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|FormularioInstancia whereFormularioCatalogoId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|FormularioInstancia whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|FormularioInstancia whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|FormularioInstancia whereUserId($value)
+ * @mixin \Eloquent
+ */
 class FormularioInstancia extends Model
 {
     protected $table = 'formulario_instancias';
