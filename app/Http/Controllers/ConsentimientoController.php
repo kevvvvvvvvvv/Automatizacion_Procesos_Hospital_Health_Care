@@ -100,8 +100,7 @@ class ConsentimientoController extends Controller
             return back()->with('error', 'Error al guardar: ' . $e->getMessage());
         }
     }
-
-   public function generarPDF(string $file, Request $request, Paciente $paciente, Estancia $estancia, Consentimiento $consentimiento)
+public function generarPDF(string $file, Request $request, Paciente $paciente, Estancia $estancia, Consentimiento $consentimiento)
 {   
     if ($request->has('consentimiento_id')) {
         $consentimientoId = intval($request->query('consentimiento_id'));
@@ -114,7 +113,6 @@ class ConsentimientoController extends Controller
 
         if (!$consentimiento) abort(404, "Consentimiento no encontrado.");
 
-        
         $instanciaConFrontal = $consentimiento->estancia->formularioInstancias
             ->whereNotNull('hojaFrontal')
             ->first();
@@ -128,7 +126,7 @@ class ConsentimientoController extends Controller
         $viewData = [
             'notaData' => $consentimiento,
             'paciente' => $consentimiento->estancia->paciente,
-            'medico'   => $medicoFrontal, // <--- Este es el médico de la Hoja Frontal
+            'medico'   => $medicoFrontal, 
             'estancia' => $consentimiento->estancia->familiarResponsable,
             'fecha' => [
                 'dia' => $fecha->day,
@@ -137,7 +135,7 @@ class ConsentimientoController extends Controller
             ],
         ];
 
-                $imagePath = public_path('images/Logo_HC_2.png');
+        $imagePath = public_path('images/Logo_HC_2.png');
         $logo = null; 
 
         if (file_exists($imagePath)) {
@@ -154,7 +152,6 @@ class ConsentimientoController extends Controller
             'estancia'=> $consentimiento->estancia
         ];
 
-
         return Pdf::view($consentimiento->route_pdf, $viewData)
             ->format('Letter')
             ->name('consentimiento-' . ($consentimiento->estancia->folio ?? 'SN') . '.pdf')
@@ -162,10 +159,9 @@ class ConsentimientoController extends Controller
                 $this->configureBrowsershot($browsershot);
             })
             ->headerView('headerConsentimiento', $headerData)
-            ->inline(); 
+            ->inline();
     }
 }
-
     protected function configureBrowsershot(Browsershot $browsershot)
     {
         $chromePath = config('services.browsershot.chrome_path');

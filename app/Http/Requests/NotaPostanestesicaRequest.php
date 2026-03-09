@@ -26,7 +26,8 @@ class NotaPostanestesicaRequest extends FormRequest
             'ta'    => ['required', 'string', 'max:20'], 
             'fc'    => ['required', 'integer', 'between:0,300'], 
             'fr'    => ['required', 'integer', 'between:0,100'], 
-            'temp'  => ['required', 'numeric', 'between:30,45'],    
+            'temp'  => ['required', 'numeric', 'between:30,45'],  
+            'spo2'  => ['required', 'integer', 'between:0,100'],
             'peso'  => ['required', 'numeric', 'between:0.1,600'], 
             'talla' => ['required', 'integer', 'between:20,300'],  
 
