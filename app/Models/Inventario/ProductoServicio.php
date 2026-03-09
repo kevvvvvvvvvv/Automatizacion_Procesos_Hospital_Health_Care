@@ -55,6 +55,7 @@ use App\Models\Estudio\CatalogoEstudio;
 class ProductoServicio extends Model
 {
     public const IVA = 1.16;
+    public const comision_terminal = 4.176;
 
     protected $table = 'producto_servicios';
     public $incrementing = true;
@@ -73,6 +74,7 @@ class ProductoServicio extends Model
         'fecha_caducidad',
         'proveedor'
     ];
+
 
     public function detallesVenta()
     {
@@ -102,4 +104,6 @@ class ProductoServicio extends Model
         
         return collect([]); 
     }
+
+
 }
