@@ -33,7 +33,7 @@ type CreateComponent = React.FC<CreateProps> & {
 const secciones: {id: SeccionHoja, label: string}[] = [
     { id: 'general', label: 'General' },
     { id: 'insumos', label : 'Insumos' },
-    { id: 'servicios_especiales', label: 'Servicios espciales' },
+    { id: 'servicios_especiales', label: 'Servicios especiales' },
     { id: 'pieza_patologica', label: 'Envio de pieza patológica' },
     { id: 'personal', label: 'Personal' }
 ];
