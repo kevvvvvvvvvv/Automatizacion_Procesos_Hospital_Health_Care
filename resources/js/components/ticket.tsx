@@ -37,7 +37,7 @@ export default function TicketPago({ pago }: Props) {
             <div className="text-[10px] mb-2">
                 <p>Folio Recibo: <span className="font-extrabold">{pago.folio}</span></p>
                 <p>Cuenta General: #{venta?.id}</p>
-                <p>Paciente: {venta?.estancia?.paciente?.nombre} {venta?.estancia?.paciente?.apellido_paterno} {venta?.estancia?.paciente?.apellido_materno}</p>
+                <p>Paciente: {venta?.estancia?.paciente?.nombre_completo}</p>
             </div>
 
             <table className="w-full text-[10px] mb-2 table-fixed leading-tight">
