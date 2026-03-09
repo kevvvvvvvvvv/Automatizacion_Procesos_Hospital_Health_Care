@@ -62,6 +62,7 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Paciente whereSexo($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Paciente whereTelefono($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Paciente whereUpdatedAt($value)
+ * @property-read mixed $nombre_completo
  * @mixin \Eloquent
  */
 class Paciente extends Model
