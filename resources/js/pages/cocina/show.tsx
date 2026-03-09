@@ -44,13 +44,19 @@ const DietaPendienteRow = ({ dieta, userOptions }: DietaPendienteRowProps) => {
         <form onSubmit={handleActualizarEstado} className="grid grid-cols-1 md:grid-cols-2 items-center py-4">
             <div className="space-y-1">
                 <p className="font-bold text-lg text-slate-700">
-                    {dieta.hoja_enfermeria?.formulario_instancia?.estancia?.paciente?.nombre} {dieta.hoja_enfermeria?.formulario_instancia?.estancia?.paciente?.apellido_paterno}
+                    {dieta.hoja_enfermeria?.formulario_instancia?.estancia?.paciente?.nombre_completo}
                 </p>
+                <p> Habitación del paciente: {dieta.hoja_enfermeria.formulario_instancia.estancia?.habitacion?.identificador ? dieta.hoja_enfermeria.formulario_instancia.estancia?.habitacion?.identificador : 'N/A'}</p>
                 <p className='text-emerald-900'>Tipo de dieta: {dieta.dieta.categoria_dieta.categoria}</p>
                 <p className="text-blue-600 font-medium">Dieta: {dieta.dieta.alimento}</p>
                 <p className="text-sm text-gray-500 italic">
                     Obs: {dieta.observaciones || 'Sin observaciones adicionales'}
                 </p>
+            
+                <p className={dieta.lugar_entrega === 'Área cocina' ? 'text-red-600' : 'text-gray-600'}>
+                    Área de entrega: {dieta.lugar_entrega}
+                </p>
+                <p className='text-sm text-gray-700'>Horario de entrega programada: {dieta.fecha_hora_programada}</p>
             </div>
             <div>
                 <SelectInput

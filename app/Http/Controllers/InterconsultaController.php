@@ -155,44 +155,48 @@ class InterconsultaController extends Controller implements HasMiddleware
     }
     public function receta(Interconsulta $interconsulta)
 {
-    // Cargamos las relaciones necesarias
+    // 1. Cargamos las relaciones necesarias (Eager Loading)
     $interconsulta->load([
-            'formularioInstancia.estancia.paciente',
-            'formularioInstancia.user'
-        ]);
-    dd($interconsulta->toArray());
+        'formularioInstancia.estancia.paciente',
+        'formularioInstancia.user'
+    ]);
 
-    // 2. Verificamos que la instancia exista antes de continuar
-    if (!formularioInstancia->$interconsulta) {
+    // Opcional: Solo para depuración, quitar en producción
+    // dd($interconsulta->toArray());
+
+    // 2. Validación correcta de la relación
+    if (!$interconsulta->formularioInstancia) {
         return Redirect::back()->with('error', 'Error: No se encontró la instancia del formulario.');
     }
-       $instancia = $interconsulta->formularioInstancia;
-    $estancia = $instancia->estancia;
-    $paciente = $estancia->paciente;
-    $medico   = $instancia->user;
 
+    // 3. Asignación de variables de forma segura
+    $instancia = $interconsulta->formularioInstancia;
+    $estancia  = $instancia->estancia;
+    $paciente  = $estancia ? $estancia->paciente : null;
+    $medico    = $instancia->user;
+
+    // Validación extra: ¿Hay una estancia asociada?
+    if (!$estancia) {
+        return Redirect::back()->with('error', 'Error: La instancia no tiene una estancia asociada.');
+    }
+
+    // 4. Preparación de datos para la vista
     $viewData = [
         'tratamiento' => $interconsulta->tratamiento_y_pronostico, 
         'paciente'    => $paciente,
         'medico'      => $medico,
         'fecha'       => $instancia->fecha_hora,
+        'folio'       => $estancia->folio, // Útil tenerlo dentro de la vista también
     ];
-    /*$headerData = [
-        'historiaclinica' => $interconsulta,
-        'paciente' => $paciente,
-        'estancia' => $estancia
-    ];*/
 
-   
-
-    // Usamos una vista nueva llamada 'pdfs.receta_tratamiento'
+    // 5. Generación del PDF
     return $this->pdfGenerator->generateStandardPdf(
         'pdfs.receta_tratamiento', 
         $viewData,
-        //$headerData,
         'receta-',
         $estancia->folio
     );
+
 }
     public function generarPDF(Interconsulta $interconsulta)
     {
