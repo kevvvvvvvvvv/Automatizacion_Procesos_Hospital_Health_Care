@@ -36,11 +36,7 @@ class RecetaController extends Controller
    // dd($registro);
     // 2. Mapeo de datos (Como ambos usan formularioInstancia, el resto es igual)
     
-    $headerData = [
-            'historiaclinica' => $registro,
-            'paciente' => $instancia->estancia->paciente,
-            'estancia' => $instancia->estancia
-        ];
+    
     $headerData = [
             'historiaclinica' => $registro,
             'paciente' => $instancia->estancia->paciente,
