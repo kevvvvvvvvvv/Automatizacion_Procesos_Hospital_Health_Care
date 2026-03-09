@@ -45,6 +45,9 @@ const Show = ({ traslado, paciente, estancia }: ShowTrasladoProps) => {
                     label="FR (Frecuencia Respiratoria)"
                     value={traslado.fr ?? 'N/A'}
                   />
+                  <InfoField 
+                  label="Saturación de oxigeno" 
+                  value = {traslado.spo2 ? `${traslado.spo2}` : 'N/A'}/>
                   <InfoField
                     label="TEMP (Temperatura)"
                     value={traslado.temp ?? 'N/A'}

@@ -31,6 +31,7 @@ export const TrasladoForm = ({
         fr: traslado?.fr || '',
         peso: traslado?.peso || '',
         talla: traslado?.talla || '',
+        spo2: traslado?.spo2 || '',
         temp: traslado?.temp || '',
         resumen_del_interrogatorio: traslado?.resumen_del_interrogatorio ||  '',
         exploracion_fisica: traslado?.exploracion_fisica || '',

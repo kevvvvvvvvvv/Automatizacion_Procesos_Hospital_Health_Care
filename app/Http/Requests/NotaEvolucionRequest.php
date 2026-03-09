@@ -23,10 +23,10 @@ class NotaEvolucionRequest extends FormRequest
             // ---- Evolución (Texto principal) ----
             'evolucion_actualizacion' => ['required', 'string', 'min:10', 'max:5000'],
 
-            'ta'    => ['required', 'string', 'max:20'], 
-            'fc'    => ['required', 'integer', 'between:0,300'],
-            'fr'    => ['required', 'integer', 'between:0,100'],
-            'spo2'  => ['required', 'integer', 'between:0,100'],
+            'ta'    => ['required', 'string', 'max:200'], 
+            'fc'    => ['required', 'integer', 'between:0,3000'],
+            'fr'    => ['required', 'integer', 'between:0,1000'],
+            'spo2'  => ['required', 'integer', 'between:0,1000'],
             'temp'  => ['required', 'numeric', 'between:30,45'],
             'peso'  => ['required', 'numeric', 'between:0.1,600'],
             'talla' => ['required', 'numeric', 'between:20,300'], 
