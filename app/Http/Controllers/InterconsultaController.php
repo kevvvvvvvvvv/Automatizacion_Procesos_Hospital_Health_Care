@@ -157,26 +157,33 @@ class InterconsultaController extends Controller implements HasMiddleware
 {
     // Cargamos las relaciones necesarias
     $interconsulta->load([
-            'formularioInstancia.estancia',
-            'formularioInstancia.user.credenciales'
+            'formularioInstancia.estancia.paciente',
+            'formularioInstancia.user'
         ]);
-        $paciente = $interconsulta->formularioInstancia->estancia->paciente;
-        $medico = $interconsulta->formularioInstancia->user;
-        $estancia = $interconsulta->formularioInstancia->estancia;
+    dd($interconsulta->toArray());
 
+    // 2. Verificamos que la instancia exista antes de continuar
+    if (!formularioInstancia->$interconsulta) {
+        return Redirect::back()->with('error', 'Error: No se encontró la instancia del formulario.');
+    }
+       $instancia = $interconsulta->formularioInstancia;
+    $estancia = $instancia->estancia;
+    $paciente = $estancia->paciente;
+    $medico   = $instancia->user;
 
+    $viewData = [
+        'tratamiento' => $interconsulta->tratamiento_y_pronostico, 
+        'paciente'    => $paciente,
+        'medico'      => $medico,
+        'fecha'       => $instancia->fecha_hora,
+    ];
     /*$headerData = [
         'historiaclinica' => $interconsulta,
         'paciente' => $paciente,
         'estancia' => $estancia
     ];*/
 
-    $viewData = [
-        'tratamiento' => $interconsulta->tratamiento_y_pronostico, 
-        'paciente' => $interconsulta->formularioInstancia->estancia->paciente,
-        'medico' => $interconsulta->user,
-        'fecha' => $interconsulta->formularioInstancia->fecha_hora,
-    ];
+   
 
     // Usamos una vista nueva llamada 'pdfs.receta_tratamiento'
     return $this->pdfGenerator->generateStandardPdf(

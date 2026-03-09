@@ -75,6 +75,7 @@ const NotaPostoperatoriaForm: NotaPostoperatoriaComponent= ({ paciente, estancia
         fr: nota?.fr || '',
         temp: nota?.temp || '',
         peso: nota?.peso || '',
+        spo2: nota?.spo2 || '',
         talla: nota?.talla || '',
         resumen_del_interrogatorio: nota?.resumen_del_interrogatorio || '',
         exploracion_fisica: nota?.exploracion_fisica || '',

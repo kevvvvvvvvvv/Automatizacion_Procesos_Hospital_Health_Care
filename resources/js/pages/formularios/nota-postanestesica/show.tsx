@@ -48,6 +48,7 @@ const ShowNotaPostanestesica = (props: ShowNotaPostanestesicaProps) => {
           <InfoField label="Tensión Arterial" value={nota.ta ?? 'N/A'} />
           <InfoField label="Frecuencia Cardíaca" value={nota.fc ? `${nota.fc} lpm` : 'N/A'} />
           <InfoField label="Frecuencia Resp." value={nota.fr ? `${nota.fr} rpm` : 'N/A'} />
+          <InfoField label="Saturación de oxigeno" value = {nota.spo2 ? `${nota.spo2}` : 'N/A'}/>
           <InfoField label="Temperatura" value={nota.temp ? `${nota.temp} °C` : 'N/A'} />
           <InfoField label="Peso" value={nota.peso ? `${nota.peso} kg` : 'N/A'} />
           <InfoField label="Talla" value={nota.talla ? `${nota.talla} cm` : 'N/A'} />
