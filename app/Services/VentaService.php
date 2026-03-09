@@ -40,12 +40,11 @@ class VentaService
                 $detalle = $this->procesarItem($venta, $item);
                 $subtotalAcumulado += $detalle->subtotal;
                 $totalAcumulado += $this->calcularTotalConImpuestos($detalle);
-                $totalComsion += $this->comisiontarjeta($totalAcumulado); 
             }
 
             $venta->update([
                 'subtotal' => $subtotalAcumulado,
-                'total' => $totalComsion,
+                'total' => $totalAcumulado,
             ]);
 
             return $venta;
@@ -71,12 +70,7 @@ class VentaService
             return $venta;
         });
     }
-    public function comisiontarjeta(float $totalAcumulado, MetodoPago $metodo)
-    {
-        $comision->load(['metodoPago.valor_ajuste']);
-        $totalComsion = $totalAcumulado + ($totalAcumulado * $comision);
-        return $totalComsion;
-    }
+
     /**
      * Lógica central para determinar si es Producto o Estudio y guardarlo
      */
@@ -144,12 +138,15 @@ class VentaService
         $iva = 0;
 
         if ($item instanceof ProductoServicio) {
-            $iva = $item->iva ?? 0;
+            $iva = $item->iva ?? 16;
         } 
         
         return $detalle->subtotal * (1 + ($iva / 100));
     }
-   
+
+    private function calcularTotalTarjeta(){
+        
+    }
 
 
     public function registrarPago(Venta $venta, float $montoPagado)
