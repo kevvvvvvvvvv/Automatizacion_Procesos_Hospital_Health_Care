@@ -101,7 +101,7 @@ class ConsentimientoController extends Controller
         }
     }
 
-   public function generarPDF(string $file, Request $request, Paciente $paciente, Estancia $estancia, Consentimiento $consentimiento)
+public function generarPDF(string $file, Request $request, Paciente $paciente, Estancia $estancia, Consentimiento $consentimiento)
 {   
     if ($request->has('consentimiento_id')) {
         $consentimientoId = intval($request->query('consentimiento_id'));
@@ -149,11 +149,15 @@ class ConsentimientoController extends Controller
         $headerData = [
             'logoDataUri' => $logo,
             'notaData' => $consentimiento,
-            'paciente' => $consentimiento->estancia?->paciente,
-            'medico' => $consentimiento->user,
-            'estancia'=> $consentimiento->estancia
+            'paciente' => $consentimiento->estancia->paciente,
+            'medico'   => $medicoFrontal, // <--- Este es el médico de la Hoja Frontal
+            'estancia' => $consentimiento->estancia->familiarResponsable,
+            'fecha' => [
+                'dia' => $fecha->day,
+                'mes' => $meses[$fecha->month],
+                'anio' => $fecha->year,
+            ],
         ];
-
 
         return Pdf::view($consentimiento->route_pdf, $viewData)
             ->format('Letter')
@@ -161,11 +165,9 @@ class ConsentimientoController extends Controller
             ->withBrowsershot(function (Browsershot $browsershot) {
                 $this->configureBrowsershot($browsershot);
             })
-            ->headerView('headerConsentimiento', $headerData)
-            ->inline(); 
+            ->inline();
     }
 }
-
     protected function configureBrowsershot(Browsershot $browsershot)
     {
         $chromePath = config('services.browsershot.chrome_path');

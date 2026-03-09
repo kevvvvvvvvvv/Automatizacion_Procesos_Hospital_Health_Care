@@ -17,7 +17,7 @@ class ProductoServicioRequest extends FormRequest
 
             // ================= PRODUCTO BASE =================
             'tipo' => 'required|string|max:100',
-            'subtipo' => 'required|string|in:MEDICAMENTOS,INSUMOS',
+            'subtipo' => 'required|string|in:MEDICAMENTOS,INSUMOS,ESTUDIOS',
 
             'nombre_prestacion' => 'required|string|max:200',
             'codigo_barras' => 'nullable|string|max:100',
@@ -50,6 +50,17 @@ class ProductoServicioRequest extends FormRequest
 
                 'via_administracion' => 'nullable|array'
             ];
+        }
+        // ==============Estudios================
+        if ($this->subtipo === 'ESTUDIOS') {
+            $rules += [
+                
+                'tipo_estudio' => 'nullable|string|max:150',
+                'departamento' => 'nullable|string|max:150',
+                'tiempo_entrega' => 'nullable|integer|max:30',
+            ];
+
+
         }
 
         // ================= INSUMOS =================

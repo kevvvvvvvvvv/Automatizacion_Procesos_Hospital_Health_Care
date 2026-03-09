@@ -34,6 +34,7 @@ export const PostanestesicaForm = ({
         fr: nota?.fr?.toString() || '',
         temp: nota?.temp?.toString() || '',
         peso: nota?.peso?.toString() || '',
+        spo2: nota?.spo2?.toString() || '',
         talla: nota?.talla?.toString() || '',
         resumen_del_interrogatorio: nota?.resumen_del_interrogatorio || '',
         exploracion_fisica: nota?.exploracion_fisica || '',

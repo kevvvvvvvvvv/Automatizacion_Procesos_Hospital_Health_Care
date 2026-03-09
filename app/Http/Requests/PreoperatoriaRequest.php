@@ -21,12 +21,13 @@ class PreoperatoriaRequest extends FormRequest
             'tipo_intervencion_quirurgica' => ['required', 'string', 'max:255'],
 
             
-            'ta'    => ['required', 'string', 'max:20'], 
-            'fc'    => ['required', 'integer', 'between:0,300'], 
-            'fr'    => ['required', 'integer', 'between:0,100'], 
-            'talla' => ['required', 'integer', 'between:20,300'], 
-            'peso'  => ['required', 'numeric', 'between:0.1,600'], 
+            'ta'    => ['required', 'string', 'max:200'], 
+            'fc'    => ['required', 'integer', 'between:0,3000'], 
+            'fr'    => ['required', 'integer', 'between:0,1000'], 
+            'talla' => ['required', 'integer', 'between:20,3000'], 
+            'peso'  => ['required', 'numeric', 'between:0.1,6000'], 
             'temp'  => ['required', 'numeric', 'between:30,45'],   
+            'spo2'  => ['required', 'integer', 'between:0,1000'],
 
             'diagnostico_preoperatorio'    => ['required', 'string', 'min:5', 'max:10000'],
             'plan_quirurgico'              => ['required', 'string', 'min:5', 'max:10000'],

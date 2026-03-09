@@ -163,6 +163,9 @@ class RoleAndPermissionSeeder extends Seeder
             'consultar solicitudes estudios patologicos',
             'crear solicitudes estudios patologicos',
 
+            'crear hojas frontales',
+            'consultar hojas frontales',
+
             'crear consentimientos',
             
             'consultar habitaciones',

@@ -5,6 +5,7 @@ import { NotaPreAnestesica, Paciente, Estancia, User } from '@/types';
 
 import InfoCard from '@/components/ui/info-card';
 import InfoField from '@/components/ui/info-field';
+import notasegresos from '@/routes/notasegresos';
 
 interface ShowNotaPreanestesicaProps {
   notaPreanestesica: NotaPreAnestesica & {
@@ -58,6 +59,8 @@ const Show = ({ notaPreanestesica, paciente, estancia }: ShowNotaPreanestesicaPr
             label="FR (Frecuencia Respiratoria)"
             value={notaPreanestesica.fr ?? 'N/A'}
           />
+          <InfoField label="Saturación de oxigeno" 
+          value = {notaPreanestesica.spo2 ? `${notaPreanestesica.spo2} %` : 'N/A'}/>
           <InfoField
             label="TEMP (Temperatura)"
             value={notaPreanestesica.temp ?? 'N/A'}
