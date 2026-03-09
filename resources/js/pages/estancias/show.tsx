@@ -209,7 +209,7 @@ const Show = ({ estancia }: ShowEstanciaProps) => {
                                     )}
 
                                     
-                                    {(can('crear hojas frontales')) && (
+                                    {(can('crear hojas frontales')|| can('crear documentos medicos')) && (
                                         <>
                                         <Menu.Item>
                                         {({ active }) => (
