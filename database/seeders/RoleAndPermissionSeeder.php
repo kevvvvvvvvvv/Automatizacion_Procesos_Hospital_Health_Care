@@ -182,6 +182,9 @@ class RoleAndPermissionSeeder extends Seeder
             
             'consultar habitaciones',
 
+            'crear hojas frontales',
+            'consultar hojas frontales',
+
             'crear reservaciones',
             'consultar reservaciones',
         ]);

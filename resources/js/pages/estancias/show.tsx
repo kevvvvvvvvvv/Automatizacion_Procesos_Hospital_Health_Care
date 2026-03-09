@@ -193,6 +193,18 @@ const Show = ({ estancia }: ShowEstanciaProps) => {
                                             </Link>
                                         )}
                                     </Menu.Item>
+                                    <Menu.Item>
+                                        {({ active }) => (
+                                            <Link
+                                                href={route('pacientes.estancias.hojasfrontales.create', { paciente: paciente.id, estancia: estancia.id })}
+                                                className={`${
+                                                    active ? 'bg-blue-500 text-white' : 'text-gray-900'
+                                                } group flex rounded-md items-center w-full px-2 py-2 text-sm`}
+                                            >
+                                                Añadir hoja frontal
+                                            </Link>
+                                        )}
+                                    </Menu.Item>
                                     </>
                                     )}
 
@@ -358,16 +370,12 @@ const Show = ({ estancia }: ShowEstanciaProps) => {
                                     )}
                                 </div>
                             </Menu.Items>
-                        </Menu>
-                        
-                        
-            </div>
-        </div>
-    )}
-</div>
-                        
-                        
-                <div className="mt-8">
+                        </Menu>         
+                    </div>
+                </div>
+            )}
+            </div>            
+            <div className="mt-8">
                 <div className="space-y-4">
                     {formulario_instancias && formulario_instancias.length > 0 ? (
                         formulario_instancias.map((formulario) => (
@@ -386,27 +394,43 @@ const Show = ({ estancia }: ShowEstanciaProps) => {
                                 <div className="flex items-center space-x-2">
                     
                     
-                    {(formulario.catalogo.route_prefix.includes('interconsultas') || 
-                      formulario.catalogo.route_prefix.includes('notasurgencias')) && (
-                        <Link
-                            href={route('receta.pdf', { 
-                                formulario: formulario.id
-                            })}
-                            className="inline-flex items-center px-3 py-1.5 bg-green-600 text-white text-xs font-medium rounded hover:bg-green-700 transition shadow-sm"
-                            title="Generar Receta Médica"
-                        >
-                            <Plus size={14} className="mr-1" />
-                            
-                        </Link>
-                    )}
-                                    {(
-formulario.user_id === auth.user.id || 
-    hasRole('administrador') || 
-    (
-        formulario.catalogo.id === 15 && 
-        auth.user.roles?.some(rol => ['técnico de laboratorio', 'químico', 'radiólogo'].includes(rol))
-    )
-                                    ) && (
+                                {(formulario.catalogo.route_prefix.includes('interconsultas') || 
+                                formulario.catalogo.route_prefix.includes('notasurgencias')) && (
+                                    <>
+                                        <Link
+                                            href={route('receta.pdf', { 
+                                                formulario: formulario.id
+                                            })}
+                                            className="inline-flex items-center px-3 py-1.5 bg-green-600 text-white text-xs font-medium rounded hover:bg-green-700 transition shadow-sm"
+                                            title="Generar Receta Médica"
+                                        >
+                                            <Plus size={14} className="mr-1" />
+                                            
+                                        </Link>
+
+
+                                        <a
+                                            href={route('receta.pdf', { 
+                                                tipo: formulario.catalogo.route_prefix.includes('interconsultas') ? 'interconsulta' : 'urgencia', 
+                                                id: formulario.id 
+                                            })}
+                                            target="_blank" 
+                                            className="inline-flex items-center px-3 py-1.5 bg-green-600 text-white text-xs font-medium rounded hover:bg-green-700 transition shadow-sm"
+                                            title="Generar Receta Médica"
+                                        >
+                                            <Plus size={14} className="mr-1" />
+                                            Receta
+                                        </a>
+                                    </>
+                                )}
+
+                                {(
+                                    formulario.user_id === auth.user.id || 
+                                    hasRole('administrador') || 
+                                (
+                                    formulario.catalogo.id === 15 && 
+                                    auth.user.roles?.some(rol => ['técnico de laboratorio', 'químico', 'radiólogo'].includes(rol))
+                                )) && (
                                     <Link
                                         href={route(`${formulario.catalogo.route_prefix}.edit`, formulario.id)}
                                         className="p-2 text-blue-500 hover:bg-blue-100 hover:text-blue-700 rounded-full transition"
@@ -414,8 +438,8 @@ formulario.user_id === auth.user.id ||
                                     > 
                                         <Pencil size={18} />
                                     </Link>
-                                    )}
-
+                                )}
+                                    
                                     <Link 
                                         href={route(`${formulario.catalogo.route_prefix}.show`, formulario.id)}
                                         className="p-2 text-gray-500 hover:bg-gray-200 hover:text-gray-800 rounded-full transition"

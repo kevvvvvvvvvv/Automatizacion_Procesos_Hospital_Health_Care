@@ -15,6 +15,9 @@ class SolicitudDieta extends Model
         'hoja_enfermeria_id',
         'dieta_id',
 
+        'fecha_hora_programada',
+        'lugar_entrega',
+
         'estado',
 
         'horario_solicitud',

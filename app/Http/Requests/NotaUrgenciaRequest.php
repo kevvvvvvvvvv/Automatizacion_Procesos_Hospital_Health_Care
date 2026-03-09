@@ -20,12 +20,12 @@ class NotaUrgenciaRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'ta'    => ['required', 'string', 'max:20'], 
-            'fc'    => ['required', 'integer', 'between:0,300'],
-            'fr'    => ['required', 'integer', 'between:0,100'],
+            'ta'    => ['required', 'string', 'max:200'], 
+            'fc'    => ['required', 'integer', 'between:0,3000'],
+            'fr'    => ['required', 'integer', 'between:0,1000'],
             'temp'  => ['required', 'numeric', 'between:30,45'],
             'peso'  => ['required', 'numeric', 'between:0.1,600'],
-            'talla' => ['required', 'integer', 'between:20,300'],
+            'talla' => ['required', 'integer', 'between:20,3000'],
 
             'motivo_atencion'                => ['required', 'string', 'min:5', 'max:10000'],
             'resumen_interrogatorio'         => ['required', 'string', 'min:5', 'max:10000'],

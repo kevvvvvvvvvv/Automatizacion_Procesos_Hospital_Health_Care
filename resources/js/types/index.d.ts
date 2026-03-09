@@ -168,6 +168,7 @@ export interface Estancia {
     estancia_anterior: Estancia;
 
     paciente: Paciente;
+    habitacion: Habitacion;
 
     created_at: string;
     updated_at: string | null;
@@ -362,7 +363,7 @@ export interface HojaEnfermeria {
     formulario_instancia: FormularioInstancia;
 
     hojas_terapia_i_v: HojaTerapiaIV[] | null; 
-    hoja_medicamentos: HojaMedicamento[] | null;
+    hoja_medicamentos: HojaMedicamento[];
     hoja_signos: HojaSignos[];
     hoja_control_liquidos: ControlLiquidos [];
     solicitudes_dieta: SolicitudDieta[];
@@ -370,6 +371,7 @@ export interface HojaEnfermeria {
     hoja_oxigenos: HojaOxigeno[] | null;
     hoja_riesgo_caida: HojaRiesgoCaida[];
     sondas_activas_completas: HojaSondaCateter[];
+    hoja_escala_valoraciones: HojaEscalaValoracion [];
 }
 
 export interface HojaRiesgoCaida {
@@ -452,6 +454,25 @@ export interface HojaTerapiaIV {
     created_at: string;
     updated_at: string;
     detalle_soluciones: ProductoServicio;
+}
+
+export interface HojaEscalaValoracion {
+    id: number;
+    hoja_enfermeria_id: number;
+    fecha_hora_registro: number;
+    escala_braden: number;
+    escala_glasgow: number;
+    escala_ramsey:number;
+    created_at: string;
+    updated_at: stirng;
+
+    valoracion_dolor: ValoracionDolor [];
+}
+
+interface ValoracionDolor {
+    escala_eva: number;
+    ubicacion_dolor: string;
+    hoja_escala_valoracion_id: number;
 }
 
 export interface HojaSignos {
@@ -686,6 +707,8 @@ export interface SolicitudDieta {
     horario_entrega: string;
     user_entrega_id: number;
     observaciones: string;
+    fecha_hora_programada: string;
+    lugar_entrega: string;
 
     estado: string;
 
