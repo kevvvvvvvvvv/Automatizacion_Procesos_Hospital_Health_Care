@@ -32,6 +32,10 @@ use App\Models\Venta\Venta;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Pago whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Pago whereUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Pago whereVentaId($value)
+ * @property string $folio
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Venta\DetallePago> $detalles
+ * @property-read int|null $detalles_count
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Pago whereFolio($value)
  * @mixin \Eloquent
  */
 class Pago extends Model
