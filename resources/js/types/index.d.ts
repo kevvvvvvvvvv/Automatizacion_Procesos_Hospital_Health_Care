@@ -168,6 +168,7 @@ export interface Estancia {
     estancia_anterior: Estancia;
 
     paciente: Paciente;
+    habitacion: Habitacion;
 
     created_at: string;
     updated_at: string | null;
@@ -686,6 +687,8 @@ export interface SolicitudDieta {
     horario_entrega: string;
     user_entrega_id: number;
     observaciones: string;
+    fecha_hora_programada: string;
+    lugar_entrega: string;
 
     estado: string;
 
