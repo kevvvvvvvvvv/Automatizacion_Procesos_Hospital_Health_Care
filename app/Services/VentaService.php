@@ -100,7 +100,7 @@ class VentaService
             }
         } 
         
-        elseif ($tipo === 'estudio') {
+        elseif ($tipo === 'estudio') { 
             $modelo = CatalogoEstudio::find($id);
             
             if ($modelo) {
@@ -111,12 +111,21 @@ class VentaService
 
         return DetalleVenta::create([
              'venta_id'      => $venta->id,
+<<<<<<< HEAD
             'itemable_id'   => $modelo ? $modelo->id : null,          
             'itemable_type' => $modelo ? get_class($modelo) : null,  
             'precio_unitario' => $precioUnitario / (1-ProductoServicio::comision_terminal),
             'cantidad'      => $cantidad, 
             'subtotal'      => ($precioUnitario / (1-ProductoServicio::comision_terminal)) * $cantidad,
             'estado'        => 'completado',
+=======
+                'itemable_id'   => $modelo ? $modelo->id : null,          
+                'itemable_type' => $modelo ? get_class($modelo) : null,  
+                'precio_unitario' => $precioUnitario * 1.04176, //colocar formular
+                'cantidad'      => $cantidad, 
+                'subtotal'      => ($precioUnitario * 1.04176) * $cantidad, // colocar formular
+                'estado'        => 'completado',
+>>>>>>> c2bc68bff3649ce187d7a32203c9b9fc7334a3ff
 
             'nombre_producto_servicio' => $modelo 
                 ? ($modelo->nombre_prestacion ?? $modelo->nombre ?? 'Sin nombre') 
@@ -133,6 +142,18 @@ class VentaService
 
 
     /**
+     * Helper para calcular el precio del producto con la comision de la terminal
+     */
+/*
+    private function calcularComisionTerminal(DetalleVenta $detalle)
+    {
+        $item = $detalle->itemable ?? '';
+        return ($item->subtotal/);
+    }
+*/
+
+
+    /**
      * Helper para calcular el precio final con IVA
      */
     private function calcularTotalConImpuestos(DetalleVenta $detalle)
@@ -146,6 +167,10 @@ class VentaService
         
         return $detalle->subtotal * (1 + ($iva / 100));
     }
+<<<<<<< HEAD
+=======
+   
+>>>>>>> c2bc68bff3649ce187d7a32203c9b9fc7334a3ff
 
 
     public function registrarPago(Venta $venta, float $montoPagado)

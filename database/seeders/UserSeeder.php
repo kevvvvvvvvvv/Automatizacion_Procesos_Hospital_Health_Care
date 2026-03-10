@@ -453,7 +453,63 @@ class UserSeeder extends Seeder
         $userAna->assignRole('administrador');        
 
     
-    
+    // Medicos que faltaban por ingresar
+        $userRobles = User::create([
+            'curp' => 'PMSA000000xxxxx001', 
+            'nombre' => 'Robles',
+            'apellido_paterno' => 'Robles',
+            'apellido_materno' => 'Robles',
+            'sexo' => 'Masculino',
+            'fecha_nacimiento' => '1980-01-01',
+            'telefono' => '5576956149',
+            'email' => 'PMSA001@test.com',
+            'password' => Hash::make('12345678'),
+        ]);
+
+        $userRobles->assignRole('medico especialista');
+
+        $userDuarte = User::create([
+            'curp' => 'PMSA000000xxxxx002', 
+            'nombre' => 'Duarte',
+            'apellido_paterno' => 'Duarte',
+            'apellido_materno' => 'JR',
+            'sexo' => 'Masculino',
+            'fecha_nacimiento' => '1980-01-01',
+            'telefono' => '7771034801',
+            'email' => 'PMSA002@test.com',
+            'password' => Hash::make('12345678'),
+        ]);
+
+        $userDuarte->assignRole('medico especialista');
+        $userRamirez = User::create([
+            'curp' => 'PMSA000000xxxxx003', 
+            'nombre' => 'Ramirez',
+            'apellido_paterno' => 'Remirez',
+            'apellido_materno' => 'Ahedo',
+            'sexo' => 'Masculino',
+            'fecha_nacimiento' => '1980-01-01',
+            'telefono' => '7771898558',
+            'email' => 'PMSA003@test.com',
+            'passw  ord' => Hash::make('12345678'),
+        ]);
+
+        $userRamirez->assignRole('medico especialista');
+
+        $userJose = User::create([
+            'curp' => 'PMSA000000xxxxx004', 
+            'nombre' => 'Jose',
+            'apellido_paterno' => 'Frias',
+            'apellido_materno' => 'Frias',
+            'sexo' => 'Masculino',
+            'fecha_nacimiento' => '1980-01-01',
+            'telefono' => '7773289498',
+            'email' => 'PMSA004@test.com',
+            'password' => Hash::make('12345678'),
+        ]);
+
+        $userJose->assignRole('medico especialista');
+
+
         
 
         }
