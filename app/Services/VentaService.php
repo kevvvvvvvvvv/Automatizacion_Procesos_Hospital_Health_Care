@@ -152,12 +152,25 @@ class VentaService
         $iva = 0;
 
         if ($item instanceof ProductoServicio) {
+<<<<<<< HEAD
             $iva = $item->iva ?? 0;
+=======
+            $iva = $item->iva ?? 16;
+>>>>>>> c177e047d41177b143652ce1b25f49a8769f8f63
         } 
         
         return $detalle->subtotal * (1 + ($iva / 100));
     }
+<<<<<<< HEAD
    
+=======
+
+    private function calcularTotalTarjeta(DetalleVenta $venta)
+    {
+        $item = $detalle-> itemable ?? '';
+            
+    }
+>>>>>>> c177e047d41177b143652ce1b25f49a8769f8f63
 
 
     public function registrarPago(Venta $venta, float $montoPagado)
