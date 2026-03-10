@@ -361,7 +361,7 @@ export interface HojaEnfermeria {
 
     formulario_instancia: FormularioInstancia;
 
-    hojas_terapia_i_v: HojaTerapiaIV[] | null; 
+    hojas_terapia_i_v: HojaTerapiaIV[]; 
     hoja_medicamentos: HojaMedicamento[];
     hoja_signos: HojaSignos[];
     hoja_control_liquidos: ControlLiquidos [];
