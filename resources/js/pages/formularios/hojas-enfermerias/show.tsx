@@ -10,7 +10,7 @@ import RiesgoCaidasTable from '@/components/forms/hoja-enfermeria-hospitalizacio
 import ControlLiquidosTable from '@/components/forms/hoja-enfermeria-hospitalizacion-tables/control-liquidos-table';
 import EscalaValoracionTable from '@/components/forms/hoja-enfermeria-hospitalizacion-tables/escala-valoracion-table';
 import MedicamentosTable from '@/components/forms/hoja-enfermeria-hospitalizacion-tables/ministracion-medicamentos-table';
-
+import TerapiaIVTable from '@/components/forms/hoja-enfermeria-hospitalizacion-tables/terapia-intravenosa-table';
 
 interface Props{
     hoja: HojaEnfermeria;
@@ -72,9 +72,9 @@ const Show = ({
                             hoja={hoja}
                         />;
             case 'terapia_iv':
-/*                 return <TerapiaIVTable
+                return <TerapiaIVTable
                             hoja={hoja}
-                        />; */
+                        />;
             case 'estudios':
 /*                 return <EstudiosForm
                             estancia={estancia}
