@@ -5,6 +5,8 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Schedule;
 
+use App\Models\Reservacion\ReservacionConsultorio\Reservacion;
+
 Schedule::command('app:clean-unpaid-reservations')->everyMinute();
 
 class CleanUnpaidReservations extends Command
@@ -29,7 +31,7 @@ class CleanUnpaidReservations extends Command
    public function handle()
 {
     // Buscamos reservaciones 'pendientes' creadas hace más de 10 minutos
-    $expiradas = \App\Models\Reservacion::where('estatus', 'pendiente')
+    $expiradas = Reservacion::where('estatus', 'pendiente')
         ->where('created_at', '<', now()->subMinutes(10))
         ->get();
 

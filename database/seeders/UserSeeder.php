@@ -228,7 +228,7 @@ class UserSeeder extends Seeder
             'nombre' => 'Juan Manuel',
             'apellido_paterno' => 'Ahumada',
             'apellido_materno' => 'Trujillo',
-            'sexo' => 'Masculino',
+            'sexo' => 'Masculino',   
             'fecha_nacimiento' => '1980-01-01',
             'telefono' => '7771002030',
             'email' => 'juan.ahumada@test.com',
@@ -490,7 +490,7 @@ class UserSeeder extends Seeder
             'fecha_nacimiento' => '1980-01-01',
             'telefono' => '7771898558',
             'email' => 'PMSA003@test.com',
-            'passw  ord' => Hash::make('12345678'),
+            'password' => Hash::make('12345678'),
         ]);
 
         $userRamirez->assignRole('medico especialista');
