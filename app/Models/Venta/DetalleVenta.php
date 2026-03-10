@@ -7,6 +7,46 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 
+/**
+ * @property int $id
+ * @property string|null $nombre_producto_servicio
+ * @property string|null $clave_producto_servicio
+ * @property string $precio_unitario
+ * @property int $cantidad
+ * @property string $subtotal
+ * @property string|null $descuento
+ * @property string $estado
+ * @property string $iva_aplicado
+ * @property string $monto_pagado
+ * @property int $venta_id
+ * @property string|null $itemable_type
+ * @property int|null $itemable_id
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Venta\DetallePago> $detallePagos
+ * @property-read int|null $detalle_pagos_count
+ * @property-read Model|\Eloquent|null $itemable
+ * @property-read \App\Models\Venta\Venta $venta
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DetalleVenta newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DetalleVenta newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DetalleVenta query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DetalleVenta whereCantidad($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DetalleVenta whereClaveProductoServicio($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DetalleVenta whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DetalleVenta whereDescuento($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DetalleVenta whereEstado($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DetalleVenta whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DetalleVenta whereItemableId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DetalleVenta whereItemableType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DetalleVenta whereIvaAplicado($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DetalleVenta whereMontoPagado($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DetalleVenta whereNombreProductoServicio($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DetalleVenta wherePrecioUnitario($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DetalleVenta whereSubtotal($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DetalleVenta whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DetalleVenta whereVentaId($value)
+ * @mixin \Eloquent
+ */
 class DetalleVenta extends Model
 {
     public const ESTADO_PENDIENTE = 'En espera de pago';

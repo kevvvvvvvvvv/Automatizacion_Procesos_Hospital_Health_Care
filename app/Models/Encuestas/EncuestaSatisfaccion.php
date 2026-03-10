@@ -2,9 +2,10 @@
 
 namespace App\Models\Encuestas;
 
-use App\Models\FormularioInstancia;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+
+use App\Models\Formulario\FormularioInstancia;
 
 /**
  * @property-read FormularioInstancia|null $formularioInstancia

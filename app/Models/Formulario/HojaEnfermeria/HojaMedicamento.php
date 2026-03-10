@@ -7,6 +7,50 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 use App\Models\Inventario\ProductoServicio;
 
+/**
+ * @property int $id
+ * @property int $hoja_enfermeria_id
+ * @property int|null $producto_servicio_id
+ * @property int $dosis
+ * @property string $gramaje
+ * @property string $unidad
+ * @property string|null $via_administracion
+ * @property int $duracion_tratamiento
+ * @property string|null $fecha_hora_inicio
+ * @property string $estado
+ * @property string $fecha_hora_solicitud
+ * @property string|null $fecha_hora_surtido_farmacia
+ * @property string $nombre_medicamento
+ * @property int|null $farmaceutico_id
+ * @property string|null $fecha_hora_recibido_enfermeria
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Formulario\HojaEnfermeria\AplicacionMedicamento> $aplicaciones
+ * @property-read int|null $aplicaciones_count
+ * @property-read \App\Models\Formulario\HojaEnfermeria\HojaEnfermeria $hojaEnfermeria
+ * @property-read ProductoServicio|null $productoServicio
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|HojaMedicamento newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|HojaMedicamento newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|HojaMedicamento query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|HojaMedicamento whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|HojaMedicamento whereDosis($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|HojaMedicamento whereDuracionTratamiento($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|HojaMedicamento whereEstado($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|HojaMedicamento whereFarmaceuticoId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|HojaMedicamento whereFechaHoraInicio($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|HojaMedicamento whereFechaHoraRecibidoEnfermeria($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|HojaMedicamento whereFechaHoraSolicitud($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|HojaMedicamento whereFechaHoraSurtidoFarmacia($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|HojaMedicamento whereGramaje($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|HojaMedicamento whereHojaEnfermeriaId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|HojaMedicamento whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|HojaMedicamento whereNombreMedicamento($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|HojaMedicamento whereProductoServicioId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|HojaMedicamento whereUnidad($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|HojaMedicamento whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|HojaMedicamento whereViaAdministracion($value)
+ * @mixin \Eloquent
+ */
 class HojaMedicamento extends Model
 {
     protected $table = 'hoja_medicamentos';
