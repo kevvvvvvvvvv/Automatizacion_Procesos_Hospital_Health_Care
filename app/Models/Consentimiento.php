@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+use App\Models\Formulario\FormularioInstancia;
+
 /**
  * @property int $id
  * @property int|null $estancia_id
@@ -25,6 +27,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Consentimiento whereRoutePdf($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Consentimiento whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Consentimiento whereUserId($value)
+ * @property-read FormularioInstancia|null $formularioInstancia
  * @mixin \Eloquent
  */
 class Consentimiento extends Model
@@ -48,7 +51,7 @@ class Consentimiento extends Model
     {
         return $this->belongsTo(User::class,'user_id','id');
     }
-    public function formularioInstancia():BelogTo
+    public function formularioInstancia():BelongsTo
     {
         return $this->belongsTo(FormularioInstancia::class, 'formularioInstancia_id', 'id');
     }

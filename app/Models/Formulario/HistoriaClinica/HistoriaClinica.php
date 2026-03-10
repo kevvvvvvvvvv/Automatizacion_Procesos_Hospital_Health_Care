@@ -8,6 +8,41 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 use App\Models\Formulario\FormularioInstancia;
 
+/**
+ * @property int $id
+ * @property string $padecimiento_actual
+ * @property string $tension_arterial
+ * @property int $frecuencia_cardiaca
+ * @property int $frecuencia_respiratoria
+ * @property int|null $saturacion_oxigeno
+ * @property float $temperatura
+ * @property float $peso
+ * @property int $talla
+ * @property string $resultados_previos
+ * @property string $diagnostico
+ * @property string $pronostico
+ * @property string $indicacion_terapeutica
+ * @property-read FormularioInstancia $formularioInstancia
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Formulario\HistoriaClinica\RespuestaFormulario> $respuestaFormularios
+ * @property-read int|null $respuesta_formularios_count
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|HistoriaClinica newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|HistoriaClinica newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|HistoriaClinica query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|HistoriaClinica whereDiagnostico($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|HistoriaClinica whereFrecuenciaCardiaca($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|HistoriaClinica whereFrecuenciaRespiratoria($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|HistoriaClinica whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|HistoriaClinica whereIndicacionTerapeutica($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|HistoriaClinica wherePadecimientoActual($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|HistoriaClinica wherePeso($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|HistoriaClinica wherePronostico($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|HistoriaClinica whereResultadosPrevios($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|HistoriaClinica whereSaturacionOxigeno($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|HistoriaClinica whereTalla($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|HistoriaClinica whereTemperatura($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|HistoriaClinica whereTensionArterial($value)
+ * @mixin \Eloquent
+ */
 class HistoriaClinica extends Model
 {
     protected $table ='historia_clinicas';
