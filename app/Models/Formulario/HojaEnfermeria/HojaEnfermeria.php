@@ -12,6 +12,52 @@ use App\Models\Formulario\HojaOxigeno;
 use App\Models\Estudio\SolicitudEstudio;
 use App\Models\Estudio\SolicitudPatologia;
 
+/**
+ * @property int $id
+ * @property string $turno
+ * @property string|null $observaciones
+ * @property string|null $habitus_exterior
+ * @property string $estado
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read FormularioInstancia $formularioInstancia
+ * @property-read mixed $sondas_activas
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Formulario\HojaEnfermeria\HojaControlLiquido> $hojaControlLiquidos
+ * @property-read int|null $hoja_control_liquidos_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Formulario\HojaEnfermeria\HojaEscalaValoracion> $hojaEscalaValoraciones
+ * @property-read int|null $hoja_escala_valoraciones_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Formulario\HojaEnfermeria\HojaHabitusExterior> $hojaHabitusExterior
+ * @property-read int|null $hoja_habitus_exterior_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Formulario\HojaEnfermeria\HojaMedicamento> $hojaMedicamentos
+ * @property-read int|null $hoja_medicamentos_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, HojaOxigeno> $hojaOxigenos
+ * @property-read int|null $hoja_oxigenos_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Formulario\HojaEnfermeria\HojaRiesgoCaida> $hojaRiesgoCaida
+ * @property-read int|null $hoja_riesgo_caida_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Formulario\HojaEnfermeria\HojaSignos> $hojaSignos
+ * @property-read int|null $hoja_signos_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Formulario\HojaEnfermeria\HojaTerapiaIV> $hojasTerapiaIV
+ * @property-read int|null $hojas_terapia_i_v_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, SolicitudPatologia> $solicitudPatologia
+ * @property-read int|null $solicitud_patologia_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Formulario\HojaEnfermeria\SolicitudDieta> $solicitudesDieta
+ * @property-read int|null $solicitudes_dieta_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, SolicitudEstudio> $solicitudesEstudio
+ * @property-read int|null $solicitudes_estudio_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Formulario\HojaEnfermeria\HojaSondaCateter> $sondasCateteres
+ * @property-read int|null $sondas_cateteres_count
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|HojaEnfermeria newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|HojaEnfermeria newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|HojaEnfermeria query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|HojaEnfermeria whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|HojaEnfermeria whereEstado($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|HojaEnfermeria whereHabitusExterior($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|HojaEnfermeria whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|HojaEnfermeria whereObservaciones($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|HojaEnfermeria whereTurno($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|HojaEnfermeria whereUpdatedAt($value)
+ * @mixin \Eloquent
+ */
 class HojaEnfermeria extends Model
 {
     protected $table = 'hoja_enfermerias';

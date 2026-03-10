@@ -209,7 +209,7 @@ const Show = ({ estancia }: ShowEstanciaProps) => {
                                     )}
 
                                     
-                                    {(can('crear documentos medicos')) && (
+                                    {(can('crear hojas frontales')|| can('crear documentos medicos')) && (
                                         <>
                                         <Menu.Item>
                                         {({ active }) => (
@@ -394,7 +394,7 @@ const Show = ({ estancia }: ShowEstanciaProps) => {
                                 <div className="flex items-center space-x-2">
                     
                     
-                                {(formulario.catalogo.route_prefix.includes('interconsultas') || 
+{/*                                 {(formulario.catalogo.route_prefix.includes('interconsultas') || 
                                 formulario.catalogo.route_prefix.includes('notasurgencias')) && (
                                     <>
                                         
@@ -413,7 +413,7 @@ const Show = ({ estancia }: ShowEstanciaProps) => {
                                             Receta
                                         </a>
                                     </>
-                                )}
+                                )} */}
 
                                 {(
                                     formulario.user_id === auth.user.id || 
