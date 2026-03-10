@@ -105,7 +105,7 @@ class VentaService
             
             if ($modelo) {
                 $precioUnitario = $modelo->costo;
-                $iva = 0;
+                $iva = $precioUnitario * .16;
             }
         }
 
@@ -126,7 +126,7 @@ class VentaService
                 ? ($modelo->clave_producto_servicio ?? $modelo->codigo_prestacion ?? 'Sin nombre') 
                 : ($itemData['nombre'] ?? 'Producto Manual'),
                 
-            'iva_aplicado'   => $iva,
+            'iva_aplicado'   => $iva = $precioUnitario * .16,
         ]);
 
     }
