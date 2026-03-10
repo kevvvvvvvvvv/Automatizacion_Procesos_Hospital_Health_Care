@@ -331,6 +331,7 @@ export interface Pago{
     referencia: string;
     user_id: number;
     monto: number;
+    monto_restante: number;
 
     venta: Venta;
     user: User;

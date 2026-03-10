@@ -10,10 +10,11 @@ use App\Models\Venta\MetodoPago;
 
 use Illuminate\Support\Facades\DB;
 use Exception;
+use Stripe\Product;
 
 class VentaService
 {
-    const Comision = 0.05;
+    
     /**
      * Crea una venta completa desde cero
      * @param array $items  Debe ser array de: ['id' => 1, 'cantidad' => 2, 'tipo' => 'producto'|'estudio']
@@ -109,13 +110,13 @@ class VentaService
         }
 
         return DetalleVenta::create([
-            'venta_id'      => $venta->id,
-            'itemable_id'   => $modelo ? $modelo->id : null,          
-            'itemable_type' => $modelo ? get_class($modelo) : null,  
-            'precio_unitario' => $precioUnitario,
-            'cantidad'      => $cantidad,
-            'subtotal'      => $precioUnitario * $cantidad,
-            'estado'        => 'completado',
+             'venta_id'      => $venta->id,
+                'itemable_id'   => $modelo ? $modelo->id : null,          
+                'itemable_type' => $modelo ? get_class($modelo) : null,  
+                'precio_unitario' => $precioUnitario / (1-ProductoServicio::comision_terminal), //colocar formular
+                'cantidad'      => $cantidad, 
+                'subtotal'      => ($precioUnitario / (1-ProductoServicio::comision_terminal)) * $cantidad, // colocar formular
+                'estado'        => 'completado',
 
             'nombre_producto_servicio' => $modelo 
                 ? ($modelo->nombre_prestacion ?? $modelo->nombre ?? 'Sin nombre') 
@@ -127,7 +128,20 @@ class VentaService
                 
             'iva_aplicado'   => $iva,
         ]);
+
     }
+
+    /**
+     * Helper para calcular el precio del producto con la comision de la terminal
+     */
+/*
+    private function calcularComisionTerminal(DetalleVenta $detalle)
+    {
+        $item = $detalle->itemable ?? '';
+        return ($item->subtotal/);
+    }
+*/
+
 
     /**
      * Helper para calcular el precio final con IVA
@@ -138,14 +152,16 @@ class VentaService
         $iva = 0;
 
         if ($item instanceof ProductoServicio) {
-            $iva = $item->iva ?? 16;
-        } 
+            $iva = $item->iva ?? 16;   
+        }
         
         return $detalle->subtotal * (1 + ($iva / 100));
     }
 
-    private function calcularTotalTarjeta(){
-        
+    private function calcularTotalTarjeta(DetalleVenta $venta)
+    {
+        $item = $detalle-> itemable ?? '';
+            
     }
 
 
