@@ -452,5 +452,9 @@ class UserSeeder extends Seeder
 
         $userAna->assignRole('administrador');        
 
-    }
+    
+    
+        
+
+        }
 }
