@@ -65,6 +65,8 @@ use App\Http\Controllers\EncuestaPersonalController;
 use App\Http\Controllers\ReporteInterconsultaController;
 use App\Http\Controllers\ReporteConcienciaController;
 use App\Http\Controllers\ReporteSignosController;
+use App\http\Controllers\RecetaController;
+
 
 use App\Http\Controllers\ReporteEstanciaController;
 use App\Models\HojaContolLiquido;
@@ -127,10 +129,12 @@ Route::get('/reportes/frecuencia-cardiaca/pdf', [ReporteSignosController::class,
     ->name('reporte.fc.pdf')
     ->middleware('auth');
 
-
-Route::get('/interconsulta/receta/pdf', [InterconsultaController::class, 'receta'])
+// Ruta genérica para recetas médicas
+Route::get('/receta/pdf/{tipo}/{id}', [RecetaController::class, 'generar'])
     ->name('receta.pdf')
-    ->middleware('auth');   
+    ->middleware('auth');  
+
+
 Route::post('/cargos', [CargoController::class, 'store'])->name('cargos.store')->middleware('auth');
 Route::resource('habitaciones', HabitacionController::class)->middleware('auth');
 Route::resource('producto-servicios', ProductoServicioController::class)->middleware('auth');
@@ -341,6 +345,15 @@ Route::post('/notifications/mark-all-as-read', function () {
     Auth::user()->unreadNotifications->markAsRead();
     return redirect()->back();
 })->name('notifications.mark-all-as-read')->middleware('auth');
+
+Route::post('/notifications/{id}/mark-as-read', function ($id) {
+    $notification = Auth::user()->notifications()->where('id', $id)->first();
+    if ($notification) {
+        $notification->markAsRead();
+    }
+
+    return redirect()->back();
+})->name('notifications.mark-as-read')->middleware('auth');
 
 // Historial
 Route::get('/historial', [HistoryController::class, 'index'])->name('historiales.index')->middleware('auth');

@@ -62,6 +62,8 @@ class RoleAndPermissionSeeder extends Seeder
             'base de datos' => ['consultar', 'respaldar','restaurar'],
             'peticion medicamentos' => ['consultar','editar', 'crear'],
             'peticion dietas' => ['consultar','editar'],
+
+            'reservaciones' => ['crear','consultar'],
         ];
 
         foreach ($permissions as $module => $actions) {
@@ -76,13 +78,17 @@ class RoleAndPermissionSeeder extends Seeder
         $roleSistemas->syncPermissions(Permission::all());
 
        $roleLimpieza->syncPermissions([
-            'editar limpieza',    // Cambiado de 'editar reportes'
-            'consultar limpieza'  // Cambiado de 'consultar reportes'
+            'editar limpieza',    
+            'consultar limpieza',
+
+            'consultar habitaciones',
         ]); 
 
         $roleMantenimiento->syncPermissions([
-            'editar mantenimiento',    // Cambiado de 'editar reportes'
-            'consultar mantenimiento'  // Cambiado de 'consultar reportes'
+            'editar mantenimiento',   
+            'consultar mantenimiento',  
+
+            'consultar habitaciones',
         ]);
 
         $roleRecepcion->syncPermissions([
@@ -97,6 +103,8 @@ class RoleAndPermissionSeeder extends Seeder
 
             'crear hojas frontales',
             'consultar hojas frontales',
+
+            'consultar habitaciones',
         ]);
         
         $roleEnfermera->syncPermissions([
@@ -116,7 +124,9 @@ class RoleAndPermissionSeeder extends Seeder
             'crear solicitudes estudios',
 
             'consultar solicitudes estudios patologicos',
-            'crear solicitudes estudios patologicos'
+            'crear solicitudes estudios patologicos',
+
+            'consultar habitaciones',
         ]);
 
         $roleCaja->syncPermissions([
@@ -137,6 +147,8 @@ class RoleAndPermissionSeeder extends Seeder
             'crear productos y servicios',
             'editar productos y servicios',
             'eliminar productos y servicios',
+
+            'consultar habitaciones',
         ]);
 
         $roleMedicoEspecialista->syncPermissions([
@@ -166,6 +178,12 @@ class RoleAndPermissionSeeder extends Seeder
             'crear consentimientos',
             
             'consultar habitaciones',
+
+            'crear hojas frontales',
+            'consultar hojas frontales',
+
+            'crear reservaciones',
+            'consultar reservaciones',
         ]);
         
         $roleMedico->syncPermissions([
@@ -198,11 +216,16 @@ class RoleAndPermissionSeeder extends Seeder
 
             'crear hojas frontales',
             'consultar hojas frontales',
+
+            'crear reservaciones',
+            'consultar reservaciones',
         ]);
 
         $roleFarmacia->syncPermissions([
             'consultar peticion medicamentos',
             'editar peticion medicamentos',
+
+            'consultar habitaciones',
         ]);
 
         $roleCocina->syncPermissions([
@@ -213,6 +236,8 @@ class RoleAndPermissionSeeder extends Seeder
 
             'consultar peticion dietas',
             'editar peticion dietas',
+
+            'consultar habitaciones',
         ]);
 
         $roleRadiologo->syncPermissions([
@@ -223,7 +248,32 @@ class RoleAndPermissionSeeder extends Seeder
             'consultar solicitudes estudios',
             'crear solicitudes estudios',
             'editar solicitudes estudios',
-            'eliminar solicitudes estudios'
+            'eliminar solicitudes estudios',
+
+            'consultar habitaciones',
         ]);
+
+        $roleTecnicoLaboratorio->syncPermissions([
+            'consultar pacientes',
+
+            'consultar solicitudes estudios',
+            'crear solicitudes estudios',
+            'editar solicitudes estudios',
+            'eliminar solicitudes estudios',
+            
+            'consultar habitaciones',
+        ]);
+
+        $roleQuimico->syncPermissions([
+            'consultar pacientes',
+
+            'consultar solicitudes estudios',
+            'crear solicitudes estudios',
+            'editar solicitudes estudios',
+            'eliminar solicitudes estudios',
+            
+            'consultar habitaciones',
+        ]);
+
     }
 }

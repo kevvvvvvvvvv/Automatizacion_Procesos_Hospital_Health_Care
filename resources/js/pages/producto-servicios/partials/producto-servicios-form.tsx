@@ -35,6 +35,7 @@ export const ProductoServicioForm=({
             {value: 'MEDICAMENTOS', label: 'MEDICAMENTOS'},
             {value: 'INSUMOS', label: 'INSUMOS'},
             {value: 'SERVICIOS', label: 'SERVICIOS'},
+            
         ];
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();

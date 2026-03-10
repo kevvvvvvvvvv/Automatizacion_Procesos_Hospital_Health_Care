@@ -24,15 +24,15 @@ class HojaSignosRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'tension_arterial_sistolica'  => ['nullable', 'integer', 'min:0', 'max:300', 'required_with:tension_arterial_diastolica'],
-            'tension_arterial_diastolica' => ['nullable', 'integer', 'min:0', 'max:200', 'required_with:tension_arterial_sistolica'],
-            'frecuencia_cardiaca'         => ['nullable', 'integer', 'min:0', 'max:300'],
-            'frecuencia_respiratoria'     => ['nullable', 'integer', 'min:0', 'max:150'],
-            'saturacion_oxigeno'          => ['nullable', 'integer', 'min:0', 'max:100'],
-            'glucemia_capilar'            => ['nullable', 'integer', 'min:0', 'max:1000'],
+            'tension_arterial_sistolica'  => ['nullable', 'integer', 'min:0', 'max:3000', 'required_with:tension_arterial_diastolica'],
+            'tension_arterial_diastolica' => ['nullable', 'integer', 'min:0', 'max:2000', 'required_with:tension_arterial_sistolica'],
+            'frecuencia_cardiaca'         => ['nullable', 'integer', 'min:0', 'max:3000'],
+            'frecuencia_respiratoria'     => ['nullable', 'integer', 'min:0', 'max:1500'],
+            'saturacion_oxigeno'          => ['nullable', 'integer', 'min:0', 'max:1000'],
+            'glucemia_capilar'            => ['nullable', 'integer', 'min:0', 'max:10000'],
             'temperatura'                 => ['nullable', 'numeric', 'min:0', 'max:50'],
             'talla'                       => ['nullable', 'numeric', 'min:0', 'max:300'],
-            'peso'                        => ['nullable', 'numeric', 'min:0', 'max:600'],
+            'peso'                        => ['nullable', 'numeric', 'min:0', 'max:6000'],
             'estado_conciencia'           => ['nullable', 'string', 'max:255'],
         ];
     }

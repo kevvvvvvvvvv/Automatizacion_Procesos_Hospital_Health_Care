@@ -209,8 +209,8 @@
                             </div>
                         @endif
                     @else
-        <div class="signature-line"></div>
-        <p style="font-size: 9pt; color: #555;"></p>
+                        <div class="signature-line"></div>
+                        <p style="font-size: 9pt; color: #555;">Nombre y firma del medico</p>
                     @endif
                 </td>
 
