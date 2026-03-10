@@ -111,12 +111,12 @@ class VentaService
 
         return DetalleVenta::create([
              'venta_id'      => $venta->id,
-                'itemable_id'   => $modelo ? $modelo->id : null,          
-                'itemable_type' => $modelo ? get_class($modelo) : null,  
-                'precio_unitario' => $precioUnitario / (1-ProductoServicio::comision_terminal), //colocar formular
-                'cantidad'      => $cantidad, 
-                'subtotal'      => ($precioUnitario / (1-ProductoServicio::comision_terminal)) * $cantidad, // colocar formular
-                'estado'        => 'completado',
+            'itemable_id'   => $modelo ? $modelo->id : null,          
+            'itemable_type' => $modelo ? get_class($modelo) : null,  
+            'precio_unitario' => $precioUnitario / (1-ProductoServicio::comision_terminal),
+            'cantidad'      => $cantidad, 
+            'subtotal'      => ($precioUnitario / (1-ProductoServicio::comision_terminal)) * $cantidad,
+            'estado'        => 'completado',
 
             'nombre_producto_servicio' => $modelo 
                 ? ($modelo->nombre_prestacion ?? $modelo->nombre ?? 'Sin nombre') 
@@ -130,17 +130,6 @@ class VentaService
         ]);
 
     }
-
-    /**
-     * Helper para calcular el precio del producto con la comision de la terminal
-     */
-/*
-    private function calcularComisionTerminal(DetalleVenta $detalle)
-    {
-        $item = $detalle->itemable ?? '';
-        return ($item->subtotal/);
-    }
-*/
 
 
     /**
@@ -156,12 +145,6 @@ class VentaService
         }
         
         return $detalle->subtotal * (1 + ($iva / 100));
-    }
-
-    private function calcularTotalTarjeta(DetalleVenta $venta)
-    {
-        $item = $detalle-> itemable ?? '';
-            
     }
 
 

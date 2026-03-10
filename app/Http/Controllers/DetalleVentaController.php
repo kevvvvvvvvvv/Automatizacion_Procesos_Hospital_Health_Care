@@ -12,6 +12,7 @@ use Illuminate\Routing\Controllers\Middleware;
 
 use App\Models\Paciente;
 use App\Models\Estancia;
+use App\Models\Inventario\ProductoServicio;
 use App\Models\Venta\Venta;
 use App\Models\Venta\DetalleVenta;
 
@@ -61,9 +62,11 @@ class DetalleVentaController extends Controller implements HasMiddleware
             'cantidad' => 'required|numeric|min:1',
             'precio_unitario' => 'required|numeric|min:0',
         ]);
+        
+        //dd($validated);
 
         $detallesventa->cantidad = $validated['cantidad'];
-        $detallesventa->precio_unitario = $validated['precio_unitario'];
+        $detallesventa->precio_unitario = ($validated['precio_unitario']/(1-(ProductoServicio::comision_terminal)));
         $detallesventa->subtotal = $detallesventa->cantidad * $detallesventa->precio_unitario;
         $detallesventa->save();
 

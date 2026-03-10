@@ -72,6 +72,13 @@ class DetalleVenta extends Model
         'clave_producto_servicio',
     ];
 
+    protected $appends = [
+        'monto_iva',
+        'total_facturado',
+        'saldo_pendiente', 
+    ];
+
+
     public function venta(): BelongsTo
     {
         return $this->belongsTo(Venta::class);
@@ -86,4 +93,25 @@ class DetalleVenta extends Model
     {
         return $this->morphTo();
     }
+
+    public function getMontoIvaAttribute()
+    {
+        // Calcula el monto del IVA basado en el porcentaje de la base de datos
+        return ($this->subtotal * ($this->iva_aplicado / 100));
+    }
+
+    public function getTotalFacturadoAttribute()
+    {
+        // El precio final que cumple con PROFECO (Base + IVA)
+        return $this->subtotal + $this->monto_iva;
+    }
+
+    public function getSaldoPendienteAttribute()
+    {
+        $descuento = $this->descuento ?? 0;
+        $montoPagado = $this->monto_pagado ?? 0; 
+        
+        return round(($this->total_facturado - $descuento) - $montoPagado, 2);
+    }
+
 }

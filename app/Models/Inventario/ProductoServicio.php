@@ -55,7 +55,7 @@ use App\Models\Estudio\CatalogoEstudio;
 class ProductoServicio extends Model
 {
     public const IVA = 1.16;
-    public const comision_terminal = 4.176;
+    public const comision_terminal = 0.04176;
 
     protected $table = 'producto_servicios';
     public $incrementing = true;
