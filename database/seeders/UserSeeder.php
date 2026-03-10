@@ -490,7 +490,7 @@ class UserSeeder extends Seeder
             'fecha_nacimiento' => '1980-01-01',
             'telefono' => '7771898558',
             'email' => 'PMSA003@test.com',
-            'passw  ord' => Hash::make('12345678'),
+            'password' => Hash::make('12345678'),
         ]);
 
         $userRamirez->assignRole('medico especialista');
