@@ -13,6 +13,8 @@ const SignosVitalesTable = ({
     hoja 
 }: Props) => {
 
+    console.log(hoja);
+
     const renderEgreso = (valor: number | null, descripcion: string | null) => {
         if (!valor && !descripcion) {
             return <span className="text-gray-400 text-sm">Sin registros</span>;
