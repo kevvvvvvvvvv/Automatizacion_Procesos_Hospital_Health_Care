@@ -157,12 +157,7 @@ class VentaService
         
         return $detalle->subtotal * (1 + ($iva / 100));
     }
-
-    private function calcularTotalTarjeta(DetalleVenta $venta)
-    {
-        $item = $detalle-> itemable ?? '';
-            
-    }
+   
 
 
     public function registrarPago(Venta $venta, float $montoPagado)
