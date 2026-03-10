@@ -62,7 +62,6 @@ class VentaController extends Controller implements HasMiddleware
             'pagos.venta.detalles',
         );
         $metodosPago = MetodoPago::all();
-        //dd($venta->toArray());
         return Inertia::render('ventas/show', [
             'venta' => $venta,
             'metodosPago' => $metodosPago,
@@ -77,7 +76,7 @@ class VentaController extends Controller implements HasMiddleware
             'user',
             'detalles.itemable');
 
-        $productos = ProductoServicio::all()->map(function($p) {
+        $catalogo = ProductoServicio::all()->map(function($p) {
             return [
                 'value' => 'producto-' . $p->id, 
                 'label' => $p->nombre_prestacion,
@@ -86,18 +85,6 @@ class VentaController extends Controller implements HasMiddleware
                 'real_id' => $p->id
             ];
         });
-
-        $estudios = CatalogoEstudio::all()->map(function($e) {
-            return [
-                'value' => 'estudio-' . $e->id,
-                'label' => $e->nombre,
-                'precio' => $e->costo,
-                'type'  => 'estudio',
-                'real_id' => $e->id
-            ];
-        });
-
-        $catalogo = $productos->concat($estudios);
 
         return Inertia::render('ventas/edit', [
             'venta' => $venta,
@@ -145,7 +132,6 @@ class VentaController extends Controller implements HasMiddleware
             $descuentoMonto = round($valor, 2);
         }
 
-        // seguridad: no permitir descuento negativo o mayor al subtotal
         if ($descuentoMonto < 0) {
             $descuentoMonto = 0;
         }
@@ -170,6 +156,8 @@ class VentaController extends Controller implements HasMiddleware
             'metodo_pago_id' => 'required|exists:metodo_pagos,id',
             'detalles_pago' => 'required|array',
         ]);
+
+        //dd($request->toArray());
 
         DB::beginTransaction();
         try {

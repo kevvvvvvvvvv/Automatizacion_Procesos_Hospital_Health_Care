@@ -46,7 +46,7 @@ export default function TicketPago({ pago }: Props) {
                         <th className="w-[15%] text-left align-top">Cant.</th>
                         <th className="w-[25%] text-left align-top">CPS</th>
                         <th className="w-[35%] text-left align-top">Concepto</th>
-                        <th className="w-[25%] text-right align-top">Abono</th>
+                        <th className="w-[25%] text-right align-top">Importe</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -76,7 +76,7 @@ export default function TicketPago({ pago }: Props) {
                                         {nombreItem}
                                     </td>
                                     <td className="text-right align-top">
-                                        {formatter.format(detallePago.monto_aplicado)}
+                                        { detalleVenta ? formatter.format(detalleVenta.total_facturado) : 0}
                                     </td>
                                 </tr>
                             );
@@ -86,8 +86,12 @@ export default function TicketPago({ pago }: Props) {
             </table>    
 
             <div className="border-t border-black pt-2 text-right text-xs">
-                <p className="font-bold text-sm mt-1">SU PAGO: {formatter.format(pago.monto)}</p>
-
+                <p className="font-bold text-xs mt-1">Subtotal: {formatter.format(pago.subtotal_ventas)}</p> 
+                <p className="font-bold text-xs mt-1">IVA: {formatter.format(pago.iva_ventas)}</p>    
+                <p className="font-bold text-xs mt-1">Total: {formatter.format(pago.total_ventas)}</p>              
+            </div>
+            <div className="border-t border-black pt-2 text-right text-xs">
+                <p className="font-bold text-xs mt-1">Su pago: {formatter.format(pago.monto)}</p>
                 <div className="mt-2 border-t border-dashed border-black pt-1 text-[10px]">
                     <p>Método de pago: {pago.metodo_pago?.nombre || 'N/A'}</p>
                 </div>
@@ -98,7 +102,6 @@ export default function TicketPago({ pago }: Props) {
                     </div>
                 )}
             </div>
-
             <div className="text-center mt-4 text-[10px]">
                 <p>¡Gracias por su preferencia!</p>
                 <p>Conserve este recibo para aclaraciones.</p>
