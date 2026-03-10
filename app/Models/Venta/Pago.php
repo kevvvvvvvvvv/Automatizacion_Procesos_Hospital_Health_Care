@@ -46,6 +46,7 @@ class Pago extends Model
         'venta_id',
         'metodo_pago_id',
         'monto',
+        'monto_restante',
         'referencia',
         'user_id',
     ];

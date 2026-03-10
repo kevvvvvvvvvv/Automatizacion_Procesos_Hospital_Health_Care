@@ -309,7 +309,7 @@ const Show = ({
 
                                <Ticket 
                                     pago={pago} 
-                                    tipo='COPIA'
+                                    
                                 />
                             </div>
                         ))}

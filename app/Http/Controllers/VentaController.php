@@ -62,7 +62,7 @@ class VentaController extends Controller implements HasMiddleware
             'pagos.venta.detalles',
         );
         $metodosPago = MetodoPago::all();
-        
+        //dd($venta->toArray());
         return Inertia::render('ventas/show', [
             'venta' => $venta,
             'metodosPago' => $metodosPago,
@@ -182,15 +182,17 @@ class VentaController extends Controller implements HasMiddleware
             $ultimoPago = Pago::latest('id')->first();
             $siguienteId = $ultimoPago ? $ultimoPago->id + 1 : 1;
             $folioPago = str_pad($siguienteId, 6, '0', STR_PAD_LEFT);
+            $montoRestante = $venta->saldo_pendiente - $totalAbono;
 
             $pago = Pago::create([
                 'folio' => $folioPago,
                 'venta_id' => $venta->id,
                 'metodo_pago_id' => $request->metodo_pago_id,
                 'monto' => $totalAbono,
+                'monto_restante' => $montoRestante,
                 'user_id' => Auth::id(),
             ]);
-
+            //dd($pago->toArray());
             foreach ($request->detalles_pago as $item) {
                 if ($item['monto_aplicado'] > 0) {
                     DetallePago::create([
@@ -205,7 +207,7 @@ class VentaController extends Controller implements HasMiddleware
             }
 
             $venta->increment('total_pagado', $totalAbono);
-
+            //dd($venta->toArray());
             DB::commit();
             return back()->with('success', 'Pago registrado correctamente.');
 

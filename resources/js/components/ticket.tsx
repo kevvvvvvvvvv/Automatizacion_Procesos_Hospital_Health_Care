@@ -37,7 +37,7 @@ export default function TicketPago({ pago }: Props) {
             <div className="text-[10px] mb-2">
                 <p>Folio Recibo: <span className="font-extrabold">{pago.folio}</span></p>
                 <p>Cuenta General: #{venta?.id}</p>
-                <p>Paciente: {venta?.estancia?.paciente?.nombre} {venta?.estancia?.paciente?.apellido_paterno} {venta?.estancia?.paciente?.apellido_materno}</p>
+                <p>Paciente: {venta?.estancia?.paciente?.nombre_completo}</p>
             </div>
 
             <table className="w-full text-[10px] mb-2 table-fixed leading-tight">
@@ -94,7 +94,7 @@ export default function TicketPago({ pago }: Props) {
                 {venta && (
                     <div className="mt-2 border-t border-dashed border-black pt-1 text-[10px]">
                         <p>Total de la cuenta: {formatter.format(venta.total)}</p>
-                        <p>Restante por pagar: {formatter.format(venta.saldo_pendiente)}</p>
+                        <p>Restante por pagar: {formatter.format(pago.monto_restante)}</p>
                     </div>
                 )}
             </div>
