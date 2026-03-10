@@ -105,7 +105,7 @@ class VentaService
             
             if ($modelo) {
                 $precioUnitario = $modelo->costo;
-                $iva = 0;
+                $iva = $precioUnitario * .16;
             }
         }
 
@@ -113,9 +113,9 @@ class VentaService
              'venta_id'      => $venta->id,
                 'itemable_id'   => $modelo ? $modelo->id : null,          
                 'itemable_type' => $modelo ? get_class($modelo) : null,  
-                'precio_unitario' => $precioUnitario / (1-ProductoServicio::comision_terminal), //colocar formular
+                'precio_unitario' => $precioUnitario * 1.04176, //colocar formular
                 'cantidad'      => $cantidad, 
-                'subtotal'      => ($precioUnitario / (1-ProductoServicio::comision_terminal)) * $cantidad, // colocar formular
+                'subtotal'      => ($precioUnitario * 1.04176) * $cantidad, // colocar formular
                 'estado'        => 'completado',
 
             'nombre_producto_servicio' => $modelo 
@@ -126,7 +126,7 @@ class VentaService
                 ? ($modelo->clave_producto_servicio ?? $modelo->codigo_prestacion ?? 'Sin nombre') 
                 : ($itemData['nombre'] ?? 'Producto Manual'),
                 
-            'iva_aplicado'   => $iva,
+            'iva_aplicado'   => $iva = $precioUnitario * .16,
         ]);
 
     }
