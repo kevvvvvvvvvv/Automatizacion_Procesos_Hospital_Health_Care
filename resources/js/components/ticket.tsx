@@ -94,7 +94,7 @@ export default function TicketPago({ pago }: Props) {
                 {venta && (
                     <div className="mt-2 border-t border-dashed border-black pt-1 text-[10px]">
                         <p>Total de la cuenta: {formatter.format(venta.total)}</p>
-                        <p>Restante por pagar: {formatter.format(venta.saldo_pendiente)}</p>
+                        <p>Restante por pagar: {formatter.format(pago.monto_restante)}</p>
                     </div>
                 )}
             </div>
