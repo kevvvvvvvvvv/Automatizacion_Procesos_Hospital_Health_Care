@@ -397,16 +397,7 @@ const Show = ({ estancia }: ShowEstanciaProps) => {
                                 {(formulario.catalogo.route_prefix.includes('interconsultas') || 
                                 formulario.catalogo.route_prefix.includes('notasurgencias')) && (
                                     <>
-                                        <Link
-                                            href={route('receta.pdf', { 
-                                                formulario: formulario.id
-                                            })}
-                                            className="inline-flex items-center px-3 py-1.5 bg-green-600 text-white text-xs font-medium rounded hover:bg-green-700 transition shadow-sm"
-                                            title="Generar Receta Médica"
-                                        >
-                                            <Plus size={14} className="mr-1" />
-                                            
-                                        </Link>
+                                        
 
 
                                         <a
