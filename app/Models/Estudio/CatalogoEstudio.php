@@ -16,6 +16,7 @@ class CatalogoEstudio extends Model
         'tipo_estudio',
         'departamento',
         'tiempo_entrega',
+        'link'
     ];
 
     public function solicitudItem(): HasMany

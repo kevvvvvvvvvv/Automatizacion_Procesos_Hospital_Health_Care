@@ -193,7 +193,7 @@
                         <div class="signature-line"></div>
 
                         <p></p>
-                        <p style="font-size: 9pt; color: #555;">Nombre y Firma del Médico</p>
+                        <p style="font-size: 9pt; color: #555;">Nombre y firma del médico</p>
 
                         @if($medico->credenciales->isNotEmpty())
                             <div style="font-size: 10pt; margin-top: 10px;">
@@ -207,8 +207,9 @@
                             </div>
                         @endif
                     @else
-        <div class="signature-line"></div>
-        <p style="font-size: 9pt; color: #555;"></p>
+                        <div class="signature-line"></div>
+                        <p style="font-size: 9pt; color: #555;"></p>
+                        <p style="font-size: 9pt; color: #555;">Nombre y firma del medico</p>
                     @endif
                 </td>
 

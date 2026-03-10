@@ -79,7 +79,7 @@ const Show = ({notasevolucione, paciente, estancia}: ShowNotaEvolucionProps) => 
             label= "Resultados Relevantes"
             value = {notasevolucione.resultado_estudios || 'N/A'}/>
             <InfoField
-            label= "diagnostico y problemas clinicos"
+            label= "Diagnostico y problemas clinicos"
             value = {notasevolucione.diagnostico_o_problemas_clinicos || 'N/A'}/>
             <InfoField
             label= "Pronostico"
@@ -87,7 +87,7 @@ const Show = ({notasevolucione, paciente, estancia}: ShowNotaEvolucionProps) => 
         </div>
         <div className="space-y-2 mb-6">
             <h2 className='text-lg font-semibold text-gray-800 mb-2'>
-           Tratamnmiento e Indicaciones médicas</h2>
+           Tratamiento e Indicaciones médicas</h2>
             <InfoField
             label="Plan de dieta"
             value = {notasevolucione.manejo_dieta || 'N/A'}/>

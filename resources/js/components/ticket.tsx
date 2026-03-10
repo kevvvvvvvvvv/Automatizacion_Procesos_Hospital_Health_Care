@@ -98,21 +98,21 @@ export default function TicketPago({ pago }: Props) {
                     </div>
                 )}
             </div>
-            <div>
-                <div className="text-center mt-4 text-[10px]">
-                    <p>¡Gracias por su preferencia!</p>
-                    <p>Conserve este recibo para aclaraciones.</p>
-                </div>
-                <div className='text-left mt-2 text-[10px]'>
-                    {venta?.requiere_factura ? (
-                        <>
-                            <p>Tiene 72 horas para el envío de la siguiente información al número 7779756696 o al correo cmc1.facturacion@gmail.com </p> 
-                            <p>1. Nombre/Razón social, 2. RFC, 3. Código postal, 4. Regimen fiscal, 5. Uso de CFDI, 6. Correo electrónico, 7. Número de teléfono, 8. Copia de este comprobante</p>
-                        </>
-                    ):(
-                        <p>El cliente no solicitó factura para esta cuenta.</p>
-                    )}
-                </div>
+
+            <div className="text-center mt-4 text-[10px]">
+                <p>¡Gracias por su preferencia!</p>
+                <p>Conserve este recibo para aclaraciones.</p>
+            </div>
+            
+            <div className='text-left mt-2 text-[10px]'>
+                {venta?.requiere_factura ? (
+                    <>
+                        <p>Tiene 72 horas para el envío de la siguiente información al número 7779756696 o al correo cmc1.facturacion@gmail.com </p> 
+                        <p>1. Nombre/Razón social, 2. RFC, 3. Código postal, 4. Regimen fiscal, 5. Uso de CFDI, 6. Correo electrónico, 7. Número de teléfono, 8. Copia de este comprobante</p>
+                    </>
+                ):(
+                    <p>El cliente no solicitó factura para esta cuenta.</p>
+                )}
             </div>
         </div>
     );
@@ -124,20 +124,20 @@ export default function TicketPago({ pago }: Props) {
                 className="mb-6 bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 no-print rounded-xl shadow-lg transition-colors flex items-center gap-2"
             >
                 <span>🖨️</span> Imprimir Original y Copia
-                    </button>
+            </button>
 
-        <div id={`printable-area-${pago.id}`} className="flex flex-col">
-            
-            {/* Primera copia: ORIGINAL */}
-            <TicketContent leyenda="ORIGINAL" />
+            <div id={`printable-area-${pago.id}`} className="flex flex-col">
+                
+                {/* Primera copia: ORIGINAL */}
+                <TicketContent leyenda="ORIGINAL" />
 
-            <div className="page-break manual-cut-space"></div>
-            
-            {/* Segunda copia: COPIA */}
-            <TicketContent leyenda="COPIA" />
+                <div className="page-break manual-cut-space"></div>
+                
+                {/* Segunda copia: COPIA */}
+                <TicketContent leyenda="COPIA" />
 
-            <div className="h-12"></div>
-        </div>
+                <div className="h-12"></div>
+            </div>
         </div>
     );
 }
