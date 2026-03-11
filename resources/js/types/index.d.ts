@@ -309,6 +309,10 @@ export interface DetalleVenta{
     iva_aplicado: number;
     monto_pagado: number;
 
+    monto_iva: number;
+    total_facturado: number;
+    saldo_pendiente: number;
+
     nombre_producto_servicio: string;
     clave_producto_servicio?: string;
 }
@@ -331,11 +335,16 @@ export interface Pago{
     referencia: string;
     user_id: number;
     monto: number;
+    monto_restante: number;
 
     venta: Venta;
     user: User;
     metodo_pago: MetodoPago;
     detalles: DetallePago[];
+
+    subtotal_ventas: number;
+    iva_ventas: number;
+    total_ventas: number,
 
     created_at: string;
     updated_at: string;
