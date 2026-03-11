@@ -64,15 +64,20 @@ class SolicitudEstudioController extends Controller implements HasMiddleware
         ]);
     }
 
-    public function store(SolicitudEstudioRequest $request, Estancia $estancia, TwilioWhatsAppService $twilio)
+    public function store(SolicitudEstudioRequest $request, Estancia $estancia, TwilioWhatsAppService $twilio, VentaService $venta)
     {
         $validatedData = $request->validated();
+
         DB::beginTransaction();
         try {
             $solicitud = $this->crearCabeceraSolicitud($request, $estancia);
             $itemsParaNotificar = $this->guardarItems($request, $solicitud);
             $this->procesarNotificaciones($solicitud, $itemsParaNotificar);
             $this->enviarRecordatorioCita($twilio);
+
+            foreach($request->estudios_agregados_ids as $estudio){
+                $this->procesarVenta($venta, $estancia['id'],$estudio);
+            }
 
             DB::commit();
             return Redirect::back()->with('success', 'Solicitud creada y notificada.');
@@ -207,7 +212,6 @@ class SolicitudEstudioController extends Controller implements HasMiddleware
                                 }
 
                                 if ($item->estado == 'SOLICITADO' || $item->estado == 'PENDIENTE') {
-                                    $this->procesarVenta($venta, $estancia_id, $itemData['catalogo_estudio_id']);
                                     $datosActualizar['estado'] = 'FINALIZADO';
                                 }
                             } else {
@@ -401,24 +405,28 @@ class SolicitudEstudioController extends Controller implements HasMiddleware
     }
 
     private function procesarVenta(VentaService $venta,Int $estancia_id ,Int $catalogo_estudio_id){
+        try{
+            $ventaExisente = Venta::where('estancia_id',$estancia_id)
+                ->where('estado', Venta::ESTADO_PENDIENTE)
+                ->first();
 
-        $ventaExisente = Venta::where('estancia_id',$estancia_id)
-            ->where('estado', Venta::ESTADO_PENDIENTE)
-            ->first();
+            $estudio = ProductoServicio::findOrFail($catalogo_estudio_id);
+            
+            $itemParaVenta = [
+                'id' => $estudio->id,
+                'cantidad' => 1,
+                'tipo' => 'producto',
+                'nombre' => $estudio->nombre,
+            ];
 
-        $estudio = ProductoServicio::findOrFail($catalogo_estudio_id);
-        
-        $itemParaVenta = [
-            'id' => $estudio->id,
-            'cantidad' => 1,
-            'tipo' => 'producto',
-            'nombre' => $estudio->nombre,
-        ];
-
-        if($ventaExisente){
-            $venta->addItemToVenta($ventaExisente, $itemParaVenta);
-        } else {
-            $venta->crearVenta([$itemParaVenta],$estancia_id, Auth::id());
+            if($ventaExisente){
+                $venta->addItemToVenta($ventaExisente, $itemParaVenta);
+            } else {
+                $venta->crearVenta([$itemParaVenta],$estancia_id, Auth::id());
+            }
+        }catch(\Exception $e){
+            \Log::error('Error al generar la venta de la solicitud de estudio ' . $e->getMessage());
+            return Redirect::back()->with('error','Error al generar la venta de la solicitud de estudio.');
         }
 
     }
