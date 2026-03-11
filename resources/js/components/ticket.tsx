@@ -1,10 +1,9 @@
 import React from 'react';
 import '../../../public/css/ticket-styles.css';
-import { DetalleVenta, Pago } from '@/types';
+import { Pago } from '@/types';
 
 interface Props {
     pago: Pago;
-    ventas: DetalleVenta;
 }
 
 const formatter = new Intl.NumberFormat('es-MX', {
@@ -13,7 +12,7 @@ const formatter = new Intl.NumberFormat('es-MX', {
     minimumFractionDigits: 2
 });
 
-export default function TicketPago({ pago, ventas}: Props) {
+export default function TicketPago({ pago}: Props) {
     
     const handlePrint = () => {
         window.print();
