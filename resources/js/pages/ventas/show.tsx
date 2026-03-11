@@ -12,7 +12,6 @@ import Ticket from '@/components/ticket';
 import InputBoolean from '@/components/ui/input-boolean';
 import InputSelect from '@/components/ui/input-select';
 
-
 const formatCurrency = (amount: number | string) => {
     return new Intl.NumberFormat('es-MX', {
         style: 'currency',
@@ -78,6 +77,13 @@ const Show = ({
         })) || []
     });
 
+    const handlePagarTotal = (index: number) => {
+        const nuevosDetalles = [...data.detalles_pago];
+        const saldoItem = Number(venta.detalles[index].saldo_pendiente);
+        nuevosDetalles[index].monto_aplicado = String(saldoItem);
+        setData('detalles_pago', nuevosDetalles);
+    }
+
     const handleDetalleChange = (index: number, value: string) => {
         const nuevosDetalles = [...data.detalles_pago];
         nuevosDetalles[index].monto_aplicado = value;
@@ -96,6 +102,11 @@ const Show = ({
             onSuccess: () => {
                 setShowModal(false);
                 reset();
+                const detallesLimpios = data.detalles_pago.map(detalle => ({
+                    ...detalle,
+                    monto_aplicado: '' 
+                }));
+                setData('detalles_pago', detallesLimpios);
             }
         });
     }    
@@ -205,12 +216,15 @@ const Show = ({
                                         <th className="px-4 py-3">Concepto</th>
                                         <th className="px-4 py-3 text-right">Saldo pendiente</th>
                                         <th className="px-4 py-3 text-right w-40">Abonar ahora</th>
+                                        <th>Operaciones</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {venta.detalles?.map((detalle, index) => {
-                                        const saldoItem = (Number(detalle.subtotal) + Number(detalle.iva_aplicado || 0) - Number(detalle.descuento || 0)) - Number(detalle.monto_pagado);
+                                        // Leemos directamente el atributo calculado en el modelo de Laravel
+                                        const saldoItem = Number(detalle.saldo_pendiente);
 
+                                        // Si ya está pagado por completo, no lo mostramos en la lista de abonos
                                         if (saldoItem <= 0) return null;
 
                                         return (
@@ -233,6 +247,15 @@ const Show = ({
                                                         error={errors.detalles_pago}
                                                         max={saldoItem} 
                                                     />
+                                                </td>
+                                                <td className="px-4 py-3 text-center align-middle">
+                                                    <button 
+                                                        type="button" 
+                                                        onClick={() => handlePagarTotal(index)}
+                                                        className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded hover:bg-blue-200"
+                                                    >
+                                                        Liquidar
+                                                    </button>
                                                 </td>
                                             </tr>
                                         )
@@ -275,7 +298,7 @@ const Show = ({
             </Modal>
             </div>
 
-            <InfoCard title="Historial de Recibos / Pagos" icon={CreditCard}>
+            <InfoCard title="Historial de recibos / pagos" icon={CreditCard}>
                 {venta.pagos && venta.pagos.length > 0 ? (
                     <div className="space-y-4">
                         {venta.pagos.map((pago) => (
@@ -309,7 +332,7 @@ const Show = ({
 
                                <Ticket 
                                     pago={pago} 
-                                    tipo='COPIA'
+                                    
                                 />
                             </div>
                         ))}
