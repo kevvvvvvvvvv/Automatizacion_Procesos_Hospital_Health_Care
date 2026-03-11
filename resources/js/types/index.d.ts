@@ -1152,15 +1152,15 @@ export interface EncuestaPersonal {
 
     formulario_instancia: FormularioInstancia;
 }
-// Sugerencia para tu archivo types.ts
+
 export interface Mantenimiento {
     id: number;
     tipo_servicio: string;
     comentarios: string;
     observaciones: string;
     resultado_aceptado: boolean | null;
-    duracion_espera: number; // Cambiado a number porque en BD es integer
-    duracion_actividad: number; // Cambiado a number porque en BD es integer
+    duracion_espera: number; 
+    duracion_actividad: number;
     fecha_solicita: string | null; 
     fecha_arregla: string | null; 
     habitacion_id: number | null;
@@ -1168,5 +1168,11 @@ export interface Mantenimiento {
     user_ejecuta_id: number | null;
     created_at: string;
     updated_at: string;
+}
 
+export interface TicketCajero {
+    qr_base64: string;
+    codigo: string;
+    mensaje: string; 
+    pago: Pago;
 }
