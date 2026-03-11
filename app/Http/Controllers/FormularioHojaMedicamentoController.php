@@ -1,10 +1,13 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Models\Venta\Venta; // Importante añadir esta
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use App\Services\VentaService;
+use Illuminate\Support\Facades\DB;
 
 use App\Models\Formulario\HojaEnfermeria\HojaEnfermeria;
 use App\Models\Formulario\HojaEnfermeria\HojaMedicamento;
@@ -87,28 +90,54 @@ class FormularioHojaMedicamentoController extends Controller
             return redirect()->back()->with('error', 'Error al guardar. ');
         }
     }
-
-    public function update(Request $request, HojaEnfermeria $hojasenfermeria, HojaMedicamento $hojasmedicamento)
+public function update(Request $request, HojaEnfermeria $hojasenfermeria, HojaMedicamento $hojasmedicamento, VentaService $ventaService)
     {
         $validatedData = $request->validate([
             'fecha_hora_inicio' => 'required|date',
         ]);
 
-        try{
+        DB::beginTransaction();
+
+        try {
+            
             $fechaMySQL = Carbon::parse($validatedData['fecha_hora_inicio'])
                                 ->setTimezone(config('app.timezone')) 
                                 ->format('Y-m-d H:i:s'); 
+            if ($hojasmedicamento->producto_servicio_id) {
+                
+                $hojasmedicamento->load('hojaEnfermeria.formularioInstancia.estancia');
+                $estanciaId = $hojasmedicamento->hojaEnfermeria->formularioInstancia->estancia->id;
 
+                $itemParaVenta = [
+                    'id'       => $hojasmedicamento->producto_servicio_id,
+                    'cantidad' => 1,
+                    'tipo'     => 'producto',
+                    'nombre'   => $hojasmedicamento->nombre_medicamento,
+                ];
+
+                $ventaExistente = Venta::where('estancia_id', $estanciaId)
+                                      ->where('estado', Venta::ESTADO_PENDIENTE)
+                                      ->first();
+
+                if ($ventaExistente) {
+                    $ventaService->addItemToVenta($ventaExistente, $itemParaVenta);
+                } else {
+                    $ventaService->crearVenta([$itemParaVenta], $estanciaId, Auth::id());
+                }
+            }
+
+       
             $hojasmedicamento->update([
                 'fecha_hora_inicio' => $fechaMySQL,
             ]);
-            
-            return Redirect::back()->with('success', 'Fecha de medicamento actualizada.');
 
-        }catch(\Exception $e){
-            \Log::error('Error al actualizar la fecha de actualización del medicamento: ' .$e->getMessage());
-            return Redirect::back()->with('error','Error al actualizar la fecha de actualización del medicamento.');
+            DB::commit();
+            return Redirect::back()->with('success', 'Fecha actualizada y cargo aplicado a la cuenta.');
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            \Log::error('Error al actualizar medicamento: ' . $e->getMessage());
+            return Redirect::back()->with('error', 'Error al procesar la actualización.');
         }
-
     }
 }
