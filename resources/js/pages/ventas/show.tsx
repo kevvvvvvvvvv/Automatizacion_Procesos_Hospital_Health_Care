@@ -5,7 +5,6 @@ import { CreditCard, Hash, X } from 'lucide-react';
 import { MetodoPago, TicketCajero, Venta, Pago } from '@/types';
 import { usePage } from '@inertiajs/react';
 import { useEffect } from 'react';
-import axios from 'axios';
 
 import Modal from '@/components/modal';
 import InputText from '@/components/ui/input-text';
@@ -72,7 +71,8 @@ const Show = ({
 }: Props) => { 
 
     const [showModal, setShowModal] = useState(false);
-    const [ticketCajero, setTicketCajero] = useState<any>(null);
+    const [ticketCajero, setTicketCajero] = useState<TicketCajero | null>(null);
+    const [pagoReciente, setPagoReciente] = useState<Pago | null>(null);
     const [montoTicket, setMontoTicket] = useState<number>(0);  
     
     const metodoPagoOptions = metodosPago.map((mp) => ({label: mp.nombre, value: mp.id}));
@@ -107,21 +107,18 @@ const Show = ({
     const handleSubmitPago = (e: React.FormEvent) => {
         e.preventDefault();
         if (totalAbonoActual <= 0) return alert('Debes ingresar un monto a pagar');
-
         post(route('ventas.pagar', venta.id), {
-            // onSuccess se dispara cuando Laravel responde con el return back()->with(...)
             onSuccess: (page) => {
-                setShowModal(false); // Cerramos el modal de cobro
+                setShowModal(false); 
                 
                 const flash = page.props.flash as any;
                 
-                // Si el backend nos mandó el ticket y fue exitoso, lo mostramos
                 if (flash && flash.ticket && flash.ticket.success) {
                     setTicketCajero(flash.ticket);
-                    setMontoTicket(totalAbonoActual); // Guardamos cuánto cobramos para el ticket
+                    setMontoTicket(totalAbonoActual); 
                 }
 
-                reset(); // Limpiamos el formulario
+                reset();
                 const detallesLimpios = data.detalles_pago.map(detalle => ({
                     ...detalle,
                     monto_aplicado: '' 
@@ -131,11 +128,18 @@ const Show = ({
         });
     }
 
-
     const { props } = usePage();
-        useEffect(() => {
-        console.log("Datos recibidos de Laravel:", props);
-    }, [props]);
+    const flash = props.flash as any;
+
+    useEffect(() => {
+        if (flash && flash.success) {
+            if (flash.ticket && flash.ticket.success) {
+                setTicketCajero(flash.ticket);
+                setPagoReciente(flash.pago);
+                setMontoTicket(flash.pago?.monto || totalAbonoActual); 
+            }
+        }
+    }, [flash]);
 
     const ivaCalculado = Number(venta.total) - Number(venta.subtotal);
 
@@ -145,9 +149,10 @@ const Show = ({
             link="pacientes.estancias.ventas.index"      
             linkParams={{ paciente: venta.estancia.paciente.id, estancia: venta.estancia.id, venta: venta.id }}
         >
+            
 
             <Head title={`Consulta de venta #${venta.id}`}/>
-            <div className="max-w-5xl mx-auto space-y-6 pb-10">
+           <div className={`max-w-5xl mx-auto space-y-6 pb-10 ${ticketCajero ? 'print:hidden' : ''}`}>
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-6 rounded-xl shadow-sm border border-gray-200">
                     <div>
                         <div className="flex items-center gap-3 mb-1">
@@ -328,6 +333,23 @@ const Show = ({
                     </form>
                 </div>
             </Modal>
+                <Modal show={!!ticketCajero} onClose={() => setTicketCajero(null)} maxWidth="sm">
+                    <div className="p-6 relative">
+                        <button 
+                            onClick={() => setTicketCajero(null)} 
+                            className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 print:hidden"
+                        >
+                            <X size={20} />
+                        </button>
+                        
+                        {ticketCajero && pagoReciente && (
+                            <TicketPagoCajero
+                                ticket={ticketCajero}
+                                pago={pagoReciente}
+                            />
+                        )}
+                    </div>
+                </Modal>
             </div>
 
             <InfoCard title="Historial de recibos / pagos" icon={CreditCard}>
@@ -345,30 +367,15 @@ const Show = ({
                                     <p className="text-sm text-gray-500 mt-1">
                                         {new Date(pago.created_at).toLocaleDateString('es-MX')} - {pago.detalles?.length} concepto(s)
                                     </p>
-                                </div>
-                                
-                                <div className="flex items-center gap-4">
                                     <span className="font-bold text-green-600 text-lg">
                                         + {formatCurrency(pago.monto)}
                                     </span>
-                                    
-                                    <button 
-                                        onClick={() => {
-                                            window.print();
-                                        }}
-                                        className="text-blue-600 hover:bg-blue-50 p-2 rounded-lg transition-colors text-sm font-medium"
-                                    >
-                                        Imprimir recibo
-                                    </button>
                                 </div>
+                                
 
                                <Ticket 
                                     pago={pago} 
                                 />
-{/*                                 <TicketPagoCajero
-                                    ticket = {ticketCajero}
-                                    pago={pago}
-                                /> */}
                             </div>
                         ))}
                     </div>
