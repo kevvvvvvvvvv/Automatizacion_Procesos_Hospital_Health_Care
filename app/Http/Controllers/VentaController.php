@@ -151,57 +151,72 @@ class VentaController extends Controller implements HasMiddleware
 
 
     public function registrarPago(Request $request, Venta $venta)
-    {
-        $request->validate([
-            'metodo_pago_id' => 'required|exists:metodo_pagos,id',
-            'detalles_pago' => 'required|array',
+{
+    $request->validate([
+        'metodo_pago_id' => 'required|exists:metodo_pagos,id',
+        'detalles_pago' => 'required|array',
+        'requiere_factura' => 'required|boolean',
+    ]);
+
+    DB::beginTransaction();
+    try {
+        $totalAbono = collect($request->detalles_pago)->sum('monto_aplicado');
+
+        if ($totalAbono <= 0) {
+            return back()->withErrors(['error' => 'El monto debe ser mayor a 0']);
+        }
+
+        $ultimoPago = Pago::latest('id')->first();
+        $siguienteId = $ultimoPago ? $ultimoPago->id + 1 : 1;
+        $folioPago = str_pad($siguienteId, 6, '0', STR_PAD_LEFT);
+        
+        // Calculamos el saldo antes de actualizar la venta
+        $montoRestante = $venta->saldo_pendiente - $totalAbono;
+
+        $pago = Pago::create([
+            'folio' => $folioPago,
+            'venta_id' => $venta->id,
+            'metodo_pago_id' => $request->metodo_pago_id,
+            'monto' => $totalAbono,
+            'monto_restante' => $montoRestante,
+            'user_id' => Auth::id(),
         ]);
 
-        //dd($request->toArray());
+        foreach ($request->detalles_pago as $item) {
+            if ($item['monto_aplicado'] > 0) {
+                DetallePago::create([
+                    'pago_id' => $pago->id,
+                    'detalle_venta_id' => $item['detalle_venta_id'],
+                    'monto_aplicado' => $item['monto_aplicado'],
+                ]);
 
-        DB::beginTransaction();
-        try {
-            $totalAbono = collect($request->detalles_pago)->sum('monto_aplicado');
-
-            if ($totalAbono <= 0) {
-                return back()->withErrors(['error' => 'El monto debe ser mayor a 0']);
+                $detalleVenta = DetalleVenta::find($item['detalle_venta_id']);
+                $detalleVenta->increment('monto_pagado', $item['monto_aplicado']);
             }
-
-            $ultimoPago = Pago::latest('id')->first();
-            $siguienteId = $ultimoPago ? $ultimoPago->id + 1 : 1;
-            $folioPago = str_pad($siguienteId, 6, '0', STR_PAD_LEFT);
-            $montoRestante = $venta->saldo_pendiente - $totalAbono;
-            dd($venta->saldo_pendiente);
-            $pago = Pago::create([
-                'folio' => $folioPago,
-                'venta_id' => $venta->id,
-                'metodo_pago_id' => $request->metodo_pago_id,
-                'monto' => $totalAbono,
-                'monto_restante' => $montoRestante,
-                'user_id' => Auth::id(),
-            ]);
-            //dd($pago->toArray());
-            foreach ($request->detalles_pago as $item) {
-                if ($item['monto_aplicado'] > 0) {
-                    DetallePago::create([
-                        'pago_id' => $pago->id,
-                        'detalle_venta_id' => $item['detalle_venta_id'],
-                        'monto_aplicado' => $item['monto_aplicado'],
-                    ]);
-
-                    $detalleVenta = DetalleVenta::find($item['detalle_venta_id']);
-                    $detalleVenta->increment('monto_pagado', $item['monto_aplicado']);
-                }
-            }
-
-            $venta->increment('total_pagado', $totalAbono);
-            //dd($venta->toArray());
-            DB::commit();
-            return back()->with('success', 'Pago registrado correctamente.');
-
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return back()->withErrors(['error' => 'Hubo un problema al registrar el pago: ' . $e->getMessage()]);
         }
+        
+        // 1. Incrementamos el total pagado en la venta
+        $venta->increment('total_pagado', $totalAbono);
+        $nuevoTotalPagado = (float)$venta->total_pagado;
+        $totalVenta = (float)$venta->total;
+
+        if ($nuevoTotalPagado >= $totalVenta) {
+            $venta->estado = 'pagado';
+        } else {
+            // Si quieres que el estado sea más dinámico, podrías usar "parcialmente pagado" 
+            // pero según tu lógica:
+            $venta->estado = 'En espera de pago';
+        }
+
+        $venta->save();
+
+        DB::commit();
+        return back()->with('success', 'Pago registrado correctamente.');
+
+    } catch (\Exception $e) {
+        DB::rollBack();
+        \Log::error("Error al registrar pago: " . $e->getMessage());
+        return back()->withErrors(['error' => 'Hubo un problema al registrar el pago: ' . $e->getMessage()]);
     }
+}
 }
