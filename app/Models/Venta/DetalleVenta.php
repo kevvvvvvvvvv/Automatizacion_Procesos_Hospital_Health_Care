@@ -102,7 +102,7 @@ class DetalleVenta extends Model
 
     public function getTotalFacturadoAttribute()
     {
-        // El precio final que cumple con PROFECO (Base + IVA)
+        // El precio final (Base + IVA)
         return $this->subtotal + $this->monto_iva;
     }
 
