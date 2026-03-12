@@ -55,6 +55,8 @@ class HojaEnfermeriaQuirofano extends Model
     protected $fillable = [
         'id',
 
+        'estado',
+
         'anestesia',
         'servicios_especiales',
 
