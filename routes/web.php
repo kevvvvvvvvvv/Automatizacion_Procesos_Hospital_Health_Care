@@ -168,7 +168,7 @@ Route::resource('pacientes.estancias.notasegresos', NotasEgresoController::class
 Route::resource('pacientes.estancias.notasevoluciones', NotaEvolucionController::class)->shallow()->middleware('auth');
 Route::resource('pacientes.estancias.notaspreanestesicas', NotaPreAnestesicaController::class)->shallow()->middleware('auth');
 Route::resource('pacientes.estancias.hojasenfermeriasquirofanos',HojaEnfemeriaQuirofanoController::class)->shallow()->middleware('auth');
-Route::put('/hojasenfermeriasquirofanos/{hojaenfermeriaquirofanos}',[HojaEnfemeriaQuirofanoController::class, 'cerrarHoja'])->middleware('auth');
+Route::put('/hojasenfermeriasquirofanos/{hojaenfermeriaquirofanos}',[HojaEnfemeriaQuirofanoController::class, 'cerrarHoja'])->name('hojasenfermeriasquirofanos.cerrarHoja')->middleware('auth');
 
 Route::resource('pacientes.estancias.consentimientos', ConsentimientoController::class)->shallow()->middleware('auth');
 Route::resource('estancias.encuesta-satisfaccions', EncuestaSatisfaccionController::class)->shallow()->middleware('auth');
