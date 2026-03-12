@@ -24,6 +24,7 @@ use App\Services\PdfGeneratorService;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
+use Illuminate\Support\Facades\Redis;
 
 use function Pest\Laravel\call;
 
@@ -154,15 +155,31 @@ class HojaEnfemeriaQuirofanoController extends Controller implements HasMiddlewa
 
     private function cerrarHoja(HojaEnfermeriaQuirofano $hoja)
     {
+        DB::beginTransaction();
         try{
             $hoja->update([
                 'estado' => 'Cerrado'
             ]);
+
+            $this->calcularVentas($hoja);
+
+            DB::commit();
             return redirect()->route('estancias.show');
         }catch(\Exception $e){
+            DB::rollBack();
             return redirect()->back()->with('error','Error al cerrar la hoja de enfermería en quirófano');
         }
         
+    }
+
+    private function calcularVentas(HojaEnfermeriaQuirofano $hoja){
+        try{
+            $hoja->load('hojaInsumosBasicos');
+            dd($hoja->toArray());
+        }catch(\Exception $e){
+            \Log::error('Error en el cálculo de las ventas: ' . $e->getMessage());
+            return Redirect::back()->with('error','Error en el cálculo de las ventas.');
+        }
     }
 
 }

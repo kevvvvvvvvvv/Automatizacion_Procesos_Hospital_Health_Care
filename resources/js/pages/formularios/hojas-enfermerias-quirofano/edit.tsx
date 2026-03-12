@@ -114,8 +114,8 @@ const CreateHojaEnfermeriaQuirofano:CreateComponent = ({paciente, estancia, hoja
                     hoja={hoja}
                     title='hoja de enfermería en quirófano'
                     routeConfig={{
-                        name: 'hojasenfermeriasquirofanos.update',
-                        params: {hojasenfermeriasquirofano: hoja.id}
+                        name: 'hojasenfermeriasquirofanos.cerrarHoja',
+                        params: {hojaenfermeriaquirofanos: hoja.id}
                     }}
                 />
                 <NavigationTabs/>
