@@ -1,12 +1,10 @@
 import React from 'react';
 import '../../../public/css/ticket-styles.css';
-import { DetalleVenta, Pago } from '@/types';
+import { Pago } from '@/types';
 ;
 
 interface Props {
     pago: Pago;
-    ventas: DetalleVenta;
-        tipo: 'ORIGINAL' | 'COPIA';
 }
 
 const formatter = new Intl.NumberFormat('es-MX', {
