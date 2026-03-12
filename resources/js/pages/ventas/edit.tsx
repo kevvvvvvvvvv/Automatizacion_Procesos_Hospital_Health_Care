@@ -60,7 +60,6 @@ const EditVenta = ({ venta, paciente, estancia, catalogoOptions }: EditVentaProp
     descuento_tipo: 'monto' as 'monto' | 'porcentaje',
   });
 
-  venta.detalles;
     const { descuentoMonto, totalCalculado } = useMemo(() => {
         if (dataVenta.descuento_tipo === 'porcentaje') {
         const pct = Number(dataVenta.descuento) || 0;
