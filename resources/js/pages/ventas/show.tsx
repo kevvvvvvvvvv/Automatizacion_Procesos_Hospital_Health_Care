@@ -2,7 +2,9 @@ import React, { useState } from 'react';
 import { route } from 'ziggy-js';
 import { useForm, Head } from '@inertiajs/react';
 import { CreditCard, Hash, X } from 'lucide-react'; 
-import { MetodoPago, Venta } from '@/types';
+import { MetodoPago, TicketCajero, Venta, Pago } from '@/types';
+import { usePage } from '@inertiajs/react';
+import { useEffect } from 'react';
 
 import Modal from '@/components/modal';
 import InputText from '@/components/ui/input-text';
@@ -11,6 +13,7 @@ import MainLayout from '@/layouts/MainLayout';
 import Ticket from '@/components/ticket';
 import InputBoolean from '@/components/ui/input-boolean';
 import InputSelect from '@/components/ui/input-select';
+import TicketPagoCajero from '@/components/tickets/ticket-pago-cajero';
 
 const formatCurrency = (amount: number | string) => {
     return new Intl.NumberFormat('es-MX', {
@@ -58,6 +61,8 @@ const MoneyRow = ({ label, amount, isTotal = false, isDeduction = false }: any) 
 interface Props {
     venta: Venta; 
     metodosPago: MetodoPago[];
+    ticket: TicketCajero;
+    pago: Pago;
 }
 
 const Show = ({ 
@@ -66,15 +71,20 @@ const Show = ({
 }: Props) => { 
 
     const [showModal, setShowModal] = useState(false);
+    const [ticketCajero, setTicketCajero] = useState<TicketCajero | null>(null);
+    const [pagoReciente, setPagoReciente] = useState<Pago | null>(null);
+    const [montoTicket, setMontoTicket] = useState<number>(0);  
+    
     const metodoPagoOptions = metodosPago.map((mp) => ({label: mp.nombre, value: mp.id}));
-
+    
     const { data, setData, post, processing, errors, reset } = useForm({
         requiere_factura: venta.requiere_factura || false, 
         metodo_pago_id: '',
         detalles_pago: venta.detalles?.map(detalle => ({
             detalle_venta_id: detalle.id,
             monto_aplicado: ''
-        })) || []
+        })) || [],
+        generar_qr: false,
     });
 
     const handlePagarTotal = (index: number) => {
@@ -97,10 +107,17 @@ const Show = ({
     const handleSubmitPago = (e: React.FormEvent) => {
         e.preventDefault();
         if (totalAbonoActual <= 0) return alert('Debes ingresar un monto a pagar');
-
         post(route('ventas.pagar', venta.id), {
-            onSuccess: () => {
-                setShowModal(false);
+            onSuccess: (page) => {
+                setShowModal(false); 
+                
+                const flash = page.props.flash as any;
+                
+                if (flash && flash.ticket && flash.ticket.success) {
+                    setTicketCajero(flash.ticket);
+                    setMontoTicket(totalAbonoActual); 
+                }
+
                 reset();
                 const detallesLimpios = data.detalles_pago.map(detalle => ({
                     ...detalle,
@@ -109,7 +126,20 @@ const Show = ({
                 setData('detalles_pago', detallesLimpios);
             }
         });
-    }    
+    }
+
+    const { props } = usePage();
+    const flash = props.flash as any;
+
+    useEffect(() => {
+        if (flash && flash.success) {
+            if (flash.ticket && flash.ticket.success) {
+                setTicketCajero(flash.ticket);
+                setPagoReciente(flash.pago);
+                setMontoTicket(flash.pago?.monto || totalAbonoActual); 
+            }
+        }
+    }, [flash]);
 
     const ivaCalculado = Number(venta.total) - Number(venta.subtotal);
 
@@ -119,9 +149,10 @@ const Show = ({
             link="pacientes.estancias.ventas.index"      
             linkParams={{ paciente: venta.estancia.paciente.id, estancia: venta.estancia.id, venta: venta.id }}
         >
+            
 
             <Head title={`Consulta de venta #${venta.id}`}/>
-            <div className="max-w-5xl mx-auto space-y-6 pb-10">
+           <div className={`max-w-5xl mx-auto space-y-6 pb-10 ${ticketCajero ? 'print:hidden' : ''}`}>
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-6 rounded-xl shadow-sm border border-gray-200">
                     <div>
                         <div className="flex items-center gap-3 mb-1">
@@ -221,10 +252,8 @@ const Show = ({
                                 </thead>
                                 <tbody>
                                     {venta.detalles?.map((detalle, index) => {
-                                        // Leemos directamente el atributo calculado en el modelo de Laravel
+                                        
                                         const saldoItem = Number(detalle.saldo_pendiente);
-
-                                        // Si ya está pagado por completo, no lo mostramos en la lista de abonos
                                         if (saldoItem <= 0) return null;
 
                                         return (
@@ -281,6 +310,14 @@ const Show = ({
                                         error={errors.requiere_factura}
                                     />
                                 </div>
+                                <div>
+                                    <InputBoolean
+                                        label='Generar código QR'
+                                        value={data.generar_qr}
+                                        onChange={e=>setData('generar_qr',e)}
+                                        error={errors.generar_qr}
+                                    />
+                                </div>
                             </div>
                             <div className="flex flex-col justify-center items-end bg-blue-50 p-4 rounded-lg border border-blue-100">
                                 <span className="text-sm font-semibold text-blue-800">Total a cobrar ahora:</span>
@@ -296,6 +333,23 @@ const Show = ({
                     </form>
                 </div>
             </Modal>
+                <Modal show={!!ticketCajero} onClose={() => setTicketCajero(null)} maxWidth="sm">
+                    <div className="p-6 relative">
+                        <button 
+                            onClick={() => setTicketCajero(null)} 
+                            className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 print:hidden"
+                        >
+                            <X size={20} />
+                        </button>
+                        
+                        {ticketCajero && pagoReciente && (
+                            <TicketPagoCajero
+                                ticket={ticketCajero}
+                                pago={pagoReciente}
+                            />
+                        )}
+                    </div>
+                </Modal>
             </div>
 
             <InfoCard title="Historial de recibos / pagos" icon={CreditCard}>
@@ -313,26 +367,14 @@ const Show = ({
                                     <p className="text-sm text-gray-500 mt-1">
                                         {new Date(pago.created_at).toLocaleDateString('es-MX')} - {pago.detalles?.length} concepto(s)
                                     </p>
-                                </div>
-                                
-                                <div className="flex items-center gap-4">
                                     <span className="font-bold text-green-600 text-lg">
                                         + {formatCurrency(pago.monto)}
                                     </span>
-                                    
-                                    <button 
-                                        onClick={() => {
-                                            window.print();
-                                        }}
-                                        className="text-blue-600 hover:bg-blue-50 p-2 rounded-lg transition-colors text-sm font-medium"
-                                    >
-                                        Imprimir recibo
-                                    </button>
                                 </div>
+                                
 
                                <Ticket 
                                     pago={pago} 
-                                    
                                 />
                             </div>
                         ))}

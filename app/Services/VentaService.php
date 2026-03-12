@@ -113,9 +113,9 @@ class VentaService
              'venta_id'      => $venta->id,
                 'itemable_id'   => $modelo ? $modelo->id : null,          
                 'itemable_type' => $modelo ? get_class($modelo) : null,  
-                'precio_unitario' => $precioUnitario * 1.04176, //colocar formular
+                'precio_unitario' => $precioUnitario * 1.04176, 
                 'cantidad'      => $cantidad, 
-                'subtotal'      => ($precioUnitario * 1.04176) * $cantidad, // colocar formular
+                'subtotal'      => ($precioUnitario * 1.04176) * $cantidad, 
                 'estado'        => 'completado',
 
             'nombre_producto_servicio' => $modelo 
