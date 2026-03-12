@@ -83,40 +83,26 @@ class VentaService
 
         $modelo = null;
         $precioUnitario = $itemData['precio'] ?? 0.1; 
-        $iva = $itemData['iva'] ?? 0;
 
-        if ($tipo === 'producto') {
-            $modelo = ProductoServicio::find($id);
-            
-            if ($modelo) {
-                $precioUnitario = $modelo->importe ?? $precioUnitario;
-                $iva = $modelo->iva ?? $iva;
+        $modelo = ProductoServicio::find($id);
+        if ($modelo) {
+            $precioUnitario = $modelo->importe ?? $precioUnitario;
 
-                if ($modelo->tipo !== 'SERVICIOS') {
-                    if ($modelo->cantidad >= $cantidad) {
-                        $modelo->decrement('cantidad', $cantidad);
-                    }
+            if ($modelo->tipo !== 'SERVICIOS') {
+                if ($modelo->cantidad >= $cantidad) {
+                    $modelo->decrement('cantidad', $cantidad);
                 }
-            }
-        } 
-        
-        elseif ($tipo === 'estudio') { 
-            $modelo = CatalogoEstudio::find($id);
-            
-            if ($modelo) {
-                $precioUnitario = $modelo->costo;
-                $iva = $precioUnitario * .16;
             }
         }
 
         return DetalleVenta::create([
-             'venta_id'      => $venta->id,
-                'itemable_id'   => $modelo ? $modelo->id : null,          
-                'itemable_type' => $modelo ? get_class($modelo) : null,  
-                'precio_unitario' => $precioUnitario * 1.04176, 
-                'cantidad'      => $cantidad, 
-                'subtotal'      => ($precioUnitario * 1.04176) * $cantidad, 
-                'estado'        => 'completado',
+                'venta_id'        => $venta->id,
+                'itemable_id'     => $modelo ? $modelo->id : null,          
+                'itemable_type'   => $modelo ? get_class($modelo) : null,  
+                'precio_unitario' =>($precioUnitario / (1-ProductoServicio::comision_terminal)), 
+                'cantidad'        => $cantidad, 
+                'subtotal'        => ($precioUnitario / (1-ProductoServicio::comision_terminal)) * $cantidad, 
+                'estado'          => 'completado',
 
             'nombre_producto_servicio' => $modelo 
                 ? ($modelo->nombre_prestacion ?? $modelo->nombre ?? 'Sin nombre') 
@@ -126,23 +112,10 @@ class VentaService
                 ? ($modelo->clave_producto_servicio ?? $modelo->codigo_prestacion ?? 'Sin nombre') 
                 : ($itemData['nombre'] ?? 'Producto Manual'),
                 
-            'iva_aplicado'   => $iva = $precioUnitario * .16,
+            'iva_aplicado'   => ( $modelo ? ($modelo->iva ? $modelo->iva : ProductoServicio::IVA) : (ProductoServicio::IVA) ) ,
         ]);
 
     }
-
-
-    /**
-     * Helper para calcular el precio del producto con la comision de la terminal
-     */
-/*
-    private function calcularComisionTerminal(DetalleVenta $detalle)
-    {
-        $item = $detalle->itemable ?? '';
-        return ($item->subtotal/);
-    }
-*/
-
 
     /**
      * Helper para calcular el precio final con IVA
@@ -150,11 +123,7 @@ class VentaService
     private function calcularTotalConImpuestos(DetalleVenta $detalle)
     {
         $item = $detalle->itemable ?? '';
-        $iva = 0;
-
-        if ($item instanceof ProductoServicio) {
-            $iva = $item->iva ?? 16;   
-        }
+        $iva = $item->iva ?? ProductoServicio::IVA;   
         
         return $detalle->subtotal * (1 + ($iva / 100));
     }
