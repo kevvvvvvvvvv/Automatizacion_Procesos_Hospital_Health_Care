@@ -17,7 +17,6 @@ const formatter = new Intl.NumberFormat('es-MX', {
 
 export default function TicketPago({ 
     pago, 
-    tipo,
 }: Props) {   
     const handlePrint = () => {
         window.print();
