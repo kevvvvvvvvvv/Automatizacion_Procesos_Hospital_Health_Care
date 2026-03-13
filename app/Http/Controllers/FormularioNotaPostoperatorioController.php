@@ -53,7 +53,7 @@ class FormularioNotaPostoperatorioController extends Controller implements HasMi
 
     public function show()
     {
-
+        return Redirect::back()->with('error','La opción de mostrar no esta habilitada por el momento.');
     }
 
     public function create(Paciente $paciente, Estancia $estancia)
@@ -179,12 +179,12 @@ class FormularioNotaPostoperatorioController extends Controller implements HasMi
     }
 
     private function vincularPatologiaNota(SolicitudPatologia $solicitud, NotaPostoperatoria $nota): void
-{
-    $solicitud->update([
-        'itemable_id'   => $nota->id,
-        'itemable_type' => $nota->getMorphClass(),
-    ]);
-}
+    {
+        $solicitud->update([
+            'itemable_id'   => $nota->id,
+            'itemable_type' => $nota->getMorphClass(),
+        ]);
+    }
 
     private function guardarRelaciones(NotaPostoperatoria $nota, array $data): void
     {
@@ -206,7 +206,7 @@ class FormularioNotaPostoperatorioController extends Controller implements HasMi
 
     public function edit()
     {
-
+        return Redirect::back()->with('error','La opción de editar no esta habilitada por el momento.');
     }
 
     public function generarPDF(NotaPostoperatoria $notaspostoperatoria)
