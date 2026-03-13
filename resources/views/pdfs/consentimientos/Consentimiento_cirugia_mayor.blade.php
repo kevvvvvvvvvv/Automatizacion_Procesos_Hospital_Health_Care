@@ -136,7 +136,7 @@
             </p>
 
             <p>
-                De igual manera, consiento que se me interne en <strong>Hospitalidad Health Care Suites Reforma</strong>. Si durante la intervención se considerase necesario aplicar procedimientos adicionales, incluyendo el uso de sangre y sus derivados por contingencias no previstas, autorizo expresamente que se realice por el bien de mi salud.
+                De igual manera, consiento que se me interne en <strong>HOSPITALIDAD HEALTH CARE</strong>. Si durante la intervención se considerase necesario aplicar procedimientos adicionales, incluyendo el uso de sangre y sus derivados por contingencias no previstas, autorizo expresamente que se realice por el bien de mi salud.
             </p>
 
             <p>

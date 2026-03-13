@@ -133,7 +133,7 @@
             <p><strong>Declaración del Paciente</strong></p>
             <p>Declaro haber recibido información suficiente, clara y comprensible respecto a los riesgos, beneficios y posibles complicaciones del procedimiento quirúrgico al que seré sometido (a), así como de las alternativas terapéuticas disponibles.</p>
             <p>Se me ha brindado la oportunidad de realizar preguntas, mismas que fueron respondidas satisfactoriamente. Comprendo que, aunque el equipo médico tomará todas las medidas de seguridad y asepsia necesarias, ningún procedimiento quirúrgico está exento de riesgos o complicaciones.</p>
-            <p>En virtud de lo anterior doy mi consentimiento por escrito para los médicos cirujanos de Hospitalidad Health Care lleven los procedimientos que consideren necesarios o procedimientos médicos al que he decidido someterme por motivo “urgencia o programación”, en el entendimiento que si ocurren complicaciones en la aplicación de la técnica quirúrgica no exista conducta dolosa.</p>
+            <p>En virtud de lo anterior doy mi consentimiento por escrito para los médicos cirujanos de HOSPITALIDAD HEALTH CARE lleven los procedimientos que consideren necesarios o procedimientos médicos al que he decidido someterme por motivo “urgencia o programación”, en el entendimiento que si ocurren complicaciones en la aplicación de la técnica quirúrgica no exista conducta dolosa.</p>
         </div>
 
         
