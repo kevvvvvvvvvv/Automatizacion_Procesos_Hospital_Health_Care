@@ -27,7 +27,7 @@ const Show = ({ paciente }: ShowProps) => {
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <InfoField
                             label="Nombre completo"
-                            value={`${paciente.nombre} ${paciente.apellido_paterno} ${paciente.apellido_materno}`}
+                            value={`${paciente.nombre_completo}`}
                         />
                         <InfoField
                             label="CURP"
@@ -48,6 +48,10 @@ const Show = ({ paciente }: ShowProps) => {
                         <InfoField
                             label="Ocupación"
                             value={paciente.ocupacion}
+                        />
+                        <InfoField
+                            label="Fecha de nacimiento"
+                            value={paciente.fecha_nacimiento}
                         />
                     </div>
                 </InfoCard>
