@@ -12,7 +12,6 @@ const formatter = new Intl.NumberFormat('es-MX', {
     currency: 'MXN',
     minimumFractionDigits: 2
 });
-
 export default function TicketPago({ 
     pago, 
 }: Props) {   
@@ -21,8 +20,6 @@ export default function TicketPago({
     };
     
     const venta = pago.venta;
-
-   
 
     const TicketContent = ({ leyenda }: { leyenda: 'ORIGINAL' | 'COPIA' }) => (
         <div className="ticket-container printable-ticket text-black font-bold mb-8">
@@ -111,7 +108,7 @@ export default function TicketPago({
             </div>
             
             <div className='text-left mt-2 text-[10px]'>
-                {venta?.requiere_factura ? (
+                {pago?.requiere_factura ? (
                     <>
                         <p>Tiene 72 horas para el envío de la siguiente información al número 7779756696 o al correo cmc1.facturacion@gmail.com </p> 
                         <p>1. Nombre/Razón social, 2. RFC, 3. Código postal, 4. Regimen fiscal, 5. Uso de CFDI, 6. Correo electrónico, 7. Número de teléfono, 8. Copia de este comprobante</p>
@@ -122,33 +119,37 @@ export default function TicketPago({
             </div>
         </div>
     );
-
-    return (
+return (
         <div className="p-4">
-            
-
             <button 
                 onClick={handlePrint}
-                className="mb-6 bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 no-print rounded-xl shadow-lg transition-colors flex items-center gap-2"
+                className="mb-6 bg-blue-600 text-white px-6 py-2 no-print rounded-lg shadow-md mx-auto block"
             >
-                <span>🖨️</span> Imprimir Original y Copia
+                Imprimir Tickets (2 Copias)
             </button>
 
-            {/* Cambié Flex por una estructura simple para que no colapse en blanco */}
-            <div id="printable-area">   
+            {/* Contenedor de impresión: Sin alturas fijas, flujo natural */}
+            <div id="printable-area" className="flex flex-col items-center">
                 
-                {/* Primera copia: ORIGINAL */}
-                <TicketContent leyenda="ORIGINAL" />
+                {/* PRIMERA COPIA */}
+                <div className="mb-10">
+                    <TicketContent leyenda="ORIGINAL" />
+                </div>
 
-                {/* Línea divisoria física para el corte */}
-                <div className="manual-cut-space no-print"></div>
-                <div className="manual-cut-space hidden print:block"></div>
-                
-                {/* Segunda copia: COPIA */}
-               {/*  <TicketContent leyenda="COPIA" />
-*/}
+                {/* ESPACIO PARA CORTE (Se verá en la impresora) */}
+                <div className="w-full py-10 border-b border-dashed border-gray-300 print:border-black">
+
+                </div>
+
+                {/* SEGUNDA COPIA */}
+                <div className="mt-10">
+                    <TicketContent leyenda="COPIA" />
+                </div>
+
+                {/* Espacio extra al final para que la impresora no corte el texto del segundo ticket */}
                 <div className="h-20"></div>
             </div>
+            
         </div>
     );
 }

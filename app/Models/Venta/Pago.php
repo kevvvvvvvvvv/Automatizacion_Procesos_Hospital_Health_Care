@@ -52,6 +52,7 @@ class Pago extends Model
         'monto_ingresado',
         'cambio_dispensado',
         'clave_cajero',
+        'requiere_factura',
         'metadata_cajero',
     ];
 
