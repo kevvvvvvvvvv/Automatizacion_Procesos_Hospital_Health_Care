@@ -35,8 +35,12 @@ class RecetaController extends Controller
     $instancia = $registro->formularioInstancia;
    // dd($registro);
     // 2. Mapeo de datos (Como ambos usan formularioInstancia, el resto es igual)
-    
-    
+    $estancia = $registro->formularioInstancia->estancia;
+    $headerData = [
+            'historiaclinica' => $registro,
+            'paciente' => $instancia->estancia->paciente,
+            'estancia' => $estancia
+        ];
     
     $viewData = [
         'tratamiento' => $registro->tratamiento, // Asegúrate que ambos modelos tengan este campo
@@ -49,7 +53,7 @@ class RecetaController extends Controller
     return $this->pdfGenerator->generateStandardPdf(
         'pdfs.receta', 
         $viewData,
-        //$headerData,
+        $headerData,
         'receta-' ,
         $instancia->estancia->folio
     );
