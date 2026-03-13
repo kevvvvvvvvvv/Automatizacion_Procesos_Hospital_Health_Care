@@ -7,6 +7,7 @@ import MainLayout from '@/layouts/MainLayout';
 import NavegationTab from '@/components/navegation-tab';
 import GraficaContent from '@/components/graphs/grafica-content'
 import HojaSignosTable from '@/components/forms/hoja-enfermeria-hospitalizacion-tables/signos-table';
+import DietasTable from '@/components/forms/hoja-enfermeria-hospitalizacion-tables/dietas-table';
 import RiesgoCaidasTable from '@/components/forms/hoja-enfermeria-hospitalizacion-tables/riesgo-caidas-table';
 import ControlLiquidosTable from '@/components/forms/hoja-enfermeria-hospitalizacion-tables/control-liquidos-table';
 import EscalaValoracionTable from '@/components/forms/hoja-enfermeria-hospitalizacion-tables/escala-valoracion-table';
@@ -90,10 +91,9 @@ const Show = ({
                             sondas_cateters={sondas_cateters}
                         /> */
             case 'dieta':
-/*                 return <DietasForm
-                            hoja={hojaenfermeria}
-                            categoria_dietas={categoria_dietas}
-                        /> */
+                return <DietasTable
+                            hoja={hoja}
+                        />
             case 'servicios_especiales':
 /*                 return <ServiciosEspecialesForm
                             modelo={hojaenfermeria}

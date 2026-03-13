@@ -116,7 +116,7 @@
                 Yo, <strong>{{ $paciente->nombre_completo ?? '____________________' }}</strong>, de sexo <strong>{{ $paciente->sexo ?? '__________' }}</strong>, 
                 por medio del presente documento <strong>ACEPTO VOLUNTARIAMENTE</strong> que el 
                 <strong>Dr. {{ $medico->name ?? '____________________' }}</strong>, 
-                quien se encuentra debidamente acreditado y presta sus servicios en <strong>Hospitalidad Health Care</strong>, 
+                quien se encuentra debidamente acreditado y presta sus servicios en <strong>HOSPITALIDAD HEALTH CARE</strong>, 
                 me ha informado personalmente y a mi completa satisfacción sobre la <strong>Transfusión Sanguínea Hospitalaria</strong>.
             </p>
 

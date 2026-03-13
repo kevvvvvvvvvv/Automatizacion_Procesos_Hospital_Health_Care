@@ -127,7 +127,7 @@
             <p>5. Que existe la posibilidad de que mi procedimiento anestésico se retrase e incluso se suspenda por causas propias a la dinámica del procedimiento anestésico o causas de fuerza mayor (Urgencias).</p>
             <p>6. Que se me ha informado que el personal médico de este servicio, cuenta con amplia experiencia, con equipo médico para mi cuidado y manejo durante el procedimiento y aun así no me exime de presentar complicaciones.</p>
             <p>7. Que soy responsable de comunicar mi decisión y lo antes informado a mi familia.</p>
-            <p>En virtud de lo anterior, doy mi consentimiento por escrito para que los médicos anestesiólogos de Clínica Hospitalidad Health Care SA de CV lleven los procedimientos que consideren necesarios para realizar la anestesia o procedimientos médicos al que he decidido someterme, en el entendimiento que si ocurren complicaciones en la aplicación de la técnica anestésica, no existe conducta dolosa.</p>
+            <p>En virtud de lo anterior, doy mi consentimiento por escrito para que los médicos anestesiólogos de Clínica HOSPITALIDAD HEALTH CARE SA de CV lleven los procedimientos que consideren necesarios para realizar la anestesia o procedimientos médicos al que he decidido someterme, en el entendimiento que si ocurren complicaciones en la aplicación de la técnica anestésica, no existe conducta dolosa.</p>
         </div>
 
        <style>
