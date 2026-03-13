@@ -46,9 +46,11 @@ class Pago extends Model
         'venta_id',
         'metodo_pago_id',
         'monto',
+        'monto_restante',
         'referencia',
         'user_id',
     ];
+
 
     public function user(): BelongsTo
     {
@@ -68,6 +70,43 @@ class Pago extends Model
     public function metodoPago(): BelongsTo
     {
         return $this->belongsTo(MetodoPago::class);
+    }
+
+    protected $appends = [
+        'subtotal_ventas',
+        'iva_ventas',
+        'total_ventas',
+    ];
+
+    /**
+     * Suma los subtotales de los DetalleVenta vinculados a este pago
+     */
+    public function getSubtotalVentasAttribute(): float
+    {
+        return (float) $this->detalles->sum(function ($detallePago) {
+            // Entramos a la relación para traer el subtotal del producto/servicio
+            return $detallePago->detalleVenta->subtotal;
+        });
+    }
+
+    /**
+     * Calcula el IVA total sumando el IVA de cada DetalleVenta vinculado
+     */
+    public function getIvaVentasAttribute(): float
+    {
+        return (float) $this->detalles->sum(function ($detallePago) {
+            $dv = $detallePago->detalleVenta;
+            $porcentajeIva = $dv->iva ?? 16; 
+            return $dv->subtotal * ($porcentajeIva / 100);
+        });
+    }
+
+    /**
+     * Suma el Subtotal + IVA calculados arriba
+     */
+    public function getTotalVentasAttribute(): float
+    {
+        return $this->subtotal_ventas + $this->iva_ventas;
     }
 
 }
