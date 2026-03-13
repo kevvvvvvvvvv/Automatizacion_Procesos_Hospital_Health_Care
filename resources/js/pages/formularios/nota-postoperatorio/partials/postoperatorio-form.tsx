@@ -79,13 +79,7 @@ export const NotaPostoperatoriaForm = ({
   onSubmit,
   submitLabel = 'Guardar nota postoperatoria',
 }: Props) => {
-
-  const optionsAyudantes = users.map(user => ({
-    value: user.id.toString(),
-    label: `${user.nombre} ${user.apellido_paterno} ${user.apellido_materno}`,
-  }));
-
-  const form = useForm({
+     const form = useForm({
     ta: nota?.ta || '',
     fc: nota?.fc || '',
     fr: nota?.fr || '',
@@ -134,6 +128,12 @@ export const NotaPostoperatoriaForm = ({
     datos_clinicos: nota?.solicitud_patologia?.datos_clinicos || '',
     empresa_enviar: nota?.solicitud_patologia?.empresa_enviar || '',
   });
+  const optionsAyudantes = users.map(user => ({
+    value: user.id.toString(),
+    label: `${user.nombre} ${user.apellido_paterno} ${user.apellido_materno}`,
+  }));
+
+ 
 
   const { data, setData, processing, errors } = form;
 
@@ -208,22 +208,25 @@ export const NotaPostoperatoriaForm = ({
 
 
   return (
-    <>
-      <Head title="Nota postoperatoria" />
+     <>
+            <PacienteCard
+                paciente={paciente}
+                estancia={estancia}
+            />
 
-      <PacienteCard paciente={paciente} estancia={estancia} />
+            <Head title="Crear nota postoperatoria" />
+            <FormLayout
+                title='Registrar nota postoperatoria'
+                onSubmit={handleSubmit}
+                actions={<PrimaryButton type="submit" disabled={processing}>{processing ? 'Creando...' : 'Crear nota postoperatoria'}</PrimaryButton>}>
 
-      <FormLayout
-        title="Registro de Nota Postoperatoria"
-        onSubmit={handleSubmit}
-        actions={
-          <PrimaryButton type="submit" disabled={processing}>
-            {processing ? 'Guardando...' : submitLabel}
-          </PrimaryButton>
-        }
-      >
-        <Generalidades data={data} setData={setData} errors={errors} />
- <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <Generalidades
+                    data={data}
+                    setData={setData}
+                    errors={errors}
+                />
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
 
                     <InputDateTime
@@ -496,11 +499,11 @@ export const NotaPostoperatoriaForm = ({
                    
 
                     <div className="mt-6 pt-6 border-t mb-15">
-                        {/*<EnvioPieza
+                        <EnvioPieza
                             data={data}
                             setData={setData}
                             errors={errors}
-                        />*/}
+                        />
                     </div>
 
                     <InputTextArea
@@ -511,8 +514,8 @@ export const NotaPostoperatoriaForm = ({
                         rows={2}
                     />
                 </div>
-      </FormLayout>
-    </>
+            </FormLayout>
+        </>
   );
 };
 

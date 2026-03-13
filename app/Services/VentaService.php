@@ -100,6 +100,7 @@ class VentaService
                 'itemable_id'     => $modelo ? $modelo->id : null,          
                 'itemable_type'   => $modelo ? get_class($modelo) : null,  
                 'precio_unitario' =>($precioUnitario / (1-ProductoServicio::comision_terminal)), 
+                'iva_aplicado'    => ($precioUnitario * ProductoServicio::IVA),
                 'cantidad'        => $cantidad, 
                 'subtotal'        => ($precioUnitario / (1-ProductoServicio::comision_terminal)) * $cantidad, 
                 'estado'          => 'completado',
