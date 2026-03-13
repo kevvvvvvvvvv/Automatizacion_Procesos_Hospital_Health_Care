@@ -1,0 +1,23 @@
+@media print {
+
+    @page { size: auto;  margin: 0mm; } 
+                        
+    body * {
+        visibility: hidden; 
+    }
+
+    #area-ticket-cajero, #area-ticket-cajero * {
+        visibility: visible; 
+    }
+
+    #area-ticket-cajero {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        margin: 0;
+        padding: 20px;
+        box-shadow: none !important;
+        border: none !important;
+    }
+}
