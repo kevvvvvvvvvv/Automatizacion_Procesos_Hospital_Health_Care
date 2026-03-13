@@ -105,30 +105,55 @@
 </head>
 <body>
     <main>
-        <h1>Consentimiento Médico Informado para reanimación cardiopulmonar, intubación y maniobras de resucitación</h1>
+       <h1>Carta de Consentimiento Bajo Información para Reanimación Cardiopulmonar (RCP)</h1>
 
-        
-        {{-- CUERPO DEL CONSENTIMIENTO --}}
+        {{-- CUERPO DEL CONSENTIMIENTO BASADO EN EL PDF --}}
         <h3>Cuerpo del Consentimiento</h3>
-        <div class="section-content">
-            <p>Yo {{ $paciente->nombre ?? 'Sin datos.' }} expreso mi libre voluntad para el ingreso al servicio de Hospitalización después de haberme proporcionado información completa sobre mi estado actual de salud la cual fue realizada de forma amplia, siempre utilizando un lenguaje claro y preciso, complementando sobre los beneficios, posibles riesgos, complicaciones y secuelas, derivados de la terapéutica empleada.</p>
-            <p>Hago constar que el médico me informo sobre la existencia de procedimientos alternativos, el derecho a cambiar mi decisión en cualquier momento y manifestarla con el propósito de que mi atención sea adecuada, me comprometo además a proporcionar información completa y veraz, así como seguir las indicaciones médicas empleadas.</p>
-            <p>Autorización al personal de salud para la atención de contingencias y urgencias derivadas del acto autorizado, atendiendo al principio de libertad prescriptiva. Acepto y autorizo a los profesionales de la salud de Hospitalidad Health Care (Comprehensive Medical Solutions de México SA de CV), para que me apliquen los procedimientos o medidas terapéuticas adicionales, incluyendo el uso de sangre y sus derivados que sean necesarios para el mantenimiento de mi salud, en caso de que ocurriera alguna contingencia durante el procedimiento. Estoy enterado que abre de requerir vigilancia y control médico hasta mi total recuperación.</p>
-            <p>Habiendo leído por mí mismo este documento, siendo su contenido perfectamente entendible para mí, y enterado de que los médicos antes mencionados se comprometen a la máxima diligencia en la prestación de los servicios profesionales al nivel tecnológico actual, sin que puedan por otra parte, garantizar absolutamente el resultado, firmo al calce en la ciudad de Cuernavaca, Morelos,a {{ $fecha['dia'] }} del mes {{ $fecha['mes'] }} del año {{ $fecha['anio'] }}.        
+
+            <p>
+                Por medio de este documento que al final firmamos, manifestamos que mediante una explicación amplia y en lenguaje simple, el 
+                médico explicó el procedimiento a realizar y aclaró nuestras dudas; de manera que para ambos queda perfectamente entendido, 
+                tomando en cuenta el estado de salud actual del paciente <strong>{{ $paciente->nombre_completo ?? '____________________' }}</strong>, decidimos:
+            </p>
+
+            <p style="text-align: center; font-weight: bold; text-decoration: underline;">
+                MANIOBRAS DE REANIMACIÓN CARDIOPULMONAR E INTUBACIÓN OROTRAQUEAL
+            </p>
+
+            <p>
+                Como un hecho sobresaliente debe señalarse que la descripción del médico fue lo suficientemente clara para evidenciar los 
+                beneficios que el acto médico le ofrece al paciente respecto a otras opciones de manejo. Igualmente se manifiesta que tomando 
+                en cuenta a las características personales del paciente, el médico describió las posibles complicaciones que la literatura médica 
+                reporta específicamente para el acto médico que se propone.
+            </p>
+            <p>
+                Conjuntamente con el paciente y/o representante legal se decide el desarrollo de la intervención médica, aceptando 
+                que se conocen como posibles riesgos los siguientes: <strong>No respuesta a maniobras, muerte, perforación pulmonar y perforación cardiaca.</strong>
+            </p>
         </div>
 
-       
-
         {{-- CONTINUACIÓN DEL CONSENTIMIENTO --}}
-        <h3>Continuación del Consentimiento</h3>
-        <div class="section-content">
-            <p>Con fines educativos o bien para contribuir al conocimiento científico, también acepto que se filme o se fotografíe el área anatómica tratada en el curso de este procedimiento, resguardando mi identidad.</p>
-            <p>Estoy enterado que habré de requerir vigilancia y control postoperatorios hasta mi total recuperación, debiendo para ello seguir de forma precisa las indicaciones de mi médico tratante.</p>
-            <p>Quedo en el entendido de que en todo momento habrá de mediar una comunicación expedita y una relación respetuosa con mi médico tratante a quien voluntariamente he acudido en busca de ayuda profesional. Autorizó al personal de salud para la atención de contingencias y urgencias derivadas del acto autorizado.</p>
-            <p>La anulación o cancelación de estos consentimientos prestados, deberá constar necesariamente por escrito, firmado personalmente por mí y deberá ser personalmente recibida por los facultativos afectados antes de producirse el acto médico quirúrgico.</p>
-            <p>De encontrarme en un momento dado incapacitado para consentir o modificar mi consentimiento, delego todas mis facultades en _________________________________________________________________________.</p>
-            <p>Habiendo leído por mí mismo este documento, siendo su contenido perfectamente entendible para mí, y enterado de que los médicos antes mencionados se comprometen a la máxima diligencia en la prestación de los servicios profesionales al nivel tecnológico actual, sin que puedan por otra parte, garantizar absolutamente el resultado, firmo al calce en la ciudad de Cuernavaca, Morelos,a {{ $fecha['dia'] }} del mes {{ $fecha['mes'] }} del año {{ $fecha['anio'] }}.
-</p>
+        <h3>Declaraciones y Autorización</h3>
+      
+            <p>
+                En forma complementaria y cumpliendo con la normatividad correspondiente, el médico también explicó la importancia de la 
+                autorización del procedimiento, de tal forma que el paciente se encuentra en libertad de aceptar y no aceptar el procedimiento a realizar.
+            </p>
+            <p>
+                El médico también explicó que el paciente cuenta con absoluta libertad de revocar el presente consentimiento en el momento 
+                que así lo considere pertinente. El paciente hace constar que con la información que le ha proporcionado el médico tratante, 
+                es suficiente para que de forma razonable y propia tome la decisión sobre el consentimiento solicitado.
+            </p>
+            <p>
+                Firmo al calce en la ciudad de Cuernavaca, Morelos, a <strong>{{ $fecha['dia'] }}</strong> del mes de <strong>{{ $fecha['mes'] }}</strong> del año <strong>{{ $fecha['anio'] }}</strong>.
+            </p>
+        </div>
+
+        {{-- SECCIÓN DE DECISIÓN --}}
+        <div style="margin: 20px 0; border: 1px solid #000; padding: 10px;">
+            <p><strong>DECISIÓN DEL PACIENTE:</strong></p>
+            <p>( ) <strong>SÍ</strong> Acepto procedimiento</p>
+            <p>( ) <strong>NO</strong> Acepto procedimiento</p>
         </div>
 
 <style>

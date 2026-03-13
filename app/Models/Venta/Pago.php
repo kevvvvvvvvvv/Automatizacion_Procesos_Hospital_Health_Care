@@ -49,6 +49,14 @@ class Pago extends Model
         'monto_restante',
         'referencia',
         'user_id',
+        'monto_ingresado',
+        'cambio_dispensado',
+        'clave_cajero',
+        'metadata_cajero',
+    ];
+
+    protected $casts = [
+        'metadata_cajero' => 'array',
     ];
 
 

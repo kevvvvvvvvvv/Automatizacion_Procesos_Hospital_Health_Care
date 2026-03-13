@@ -24,6 +24,7 @@ use App\Models\Venta\MetodoPago;
 use App\Models\Estancia;
 use App\Models\Inventario\ProductoServicio;
 use App\Models\Estudio\CatalogoEstudio;
+use App\Services\QpminiService;
 
 class VentaController extends Controller implements HasMiddleware
 {
@@ -107,12 +108,10 @@ class VentaController extends Controller implements HasMiddleware
             $valor = (float) $request->input('descuento', 0);
 
             if ($tipo === 'porcentaje') {
-                // porcentaje válido entre 0 y 100
                 if ($valor > 100) {
                     $validator->errors()->add('descuento', 'El porcentaje no puede ser mayor a 100.');
                 }
             } else {
-                // monto no puede exceder subtotal
                 if ($valor > $venta->subtotal) {
                     $validator->errors()->add('descuento', 'El descuento no puede ser mayor que el subtotal.');
                 }
@@ -150,14 +149,13 @@ class VentaController extends Controller implements HasMiddleware
     }
 
 
-    public function registrarPago(Request $request, Venta $venta)
+    public function registrarPago(Request $request, Venta $venta, QpminiService $service)
     {
         $request->validate([
             'metodo_pago_id' => 'required|exists:metodo_pagos,id',
             'detalles_pago' => 'required|array',
+            'requiere_factura' => 'required|boolean',
         ]);
-
-        //dd($request->toArray());
 
         DB::beginTransaction();
         try {
@@ -170,8 +168,10 @@ class VentaController extends Controller implements HasMiddleware
             $ultimoPago = Pago::latest('id')->first();
             $siguienteId = $ultimoPago ? $ultimoPago->id + 1 : 1;
             $folioPago = str_pad($siguienteId, 6, '0', STR_PAD_LEFT);
+            
+            // Calculamos el saldo antes de actualizar la venta
             $montoRestante = $venta->saldo_pendiente - $totalAbono;
-            dd($venta->saldo_pendiente);
+
             $pago = Pago::create([
                 'folio' => $folioPago,
                 'venta_id' => $venta->id,
@@ -180,7 +180,7 @@ class VentaController extends Controller implements HasMiddleware
                 'monto_restante' => $montoRestante,
                 'user_id' => Auth::id(),
             ]);
-            //dd($pago->toArray());
+
             foreach ($request->detalles_pago as $item) {
                 if ($item['monto_aplicado'] > 0) {
                     DetallePago::create([
@@ -193,14 +193,32 @@ class VentaController extends Controller implements HasMiddleware
                     $detalleVenta->increment('monto_pagado', $item['monto_aplicado']);
                 }
             }
-
+            
             $venta->increment('total_pagado', $totalAbono);
-            //dd($venta->toArray());
+            $nuevoTotalPagado = (float)$venta->total_pagado;
+            $totalVenta = (float)$venta->total;
+
+            if ($nuevoTotalPagado >= $totalVenta) {
+                $venta->estado = 'pagado';
+            } else {
+
+                $venta->estado = 'En espera de pago';
+            }
+
+            $venta->save();
+            if($request->generar_qr){
+                $metodoPago = mb_strtoupper($pago->metodoPago->nombre, 'UTF-8');
+                $ticket = $service->generarCodigoQr($pago,$metodoPago);
+            }
             DB::commit();
-            return back()->with('success', 'Pago registrado correctamente.');
+            return back()
+                ->with('success', 'Pago registrado correctamente.')
+                ->with('ticket', $ticket)
+                ->with('pago', $pago);
 
         } catch (\Exception $e) {
             DB::rollBack();
+            \Log::error("Error al registrar pago: " . $e->getMessage());
             return back()->withErrors(['error' => 'Hubo un problema al registrar el pago: ' . $e->getMessage()]);
         }
     }

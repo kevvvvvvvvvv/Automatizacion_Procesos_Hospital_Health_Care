@@ -8,6 +8,7 @@ import SelectInput from '@/components/ui/input-select';
 import { route } from 'ziggy-js';
 import { Venta, Paciente, Estancia, DetalleVenta } from '@/types';
 import Swal from 'sweetalert2';
+import detallesventas from '@/routes/detallesventas';
 
 const IconEdit = () => (
     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-blue-600">
@@ -59,16 +60,16 @@ const EditVenta = ({ venta, paciente, estancia, catalogoOptions }: EditVentaProp
     descuento_tipo: 'monto' as 'monto' | 'porcentaje',
   });
 
-
     const { descuentoMonto, totalCalculado } = useMemo(() => {
         if (dataVenta.descuento_tipo === 'porcentaje') {
         const pct = Number(dataVenta.descuento) || 0;
         const monto = Number((venta.subtotal * (pct / 100)).toFixed(2));
-        const total = Number((venta.subtotal - monto).toFixed(2));
+        //const Iva = Number
+        const total = Number((venta.total  - monto).toFixed(2));
         return { descuentoMonto: monto, totalCalculado: total, porcentaje: pct };
         } else {
         const monto = Number(dataVenta.descuento) || 0;
-        const total = Number((venta.subtotal - monto).toFixed(2));
+        const total = Number((venta.total - monto).toFixed(2));
         const pct = venta.subtotal > 0 ? Number(((monto / venta.subtotal) * 100).toFixed(2)) : 0;
         return { descuentoMonto: monto, totalCalculado: total, porcentaje: pct };
         }
@@ -278,6 +279,7 @@ const EditVenta = ({ venta, paciente, estancia, catalogoOptions }: EditVentaProp
                                             <th className="px-6 py-3 text-center">Cant.</th>
                                             <th className="px-6 py-3 text-right">P. Unit</th>
                                             <th className="px-6 py-3 text-right">Subtotal</th>
+                                            <th className='px-6 py-3 text-right'> Iva</th>
                                             <th className="px-6 py-3 text-center">Acciones</th>
                                         </tr>
                                     </thead>
@@ -333,6 +335,10 @@ const EditVenta = ({ venta, paciente, estancia, catalogoOptions }: EditVentaProp
                                                     </td>
                                                     <td className="px-6 py-4 text-right font-bold text-gray-900">
                                                         ${Number(detalle.subtotal).toLocaleString()}
+                                                    </td>
+                                                    <td className="px-6 py-4 text-right font-bold text-gray-900">
+
+                                                        ${Number(detalle.iva_aplicado).toLocaleString()}
                                                     </td>
 
                                                     <td className="px-6 py-4 text-center space-x-2">
