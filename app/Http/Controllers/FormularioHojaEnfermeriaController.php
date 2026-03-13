@@ -62,7 +62,10 @@ class FormularioHojaEnfermeriaController extends Controller implements HasMiddle
             'hojaSignos',
             'hojaRiesgoCaida',
             'solicitudesDieta.dieta.categoriaDieta',
+            'solicitudesEstudio.solicitudItems.catalogoEstudio',
         );
+
+        //dd($hojasenfermeria->toArray());
 
         return Inertia::render('formularios/hojas-enfermerias/show', [
             'hoja' => $hojasenfermeria,

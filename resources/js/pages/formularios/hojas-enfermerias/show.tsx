@@ -5,12 +5,14 @@ import { HojaEnfermeria } from '@/types';
 import InfoCard from '@/components/ui/info-card';
 import MainLayout from '@/layouts/MainLayout';
 import NavegationTab from '@/components/navegation-tab';
+import GraficaContent from '@/components/graphs/grafica-content'
 import HojaSignosTable from '@/components/forms/hoja-enfermeria-hospitalizacion-tables/signos-table';
 import RiesgoCaidasTable from '@/components/forms/hoja-enfermeria-hospitalizacion-tables/riesgo-caidas-table';
 import ControlLiquidosTable from '@/components/forms/hoja-enfermeria-hospitalizacion-tables/control-liquidos-table';
 import EscalaValoracionTable from '@/components/forms/hoja-enfermeria-hospitalizacion-tables/escala-valoracion-table';
 import MedicamentosTable from '@/components/forms/hoja-enfermeria-hospitalizacion-tables/ministracion-medicamentos-table';
 import TerapiaIVTable from '@/components/forms/hoja-enfermeria-hospitalizacion-tables/terapia-intravenosa-table';
+import SolicitudEstudioTable from '@/components/forms/hoja-enfermeria-hospitalizacion-tables/solicitud-estudios-table';
 
 interface Props{
     hoja: HojaEnfermeria;
@@ -34,7 +36,8 @@ const secciones: { id: SeccionHoja, label: string }[] = [
 ];
 
 const Show = ({ 
-    hoja 
+    hoja,
+    DataParaGraficas 
 }: Props) => {
 
     const [activeSection, setActiveSection] = useState<SeccionHoja>('signos');
@@ -76,14 +79,9 @@ const Show = ({
                             hoja={hoja}
                         />;
             case 'estudios':
-/*                 return <EstudiosForm
-                            estancia={estancia}
-                            catalogoEstudios={catalogoEstudios}
-                            solicitudesAnteriores={solicitudesAnteriores}
-                            medicos={medicos}
-                            modeloId={hojaenfermeria.id}
-                            modeloTipo='App\Models\HojaEnfermeria'
-                        /> */
+                return <SolicitudEstudioTable
+                            hoja={hoja}
+                        /> 
             case 'sondas':
 /*                 return <SondasCateteresForm
                             hoja={hojaenfermeria}
@@ -103,9 +101,9 @@ const Show = ({
             case 'observaciones':
 /*                 return <HabitusExteriorForm
                             hojasenfermeria={hojaenfermeria}
-                        /> */
-            case 'graficas':
-/*                 return <GraficaContent
+/*                         />   
+            /*case 'graficas':
+                return <GraficaContent
                             historialSignos={dataParaGraficas ?? []}
                         /> */
             default:

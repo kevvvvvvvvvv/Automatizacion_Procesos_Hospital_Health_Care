@@ -159,9 +159,13 @@ public function generarPDF(string $file, Request $request, Paciente $paciente, E
             'medico' => $medicoFirmante, 
             'estancia'=> $consentimiento->estancia
         ];
-
         return Pdf::view($consentimiento->route_pdf, $viewData)
-            // ... (resto de la configuración del PDF)
+            ->format('Letter')
+            ->name('consentimiento-' . ($consentimiento->estancia->folio ?? 'SN') . '.pdf')
+            ->withBrowsershot(function (Browsershot $browsershot) {
+                $this->configureBrowsershot($browsershot);
+            })
+            ->headerView('headerConsentimiento', $headerData)
             ->inline();
     }
 }
