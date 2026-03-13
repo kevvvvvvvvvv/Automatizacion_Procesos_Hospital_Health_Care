@@ -90,7 +90,8 @@ class FormularioHojaMedicamentoController extends Controller
             return redirect()->back()->with('error', 'Error al guardar. ');
         }
     }
-public function update(Request $request, HojaEnfermeria $hojasenfermeria, HojaMedicamento $hojasmedicamento, VentaService $ventaService)
+
+    public function update(Request $request, HojaEnfermeria $hojasenfermeria, HojaMedicamento $hojasmedicamento, VentaService $ventaService)
     {
         $validatedData = $request->validate([
             'fecha_hora_inicio' => 'required|date',
@@ -103,13 +104,13 @@ public function update(Request $request, HojaEnfermeria $hojasenfermeria, HojaMe
             $fechaMySQL = Carbon::parse($validatedData['fecha_hora_inicio'])
                                 ->setTimezone(config('app.timezone')) 
                                 ->format('Y-m-d H:i:s'); 
-            if ($hojasmedicamento->producto_servicio_id) {
+
                 
                 $hojasmedicamento->load('hojaEnfermeria.formularioInstancia.estancia');
                 $estanciaId = $hojasmedicamento->hojaEnfermeria->formularioInstancia->estancia->id;
 
                 $itemParaVenta = [
-                    'id'       => $hojasmedicamento->producto_servicio_id,
+                    'id'       => $hojasmedicamento->producto_servicio_id ?? null,
                     'cantidad' => 1,
                     'tipo'     => 'producto',
                     'nombre'   => $hojasmedicamento->nombre_medicamento,
@@ -124,7 +125,6 @@ public function update(Request $request, HojaEnfermeria $hojasenfermeria, HojaMe
                 } else {
                     $ventaService->crearVenta([$itemParaVenta], $estanciaId, Auth::id());
                 }
-            }
 
        
             $hojasmedicamento->update([

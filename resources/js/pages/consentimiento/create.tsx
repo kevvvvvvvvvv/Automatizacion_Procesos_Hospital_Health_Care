@@ -21,12 +21,12 @@ const CONSENTIMIENTOS = [
   'Consentimiento 1: Hospitalización',
   'Consentimiento 2: Procedimiento de círugia mayor',
   'Consentimiento 3: Procedimientos que requieren anestesia general o regional',
-  'Consentimiento 4: Salpingoclasia y vasectomía',
+  'Consentimiento 4: Salpingoclasia y vasectomía *',
   'Consentimiento 5: Donación de órganos, tejidos y trasplantes ',
   'Consentimiento 6: Investigación clínica en seres humanos',
-  'Consentimiento 7: Necropsia hospitalaria',
-  'Consentimiento 8: Procedimientos diagnósticos y terapéuticos considerados por el médico como de alto riesgo',
-  'Consentimiento 9: Cualquier procedimiento que entrañe mutilación',
+  'Consentimiento 7: Necropsia hospitalaria *',
+  'Consentimiento 8: Procedimientos diagnósticos y terapéuticos considerados por el médico como de alto riesgo *',
+  'Consentimiento 9: Cualquier procedimiento que entrañe mutilación *',
   '10: Reanimación cardiopulmonar, intubación y maniobras de resucitación',
 ];
 
