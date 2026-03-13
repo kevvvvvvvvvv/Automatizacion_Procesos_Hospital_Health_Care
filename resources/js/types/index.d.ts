@@ -376,6 +376,7 @@ export interface HojaEnfermeria {
     hoja_signos: HojaSignos[];
     hoja_control_liquidos: ControlLiquidos [];
     solicitudes_dieta: SolicitudDieta[];
+    solicitudes_estudio: SolicitudEstudio[];
     sondas_cateteres: HojaSondaCateter[] | null;
     hoja_oxigenos: HojaOxigeno[] | null;
     hoja_riesgo_caida: HojaRiesgoCaida[];

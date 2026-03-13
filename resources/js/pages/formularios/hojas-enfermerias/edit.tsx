@@ -1,6 +1,7 @@
 import React, { useState } from 'react'; 
 import { ChecklistItemData, Paciente, Estancia, ProductoServicio, HojaEnfermeria, HojaSignosGraficas, CatalogoEstudio, User, SolicitudEstudio, NotaPostoperatoria, notasEvoluciones, CategoriaDieta, CatalogoViaAdministracion } from '@/types';
 import { Head } from '@inertiajs/react';
+import { MORPH_MAP } from '@/types/model';
 import 'sweetalert2/dist/sweetalert2.min.css';
 
 import NavegationTab from '@/components/navegation-tab';
@@ -140,7 +141,7 @@ const Create: CreateComponent = ({
                             solicitudesAnteriores={solicitudesAnteriores}
                             medicos={medicos}
                             modeloId={hojaenfermeria.id}
-                            modeloTipo='App\Models\HojaEnfermeria'
+                            modeloTipo={MORPH_MAP.HOJA_ENFERMERIA}
                         />
             case 'sondas':
                 return <SondasCateteresForm

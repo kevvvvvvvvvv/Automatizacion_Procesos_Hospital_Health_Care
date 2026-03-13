@@ -1,4 +1,4 @@
-import { HojaEnfermeria, HojaEscalaValoracion } from '@/types'
+import { HojaEnfermeria, SolicitudEstudio } from '@/types'
 import React from 'react'
 
 import { DataTable } from '@/components/ui/data-table';
@@ -12,39 +12,32 @@ const SignosVitalesTable = ({
     hoja 
 }: Props) => {
 
-    const columnasEscalaValoracion = [
+    const columnasSolicitudEstudio = [
         { 
             header: 'Fecha/Hora', 
-            key: 'fecha_hora_registro' 
+            key: 'created_at',
+            render: (reg: SolicitudEstudio) => reg.created_at 
+                ? new Date(reg.created_at).toLocaleString() 
+                : 'Sin registros'
         },
         { 
-            header: 'Escala Braden', 
-            key: 'escala_braden', 
-            render: (reg: HojaEscalaValoracion ) => reg.escala_braden ? `${reg.escala_braden} ` : 'Sin registros' 
-        },
-        { 
-            header: 'Escala Glasgow', 
-            key: 'escala_glasgow', 
-            render: (reg: HojaEscalaValoracion) => reg.escala_glasgow ? `${reg.escala_glasgow}` : 'Sin registros' 
-        },
-        { 
-            header: 'Escala Ramsey', 
-            key: 'escala_ramsey', 
-            render: (reg: HojaEscalaValoracion) => reg.escala_ramsey ? `${reg.escala_ramsey}` : 'Sin registros' 
-        },
-        { 
-            header: 'Valoración de dolor', 
-            key: 'valoracion_dolor', 
-            render: (reg: HojaEscalaValoracion) => {
-                if (!reg.valoracion_dolor || reg.valoracion_dolor.length === 0) {
-                    return <span className="text-gray-400 italic text-sm">Sin dolor</span>;
+            header: 'Estudios solicitados', 
+            key: 'solicitud_items', 
+            render: (reg: SolicitudEstudio) => {
+                if (!reg.solicitud_items || reg.solicitud_items.length === 0) {
+                    return <span className="text-gray-400 italic">Sin estudios</span>;
                 }
 
                 return (
                     <div className="flex flex-col space-y-1">
-                        {reg.valoracion_dolor.map((dolor, index) => (
-                            <p key={index} className="text-sm text-gray-700">
-                                <span className="font-medium">EVA {dolor.escala_eva}:</span> {dolor.ubicacion_dolor}
+                        {reg.solicitud_items.map((soli, index) => (
+                            <p key={soli.id || index} className="text-sm text-gray-700">
+                                <span className="font-medium">
+                                    • {soli.catalogo_estudio?.nombre || 'Estudio desconocido'}
+                                </span>
+                                {soli.estado && (
+                                    <span className="ml-2 text-xs text-blue-600">({soli.estado})</span>
+                                )}
                             </p>
                         ))}
                     </div>
@@ -54,7 +47,7 @@ const SignosVitalesTable = ({
     ];
 
     return (
-        <DataTable columns={columnasEscalaValoracion} data={hoja.hoja_escala_valoraciones} />
+        <DataTable columns={columnasSolicitudEstudio} data={hoja.solicitudes_estudio} />
     );
 }
 
