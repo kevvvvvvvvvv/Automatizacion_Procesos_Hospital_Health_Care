@@ -106,29 +106,46 @@
     <main>
         <h1>Consentimiento Médico Informado Quirúrgico</h1>
 
-      
+        {{-- CAMPOS ESPECÍFICOS --}}
+        <h3>Datos de Identificación</h3>
+        <div class="section-content">
+            <p><strong>Paciente:</strong> {{ $paciente->nombre_completo ?? 'Sin datos.' }}</p>
+            <p><strong>Familiar Responsable y/o Representante legal:</strong> {{ $estancia->nombre_completo ?? 'Sin datos.' }}</p>
+            <p><strong>Diagnóstico:</strong> {{ $paciente->diagnostico_preoperatorio ?? 'Sin datos.' }}</p>
+            <p><strong>Procedimiento Quirúrgico:</strong> {{ $paciente->cirugia_programada ?? 'Sin datos.' }}</p>
+        </div>
 
-        {{-- CUERPO DEL CONSENTIMIENTO --}}
+        {{-- CUERPO DEL CONSENTIMIENTO BASADO EN EL PDF --}}
         <h3>Cuerpo del Consentimiento</h3>
         <div class="section-content">
-            <p>Yo {{ $paciente->nombre ?? 'Sin datos.' }} expreso mi libre voluntad para el ingreso al servicio de Hospitalización después de haberme proporcionado información completa sobre mi estado actual de salud la cual fue realizada de forma amplia, siempre utilizando un lenguaje claro y preciso, complementando sobre los beneficios, posibles riesgos, complicaciones y secuelas, derivados de la terapéutica empleada.</p>
-            <p>Hago constar que el médico me informo sobre la existencia de procedimientos alternativos, el derecho a cambiar mi decisión en cualquier momento y manifestarla con el propósito de que mi atención sea adecuada, me comprometo además a proporcionar información completa y veraz, así como seguir las indicaciones médicas empleadas.</p>
-            <p>Autorización al personal de salud para la atención de contingencias y urgencias derivadas del acto autorizado, atendiendo al principio de libertad prescriptiva. Acepto y autorizo a los profesionales de la salud de Hospitalidad Health Care (Comprehensive Medical Solutions de México SA de CV), para que me apliquen los procedimientos o medidas terapéuticas adicionales, incluyendo el uso de sangre y sus derivados que sean necesarios para el mantenimiento de mi salud, en caso de que ocurriera alguna contingencia durante el procedimiento. Estoy enterado que abre de requerir vigilancia y control médico hasta mi total recuperación.</p>
-            <p>Habiendo leído por mí mismo este documento, siendo su contenido perfectamente entendible para mí, y enterado de que los médicos antes mencionados se comprometen a la máxima diligencia en la prestación de los servicios profesionales al nivel tecnológico actual, sin que puedan por otra parte, garantizar absolutamente el resultado, firmo al calce en la ciudad de Cuernavaca, Morelos,a {{ $fecha['dia'] }} del mes {{ $fecha['mes'] }} del año {{ $fecha['anio'] }}.        
-        </div>
-       
+            <p>
+                Yo, <strong>{{ $paciente->nombre_completo ?? '____________________' }}</strong>, 
+                por medio del presente documento hago constar:
+            </p>
 
-        {{-- CONTINUACIÓN DEL CONSENTIMIENTO --}}
-        <h3>Continuación del Consentimiento</h3>
-        <div class="section-content">
-            <p>Con fines educativos o bien para contribuir al conocimiento científico, también acepto que se filme o se fotografíe el área anatómica tratada en el curso de este procedimiento, resguardando mi identidad.</p>
-            <p>Estoy enterado que habré de requerir vigilancia y control postoperatorios hasta mi total recuperación, debiendo para ello seguir de forma precisa las indicaciones de mi médico tratante.</p>
-            <p>Quedo en el entendido de que en todo momento habrá de mediar una comunicación expedita y una relación respetuosa con mi médico tratante a quien voluntariamente he acudido en busca de ayuda profesional. Autorizó al personal de salud para la atención de contingencias y urgencias derivadas del acto autorizado.</p>
-            <p>La anulación o cancelación de estos consentimientos prestados, deberá constar necesariamente por escrito, firmado personalmente por mí y deberá ser personalmente recibida por los facultativos afectados antes de producirse el acto médico quirúrgico.</p>
-            <p>De encontrarme en un momento dado incapacitado para consentir o modificar mi consentimiento, delego todas mis facultades en _________________________________________________________________________.</p>
-            <p>Habiendo leído por mí mismo este documento, siendo su contenido perfectamente entendible para mí, y enterado de que los médicos antes mencionados se comprometen a la máxima diligencia en la prestación de los servicios profesionales al nivel tecnológico actual, sin que puedan por otra parte, garantizar absolutamente el resultado, firmo al calce en la ciudad de Cuernavaca, Morelos, a {{ $fecha['dia'] }} del mes {{ $fecha['mes'] }} del año {{ $fecha['anio']}}</p>
+            <p>
+                Que el <strong>Dr. {{ $medico->name ?? '____________________' }}</strong>, 
+                especialista en {{ $credencial->titulo ?? '____________________' }}, 
+                debidamente acreditado con cédula profesional <strong>{{ $credencial->cedula_profesional ?? '__________' }}</strong>, 
+                me ha informado personalmente, a mi completa satisfacción y de forma enteramente comprensible, los motivos por los cuales ha indicado la realización del procedimiento quirúrgico consistente en: 
+                <strong>{{ $paciente->cirugia_programada ?? '____________________' }}</strong>.
+            </p>
+
+            <p>
+                He sido informado de los riesgos, las alternativas, las posibles complicaciones y las consecuencias inherentes a la operación. Atendiendo a la prescripción médica y en uso de mi libre voluntad, autorizo a que se me realice dicha intervención por el médico antes mencionado y su equipo quirúrgico.
+            </p>
+
+            <p>
+                De igual manera, consiento que se me interne en <strong>Hospitalidad Health Care Suites Reforma</strong>. Si durante la intervención se considerase necesario aplicar procedimientos adicionales, incluyendo el uso de sangre y sus derivados por contingencias no previstas, autorizo expresamente que se realice por el bien de mi salud.
+            </p>
+
+            <p>
+                Firmo el presente en la ciudad de Cuernavaca, Morelos, a <strong>{{ $fecha['dia'] }}</strong> del mes de <strong>{{ $fecha['mes'] }}</strong> del año <strong>{{ $fecha['anio'] }}</strong>.
+            </p>
         </div>
-        <style>
+
+        {{-- TABLA DE FIRMAS --}}
+       <style>
                .table-signatures {
             width: 100%;
             border-collapse: collapse;
@@ -221,7 +238,6 @@
             </tr>
 
         </table>
-
     </main>
 </body>
 </html>

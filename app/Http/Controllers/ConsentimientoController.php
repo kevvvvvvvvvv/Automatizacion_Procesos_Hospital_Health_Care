@@ -106,7 +106,9 @@ public function generarPDF(string $file, Request $request, Paciente $paciente, E
     if ($request->has('consentimiento_id')) {
         $consentimientoId = intval($request->query('consentimiento_id'));
         
+        // 1. Cargamos la relación del usuario que creó el consentimiento y sus credenciales
         $consentimiento = Consentimiento::with([
+            'user.credenciales', // <--- Importante
             'estancia.paciente',
             'estancia.familiarResponsable',
             'estancia.formularioInstancias.hojaFrontal.medico.credenciales'
@@ -114,20 +116,24 @@ public function generarPDF(string $file, Request $request, Paciente $paciente, E
 
         if (!$consentimiento) abort(404, "Consentimiento no encontrado.");
 
+        // ... (tu lógica de búsqueda de médico frontal se mantiene igual)
         $instanciaConFrontal = $consentimiento->estancia->formularioInstancias
             ->whereNotNull('hojaFrontal')
             ->first();
-
         $medicoFrontal = $instanciaConFrontal ? $instanciaConFrontal->hojaFrontal->medico : null;
 
         $fecha = $consentimiento->created_at;
         $meses = [1 => 'enero', 2 => 'febrero', 3 => 'marzo', 4 => 'abril', 5 => 'mayo', 6 => 'junio', 
                   7 => 'julio', 8 => 'agosto', 9 => 'septiembre', 10 => 'octubre', 11 => 'noviembre', 12 => 'diciembre'];
         
+        // 2. Pasamos los datos a la vista. 
+        // Si usas el médico que inició sesión o creó el registro:
+        $medicoFirmante = $consentimiento->user; 
+
         $viewData = [
             'notaData' => $consentimiento,
             'paciente' => $consentimiento->estancia->paciente,
-            'medico'   => $medicoFrontal, 
+            'medico'   => $medicoFirmante, // Ahora este objeto tiene 'credenciales'
             'estancia' => $consentimiento->estancia->familiarResponsable,
             'fecha' => [
                 'dia' => $fecha->day,
@@ -136,6 +142,7 @@ public function generarPDF(string $file, Request $request, Paciente $paciente, E
             ],
         ];
 
+        
         $imagePath = public_path('images/Logo_HC_2.png');
         $logo = null; 
 
@@ -149,17 +156,12 @@ public function generarPDF(string $file, Request $request, Paciente $paciente, E
             'logoDataUri' => $logo,
             'notaData' => $consentimiento,
             'paciente' => $consentimiento->estancia?->paciente,
-            'medico' => $consentimiento->user,
+            'medico' => $medicoFirmante, 
             'estancia'=> $consentimiento->estancia
         ];
 
         return Pdf::view($consentimiento->route_pdf, $viewData)
-            ->format('Letter')
-            ->name('consentimiento-' . ($consentimiento->estancia->folio ?? 'SN') . '.pdf')
-            ->withBrowsershot(function (Browsershot $browsershot) {
-                $this->configureBrowsershot($browsershot);
-            })
-            ->headerView('headerConsentimiento', $headerData)
+            // ... (resto de la configuración del PDF)
             ->inline();
     }
 }

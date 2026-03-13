@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Consentimiento Informado Donación de órganos, tejidos y trasplantes</title>
+    <title>Consentimiento Informado de Transfusión Sanguínea</title>
     <style>
         @page {
             size: A4;
@@ -18,6 +18,8 @@
                 color: #888;
             }
         }
+    
+
 
         * {
             box-sizing: border-box;
@@ -101,23 +103,42 @@
             margin-top: 8px;
         }
     </style>
+    
 </head>
 <body>
     <main>
-        <h1>Consentimiento informado Donación de órganos, tejidos y trasplantes</h1> 
+        <h1>Consentimiento Informado de Transfusión Sanguínea</h1>
 
-        {{-- Sección del cuerpo del consentimiento--}}
-       {{-- CUERPO DEL CONSENTIMIENTO --}}
+        {{-- CUERPO DEL CONSENTIMIENTO --}}
         <h3>Cuerpo del Consentimiento</h3>
         <div class="section-content">
-            <p>Yo {{ $paciente->nombre ?? 'Sin datos.' }} expreso mi libre voluntad para el ingreso al servicio de Hospitalización después de haberme proporcionado información completa sobre mi estado actual de salud la cual fue realizada de forma amplia, siempre utilizando un lenguaje claro y preciso, complementando sobre los beneficios, posibles riesgos, complicaciones y secuelas, derivados de la terapéutica empleada.</p>
-            <p>Hago constar que el médico me informo sobre la existencia de procedimientos alternativos, el derecho a cambiar mi decisión en cualquier momento y manifestarla con el propósito de que mi atención sea adecuada, me comprometo además a proporcionar información completa y veraz, así como seguir las indicaciones médicas empleadas.</p>
-            <p>Autorización al personal de salud para la atención de contingencias y urgencias derivadas del acto autorizado, atendiendo al principio de libertad prescriptiva. Acepto y autorizo a los profesionales de la salud de Hospitalidad Health Care (Comprehensive Medical Solutions de México SA de CV), para que me apliquen los procedimientos o medidas terapéuticas adicionales, incluyendo el uso de sangre y sus derivados que sean necesarios para el mantenimiento de mi salud, en caso de que ocurriera alguna contingencia durante el procedimiento. Estoy enterado que abre de requerir vigilancia y control médico hasta mi total recuperación.</p>
-            <p>Habiendo leído por mí mismo este documento, siendo su contenido perfectamente entendible para mí, y enterado de que los médicos antes mencionados se comprometen a la máxima diligencia en la prestación de los servicios profesionales al nivel tecnológico actual, sin que puedan por otra parte, garantizar absolutamente el resultado, firmo al calce en la ciudad de Cuernavaca, Morelos,a {{ $fecha['dia'] }} del mes {{ $fecha['mes'] }} del año {{ $fecha['anio'] }}.        
+            <p>
+                Yo, <strong>{{ $paciente->nombre_completo ?? '____________________' }}</strong>, de sexo <strong>{{ $paciente->sexo ?? '__________' }}</strong>, 
+                por medio del presente documento <strong>ACEPTO VOLUNTARIAMENTE</strong> que el 
+                <strong>Dr. {{ $medico->name ?? '____________________' }}</strong>, 
+                quien se encuentra debidamente acreditado y presta sus servicios en <strong>Hospitalidad Health Care</strong>, 
+                me ha informado personalmente y a mi completa satisfacción sobre la <strong>Transfusión Sanguínea Hospitalaria</strong>.
+            </p>
+
+            <p>
+                Este procedimiento consiste en suministrar por vía endovenosa sangre o cualquiera de sus componentes como glóbulos rojos, plaquetas, plasma fresco congelado y/o crioprecipitados. Se busca reponer componentes que el organismo no produce por enfermedad o pérdida, como en el caso de hemorragias.
+            </p>
+
+            <p>
+                Se me ha explicado que los componentes provienen de donantes sometidos a un riguroso proceso de selección y que el banco de sangre realiza estudios (Hepatitis B y C, Sífilis, Brucelosis, Chagas y VIH) según la normatividad vigente. Asimismo, se realizan pruebas de compatibilidad con mi grupo sanguíneo previo a la transfusió<nav></nav>.
+            </p>
+
+            <p>
+                He sido informado sobre los beneficios y riesgos, incluyendo reacciones alérgicas, fiebre, enrojecimiento de la piel o destrucción de glóbulos rojos. Autorizo al personal de <strong>Hospitalidad Health Care</strong> para aplicar medidas terapéuticas adicionales en caso de contingencia y entiendo que este consentimiento puede ser revocado en cualquier momento antes de iniciar el proceso.
+            </p>
+
+            <p>
+                Firmo al calce por propia voluntad en la ciudad de Cuernavaca, Morelos, a <strong>{{ $fecha['dia'] }}</strong> del mes de <strong>{{ $fecha['mes'] }}</strong> del año <strong>{{ $fecha['anio'] }}</strong> 
+                .
+            </p>
         </div>
 
-        
-                <style>
+        <style>
         .table-signatures {
             width: 100%;
             border-collapse: collapse;
@@ -138,7 +159,7 @@
             margin: 20px auto 5px auto;
         }
         </style>
-         
+
         {{-- TABLA DE FIRMAS (2 filas, 3 columnas) --}}
         <table class="table-signatures">
 
@@ -196,8 +217,8 @@
                             </div>
                         @endif
                     @else
-            <div class="signature-line"></div>
-        <p style="font-size: 9pt; color: #555;"></p>
+                                <div class="signature-line"></div>
+                        <p style="font-size: 9pt; color: #555;"></p>
                     @endif
                 </td>
 
@@ -208,6 +229,8 @@
 
             </tr>
 
-        </table> 
+        </table>
+  
     </main>
 </body>
+</html>

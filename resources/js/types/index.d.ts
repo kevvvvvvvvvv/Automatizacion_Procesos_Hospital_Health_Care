@@ -336,7 +336,7 @@ export interface Pago{
     user_id: number;
     monto: number;
     monto_restante: number;
-
+    requiere_factura: number;
     venta: Venta;
     user: User;
     metodo_pago: MetodoPago;
