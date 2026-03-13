@@ -320,7 +320,7 @@ class SolicitudEstudioController extends Controller implements HasMiddleware
                     'catalogo_estudio_id' => $catalogoId,
                     'detalles' => $detallesArray[$catalogoId] ?? null,
                     'otro_estudio' => null, 
-                    'estado' => 'SOLICITADO'
+                    'estado' => SolicitudEstudio::ESTADO_SOLICITADO,
                 ]);
                 $itemsCollection->push($item);
             }
