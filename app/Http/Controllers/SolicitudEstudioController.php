@@ -201,6 +201,7 @@ class SolicitudEstudioController extends Controller implements HasMiddleware
                                 'fecha_realizacion' => $grupoData['fecha_hora_grupo'] ?? now(),
                                 'problema_clinico' => $grupoData['problema_clinico'],
                                 'incidentes_accidentes' => $grupoData['incidentes_accidentes'],
+                                'user_realiza_id' => Auth::id(),
                             ];
 
                             if (!empty($archivosProcesados)) {
@@ -245,6 +246,8 @@ class SolicitudEstudioController extends Controller implements HasMiddleware
             'formularioInstancia.estancia',
             'solicitudItems.archivos',
         );
+
+        //dd($solicitudes_estudio->toArray());
 
         return Inertia::render('estudios/items/index', [
             'solicitud' => $solicitudes_estudio,

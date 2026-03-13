@@ -36,6 +36,19 @@ use App\Models\Venta\Venta;
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Venta\DetallePago> $detalles
  * @property-read int|null $detalles_count
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Pago whereFolio($value)
+ * @property string|null $monto_ingresado
+ * @property string|null $cambio_dispensado
+ * @property string $monto_restante
+ * @property string|null $clave_cajero
+ * @property array<array-key, mixed>|null $metadata_cajero
+ * @property-read float $iva_ventas
+ * @property-read float $subtotal_ventas
+ * @property-read float $total_ventas
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Pago whereCambioDispensado($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Pago whereClaveCajero($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Pago whereMetadataCajero($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Pago whereMontoIngresado($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Pago whereMontoRestante($value)
  * @mixin \Eloquent
  */
 class Pago extends Model
