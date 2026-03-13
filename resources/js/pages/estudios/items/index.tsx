@@ -62,20 +62,22 @@ const EstudioDetalle = ({ solicitud }: Props) => {
                             <div>
                                 <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Quién llenó la solicitud</h3>
                                 <p className="text-sm text-gray-600 mt-1">
-                                    {solicitud.user_llena?.nombre ?
-                                        `${solicitud.user_llena.nombre} ${solicitud.user_llena.apellido_paterno|| ''} ${solicitud.user_llena.apellido_materno|| ''}` 
+                                    {solicitud.user_llena?.nombre_completo ?
+                                        `${solicitud.user_llena.nombre_completo}` 
                                         : 'Sistema'}
                                 </p>
                             </div>
                         </div>
 
                         <div className="space-y-4 bg-blue-50 p-4 rounded-md border border-blue-100">
+                            
                             <div>
-                                <h3 className="text-xs font-bold text-blue-800 uppercase tracking-wider mb-1">Problemas Clínicos / Diagnóstico</h3>
+                                <h3 className="text-xs font-bold text-blue-800 uppercase tracking-wider mb-1">Problemas clínicos</h3>
                                 <p className="text-sm text-blue-900 leading-relaxed">
                                     {solicitud.problemas_clinicos || 'Sin especificaciones clínicas registradas.'}
                                 </p>
                             </div>
+                            
                             {solicitud.incidentes_accidentes && (
                                 <div className="pt-2 border-t border-blue-200 mt-2">
                                     <h3 className="text-xs font-bold text-red-800 uppercase tracking-wider mb-1">Incidentes / Accidentes</h3>
@@ -99,9 +101,6 @@ const EstudioDetalle = ({ solicitud }: Props) => {
                                         </th>
                                         <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                             Realizado por
-                                        </th>
-                                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            Resultados / Notas
                                         </th>
                                         <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                                             Estado
@@ -132,20 +131,10 @@ const EstudioDetalle = ({ solicitud }: Props) => {
                                                 <td className="px-6 py-4 text-sm text-gray-500">
                                                     {item.user_realiza ? (
                                                         <span className='flex items-center gap-1'>
-                                                            <div className="h-2 w-2 rounded-full bg-green-400"></div>
-                                                            {item.user_realiza.nombre}
+                                                            {item.user_realiza.nombre_completo}
                                                         </span>
                                                     ) : (
                                                         <span className="text-gray-400 italic">--</span>
-                                                    )}
-                                                </td>
-                                                <td className="px-6 py-4 text-sm text-gray-600">
-                                                    {item.resultados ? (
-                                                        <p className="line-clamp-2" title={item.resultados}>
-                                                            {item.resultados}
-                                                        </p>
-                                                    ) : (
-                                                        <span className="text-gray-400 italic text-xs">Sin resultados aún</span>
                                                     )}
                                                 </td>
                                                 <td className="px-6 py-4 text-right">

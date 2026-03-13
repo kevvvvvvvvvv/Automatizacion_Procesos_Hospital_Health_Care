@@ -6,7 +6,6 @@ import PrimaryButton from '@/components/ui/primary-button';
 import { route } from 'ziggy-js';
 import Swal from 'sweetalert2';
 import { Pill, CheckCircle2, AlertTriangle, ArrowLeft } from 'lucide-react';
-import { Link } from '@inertiajs/react';
 
 interface Props {
     hoja: HojaEnfermeria;
@@ -62,7 +61,7 @@ const ShowSolicitud = ({ hoja, paciente }: Props) => {
                              <ArrowLeft size={16} className="rotate-180" /> 
                         </div>
                         <p className="text-lg">
-                            Paciente: <span className="font-bold text-gray-900">{paciente.nombre} {paciente.apellido_paterno} {paciente.apellido_materno}</span>
+                            Paciente: <span className="font-bold text-gray-900">{paciente.nombre_completo}</span>
                         </p>
                     </div>
                 </div>
@@ -85,7 +84,7 @@ const ShowSolicitud = ({ hoja, paciente }: Props) => {
                                     <h3 className="font-black text-gray-900 text-xl uppercase tracking-tight">{med.nombre_medicamento}</h3>
                                     
                                     {!med.producto_servicio_id && (
-                                        <div className='flex items-center gap-1.5 mt-1.5 text-red-600 bg-red-50 px-3 py-1 rounded-lg border border-red-100 inline-flex'>
+                                        <div className='flex items-center gap-1.5 mt-1.5 text-red-600 bg-red-50 px-3 py-1 rounded-lg border border-red-100'>
                                             <AlertTriangle size={14} /> 
                                             <span className="text-xs font-bold uppercase">No vinculado a inventario central</span>
                                         </div>

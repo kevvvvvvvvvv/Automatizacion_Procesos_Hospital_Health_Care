@@ -45,6 +45,9 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|DetalleVenta whereSubtotal($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|DetalleVenta whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|DetalleVenta whereVentaId($value)
+ * @property-read mixed $monto_iva
+ * @property-read mixed $saldo_pendiente
+ * @property-read mixed $total_facturado
  * @mixin \Eloquent
  */
 class DetalleVenta extends Model
