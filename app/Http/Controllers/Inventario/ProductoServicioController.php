@@ -42,7 +42,20 @@ class ProductoServicioController extends Controller
         return DB::transaction(function () use ($request) {
             // 1. Creamos el registro base
             $producto = ProductoServicio::create($request->validated());
-
+           {/*$producto = ProfuctoServicio::create([
+                'tipo' => $request->tipo,
+                'subtipo' => $request->subtipo,
+                'codigo_presentacion' $request->codigo_presentacion,
+                'codigo_barra' => $request->codigo_barra,
+                'nombre_presentacion' => $request->nombre_presentacion,
+                'importe' => $request->importe * $request->iva,
+                'cantidad' => $reques
+                'cantidad_maxima'
+                'cantidad_minima'
+                'proveedor'
+                'fecha_caducidad'
+                'iva'
+            ])*/}
             if ($request->subtipo === 'MEDICAMENTOS') {
                 $medicamento = $producto->medicamento()->create([
                     'id' => $producto->id,
