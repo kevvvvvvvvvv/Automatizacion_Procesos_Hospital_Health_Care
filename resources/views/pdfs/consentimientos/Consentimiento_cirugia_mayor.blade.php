@@ -119,16 +119,16 @@
         <h3>Cuerpo del Consentimiento</h3>
         <div class="section-content">
             <p>
-                Yo, <strong>{{ $paciente->nombre_completo ?? '____________________' }}</strong>, 
+                Yo,  ____________________</strong>, 
                 por medio del presente documento hago constar:
             </p>
 
             <p>
-                Que el <strong>Dr. {{ $medico->name ?? '____________________' }}</strong>, 
-                especialista en {{ $credencial->titulo ?? '____________________' }}, 
-                debidamente acreditado con cédula profesional <strong>{{ $credencial->cedula_profesional ?? '__________' }}</strong>, 
+                Que el <strong>Dr. ____________________</strong>, 
+                especialista en ____________________, 
+                debidamente acreditado con cédula profesional <strong>__________</strong>, 
                 me ha informado personalmente, a mi completa satisfacción y de forma enteramente comprensible, los motivos por los cuales ha indicado la realización del procedimiento quirúrgico consistente en: 
-                <strong>{{ $paciente->cirugia_programada ?? '____________________' }}</strong>.
+                <strong>____________________</strong>.
             </p>
 
             <p>
