@@ -34,7 +34,7 @@ const Show = ({ estancia }: ShowEstanciaProps) => {
     
     const { can, hasRole } = usePermission();
     const { auth } = usePage<PageProps>().props;
-    const { paciente, creator, updater, formulario_instancias } = estancia;
+    const { paciente, formulario_instancias } = estancia;
 
     const dateOptions: Intl.DateTimeFormatOptions = {
         year: 'numeric', month: 'long', day: 'numeric',
@@ -78,30 +78,41 @@ const Show = ({ estancia }: ShowEstanciaProps) => {
 
             <InfoCard title={`Estancia para: ${paciente.nombre} ${paciente.apellido_paterno} ${paciente.apellido_materno}`}>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <InfoField label="Folio" value={estancia.folio} />
-                    <InfoField label="Tipo de estancia" value={estancia.tipo_estancia} />
+                    <InfoField 
+                        label="Folio" 
+                        value={estancia.folio} 
+                    />
+                    <InfoField 
+                        label="Tipo de estancia" 
+                        value={estancia.tipo_estancia === 'Hospitalizacion' ? 'Hospitalización' : 'Consulta'} 
+                    />
                     <InfoField 
                         label="Fecha de Ingreso" 
                         value={new Date(estancia.fecha_ingreso).toLocaleString('es-MX', dateOptions)} 
                     />
                     { estancia.tipo_estancia === 'Hospitalizacion' && (
-                    <InfoField 
-                        label="Fecha de egreso" 
-                        value={estancia.fecha_egreso 
-                            ? new Date(estancia.fecha_egreso).toLocaleString('es-MX', dateOptions) 
-                            : 'Aún hospitalizado(a)'} 
-                    />
+                        <>
+                            <InfoField 
+                                label="Fecha de egreso" 
+                                value={estancia.fecha_egreso 
+                                    ? new Date(estancia.fecha_egreso).toLocaleString('es-MX', dateOptions) 
+                                    : 'Aún hospitalizado(a)'} 
+                            />
+                            <InfoField 
+                                label="Número de habitación" 
+                                value={estancia.habitacion?.identificador ?? 'N/A'} 
+                            />
+                        </>
                     )}
-                    <InfoField label="Número de habitación" value={estancia.habitacion?.identificador ?? 'N/A'} />
-                    <InfoField label="Creado por" value={creator ? creator.nombre : 'N/A'} />
-                    <InfoField 
-                        label="Última actualización por" 
-                        value={updater ? updater.nombre : 'N/A'} 
-                    />
-
                     <InfoField 
                         label="Familiar resposable" 
                         value={estancia.familiar_responsable?.nombre_completo ?? 'N/A'} 
+                    />
+                </div>
+                <div className='pt-4'>
+                    <InfoField
+                        label='Diagnóstico'
+                        value=''
                     />
                 </div>
             </InfoCard>
@@ -165,53 +176,37 @@ const Show = ({ estancia }: ShowEstanciaProps) => {
                                 <div className="px-1 py-1">
                                     {can('crear hojas enfermerias') && (
                                     <>
-                                    <Menu.Item> 
-                                        {({ active }) => (
-                                            <Link
-                                                href={route('pacientes.estancias.hojasenfermerias.create', { paciente: paciente.id, estancia: estancia.id })}
-                                                className={`${
-                                                    active ? 'bg-blue-500 text-white' : 'text-gray-900'
-                                                } group flex rounded-md items-center w-full px-2 py-2 text-sm`}
-                                            >
-                                                Añadir hoja de enfermería en hospitalizacion
-                                            </Link>
-                                        )}
-                                    </Menu.Item>
-                                    <Menu.Item>
-                                        {({ active }) => (
-                                            <Link
-                                                href={route('pacientes.estancias.hojasenfermeriasquirofanos.store', { 
-                                                    paciente: paciente.id, 
-                                                    estancia: estancia.id 
-                                                })}
-                                                method="post" 
-                                                className={`${
-                                                    active ? 'bg-blue-500 text-white' : 'text-gray-900'
-                                                } group flex rounded-md text-left w-full px-2 py-2 text-sm`}
-                                            >
-                                                Añadir hoja de enfermería en quirófano
-                                            </Link>
-                                        )}
-                                    </Menu.Item>
-                                    <Menu.Item>
-                                        {({ active }) => (
-                                            <Link
-                                                href={route('pacientes.estancias.hojasfrontales.create', { paciente: paciente.id, estancia: estancia.id })}
-                                                className={`${
-                                                    active ? 'bg-blue-500 text-white' : 'text-gray-900'
-                                                } group flex rounded-md items-center w-full px-2 py-2 text-sm`}
-                                            >
-                                                Añadir hoja frontal
-                                            </Link>
-                                        )}
-                                    </Menu.Item>
+                                        <Menu.Item> 
+                                            {({ active }) => (
+                                                <Link
+                                                    href={route('pacientes.estancias.hojasenfermerias.create', { paciente: paciente.id, estancia: estancia.id })}
+                                                    className={`${
+                                                        active ? 'bg-blue-500 text-white' : 'text-gray-900'
+                                                    } group flex rounded-md items-center w-full px-2 py-2 text-sm`}
+                                                >
+                                                    Añadir hoja de enfermería en hospitalizacion
+                                                </Link>
+                                            )}
+                                        </Menu.Item>
+                                        <Menu.Item>
+                                            {({ active }) => (
+                                                <Link
+                                                    href={route('pacientes.estancias.hojasenfermeriasquirofanos.store', { 
+                                                        paciente: paciente.id, 
+                                                        estancia: estancia.id 
+                                                    })}
+                                                    method="post" 
+                                                    className={`${
+                                                        active ? 'bg-blue-500 text-white' : 'text-gray-900'
+                                                    } group flex rounded-md text-left w-full px-2 py-2 text-sm`}
+                                                >
+                                                    Añadir hoja de enfermería en quirófano
+                                                </Link>
+                                            )}
+                                        </Menu.Item>
                                     </>
                                     )}
-
-                                    
-                                    {(can('crear hojas frontales')|| can('crear documentos medicos')) && (
-                                        <>
-                                        <Menu.Item>
+                                    <Menu.Item>
                                         {({ active }) => (
                                             <Link
                                                 href={route('pacientes.estancias.hojasfrontales.create', { paciente: paciente.id, estancia: estancia.id })}
@@ -223,6 +218,9 @@ const Show = ({ estancia }: ShowEstanciaProps) => {
                                             </Link>
                                         )}
                                     </Menu.Item>
+                                    
+                                    {(can('crear documentos medicos')) && (
+                                    <>
                                     <Menu.Item>
                                         {({ active }) => (
                                             <Link

@@ -127,6 +127,8 @@ class RoleAndPermissionSeeder extends Seeder
             'crear solicitudes estudios patologicos',
 
             'consultar habitaciones',
+
+            'crear consentimientos',
         ]);
 
         $roleCaja->syncPermissions([
@@ -220,8 +222,6 @@ class RoleAndPermissionSeeder extends Seeder
             'crear consentimientos',
             
             'consultar habitaciones',
-
-
 
             'crear reservaciones',
             'consultar reservaciones',
