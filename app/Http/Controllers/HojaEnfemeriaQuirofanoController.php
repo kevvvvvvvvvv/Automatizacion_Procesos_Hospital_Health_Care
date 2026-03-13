@@ -46,6 +46,11 @@ class HojaEnfemeriaQuirofanoController extends Controller implements HasMiddlewa
         $this->pdfGenerator = $pdfGenerator; 
     }
 
+    public function show()
+    {
+        return Redirect::back()->with('error','La opción de mostrar no esta habilitada por el momento.');
+    }
+
     public function create(Paciente $paciente, Estancia $estancia)
     {
 
