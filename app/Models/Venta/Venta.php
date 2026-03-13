@@ -51,7 +51,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  */
 class Venta extends Model
 {
-public const ESTADO_PENDIENTE = 'En espera de pago';
+    public const ESTADO_PENDIENTE = 'En espera de pago';
     public const ESTADO_PARCIAL = 'Pago parcial';
     public const ESTADO_PAGADO = 'Pagado';
 

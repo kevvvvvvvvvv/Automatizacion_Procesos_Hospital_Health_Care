@@ -44,6 +44,10 @@ use App\Models\Formulario\FormularioInstancia;
  */
 class SolicitudEstudio extends Model
 {
+    public const ESTADO_SOLICITADO = 'SOLICITADO';
+    public const ESTADO_PROCESO = 'EN PROCESO';
+    public const ESTADO_FINALIZADO ='VALIDADO';
+
     protected $fillable = [
         'id',
         'user_solicita_id',
