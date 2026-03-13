@@ -176,24 +176,9 @@
                 </td>
 
                 <td>
-                    @if(isset($medico))
-                        <div class="signature-line"></div>
-                        <p>{{ $medico->nombre_completo }}</p>
-                        <p style="font-size: 9pt; color: #555;">Nombre y firma del médico</p>
 
-                        @if($medico->credenciales && $medico->credenciales->isNotEmpty())
-                            <div class="credentials-list">
-                                @foreach($medico->credenciales as $credencial)
-                                    <p style="margin: 2px 0;">
-                                        {{ $credencial->titulo }} - Cédula: {{ $credencial->cedula_profesional }}
-                                    </p>
-                                @endforeach
-                            </div>
-                        @endif
-                    @else
                         <div class="signature-line"></div>
                         <p style="font-size: 9pt; color: #555;">Nombre y firma del medico</p>
-                    @endif
                 </td>
 
                 {{-- 6. Vacío o espacio adicional --}}

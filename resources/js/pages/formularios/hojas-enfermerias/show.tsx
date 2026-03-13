@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Head } from '@inertiajs/react';
-import { HojaEnfermeria } from '@/types';
+import { HojaEnfermeria, HojaSignosGraficas } from '@/types';
 
 import InfoCard from '@/components/ui/info-card';
 import MainLayout from '@/layouts/MainLayout';
@@ -16,6 +16,7 @@ import SolicitudEstudioTable from '@/components/forms/hoja-enfermeria-hospitaliz
 
 interface Props{
     hoja: HojaEnfermeria;
+    dataParaGraficas:HojaSignosGraficas [];
 }
 
 type SeccionHoja = 'signos' | 'riesgo_caidas' |'medicamentos' | 'terapia_iv' | 'estudios' | 'sondas' | 'dieta' | 'servicios_especiales' | 'observaciones' | 'graficas' | 'control_liquidos' | 'escalas_valoracion';
@@ -37,7 +38,7 @@ const secciones: { id: SeccionHoja, label: string }[] = [
 
 const Show = ({ 
     hoja,
-    DataParaGraficas 
+    dataParaGraficas 
 }: Props) => {
 
     const [activeSection, setActiveSection] = useState<SeccionHoja>('signos');
@@ -101,11 +102,11 @@ const Show = ({
             case 'observaciones':
 /*                 return <HabitusExteriorForm
                             hojasenfermeria={hojaenfermeria}
-/*                         />   
-            /*case 'graficas':
+                        />*/
+            case 'graficas':
                 return <GraficaContent
                             historialSignos={dataParaGraficas ?? []}
-                        /> */
+                        />
             default:
                 return null;
         }

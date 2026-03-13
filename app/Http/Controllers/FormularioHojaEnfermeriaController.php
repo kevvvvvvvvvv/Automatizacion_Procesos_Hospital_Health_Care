@@ -65,10 +65,9 @@ class FormularioHojaEnfermeriaController extends Controller implements HasMiddle
             'solicitudesEstudio.solicitudItems.catalogoEstudio',
         );
 
-        //dd($hojasenfermeria->toArray());
-
         return Inertia::render('formularios/hojas-enfermerias/show', [
             'hoja' => $hojasenfermeria,
+            'dataParaGraficas' => $this->formatoGraficas($hojasenfermeria),
         ]);
 
     }
@@ -147,23 +146,9 @@ class FormularioHojaEnfermeriaController extends Controller implements HasMiddle
         }
         $hojasenfermeria->setAttribute('sondas_activas_completas', $sondas);
 
-        //dd($hojasenfermeria->toArray());
-
         $estancia = $hojasenfermeria->formularioInstancia->estancia;
         $paciente = $hojasenfermeria->formularioInstancia->estancia->paciente;
 
-        $columnasGraficas = [
-            'fecha_hora_registro',
-            'tension_arterial_sistolica',
-            'tension_arterial_diastolica',
-            'frecuencia_cardiaca',
-            'frecuencia_respiratoria',
-            'temperatura',
-            'saturacion_oxigeno', 
-            'glucemia_capilar',
-            'talla',
-            'peso',
-        ];
 
         $catalogoEstudios = CatalogoEstudio::all();
         $solicitudesAnteriores = $estancia->formularioInstancias
@@ -180,11 +165,6 @@ class FormularioHojaEnfermeriaController extends Controller implements HasMiddle
         $sondas_cateters = ProductoServicio::where('nombre_prestacion','like','SONDA%')->orWhere('nombre_prestacion', 'like', 'CATETER%')->get();
         $vias_administracion = CatalogoViaAdministracion::all();
 
-        $dataParaGraficas = HojaSignos::select($columnasGraficas)
-            ->where('hoja_enfermeria_id', $hojasenfermeria->id)
-            ->orderBy('fecha_hora_registro', 'asc')
-            ->get();
-
 
         $nota = $this->obtenerListaTratamiento($estancia);
 
@@ -195,7 +175,7 @@ class FormularioHojaEnfermeriaController extends Controller implements HasMiddle
             'medicamentos' => $medicamentos,
             'soluciones' => $soluciones,
             'sondas_cateters' => $sondas_cateters,
-            'dataParaGraficas' => $dataParaGraficas,
+            'dataParaGraficas' => $this->formatoGraficas($hojasenfermeria),
             'catalogoEstudios' => $catalogoEstudios,
             'solicitudesAnteriores' => $solicitudesAnteriores,
             'medicos' => $medicos,
@@ -213,7 +193,7 @@ class FormularioHojaEnfermeriaController extends Controller implements HasMiddle
      * Actualiza la hoja de enfermería (Observaciones o Estado).
      *
      * @param  \Illuminate\Http\Request  
-     * @param  \App\Models\HojaEnfermeria  
+     * @param  \App\Models\HojaEnfermeria  dataParaGraficas
      * @return \Illuminate\Http\RedirectResponse
      */
     public function update(HojaEnfermeriaRequest $request, HojaEnfermeria $hojasenfermeria)
@@ -296,6 +276,29 @@ class FormularioHojaEnfermeriaController extends Controller implements HasMiddle
             $hojasenfermeria->formularioInstancia->estancia->id
         );
 
+    }
+
+    private function formatoGraficas(HojaEnfermeria $hojasenfermeria)
+    {
+        $columnasGraficas = [
+            'fecha_hora_registro',
+            'tension_arterial_sistolica',
+            'tension_arterial_diastolica',
+            'frecuencia_cardiaca',
+            'frecuencia_respiratoria',
+            'temperatura',
+            'saturacion_oxigeno', 
+            'glucemia_capilar',
+            'talla',
+            'peso',
+        ];
+
+        $dataParaGraficas = HojaSignos::select($columnasGraficas)
+            ->where('hoja_enfermeria_id', $hojasenfermeria->id)
+            ->orderBy('fecha_hora_registro', 'asc')
+            ->get();
+
+        return $dataParaGraficas;
     }
 }
 
