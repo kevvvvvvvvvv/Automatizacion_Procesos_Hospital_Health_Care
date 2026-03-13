@@ -1,10 +1,10 @@
 import React from 'react';
 import '../../../public/css/ticket-styles.css';
-import { DetalleVenta, Pago } from '@/types';
+import { Pago } from '@/types';
+;
 
 interface Props {
     pago: Pago;
-    ventas: DetalleVenta;
 }
 
 const formatter = new Intl.NumberFormat('es-MX', {
@@ -13,15 +13,17 @@ const formatter = new Intl.NumberFormat('es-MX', {
     minimumFractionDigits: 2
 });
 
-export default function TicketPago({ pago, ventas}: Props) {
-    
+export default function TicketPago({ 
+    pago, 
+}: Props) {   
     const handlePrint = () => {
         window.print();
     };
-    //const iva = ventas.iva_aplicado;
+    
     const venta = pago.venta;
 
-    // Componente interno para evitar repetir el HTML del ticket
+   
+
     const TicketContent = ({ leyenda }: { leyenda: 'ORIGINAL' | 'COPIA' }) => (
         <div className="ticket-container printable-ticket text-black font-bold mb-8">
             <div className="text-center mb-2 border-b border-black pb-2">
@@ -89,7 +91,7 @@ export default function TicketPago({ pago, ventas}: Props) {
             <div className="border-t border-black pt-2 text-right text-xs">
                 <p className="font-bold text-xs mt-1">Subtotal: {formatter.format(pago.subtotal_ventas)}</p> 
                 <p className="font-bold text-xs mt-1">IVA: {formatter.format(pago.iva_ventas)}</p>    
-                <p className="font-bold text-xs mt-1">Total: {formatter.format(pago.total_ventas)}</p>              
+                <p className="font-bold text-xs mt-1">Total: {formatter.format(pago.total_ventas)}</p>               
             </div>
             <div className="border-t border-black pt-2 text-right text-xs">
                 <p className="font-bold text-xs mt-1">Su pago: {formatter.format(pago.monto)}</p>
@@ -123,6 +125,8 @@ export default function TicketPago({ pago, ventas}: Props) {
 
     return (
         <div className="p-4">
+            
+
             <button 
                 onClick={handlePrint}
                 className="mb-6 bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 no-print rounded-xl shadow-lg transition-colors flex items-center gap-2"
@@ -130,17 +134,20 @@ export default function TicketPago({ pago, ventas}: Props) {
                 <span>🖨️</span> Imprimir Original y Copia
             </button>
 
-            <div id={`printable-area-${pago.id}`} className="flex flex-col">
+            {/* Cambié Flex por una estructura simple para que no colapse en blanco */}
+            <div id="printable-area">   
                 
                 {/* Primera copia: ORIGINAL */}
                 <TicketContent leyenda="ORIGINAL" />
 
-                <div className="page-break manual-cut-space"></div>
+                {/* Línea divisoria física para el corte */}
+                <div className="manual-cut-space no-print"></div>
+                <div className="manual-cut-space hidden print:block"></div>
                 
                 {/* Segunda copia: COPIA */}
-                <TicketContent leyenda="COPIA" />
-
-                <div className="h-12"></div>
+               {/*  <TicketContent leyenda="COPIA" />
+*/}
+                <div className="h-20"></div>
             </div>
         </div>
     );

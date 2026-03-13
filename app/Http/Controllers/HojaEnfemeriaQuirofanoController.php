@@ -11,6 +11,9 @@ use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 
 use App\Models\Paciente;
 use App\Models\Estancia;
@@ -20,12 +23,8 @@ use App\Models\Formulario\HojaEnfermeriaQuirofano\HojaEnfermeriaQuirofano;
 use App\Models\Inventario\ProductoServicio;
 use App\Models\User;
 use App\Services\PdfGeneratorService;
-
-use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
-use Illuminate\Routing\Controllers\HasMiddleware;
-use Illuminate\Routing\Controllers\Middleware;
-
-use function Pest\Laravel\call;
+use App\Services\VentaService;
+use App\Models\Venta\Venta;
 
 class HojaEnfemeriaQuirofanoController extends Controller implements HasMiddleware
 {
@@ -152,17 +151,55 @@ class HojaEnfemeriaQuirofanoController extends Controller implements HasMiddlewa
 
     }
 
-    private function cerrarHoja(HojaEnfermeriaQuirofano $hoja)
+    public function cerrarHoja(HojaEnfermeriaQuirofano $hojasenfermeriaquirofanos, VentaService $service)
     {
+        DB::beginTransaction();
         try{
-            $hoja->update([
+            $hojasenfermeriaquirofanos->update([
                 'estado' => 'Cerrado'
             ]);
+
+            $this->calcularVentas($hojasenfermeriaquirofanos, $service);
+
+            DB::commit();
             return redirect()->route('estancias.show');
         }catch(\Exception $e){
-            return redirect()->back()->with('error','Error al cerrar la hoja de enfermería en quirófano');
+            DB::rollBack();
+            Log::error('Error al cerrar la hoja de enfermería en quirófano: ' .$e->getMessage());
+            $hojasenfermeriaquirofanos->load('formularioInstancia');
+            return redirect()->route('estancias.show',[$hojasenfermeriaquirofanos->formularioInstancia->estancia_id])->with('success','Se ha cerrado la hoja de enfermería en quirófano.');
         }
-        
+    }
+
+    private function calcularVentas(HojaEnfermeriaQuirofano $hoja, VentaService $service){
+        try{
+            $hoja->load('hojaInsumosBasicos');
+            
+            foreach ($hoja->hojaInsumosBasicos as $insumo){
+                
+                
+                $itemParaVenta = [
+                    'id' => ($insumo->producto_servicio_id ?? null),
+                    'cantidad' => ($insumo->cantidad),
+                    'tipo' => 'producto',
+                ];
+
+                $estanciaId =  $hoja->formularioInstancia->estancia_id;
+
+                $ventaExistente = Venta::where('estancia_id', $estanciaId)
+                                      ->where('estado', Venta::ESTADO_PENDIENTE)
+                                      ->first();
+
+                if ($ventaExistente) {
+                    $service->addItemToVenta($ventaExistente, $itemParaVenta);
+                } else {
+                    $service->crearVenta([$itemParaVenta], $estanciaId, Auth::id());
+                }
+            }
+        }catch(\Exception $e){
+            \Log::error('Error en el cálculo de las ventas: ' . $e->getMessage());
+            return Redirect::back()->with('error','Error en el cálculo de las ventas.');
+        }
     }
 
 }

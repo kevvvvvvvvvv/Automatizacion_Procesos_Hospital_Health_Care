@@ -35,13 +35,13 @@ class RecetaController extends Controller
     $instancia = $registro->formularioInstancia;
    // dd($registro);
     // 2. Mapeo de datos (Como ambos usan formularioInstancia, el resto es igual)
-    
-    
+    $estancia = $registro->formularioInstancia->estancia;
     $headerData = [
             'historiaclinica' => $registro,
             'paciente' => $instancia->estancia->paciente,
-            'estancia' => $instancia->estancia
+            'estancia' => $estancia
         ];
+    
     $viewData = [
         'tratamiento' => $registro->tratamiento, // Asegúrate que ambos modelos tengan este campo
         'paciente'    => $instancia->estancia->paciente,

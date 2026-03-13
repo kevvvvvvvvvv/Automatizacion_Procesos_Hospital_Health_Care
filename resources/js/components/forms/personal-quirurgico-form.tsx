@@ -33,7 +33,8 @@ const PersonalQuirurgicoManager: React.FC<Props> = ({
         { value: 'ayudante', label: 'Ayudante' },
         { value: 'instrumentista', label: 'Instrumentista' },
         { value: 'anestesiologo', label: 'Anestesiólogo' },
-        { value: 'circulante', label: 'Cirtulante' },
+        { value: 'circulante', label: 'Circulante' },
+        { value: 'cirujano', label: 'Cirujano'},
     ];
     
 

@@ -515,7 +515,7 @@ const NotaPostoperatoriaForm: NotaPostoperatoriaComponent= ({ paciente, estancia
 }
 
 NotaPostoperatoriaForm.layout = (page: React.ReactElement) =>{
-    const { estancia, paciente } = page.props as Props;
+    const { estancia } = page.props as Props;
 
   return (
     <MainLayout
