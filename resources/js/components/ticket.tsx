@@ -17,6 +17,7 @@ export default function TicketPago({
 }: Props) {   
     const handlePrint = () => {
         window.print();
+        window.print(); 
     };
     
     const venta = pago.venta;
@@ -128,7 +129,6 @@ return (
                 Imprimir Tickets (2 Copias)
             </button>
 
-            {/* Contenedor de impresión: Sin alturas fijas, flujo natural */}
             <div id="printable-area" className="flex flex-col items-center">
                 
                 {/* PRIMERA COPIA */}
@@ -136,18 +136,10 @@ return (
                     <TicketContent leyenda="ORIGINAL" />
                 </div>
 
-                {/* ESPACIO PARA CORTE (Se verá en la impresora) */}
                 <div className="w-full py-10 border-b border-dashed border-gray-300 print:border-black">
 
                 </div>
 
-                {/* SEGUNDA COPIA */}
-                <div className="mt-10">
-                    <TicketContent leyenda="COPIA" />
-                </div>
-
-                {/* Espacio extra al final para que la impresora no corte el texto del segundo ticket */}
-                <div className="h-20"></div>
             </div>
             
         </div>

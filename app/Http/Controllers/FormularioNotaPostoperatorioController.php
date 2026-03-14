@@ -51,9 +51,23 @@ class FormularioNotaPostoperatorioController extends Controller implements HasMi
         return $this->pdfGenerator = $pdfGenerator;
     }
 
-    public function show()
+     public function show(NotaPostoperatoria $notaspostoperatoria)
     {
-        return Redirect::back()->with('error','La opción de mostrar no esta habilitada por el momento.');
+        // Cargamos todas las relaciones necesarias para la vista
+        $notaspostoperatoria->load([
+            'formularioInstancia.estancia.paciente',
+            'formularioInstancia.user.credenciales',
+            'personalEmpleados.user',
+            'transfusiones',
+            'solicitudPatologia' // Por si quieres mostrar los datos de la biopsia
+        ]);
+
+        return Inertia::render('formularios/nota-postoperatorio/show', [
+            'nota' => $notaspostoperatoria,
+            'paciente' => $notaspostoperatoria->formularioInstancia->estancia->paciente,
+            'estancia' => $notaspostoperatoria->formularioInstancia->estancia,
+            'medico' => $notaspostoperatoria->formularioInstancia->user,
+        ]);
     }
 
     public function create(Paciente $paciente, Estancia $estancia)
@@ -129,6 +143,7 @@ class FormularioNotaPostoperatorioController extends Controller implements HasMi
 
         return $solicitud;
     }
+   
 
     private function procesarCobroPatologia(Estancia $estancia, VentaService $ventaService): void
     {
@@ -206,6 +221,7 @@ class FormularioNotaPostoperatorioController extends Controller implements HasMi
 
     public function edit()
     {
+        
         return Redirect::back()->with('error','La opción de editar no esta habilitada por el momento.');
     }
 
