@@ -211,7 +211,7 @@ const NotaPostoperatoriaForm: NotaPostoperatoriaComponent= ({ paciente, estancia
 
             <Head title="Crear nota postoperatoria" />
             <FormLayout
-                title='Registrar nota postoperatoria'
+                title='Registrar nota postoperatoria 2.2'
                 onSubmit={handleSubmit}
                 actions={<PrimaryButton type="submit" disabled={processing}>{processing ? 'Creando...' : 'Crear nota postoperatoria'}</PrimaryButton>}>
 

@@ -154,11 +154,19 @@ class EstanciaController extends Controller
             'habitacion',
             'formularioInstancias.catalogo',
             'formularioInstancias.user',
+            'formularioInstancias.historiaclinica', 
             'Consentimiento.user',
         ]);
-        
+
+        $historiaClinica = $estancia->formularioInstancias
+            ->pluck('historiaclinica')
+            ->filter() 
+            ->first(); 
+        //dd($historiaClinica->toArray());
+
         return Inertia::render('estancias/show', [
             'estancia' => $estancia,
+            'historiaclinica' => $historiaClinica, 
         ]);
     }
 }
