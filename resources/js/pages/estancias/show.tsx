@@ -5,7 +5,7 @@ import { Menu } from '@headlessui/react';
 import { route } from 'ziggy-js';
 import { Printer } from 'lucide-react'; 
 import MainLayout from '@/layouts/MainLayout';
-import { Estancia, Paciente, User, FormularioInstancia, Habitacion, FamiliarResponsable, Consentimiento, PageProps} from '@/types'; 
+import { Estancia, Paciente, User, FormularioInstancia, Habitacion, FamiliarResponsable, Consentimiento, PageProps, HistoriaClinica} from '@/types'; 
 import InfoCard from '@/components/ui/info-card';
 import InfoField from '@/components/ui/info-field';
 import { usePermission } from '@/hooks/use-permission';
@@ -27,10 +27,11 @@ interface ShowEstanciaProps {
             user: User;
         })[];
     };
+    historiaclinica: HistoriaClinica | null;
 }
 
 
-const Show = ({ estancia }: ShowEstanciaProps) => {
+const Show = ({ estancia, historiaclinica }: ShowEstanciaProps) => {
     
     const { can, hasRole } = usePermission();
     const { auth } = usePage<PageProps>().props;
@@ -112,7 +113,7 @@ const Show = ({ estancia }: ShowEstanciaProps) => {
                 <div className='pt-4'>
                     <InfoField
                         label='Diagnóstico'
-                        value=''
+                        value= {historiaclinica?.diagnostico ?? 'No registrado'}
                     />
                 </div>
             </InfoCard>
