@@ -360,6 +360,23 @@ export interface DetallePago {
     detalle_venta: DetalleVenta;
     pago: Pago;
 }
+export interface HistoriaClinica {
+    id:number;
+    padecimiento_actual: string;
+    tension_arterial: string;
+    frecuencia_cardiaca: string;
+    frecuencia_respiratoria: number,
+    saturacion_oxigeno: number;
+    temperatura: number;
+    peso:number;
+    talla:number;
+    resultados_previos:string;
+    diagnostico: string;
+    pronostico: string;
+    indicacion_terapeutica: string;
+
+
+}
 
 export interface HojaEnfermeria {
     id: number;
