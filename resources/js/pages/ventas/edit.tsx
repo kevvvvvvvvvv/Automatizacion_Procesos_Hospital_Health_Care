@@ -336,9 +336,9 @@ const EditVenta = ({ venta, paciente, estancia, catalogoOptions }: EditVentaProp
                                                     <td className="px-6 py-4 text-right font-bold text-gray-900">
                                                         ${Number(detalle.subtotal).toLocaleString()}
                                                     </td>
-                                                    <td className="px-6 py-4 text-right font-bold text-gray-900">
+                                                    <td className="px-6 py-5 text-right font-bold text-gray-900">
 
-                                                        ${Number(detalle.iva_aplicado).toLocaleString()}
+                                                        {Number(detalle.iva_aplicado).toLocaleString()}%
                                                     </td>
 
                                                     <td className="px-6 py-4 text-center space-x-2">

@@ -57,43 +57,48 @@ class DetalleVentaController extends Controller implements HasMiddleware
     }
 
     public function update(Request $request, DetalleVenta $detallesventa)
-    {
-        $validated = $request->validate([
-            'cantidad' => 'required|numeric|min:1',
-            'precio_unitario' => 'required|numeric|min:0',
-        ]);
+{
+    $validated = $request->validate([
+        'cantidad' => 'required|numeric|min:1',
+        'precio_unitario' => 'required|numeric|min:0',
+        'itemable_type' => 'nullable|string',
+    ]);
+
+
+    $precioBaseSujeto = $validated['precio_unitario'] / (1 - ProductoServicio::comision_terminal);
+
+    $detallesventa->cantidad = $validated['cantidad'];
+    $detallesventa->precio_unitario = $precioBaseSujeto;
+    $detallesventa->subtotal = $detallesventa->cantidad * $precioBaseSujeto;
+    $detallesventa->save();
+
+    $venta = $detallesventa->venta;
+
+    $detalles = $venta->detalles()->with('itemable')->get();
+
+    $subtotalGeneral = 0;
+    $totalGeneral = 0;
+
+    foreach ($detalles as $detalle) {
+        $subtotalGeneral += $detalle->subtotal;
+
+        $esRegistrado = $detalle->itemable_id !== null;
         
-        //dd($validated);
+        $tasaIva = $esRegistrado ? 0.16 : ProductoServicio::IVA_Noregistrados;
 
-        $detallesventa->cantidad = $validated['cantidad'];
-        $detallesventa->precio_unitario = ($validated['precio_unitario']/(1-(ProductoServicio::comision_terminal)));
-        $detallesventa->subtotal = $detallesventa->cantidad * $detallesventa->precio_unitario;
-        $detallesventa->save();
-
-        $venta = $detallesventa->venta;
-
-        $detalles = $venta->detalles()->with('itemable')->get();
-
-        $subtotalAcumulado = 0;
-        $totalAcumulado = 0;
-
-        foreach ($detalles as $detalle) {
-            $subtotalAcumulado += $detalle->subtotal;
-            $tasaIva = .16;
-
-            $tasaIva = $detalle->itemable->iva ?? 0; 
-
-            $totalLinea = $detalle->subtotal * (1 + ($tasaIva / 100));
-            
-            $totalAcumulado += $totalLinea;
-        }
-        $venta->update([
-            'subtotal' => $subtotalAcumulado,
-            'total' => $totalAcumulado, 
-        ]);
-
-        return Redirect::back()->with('success', 'Precio actualizado y recálculo de impuestos completado.');
+        $totalLinea = $detalle->subtotal * (1 + $tasaIva);
+        
+        $totalGeneral += $totalLinea;
     }
+
+
+    $venta->update([
+        'subtotal' => $subtotalGeneral,
+        'total' => $totalGeneral, 
+    ]);
+
+    return Redirect::back()->with('success', 'Venta actualizada: El 30% de IVA se aplicó al total de productos no registrados.');
+}
 
     public function destroy(DetalleVenta $detallesventa)
     {

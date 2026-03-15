@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { route } from 'ziggy-js';
 import { useForm, Head } from '@inertiajs/react';
 import { CreditCard, Hash, X } from 'lucide-react'; 
-import { MetodoPago, TicketCajero, Venta, Pago } from '@/types';
+import { MetodoPago, TicketCajero, Venta, Pago, ProductoServicio } from '@/types';
 import { usePage } from '@inertiajs/react';
 import { useEffect } from 'react';
 
@@ -14,6 +14,7 @@ import Ticket from '@/components/ticket';
 import InputBoolean from '@/components/ui/input-boolean';
 import InputSelect from '@/components/ui/input-select';
 import TicketPagoCajero from '@/components/tickets/ticket-pago-cajero';
+import productoServicios from '@/routes/producto-servicios';
 
 const formatCurrency = (amount: number | string) => {
     return new Intl.NumberFormat('es-MX', {
@@ -63,6 +64,7 @@ interface Props {
     metodosPago: MetodoPago[];
     ticket: TicketCajero;
     pago: Pago;
+    productosServicio: ProductoServicio;
 }
 
 const Show = ({ 
@@ -140,8 +142,8 @@ const Show = ({
             }
         }
     }, [flash]);
-
-    const ivaCalculado = Number(venta.total) - Number(venta.subtotal);
+    const IVA = .16;
+    const ivaCalculado = ( venta.total -venta.subtotal ) ;
 
     return (
         <MainLayout 
