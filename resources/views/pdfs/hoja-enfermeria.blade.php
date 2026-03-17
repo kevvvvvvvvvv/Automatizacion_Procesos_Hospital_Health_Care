@@ -754,7 +754,7 @@
                     <td colspan="6" class="empty-cell">No se ha registrado administración de oxígeno.</td>
                 </tr>
             @else
-                @foreach ($notaData->hojaOxigenos as $oxigeno)
+                @foreach ($notaData->oxigeno_activo as $oxigeno)
                     <tr>   
                         {{-- 1. Flujo --}}
                         <td style="text-align: center;">{{ $oxigeno->litros_minuto }}</td>
