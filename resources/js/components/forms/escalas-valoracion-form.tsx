@@ -1,10 +1,12 @@
 import { useForm } from '@inertiajs/react';
 import React, { useState } from 'react';
 import { route } from 'ziggy-js';
-import InputText from '../ui/input-text';
-import PrimaryButton from '../ui/primary-button';
 import { HojaEnfermeria } from '@/types';
 import Swal from 'sweetalert2';
+
+import InputText from '../ui/input-text';
+import PrimaryButton from '../ui/primary-button';
+import EscalaValoracionTable from '@/components/forms/hoja-enfermeria-hospitalizacion-tables/escala-valoracion-table';
 
 interface DolorEntry {
     escala_eva: string;
@@ -186,6 +188,12 @@ const EscalaValoracionForm = ({ hoja }: Props) => {
                     </PrimaryButton>
                 </div>
             </form>
+            <div className='mt-4'>
+                <h3 className="text-lg font-semibold mb-4 text-gray-800 border-b pb-2">Historial de escalas de valoración</h3>
+                <EscalaValoracionTable 
+                    hoja={hoja}  
+                />;
+            </div>
         </>
     );
 };

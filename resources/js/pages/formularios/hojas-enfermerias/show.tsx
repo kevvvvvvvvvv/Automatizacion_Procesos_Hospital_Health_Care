@@ -12,8 +12,11 @@ import RiesgoCaidasTable from '@/components/forms/hoja-enfermeria-hospitalizacio
 import ControlLiquidosTable from '@/components/forms/hoja-enfermeria-hospitalizacion-tables/control-liquidos-table';
 import EscalaValoracionTable from '@/components/forms/hoja-enfermeria-hospitalizacion-tables/escala-valoracion-table';
 import MedicamentosTable from '@/components/forms/hoja-enfermeria-hospitalizacion-tables/ministracion-medicamentos-table';
+import SondasCateteresTable from '@/components/forms/hoja-enfermeria-hospitalizacion-tables/sonda-cateteres-table';
 import TerapiaIVTable from '@/components/forms/hoja-enfermeria-hospitalizacion-tables/terapia-intravenosa-table';
 import SolicitudEstudioTable from '@/components/forms/hoja-enfermeria-hospitalizacion-tables/solicitud-estudios-table';
+import ServiciosEspecialesTable from '@/components/forms/hoja-enfermeria-hospitalizacion-tables/servicios-especiales-table';
+import HabitusExteriorTable from '@/components/forms/hoja-enfermeria-hospitalizacion-tables/habitus-exterior-table';
 
 interface Props{
     hoja: HojaEnfermeria;
@@ -85,24 +88,21 @@ const Show = ({
                             hoja={hoja}
                         /> 
             case 'sondas':
-/*                 return <SondasCateteresForm
-                            hoja={hojaenfermeria}
-                            estancia={estancia}
-                            sondas_cateters={sondas_cateters}
-                        /> */
+                return <SondasCateteresTable
+                            hoja={hoja}
+                        />
             case 'dieta':
                 return <DietasTable
                             hoja={hoja}
                         />
             case 'servicios_especiales':
-/*                 return <ServiciosEspecialesForm
-                            modelo={hojaenfermeria}
-                            tipo="App\Models\HojaEnfermeria"
-                        /> */
+                 return <ServiciosEspecialesTable
+                            modelo={hoja}
+                        />
             case 'observaciones':
-/*                 return <HabitusExteriorForm
-                            hojasenfermeria={hojaenfermeria}
-                        />*/
+                return <HabitusExteriorTable
+                            hoja={hoja}
+                        />
             case 'graficas':
                 return <GraficaContent
                             historialSignos={dataParaGraficas ?? []}

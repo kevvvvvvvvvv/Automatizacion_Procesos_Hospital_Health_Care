@@ -156,6 +156,31 @@ class HojaEnfermeria extends Model
         return $sondasActuales->merge($sondasHeredadas);
     }
 
+    public function getOxigenoActivoAttribute()
+    {
+        $oxigenoActual = $this->hojaOxigenos;
+        $estanciaId = $this->formularioInstancia->estancia_id;   
+
+        $oxigenoHeredado = HojaOxigeno::whereHasMorph(
+            'itemable', 
+            [HojaEnfermeria::class],
+            function ($query) use ($estanciaId) {
+                $query->where('id', '<', $this->id)
+                      ->whereHas('formularioInstancia', function ($q) use ($estanciaId) {
+                          $q->where('estancia_id', $estanciaId);
+                      });
+            }
+        )
+        ->where(function($query) {
+            $query->whereNull('hora_fin')
+                  ->orWhere('hora_fin', '>=', $this->created_at);
+        })
+        ->get();
+
+        $resultado = $oxigenoActual->merge($oxigenoHeredado);
+        return $resultado->loadMissing(['userInicio', 'userFin']);
+    }
+
     public function solicitudPatologia(): MorphMany
     {
         return $this->morphMany(SolicitudPatologia::class,'itemable');

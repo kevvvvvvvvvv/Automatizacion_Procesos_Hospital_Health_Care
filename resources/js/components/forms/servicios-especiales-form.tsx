@@ -60,7 +60,7 @@ const ServiciosEspecialesForm: React.FC<Props> = ({ modelo, tipo }) => {
             </form>
 
             <div className='mt-12'>
-                <h3 className='text-lg font-semibold mb-2'>Historial del uso de oxígeno</h3>
+                <h3 className="text-lg font-semibold mb-4 text-gray-800 border-b pb-2">Historial del uso de oxígeno</h3>
                 <div className='overflow-x-auto border rounded-lg'>
                     <table className='min-w-full divide-y divide-gray-200'>
                         <thead>
@@ -75,14 +75,14 @@ const ServiciosEspecialesForm: React.FC<Props> = ({ modelo, tipo }) => {
                             </tr>
                         </thead>
                         <tbody>
-                            {(modelo.hoja_oxigenos ?? []).length === 0 ? (
+                            {(modelo.oxigeno_activo ?? []).length === 0 ? (
                                 <tr className='text-center'>
                                     <td colSpan={7} className='px-4 py-4 text-sm text-gray-500 text-center'>
                                         No hay aplicaciones de oxígeno registradas
                                     </td>
                                 </tr>
                             ) : (
-                                (modelo.hoja_oxigenos ?? []).map((oxi: HojaOxigeno) => (
+                                (modelo.oxigeno_activo ?? []).map((oxi: HojaOxigeno) => (
                                     <tr key={oxi.id}>
                                         <td className="px-4 py-4 text-sm text-gray-900">{oxi.hora_inicio}</td>
                                         <td>

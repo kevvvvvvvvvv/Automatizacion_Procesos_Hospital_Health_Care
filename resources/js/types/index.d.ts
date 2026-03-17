@@ -398,7 +398,9 @@ export interface HojaEnfermeria {
     hoja_oxigenos: HojaOxigeno[] | null;
     hoja_riesgo_caida: HojaRiesgoCaida[];
     sondas_activas_completas: HojaSondaCateter[];
+    oxigeno_activo: HojaOxigeno[];
     hoja_escala_valoraciones: HojaEscalaValoracion [];
+    hoja_habitus_exterior: HojaHabitusExterior[];
 }
 
 export interface HojaRiesgoCaida {
@@ -461,6 +463,8 @@ export interface HojaEnfermeriaQuirofano {
     hoja_insumos_basicos: HojaInsumosBasicos[];
     personal_empleados: PersonalEmpleado[];
     hoja_oxigenos: HojaOxigeno[] | null;
+
+    oxigeno_activo: HojaOxigeno[];
 }
 
 export interface HojaInsumosBasicos {
@@ -1194,3 +1198,23 @@ export interface TicketCajero {
     mensaje: string; 
     pago: Pago;
 }
+
+interface HojaHabitusExterior {
+    id: number;
+    created_at: string;
+    sexo: string;
+    edad_aparente: string;
+    condicion_llegada: string;
+    estado_conciencia: string;
+    orientacion: string;
+    lenguaje: string;
+    facies: string;
+    postura: string;
+    constitucion: string;
+    piel: string;
+    higiene: string;
+    marcha: string;
+    movimientos: string;
+    olores_ruidos: string;
+}
+
