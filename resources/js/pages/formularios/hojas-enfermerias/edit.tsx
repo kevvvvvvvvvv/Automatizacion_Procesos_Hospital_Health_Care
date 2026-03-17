@@ -157,7 +157,7 @@ const Create: CreateComponent = ({
             case 'servicios_especiales':
                 return <ServiciosEspecialesForm
                             modelo={hojaenfermeria}
-                            tipo="App\Models\HojaEnfermeria"
+                            tipo={MORPH_MAP.HOJA_ENFERMERIA}
                         />
             case 'observaciones':
                 return <HabitusExteriorForm

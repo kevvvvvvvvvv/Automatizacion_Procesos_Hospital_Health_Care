@@ -277,6 +277,7 @@ const RiesgoCaidasForm = ({ hoja }: Props) => {
             </div>
         </form>
         <div className="mt-12">
+             <h3 className="text-lg font-semibold mb-4 text-gray-800 border-b pb-2">Historial del riesgo de caídas</h3>
             <DataTable columns={columnasRiesgoCaidas} data={hoja.hoja_riesgo_caida} />
         </div>
         </>

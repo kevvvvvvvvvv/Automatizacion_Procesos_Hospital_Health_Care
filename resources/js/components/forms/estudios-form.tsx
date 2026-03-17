@@ -10,6 +10,7 @@ import SelectInput from '@/components/ui/input-select';
 import Button from '../button';
 import NavegationTab from '@/components/navegation-tab';
 import EnvioPiezaHojaEnfermeriaForm from './envio-pieza-hoja-enfermeria-form';
+import SolicitudEstudioTable from '@/components/forms/hoja-enfermeria-hospitalizacion-tables/solicitud-estudios-table';
 
 interface Props {
     estancia: Estancia;
@@ -362,17 +363,12 @@ const SolicitudEstudiosForm: React.FC<Props> = ({
             
             }
             
-            <div className="mt-12">
+{/*             <div className="mt-12">
                 <h3 className="text-lg font-semibold mb-4 text-gray-800 border-b pb-2">Historial de solicitudes anteriores</h3>
-                <div className="space-y-4">
-                    {(solicitudesAnteriores ?? []).map((solicitud: SolicitudEstudio) => (
-                        <div key={solicitud.id} className="bg-gray-50 p-4 rounded-lg shadow-sm border border-gray-200">
-                             <p className="font-bold text-gray-800">Solicitud #{solicitud.id} <span className="text-xs font-normal text-gray-500">({new Date(solicitud.created_at).toLocaleString()})</span></p>
-                             <ul className="list-disc pl-5 mt-1 text-sm text-gray-700">{(solicitud.solicitud_items ?? []).map(item => <li key={item.id}>{item.catalogo_estudio?.nombre || item.otro_estudio}</li>)}</ul>
-                        </div>
-                    ))}
-                </div>
-            </div>
+                <SolicitudEstudioTable
+                    hoja={}
+                />
+            </div> */}
         </div>
     );
 };

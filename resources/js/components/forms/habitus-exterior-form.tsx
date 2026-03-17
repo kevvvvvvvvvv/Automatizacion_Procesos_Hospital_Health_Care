@@ -6,6 +6,7 @@ import { route } from 'ziggy-js';
 import InputTextArea from '@/components/ui/input-text-area';
 import SelectInput from '../ui/input-select';
 import PrimaryButton from '../ui/primary-button';
+import HabitusExteriorTable from '@/components/forms/hoja-enfermeria-hospitalizacion-tables/habitus-exterior-table';
 
 
 interface Props {
@@ -328,6 +329,12 @@ const HabitusExteriorForm = ({hojasenfermeria}: Props) => {
                     </PrimaryButton>
                 </div>
             </form>
+            <div className='pt-4'>
+                <h3 className="text-lg font-semibold mb-4 text-gray-800 border-b pb-2">Historial de habitus exterior anteriores</h3>
+                <HabitusExteriorTable
+                    hoja={hojasenfermeria}
+                />
+            </div>
         </>
     )
 }

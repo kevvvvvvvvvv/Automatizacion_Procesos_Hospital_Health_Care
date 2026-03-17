@@ -50,20 +50,7 @@ class FormularioHojaEnfermeriaController extends Controller implements HasMiddle
 
     public function show(HojaEnfermeria $hojasenfermeria)
     {
-        $hojasenfermeria->load(
-            'formularioInstancia.estancia.paciente', 
-            'hojasTerapiaIV.detalleSoluciones',
-            'hojaMedicamentos.productoServicio',
-            'hojaMedicamentos.aplicaciones',
-            'hojaOxigenos.userInicio',
-            'hojaOxigenos.userFin',
-            'hojaEscalaValoraciones.valoracionDolor',
-            'hojaControlLiquidos',
-            'hojaSignos',
-            'hojaRiesgoCaida',
-            'solicitudesDieta.dieta.categoriaDieta',
-            'solicitudesEstudio.solicitudItems.catalogoEstudio',
-        );
+        $hojasenfermeria = $this->getRelaciones($hojasenfermeria);
 
         return Inertia::render('formularios/hojas-enfermerias/show', [
             'hoja' => $hojasenfermeria,
@@ -126,25 +113,7 @@ class FormularioHojaEnfermeriaController extends Controller implements HasMiddle
 
     public function edit(HojaEnfermeria $hojasenfermeria)
     {
-        $hojasenfermeria->load(
-            'formularioInstancia.estancia.paciente', 
-            'hojasTerapiaIV.detalleSoluciones',
-            'hojaMedicamentos.productoServicio',
-            'hojaMedicamentos.aplicaciones',
-            'hojaOxigenos.userInicio',
-            'hojaOxigenos.userFin',
-            'hojaEscalaValoraciones',
-            'hojaControlLiquidos',
-            'hojaSignos',
-            'hojaRiesgoCaida',
-            'solicitudesDieta.dieta.categoriaDieta',
-        );
-
-        $sondas = $hojasenfermeria->sondas_activas;
-        if ($sondas && $sondas->isNotEmpty()) {
-            $sondas->load('productoServicio');
-        }
-        $hojasenfermeria->setAttribute('sondas_activas_completas', $sondas);
+        $hojasenfermeria = $this->getRelaciones($hojasenfermeria);
 
         $estancia = $hojasenfermeria->formularioInstancia->estancia;
         $paciente = $hojasenfermeria->formularioInstancia->estancia->paciente;
@@ -239,23 +208,7 @@ class FormularioHojaEnfermeriaController extends Controller implements HasMiddle
 
     public function generarPDF(HojaEnfermeria $hojasenfermeria)
     {
-        $hojasenfermeria->load(
-            'formularioInstancia.estancia.paciente',
-            'hojaMedicamentos.aplicaciones',
-            'hojaMedicamentos.productoServicio',
-            'hojasTerapiaIV.detalleSoluciones',
-            'formularioInstancia.user.credenciales',
-            'formularioInstancia.user.colaborador_responsable.credenciales',
-            'hojaSignos',
-            'solicitudesEstudio.solicitudItems.catalogoEstudio',
-            'sondasCateteres.productoServicio',
-            'solicitudesDieta.dieta.categoriaDieta',
-            'hojaEscalaValoraciones.valoracionDolor',
-            'hojaRiesgoCaida',
-            'hojaHabitusExterior',
-            'hojaOxigenos.userInicio',
-            'hojaOxigenos.userFin',
-        );
+        $hojasenfermeria = $this->getRelaciones($hojasenfermeria);
 
         $headerData = [
             'historiaclinica' => $hojasenfermeria,
@@ -299,6 +252,57 @@ class FormularioHojaEnfermeriaController extends Controller implements HasMiddle
             ->get();
 
         return $dataParaGraficas;
+    }
+
+    private function getRelaciones(HojaEnfermeria $hoja)
+    {
+        $hoja->load(
+            'formularioInstancia.user.credenciales',
+            'formularioInstancia.user.colaborador_responsable.credenciales',
+            'formularioInstancia.estancia.paciente', 
+            'hojasTerapiaIV.detalleSoluciones',
+            'hojaMedicamentos.productoServicio',
+            'hojaMedicamentos.aplicaciones',
+            'hojaOxigenos.userInicio',
+            'hojaOxigenos.userFin',
+            'hojaEscalaValoraciones.valoracionDolor',
+            'hojaControlLiquidos',
+            'hojaSignos',
+            'solicitudesEstudio.solicitudItems.catalogoEstudio',
+            'hojaRiesgoCaida',
+            'solicitudesDieta.dieta.categoriaDieta',
+            'hojaHabitusExterior',
+        );
+
+        $hoja = $this->getSondasCateteresActivos($hoja);
+        $hoja = $this->getOxigenoActivo($hoja);
+
+        return $hoja;
+        
+    }
+
+    private function getSondasCateteresActivos(HojaEnfermeria $hoja)
+    {
+        $sondas = $hoja->sondas_activas;
+        if ($sondas && $sondas->isNotEmpty()) {
+            $sondas->load('productoServicio');
+        }
+        $hoja->setAttribute('sondas_activas_completas', $sondas);
+        return $hoja;
+    }
+
+    private function getOxigenoActivo(HojaEnfermeria $hoja)
+    {
+        $oxigeno = $hoja->oxigeno_activo;
+        if($oxigeno && $oxigeno->isNotEmpty()){
+            $oxigeno->load(
+                'userInicio',
+                'userFin',
+            );
+        }
+
+        $hoja->setAttribute('oxigeno_activo', $oxigeno); 
+        return $hoja;
     }
 }
 
