@@ -74,6 +74,10 @@ class HojaEnfermeria extends Model
         'habitus_exterior' => 'array'
     ];
 
+    protected $appends = [
+        'oxigeno_activo'
+    ];
+
     public $incrementing = false;
 
     public function formularioInstancia(): BelongsTo
