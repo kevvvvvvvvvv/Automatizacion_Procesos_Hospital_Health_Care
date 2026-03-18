@@ -3,34 +3,10 @@ import { useForm, router } from '@inertiajs/react';
 import { HojaEnfermeria, ProductoServicio, HojaMedicamento, CatalogoViaAdministracion } from '@/types';
 import { route } from 'ziggy-js';
 
-// Componentes UI
 import InputText from '@/components/ui/input-text';
 import SelectInput from '@/components/ui/input-select'; 
 import PrimaryButton from '@/components/ui/primary-button';
 import Swal from 'sweetalert2';                     
-
-
-/*const opcionesViaMedicamento = [
-    
-    { value: 'Vía Oral', label: 'Oral' },
-    { value: 'Intravenosa', label: 'Intravenosa' },
-    { value: 'Intramuscular', label: 'Intramuscular' },
-    { value: 'Subcutánea', label: 'Subcutánea' },
-    { value: 'Sublingual', label: 'Sublingual' },
-    { value: 'Rectal', label: 'Rectal' },
-
-    
-    { value: 'Tópico', label: 'Tópico' },
-    { value: 'Oftálmico', label: 'Oftálmico' },
-    { value: 'Otológico', label: 'Otológico' },
-    { value: 'Nasal', label: 'Nasal' },
-    { value: 'Vaginal', label: 'Vaginal' },
-    { value: 'Intratecal', label: 'Intratecal'},
-    { value: 'Intraarticular', label: 'Intraarticular' },
-
-    
-    { value: 'Inhalatoria', label: 'Inhalatoria' },
-];*/
 
 interface MedicamentoAgregado {
     id: string;

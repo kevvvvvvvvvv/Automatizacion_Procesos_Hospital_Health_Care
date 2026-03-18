@@ -94,7 +94,6 @@ class NotaEvolucion extends Model
         'manejo_medicamentos',
         'manejo_laboratorios',
         'manejo_medidas_generales',
-        
     ];
 
     public function formularioInstancia(): BelongsTo
