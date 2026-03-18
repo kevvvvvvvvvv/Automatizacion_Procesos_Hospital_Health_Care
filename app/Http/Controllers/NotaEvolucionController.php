@@ -105,7 +105,6 @@ class NotaEvolucionController extends Controller implements HasMiddleware
             'formularioInstancia.user'
         ]);
 
-        // Necesitas traer estas listas para que el formulario tenga opciones que mostrar
         $soluciones = ProductoServicio::where('tipo','INSUMOS')->get();
         $medicamentos = ProductoServicio::where('tipo','INSUMOS')->get();
         $estudios = CatalogoEstudio::where('tipo_estudio','Laboratorio')->get();
@@ -121,21 +120,22 @@ class NotaEvolucionController extends Controller implements HasMiddleware
         ]);
     }
 
-        public function update(
-            NotaEvolucionRequest $request, 
-            Paciente $paciente, 
-            Estancia $estancia, 
-            NotaEvolucion $notasevolucione 
-        ) {
-            $validateData = $request->validated();
-            $notasevolucione->update($validateData);
-            
-            return redirect()->route('notasevoluciones.show', [
-                'paciente' => $paciente->id,
-                'estancia' => $estancia->id,
-                'notasevolucione' => $notasevolucione->id, 
-            ])->with('success', 'Nota de Evolución actualizada.');
-        }
+    public function update(
+        NotaEvolucionRequest $request, 
+        Paciente $paciente, 
+        Estancia $estancia, 
+        NotaEvolucion $notasevolucione)
+    {
+
+        $validateData = $request->validated();
+        $notasevolucione->update($validateData);
+        
+        return redirect()->route('notasevoluciones.show', [
+            'paciente' => $paciente->id,
+            'estancia' => $estancia->id,
+            'notasevolucione' => $notasevolucione->id, 
+        ])->with('success', 'Nota de Evolución actualizada.');
+    }
 
     public function generarPDF(NotaEvolucion $notasevolucione)
     {
