@@ -484,6 +484,8 @@ export interface HojaTerapiaIV {
     duracion: number;
     created_at: string;
     updated_at: string;
+
+    medicamentos: HojaTerapiaIVMedicamento[];
     detalle_soluciones: ProductoServicio;
 }
 
@@ -1199,7 +1201,7 @@ export interface TicketCajero {
     pago: Pago;
 }
 
-interface HojaHabitusExterior {
+export interface HojaHabitusExterior {
     id: number;
     created_at: string;
     sexo: string;
@@ -1216,5 +1218,17 @@ interface HojaHabitusExterior {
     marcha: string;
     movimientos: string;
     olores_ruidos: string;
+}
+
+export interface HojaTerapiaIVMedicamento{
+    id: number;
+    hoja_terapia_id: number;
+    producto_servicio_id: number;
+    nombre_medicamento: string;
+    dosis: number;
+    unidad_medida: string;
+
+    created_at: string;
+    updated_at: string;
 }
 

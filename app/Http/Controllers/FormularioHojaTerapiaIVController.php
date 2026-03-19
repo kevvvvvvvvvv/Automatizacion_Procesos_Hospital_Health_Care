@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
+use App\Http\Requests\Formulario\HojaEnfermeria\TerapiaIV\TerapiaIVRequest;
+
 use App\Models\Formulario\HojaEnfermeria\HojaEnfermeria;
 use App\Models\Formulario\HojaEnfermeria\HojaTerapiaIV;
 use App\Models\Venta\Venta;
@@ -16,27 +18,39 @@ use App\Models\Inventario\ProductoServicio;
 
 class FormularioHojaTerapiaIVController extends Controller
 {
-    public function store(Request $request, HojaEnfermeria $hojasenfermeria)
+    public function store(TerapiaIVRequest $request, HojaEnfermeria $hojasenfermeria)
     {
-        $validatedData = $request->validate([
-            'terapias_agregadas' => 'required|array|min:1',
-            'terapias_agregadas.*.solucion_id' => 'required|exists:producto_servicios,id',
-            'terapias_agregadas.*.cantidad' => 'required|numeric',
-            'terapias_agregadas.*.duracion' => 'required|numeric',
-            'terapias_agregadas.*.flujo' => 'required|numeric',
-        ]);
-
+        $validatedData = $request->validated();
+        dd($validatedData);
         try {
-            foreach ($validatedData['terapias_agregadas'] as $terapia) {
-                $hojasenfermeria->hojasTerapiaIV()->create([
-                    'solucion' => $terapia['solucion_id'],
-                    'flujo_ml_hora' => $terapia['flujo'],
-                    'fecha_hora_inicio' => $terapia['fecha_hora_inicio'] ?? null,
-                    'duracion' => $terapia['duracion'],
-                    'cantidad' => $terapia['cantidad'],
-                ]);
-            }
-            return Redirect::back()->with('success', 'Terapias guardadas exitosamente.');
+            DB::transaction(function () use ($validatedData, $hojasenfermeria) {
+                
+                foreach ($validatedData['terapias_agregadas'] as $terapia) {
+                    $nuevaTerapia = $hojasenfermeria->hojasTerapiaIV()->create([
+                        'solucion' => $terapia['es_manual'] ? null : $terapia['solucion_id'],
+                        'solucion_nombre' => $terapia['solucion_nombre'],
+                        'flujo_ml_hora' => $terapia['flujo'],
+                        'fecha_hora_inicio' => $terapia['fecha_hora_inicio'] ?? null,
+                        'duracion' => $terapia['duracion'],
+                        'cantidad' => $terapia['cantidad'],
+                    ]);
+
+                    if (!empty($terapia['medicamentos'])) {
+                        foreach ($terapia['medicamentos'] as $medicamento) {
+                            $nuevaTerapia->medicamentos()->create([
+                                'producto_servicio_id' => $medicamento['es_manual'] ? null : $medicamento['id'],
+                                'nombre_medicamento' => $medicamento['nombre'],
+                                'dosis' => $medicamento['dosis'],
+                                'unidad_medida' => $medicamento['unidad'],
+                            ]);
+                            
+                        }
+                    }
+                }
+            });
+
+            return Redirect::back()->with('success', 'Terapias y medicamentos guardados exitosamente.');
+
         } catch (\Exception $e) {
             \Log::error('Error al guardar Terapia IV: ' . $e->getMessage());
             return Redirect::back()->with('error', 'Error al guardar las terapias.');
@@ -49,7 +63,6 @@ class FormularioHojaTerapiaIVController extends Controller
             'fecha_hora_inicio' => ['required', 'date'],
         ]);
 
-        // 1. Detectar el estado ORIGINAL antes de actualizar
         $fechaOriginal = $hojasterapiasiv->getOriginal('fecha_hora_inicio');
         
         $fechaMySQL = Carbon::parse($validated['fecha_hora_inicio'])

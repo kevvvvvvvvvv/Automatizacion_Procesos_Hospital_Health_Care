@@ -4,8 +4,10 @@ namespace App\Models\Formulario\HojaEnfermeria;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 use App\Models\Inventario\ProductoServicio;
+use App\Models\Formulario\HojaEnfermeria\HojaTerapiaIVMedicamento;
 
 /**
  * @property int $id
@@ -41,6 +43,7 @@ class HojaTerapiaIV extends Model
         'id',
         'hoja_enfermeria_id',
         'solucion',
+        'solucion_nombre',
         'cantidad',
         'duracion',
         'flujo_ml_hora',
@@ -55,5 +58,10 @@ class HojaTerapiaIV extends Model
     public function hojaEnfermeria(): BelongsTo
     {
         return $this->belongsTo(HojaEnfermeria::class);
+    }
+
+    public function medicamentos(): HasMany
+    {
+        return $this->hasMany(HojaTerapiaIVMedicamento::class,'hoja_terapia_id');
     }
 }
