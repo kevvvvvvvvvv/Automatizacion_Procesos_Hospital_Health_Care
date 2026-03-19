@@ -63,11 +63,11 @@ class FormularioHojaEnfermeriaController extends Controller implements HasMiddle
     {
         $estancia->load('formularioInstancias.hojaEnfermeria');
 
-        foreach ($estancia->formularioInstancias as $instancia) {
+/*         foreach ($estancia->formularioInstancias as $instancia) {
             if ($instancia->hojaEnfermeria && $instancia->hojaEnfermeria->estado == 'Abierto') {
                 return Redirect::back()->with('error', 'Se tiene que cerrar la hoja de enfermería antes de crear una nueva');
             }
-        }
+        } */
 
         $medicamentos = ProductoServicio::where('subtipo','MEDICAMENTOS')->get();
         $soluciones = ProductoServicio::where('subtipo','INSUMOS')->get();
