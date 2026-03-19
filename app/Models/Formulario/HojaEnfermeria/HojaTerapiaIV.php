@@ -43,7 +43,7 @@ class HojaTerapiaIV extends Model
         'id',
         'hoja_enfermeria_id',
         'solucion',
-        'solucion_nombre',
+        'nombre_solucion',
         'cantidad',
         'duracion',
         'flujo_ml_hora',

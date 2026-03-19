@@ -27,7 +27,7 @@ class TerapiaIVRequest extends FormRequest
             //Solución
             'terapias_agregadas.*.es_manual' => 'required|boolean',
             'terapias_agregadas.*.solucion_id' => 'required_if:terapias_agregadas.*.es_manual,false|nullable|exists:producto_servicios,id',
-            'terapias_agregadas.*.solucion_nombre' => 'required|string',
+            'terapias_agregadas.*.nombre_solucion' => 'required|string',
             'terapias_agregadas.*.cantidad' => 'required|numeric|min:0',
             'terapias_agregadas.*.duracion' => 'required|numeric|min:0',
             'terapias_agregadas.*.flujo' => 'required|numeric|min:0',
@@ -49,7 +49,7 @@ class TerapiaIVRequest extends FormRequest
             
             // Solución
             'terapias_agregadas.*.solucion_id' => 'solución del catálogo',
-            'terapias_agregadas.*.solucion_nombre' => 'nombre de la solución',
+            'terapias_agregadas.*.nombre_solucion' => 'nombre de la solución',
             'terapias_agregadas.*.cantidad' => 'cantidad de la solución (ml)',
             'terapias_agregadas.*.duracion' => 'duración de la terapia (hrs)',
             'terapias_agregadas.*.flujo' => 'flujo (ml/hr)',

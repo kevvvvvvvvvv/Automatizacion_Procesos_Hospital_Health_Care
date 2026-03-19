@@ -18,7 +18,7 @@ interface MedicamentoAgregado {
 
 interface TerapiaAgregada {
     solucion_id: string;
-    solucion_nombre: string;
+    nombre_solucion: string;
     duracion: number;
     cantidad: number;
     flujo: number;
@@ -76,7 +76,7 @@ const TerapiaIVForm: React.FC<Props> = ({
 
     const [localData, setLocalData] = useState({
         solucion_id: '',
-        solucion_nombre: '',
+        nombre_solucion: '',
         cantidad: '',
         duracion: '',
         fecha_hora_inicio: '',
@@ -91,7 +91,7 @@ const TerapiaIVForm: React.FC<Props> = ({
 
     const handleAddToList = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
-        if (localData.es_manual && !localData.solucion_nombre.trim()) {
+        if (localData.es_manual && !localData.nombre_solucion.trim()) {
             alert("Debe escribir el nombre de la solución manual.");
             return;
         }
@@ -102,7 +102,7 @@ const TerapiaIVForm: React.FC<Props> = ({
 
         const nuevaTerapia: TerapiaAgregada = {
             solucion_id: localData.solucion_id,
-            solucion_nombre: localData.solucion_nombre,
+            nombre_solucion: localData.nombre_solucion,
             duracion: Number(localData.duracion),
             cantidad: Number(localData.cantidad),
             flujo: Number(localData.cantidad) / Number(localData.duracion),
@@ -117,7 +117,7 @@ const TerapiaIVForm: React.FC<Props> = ({
         
         setLocalData({
             solucion_id: '',
-            solucion_nombre: '',
+            nombre_solucion: '',
             cantidad: '',
             duracion: '',
             fecha_hora_inicio: '',
@@ -193,6 +193,8 @@ const TerapiaIVForm: React.FC<Props> = ({
         }
     }
 
+    console.log(errors);
+
     return (
         <div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -230,8 +232,8 @@ const TerapiaIVForm: React.FC<Props> = ({
                             name="solucion_manual"
                             label=""
                             placeholder="Ej. Solución Hartmann 1000ml"
-                            value={localData.solucion_nombre}
-                            onChange={e => setLocalData(d => ({ ...d, solucion_nombre: e.target.value }))}
+                            value={localData.nombre_solucion}
+                            onChange={e => setLocalData(d => ({ ...d, nombre_solucion: e.target.value }))}
                         />
                     )}
                 </div>
@@ -358,7 +360,7 @@ const TerapiaIVForm: React.FC<Props> = ({
                                 data.terapias_agregadas.map((terapia) => (
                                     <tr key={terapia.temp_id}>
                                         <td className="px-4 py-4 text-sm">
-                                            <div className='text-gray-900'>{terapia.solucion_nombre}</div>
+                                            <div className='text-gray-900'>{terapia.nombre_solucion}</div>
                                             
                                                 {terapia.medicamentos.map((medicamento)=>(
                                                     <div className='text-gray-400'>
