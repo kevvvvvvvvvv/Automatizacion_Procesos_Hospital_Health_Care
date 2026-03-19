@@ -97,9 +97,6 @@ export const EvolucionForm =({
 
         <Generalidades data={data} setData={setData} errors={errors} />
 
-          
-
-        {/* Sección 4: Tratamiento e Indicaciones Médicas */}
         <h2 className="text-xl font-semibold text-gray-800 mt-6 mb-4 col-span-full">
           Tratamiento e Indicaciones Médicas
         </h2>
