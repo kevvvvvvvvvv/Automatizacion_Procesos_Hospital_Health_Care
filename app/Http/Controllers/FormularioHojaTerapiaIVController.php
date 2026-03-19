@@ -21,7 +21,6 @@ class FormularioHojaTerapiaIVController extends Controller
     public function store(TerapiaIVRequest $request, HojaEnfermeria $hojasenfermeria)
     {
         $validatedData = $request->validated();
-        dd($validatedData);
         try {
             DB::transaction(function () use ($validatedData, $hojasenfermeria) {
                 
