@@ -134,7 +134,6 @@ class FormularioHojaEnfermeriaController extends Controller implements HasMiddle
         $sondas_cateters = ProductoServicio::where('nombre_prestacion','like','SONDA%')->orWhere('nombre_prestacion', 'like', 'CATETER%')->get();
         $vias_administracion = CatalogoViaAdministracion::all();
 
-
         $nota = $this->obtenerListaTratamiento($estancia);
 
         return Inertia::render('formularios/hojas-enfermerias/edit',[
@@ -261,6 +260,7 @@ class FormularioHojaEnfermeriaController extends Controller implements HasMiddle
             'formularioInstancia.user.colaborador_responsable.credenciales',
             'formularioInstancia.estancia.paciente', 
             'hojasTerapiaIV.detalleSoluciones',
+            'hojasTerapiaIV.medicamentos',
             'hojaMedicamentos.productoServicio',
             'hojaMedicamentos.aplicaciones',
             'hojaOxigenos.userInicio',

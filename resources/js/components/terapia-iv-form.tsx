@@ -1,24 +1,37 @@
 import React, { useState } from 'react'; // Importar useState
 import { useForm, router } from '@inertiajs/react';
 import { HojaEnfermeria, ProductoServicio } from '@/types';
+import { route } from 'ziggy-js';
+import { optionsUnidadMedida } from '@/constant/const';
+
 import SelectInput from '@/components/ui/input-select';
 import InputText from '@/components/ui/input-text';
 import PrimaryButton from '@/components/ui/primary-button';
-import { route } from 'ziggy-js';
+
+interface MedicamentoAgregado {
+    id: string;
+    nombre: string;
+    dosis: number;
+    unidad: string;
+    es_manual:boolean;
+}
 
 interface TerapiaAgregada {
     solucion_id: string;
     solucion_nombre: string;
     duracion: number;
     cantidad: number;
-    flujo: number
+    flujo: number;
     fecha_hora_inicio: string;
+    medicamentos: MedicamentoAgregado[];
+    es_manual: boolean;
     temp_id: string; 
 }
 
 interface Props {
     hoja: HojaEnfermeria;
     soluciones: ProductoServicio[];
+    medicamentos: ProductoServicio[];
 }
 
 const formatDateTime = (isoString: string | null) => {
@@ -29,7 +42,11 @@ const formatDateTime = (isoString: string | null) => {
     });
 };
 
-const TerapiaIVForm: React.FC<Props> = ({ hoja, soluciones }) => {
+const TerapiaIVForm: React.FC<Props> = ({ 
+    hoja, 
+    soluciones = [],
+    medicamentos= [],
+}) => {
 
     const handleDateUpdate = (terapiaId: number, newDate: string) => {
         if (!newDate) {
@@ -44,9 +61,6 @@ const TerapiaIVForm: React.FC<Props> = ({ hoja, soluciones }) => {
             fecha_hora_inicio: newDate 
         }, {
             preserveScroll: true,
-            onError: (errors) => {
-                alert('Error al actualizar: \n' + JSON.stringify(errors));
-            }
         });
     };
 
@@ -55,12 +69,20 @@ const TerapiaIVForm: React.FC<Props> = ({ hoja, soluciones }) => {
         value: s.id.toString()
     }));
 
+    const medicamentosOptions = medicamentos.map(m => ({
+        label: m.nombre_prestacion,
+        value: m.id.toString(),
+    }))
+
     const [localData, setLocalData] = useState({
         solucion_id: '',
         solucion_nombre: '',
         cantidad: '',
         duracion: '',
         fecha_hora_inicio: '',
+        es_manual: false,
+        medicamentos_actuales: [] as MedicamentoAgregado[],
+
     });
 
     const { data, setData, post, processing, errors, reset, wasSuccessful } = useForm({
@@ -69,37 +91,80 @@ const TerapiaIVForm: React.FC<Props> = ({ hoja, soluciones }) => {
 
     const handleAddToList = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
-        if (!localData.solucion_id) {
-            alert("Debe seleccionar una solución y un flujo.");
+        if (localData.es_manual && !localData.solucion_nombre.trim()) {
+            alert("Debe escribir el nombre de la solución manual.");
             return;
         }
-        const cantidadNum = Number(localData.cantidad);
-        const duracionNum = Number(localData.duracion);
-        let flujoCalculado = 0;
-
-
-        if (duracionNum > 0) {
-            flujoCalculado = cantidadNum / duracionNum;
+        if (!localData.es_manual && !localData.solucion_id) {
+            alert("Debe seleccionar una solución del catálogo.");
+            return;
         }
 
         const nuevaTerapia: TerapiaAgregada = {
-            ...localData,
-            duracion: Number(localData.duracion), 
-            cantidad: Number(localData.cantidad), 
-            flujo: flujoCalculado,
+            solucion_id: localData.solucion_id,
+            solucion_nombre: localData.solucion_nombre,
+            duracion: Number(localData.duracion),
+            cantidad: Number(localData.cantidad),
+            flujo: Number(localData.cantidad) / Number(localData.duracion),
+            fecha_hora_inicio: localData.fecha_hora_inicio,
+            medicamentos: localData.medicamentos_actuales,
+            es_manual: localData.es_manual,
             temp_id: crypto.randomUUID(),
         };
 
         setData('terapias_agregadas', [...data.terapias_agregadas, nuevaTerapia]);
 
+        
         setLocalData({
             solucion_id: '',
             solucion_nombre: '',
             cantidad: '',
             duracion: '',
             fecha_hora_inicio: '',
+            es_manual: false,
+            medicamentos_actuales: [],
         });
-    }
+    };
+
+    const [tempMedicamento, setTempMedicamento] = useState({
+        id: '',
+        nombre: '',
+        dosis: '',
+        unidad: '',
+        es_manual: false, 
+    });
+
+    const agregarMedicamentoALaSolucion = () => {
+
+        if (tempMedicamento.es_manual && !tempMedicamento.nombre.trim()) {
+            alert("Escriba el nombre del medicamento manual.");
+            return;
+        }
+        if (!tempMedicamento.es_manual && !tempMedicamento.id) {
+            alert("Seleccione un medicamento del inventario.");
+            return;
+        }
+        if (!tempMedicamento.dosis) return;
+        
+        setLocalData(prev => ({
+            ...prev,
+            medicamentos_actuales: [...prev.medicamentos_actuales, {
+                id: tempMedicamento.id,
+                nombre: tempMedicamento.nombre,
+                dosis: Number(tempMedicamento.dosis),
+                unidad: tempMedicamento.unidad,
+                es_manual: tempMedicamento.es_manual
+            }]
+        }));
+        
+        setTempMedicamento({ 
+            id: '', 
+            nombre: '', 
+            dosis: '', 
+            unidad: '', 
+            es_manual: false 
+        });
+    };
     
     const handleRemoveFromList = (temp_id: string) => {
         setData('terapias_agregadas', 
@@ -130,22 +195,46 @@ const TerapiaIVForm: React.FC<Props> = ({ hoja, soluciones }) => {
 
     return (
         <div>
-
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <SelectInput
-                    label="Solución"
-                    options={solucionesOptions}
-                    value={localData.solucion_id} 
-                    onChange={(value) => {
-                        const sel = solucionesOptions.find(o => o.value === value);
-                        setLocalData(d => ({
-                            ...d, 
-                            solucion_id: value as string,
-                            solucion_nombre: sel ? sel.label : ''
-                        }))
-                    }}
-                    error={errors['terapias_agregadas.0.solucion_id']} 
-                />
+                <div>
+                    <div className="flex justify-between items-center mb-1">
+                        <label className="block font-medium text-sm text-gray-700">
+                            Solución Base
+                        </label>
+                        <button 
+                            type="button"
+                            onClick={() => setLocalData(prev => ({ ...prev, es_manual: !prev.es_manual, solucion_id: '', solucion_nombre: '' }))}
+                            className="text-xs text-blue-600 hover:underline cursor-pointer"
+                        >
+                            {localData.es_manual ? "← Buscar en catálogo" : "Escribir manual →"}
+                        </button>
+                    </div>
+
+                    {!localData.es_manual ? (
+                        <SelectInput
+                            label=""
+                            options={solucionesOptions}
+                            value={localData.solucion_id} 
+                            onChange={(value) => {
+                                const sel = solucionesOptions.find(o => o.value === value);
+                                setLocalData(d => ({
+                                    ...d, 
+                                    solucion_id: value as string,
+                                    solucion_nombre: sel ? sel.label : ''
+                                }))
+                            }}
+                        />
+                    ) : (
+                        <InputText
+                            id="solucion_manual"
+                            name="solucion_manual"
+                            label=""
+                            placeholder="Ej. Solución Hartmann 1000ml"
+                            value={localData.solucion_nombre}
+                            onChange={e => setLocalData(d => ({ ...d, solucion_nombre: e.target.value }))}
+                        />
+                    )}
+                </div>
 
                 <InputText
                     id="cantidad"
@@ -166,11 +255,80 @@ const TerapiaIVForm: React.FC<Props> = ({ hoja, soluciones }) => {
                     onChange={e => setLocalData(d => ({...d, duracion: e.target.value}))}
                     error={errors['terapias_agregadas.0.duracion']}
                 />
-
             </div>
+            <hr />
+            <div className="bg-gray-50 p-4 rounded-lg border">
+                <h4 className="font-bold mb-2">Agregar medicamentos a la solución</h4>
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+                    <div>
+                        <div className="flex justify-between items-center mb-1">
+                            <label className="block font-medium text-sm text-gray-700">Medicamento</label>
+                            <button 
+                                type="button"
+                                onClick={() => setTempMedicamento(prev => ({ ...prev, es_manual: !prev.es_manual, id: '', nombre: '' }))}
+                                className="text-xs text-blue-600 hover:underline cursor-pointer"
+                            >
+                                {tempMedicamento.es_manual ? "← Catálogo" : "Manual →"}
+                            </button>
+                        </div>
+
+                        {!tempMedicamento.es_manual ? (
+                            <SelectInput
+                                label=""
+                                options={medicamentosOptions}
+                                value={tempMedicamento.id}
+                                onChange={(val) => {
+                                    const med = medicamentosOptions.find(o => o.value === val);
+                                    setTempMedicamento(prev => ({ ...prev, id: val, nombre: med ? med.label : '' }));
+                                }}
+                            />
+                        ) : (
+                            <InputText 
+                                label="" 
+                                name=""
+                                id="medicamento_manual"
+                                placeholder="Ej. Paracetamol"
+                                value={tempMedicamento.nombre}
+                                onChange={e => setTempMedicamento(prev => ({ ...prev, nombre: e.target.value }))}
+                            />
+                        )}
+                    </div>
+                    <InputText 
+                        label="Dosis" 
+                        id="dosis"
+                        name='dosis'
+                        type="number" 
+                        value={tempMedicamento.dosis} 
+                        onChange={e => setTempMedicamento(prev => ({ ...prev, dosis: e.target.value }))}
+                    />
+                    <SelectInput 
+                        label="Unidad" 
+                        options={optionsUnidadMedida} 
+                        value={tempMedicamento.unidad}
+                        onChange={val => setTempMedicamento(prev => ({ ...prev, unidad: val }))}
+                    />
+                    <button 
+                        type="button" 
+                        onClick={agregarMedicamentoALaSolucion}
+                        className="bg-blue-500 text-white px-4 py-2 rounded"
+                    >
+                        + Añadir fármaco
+                    </button>
+                </div>
+
+                <ul className="mt-3">
+                    {localData.medicamentos_actuales.map((m, idx) => (
+                        <li key={idx} className="text-sm text-gray-600 flex justify-between border-b py-1">
+                            <span>{m.nombre} - {m.dosis} {m.unidad}</span>
+                            <button onClick={() => {/* logic para quitar */}} className="text-red-500">x</button>
+                        </li>
+                    ))}
+                </ul>
+            </div>
+
             <div className="flex justify-end mt-4">
                 <PrimaryButton type="button" onClick={handleAddToList}>
-                    Agregar a la lista
+                    Agregar solución 
                 </PrimaryButton>
             </div>
 
@@ -199,7 +357,16 @@ const TerapiaIVForm: React.FC<Props> = ({ hoja, soluciones }) => {
                             ) : (
                                 data.terapias_agregadas.map((terapia) => (
                                     <tr key={terapia.temp_id}>
-                                        <td className="px-4 py-4 text-sm text-gray-900">{terapia.solucion_nombre}</td>
+                                        <td className="px-4 py-4 text-sm">
+                                            <div className='text-gray-900'>{terapia.solucion_nombre}</div>
+                                            
+                                                {terapia.medicamentos.map((medicamento)=>(
+                                                    <div className='text-gray-400'>
+                                                    {medicamento.nombre} {medicamento.dosis} {medicamento.unidad}
+                                                    </div>
+                                                ))}
+                                            
+                                        </td>
                                         <td className="px-4 py-4 text-sm text-gray-900">{terapia.cantidad}</td>
                                         <td className="px-4 py-4 text-sm text-gray-900">{terapia.duracion}</td>
                                         <td className="px-4 py-4 text-sm text-gray-900">
@@ -254,7 +421,16 @@ const TerapiaIVForm: React.FC<Props> = ({ hoja, soluciones }) => {
                             ) : (
                             hoja.hojas_terapia_i_v?.map((terapia) => (
                                 <tr key={terapia.id}>
-                                    <td className="px-4 py-4 text-sm text-gray-900">{terapia.detalle_soluciones?.nombre_prestacion || '...'}</td>
+                                    <td className="px-4 py-4 text-sm text-gray-900">
+                                        {terapia.detalle_soluciones?.nombre_prestacion || '...'}
+                                            {terapia.medicamentos.map((medicamento,index)=>(
+                                                <div key={index} className='text-gray-400'>
+                                                    {medicamento.nombre_medicamento} {medicamento.dosis} {medicamento.unidad_medida}
+                                                </div>
+                                            )
+                                        )}
+                                            
+                                    </td>
                                     <td className="px-4 py-4 text-sm text-gray-500">{terapia.cantidad}</td>
                                     <td className="px-4 py-4 text-sm text-gray-500">{terapia.duracion}</td>
                                     <td className="px-4 py-4 text-sm text-gray-500">{terapia.flujo_ml_hora}</td>
