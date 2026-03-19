@@ -27,7 +27,7 @@ class FormularioHojaTerapiaIVController extends Controller
                 foreach ($validatedData['terapias_agregadas'] as $terapia) {
                     $nuevaTerapia = $hojasenfermeria->hojasTerapiaIV()->create([
                         'solucion' => $terapia['es_manual'] ? null : $terapia['solucion_id'],
-                        'solucion_nombre' => $terapia['solucion_nombre'],
+                        'nombre_solucion' => $terapia['nombre_solucion'],
                         'flujo_ml_hora' => $terapia['flujo'],
                         'fecha_hora_inicio' => $terapia['fecha_hora_inicio'] ?? null,
                         'duracion' => $terapia['duracion'],
