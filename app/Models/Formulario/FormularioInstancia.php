@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 use App\Models\Estancia;
-
+use App\Models\Formulario\ResumenMedico\ResumenMedico;
 use App\Models\Formulario\HistoriaClinica\HistoriaClinica;
 use App\Models\User;
 use App\Models\Formulario\HojaFrontal\HojaFrontal;
@@ -82,6 +82,10 @@ class FormularioInstancia extends Model
         'formulario_catalogo_id',
         'user_id'
     ];
+    public function resumenMedico(): HasOne
+    {
+            return $this->hasOne(ResumenMedico::class, 'id', 'id');
+    }
     public function historiaclinica(): HasOne
     {
             return $this->hasOne(HistoriaClinica::class, 'id', 'id');
