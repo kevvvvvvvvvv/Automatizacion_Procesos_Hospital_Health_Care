@@ -478,6 +478,7 @@ export interface HojaTerapiaIV {
     id: number;
     hoja_enfermeria_id: number;
     solucion: ProductoServicio;
+    nombre_solucion: string;
     flujo_ml_hora: number;
     fecha_hora_inicio: string;
     cantidad: number;
