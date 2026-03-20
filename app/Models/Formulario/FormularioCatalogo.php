@@ -40,6 +40,7 @@ class FormularioCatalogo extends Model
     public const ID_SOLICITUD_ESTUDIOS = 15;
     public const ID_ENCUESTA_SATISFACCION = 16;
     public const ID_ENCUESTA_PERSONAL = 17;
+    public const ID_RESUMEN_MEDICO = 18;
 
     public $incrementing = false; 
     protected $keyType = 'int';

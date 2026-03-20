@@ -124,7 +124,7 @@ const Show = ({ paciente }: ShowProps) => {
                             >
                             <Eye size={18} />
                             </Link>
-                            {(estancia.creator.id === auth.user.id || hasRole('administrador')) && (
+                            {(estancia.creator.id === auth.user.id || hasRole('administrador') || hasRole('medico')) && (
                                 <Link 
                                     href={route('estancias.edit', estancia.id)}
                                     className="p-2 text-blue-500 hover:bg-blue-100 hover:text-blue-700 rounded-full transition"

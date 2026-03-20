@@ -66,6 +66,7 @@ use App\Http\Controllers\ReporteInterconsultaController;
 use App\Http\Controllers\ReporteConcienciaController;
 use App\Http\Controllers\ReporteSignosController;
 use App\http\Controllers\RecetaController;
+use App\Http\Controllers\ResumenMedicoController;
 
 
 use App\Http\Controllers\ReporteEstanciaController;
@@ -170,6 +171,7 @@ Route::resource('pacientes.estancias.notaspreanestesicas', NotaPreAnestesicaCont
 Route::resource('pacientes.estancias.hojasenfermeriasquirofanos',HojaEnfemeriaQuirofanoController::class)->shallow()->middleware('auth');
 Route::put('/hojasenfermeriasquirofanos/{hojasenfermeriaquirofanos}/cerrraHoja',[HojaEnfemeriaQuirofanoController::class, 'cerrarHoja'])->name('hojasenfermeriasquirofanos.cerrarHoja')->middleware('auth');
 
+Route::resource('paciente.estancias.resumenmedico', ResumenMedicoController::class)->shallow()->middleware('auth');
 Route::resource('pacientes.estancias.consentimientos', ConsentimientoController::class)->shallow()->middleware('auth');
 Route::resource('estancias.encuesta-satisfaccions', EncuestaSatisfaccionController::class)->shallow()->middleware('auth');
 Route::resource('notificaciones', NotificacionController::class)->shallow()->middleware('auth');

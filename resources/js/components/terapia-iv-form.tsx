@@ -122,7 +122,7 @@ const TerapiaIVForm: React.FC<Props> = ({
             duracion: '',
             fecha_hora_inicio: '',
             es_manual: false,
-            medicamentos_actuales: [],
+            medicamentos_actuales: [], 
         });
     };
 
@@ -205,7 +205,7 @@ const TerapiaIVForm: React.FC<Props> = ({
                         </label>
                         <button 
                             type="button"
-                            onClick={() => setLocalData(prev => ({ ...prev, es_manual: !prev.es_manual, solucion_id: '', solucion_nombre: '' }))}
+                            onClick={() => setLocalData(prev => ({ ...prev, es_manual: !prev.es_manual, solucion_id: '', nombre_solucion: '' }))}
                             className="text-xs text-blue-600 hover:underline cursor-pointer"
                         >
                             {localData.es_manual ? "← Buscar en catálogo" : "Escribir manual →"}
@@ -222,7 +222,7 @@ const TerapiaIVForm: React.FC<Props> = ({
                                 setLocalData(d => ({
                                     ...d, 
                                     solucion_id: value as string,
-                                    solucion_nombre: sel ? sel.label : ''
+                                    nombre_solucion: sel ? sel.label : ''
                                 }))
                             }}
                         />
