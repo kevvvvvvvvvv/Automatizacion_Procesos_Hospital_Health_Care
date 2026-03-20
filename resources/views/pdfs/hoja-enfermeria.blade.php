@@ -225,6 +225,11 @@
             padding: 5px;
         }
 
+        .text-gray-400{
+            text: rgb(167, 167, 167);
+
+        }
+
     </style>
 </head>
 <body>
@@ -585,7 +590,16 @@
             @else
                 @foreach ($notaData->hojasTerapiaIV as $terapia)
                     <tr>
-                        <td>{{$terapia->detalleSoluciones->nombre_prestacion}}</td>
+                        <td>
+                            {{$terapia->nombre_solucion}}
+                            @if ($terapia->medicamentos && $terapia->medicamentos->isNotEmpty())
+                                @foreach ($terapia->medicamentos as $medicamento)
+                                    <div class='text-gray-400'>
+                                        {{ $medicamento->nombre_medicamento }} | {{$medicamento->dosis }} {{ $medicamento->unidad_medida }}
+                                    </div>
+                                @endforeach
+                            @endif
+                        </td>
                         <td>{{$terapia->cantidad}}</td>
                         <td>{{$terapia->duracion}}</td>
                         <td>{{$terapia->flujo_ml_hora}}</td>

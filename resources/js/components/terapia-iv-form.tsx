@@ -363,8 +363,8 @@ const TerapiaIVForm: React.FC<Props> = ({
                                             <div className='text-gray-900'>{terapia.nombre_solucion}</div>
                                             
                                                 {terapia.medicamentos.map((medicamento)=>(
-                                                    <div className='text-gray-400'>
-                                                    {medicamento.nombre} {medicamento.dosis} {medicamento.unidad}
+                                                    <div className='text-gray-400 text-xs'>
+                                                    {medicamento.nombre} | {medicamento.dosis} {medicamento.unidad}
                                                     </div>
                                                 ))}
                                             

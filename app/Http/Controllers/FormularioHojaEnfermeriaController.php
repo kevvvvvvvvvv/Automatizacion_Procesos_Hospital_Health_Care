@@ -113,6 +113,8 @@ class FormularioHojaEnfermeriaController extends Controller implements HasMiddle
 
     public function edit(HojaEnfermeria $hojasenfermeria)
     {
+        if($hojasenfermeria->estado == 'Cerrado') return redirect()->back()->with('error','La hoja de enfermeria se ha cerrado.');
+
         $hojasenfermeria = $this->getRelaciones($hojasenfermeria);
 
         $estancia = $hojasenfermeria->formularioInstancia->estancia;
@@ -178,7 +180,7 @@ class FormularioHojaEnfermeriaController extends Controller implements HasMiddle
             $message = '¡Hoja de enfermería cerrada exitosamente!';
         }
         
-        return Redirect::back()->with('success', $message);
+        return Redirect::route('estancias.show',$hojasenfermeria->formularioInstancia->estancia_id)->with('success', $message);
     }
 
     private function obtenerListaTratamiento(Estancia $estancia){
