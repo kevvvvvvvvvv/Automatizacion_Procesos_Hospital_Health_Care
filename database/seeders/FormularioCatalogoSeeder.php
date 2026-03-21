@@ -127,7 +127,7 @@ class FormularioCatalogoSeeder extends Seeder
             'nombre_tabla_fisica' => 'encuesta_satisfaccions',
             'route_prefix' => 'encuesta-satisfaccions',
         ]);
-        FormularioCatologo::create([
+        FormularioCatalogo::create([
             'id' => 17,
             'nombre_formulario' => 'Resumen médico',
             'nombre_tabla_fisica' => 'resumen_medicos',
