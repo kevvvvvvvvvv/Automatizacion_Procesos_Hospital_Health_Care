@@ -35,7 +35,23 @@ const SignosVitalesTable = ({
         { 
             header: 'Solución', 
             key: 'solucion', 
-            render: (reg: HojaTerapiaIV) => reg.detalle_soluciones.nombre_prestacion ? `${reg.detalle_soluciones.nombre_prestacion}` : 'Sin registros' 
+            render: (reg: HojaTerapiaIV) => (
+                <>
+                    <p className='text-gray-900 text-sm'>
+                        {reg.nombre_solucion ? `${reg.nombre_solucion}` : 'Sin registros' }
+                    </p>
+                    <div>
+                        {reg.medicamentos && (
+                            reg.medicamentos.map((med) => (
+                                <div className='text-gray-600 text-xs'>
+                                    {med.nombre_medicamento } | {med.dosis} {med.unidad_medida}
+                                </div>
+                            ))
+                        )}
+                    </div>
+                </>
+                
+            )
         },
         { 
             header: 'Cantidad', 

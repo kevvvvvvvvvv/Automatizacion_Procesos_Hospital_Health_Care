@@ -133,6 +133,7 @@ const Create: CreateComponent = ({
                 return <TerapiaIVForm
                             hoja={hojaenfermeria}
                             soluciones={soluciones}
+                            medicamentos={medicamentos}
                         />;
             case 'estudios':
                 return <EstudiosForm
