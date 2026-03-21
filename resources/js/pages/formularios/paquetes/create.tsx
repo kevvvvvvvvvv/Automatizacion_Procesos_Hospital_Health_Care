@@ -218,7 +218,7 @@ const SolicitudEstudiosForm = ({ estancia, catalogoEstudios = [], modeloTipo }: 
                     ))}
 
                     {/* Resumen Flotante */}
-                    <div className="bg-gray-800 text-white p-6 rounded-xl shadow-lg sticky bottom-4 flex justify-between items-center border-t-4 border-blue-400 z-10">
+                    <div className="bg-gray-400 text-white p-6 rounded-xl shadow-lg sticky bottom-4 flex justify-between items-center border-t-4 border-blue-400 z-10">
                         <div>
                             <p className="text-sm opacity-80 font-medium">Seleccionados:</p>
                             <h4 className="text-xl font-bold">

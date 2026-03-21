@@ -26,6 +26,7 @@
         .logo {width: 100%; height: auto; object-fit: contain;}
         .clearfix::after {content: "";clear: both;display: table;}
     </style>
+    <title>Formato de la liga de futbol</title>
 </head>
 <body>
     

@@ -83,6 +83,9 @@ class FormularioInstancia extends Model
         'formulario_catalogo_id',
         'user_id'
     ];
+    public function paquete():HasOne{
+        return $this->hasOne(Paquete::class, 'id', 'id');
+    }
     public function resumenMedico(): HasOne
     {
             return $this->hasOne(ResumenMedico::class, 'id', 'id');
@@ -172,8 +175,8 @@ class FormularioInstancia extends Model
     {
         return $this->hasOne(EncuestaPersonal::class, 'id', 'id');
     }
-    public function ligaFutbol(): HasOne
+    /*public function ligaFutbol(): HasOne
     {
         return $this->hasOne(LigaFutbol::class, 'id', 'id');
-    }
+    }*/
 }
