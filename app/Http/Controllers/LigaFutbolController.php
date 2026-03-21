@@ -16,7 +16,7 @@ class LigaFutbolController extends Controller
         $this->pdfGenerator = $pdfGenerator;
     }
 
-    /*public function generarPdf()
+    public function generarPdf()
 {
     $data = [
         'fecha_hoy' => date('d/m/Y'),
@@ -27,5 +27,5 @@ class LigaFutbolController extends Controller
 
     return Pdf::view('pdfs.liga-futbol', $data)
         ->name('formato-liga-futbol-' . date('Y-m-d') . '.pdf');
-}**/
+}
 }
