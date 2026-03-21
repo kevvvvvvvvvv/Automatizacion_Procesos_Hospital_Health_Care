@@ -77,25 +77,31 @@ class PacienteController extends Controller implements HasMiddleware
         return Inertia::render('pacientes/edit', ['paciente' => $paciente]);
     }
 
-    public function update(PacienteRequest $request, Paciente $paciente)
-    {
+ public function update(PacienteRequest $request, Paciente $paciente)
+{
+    $validated = $request->validated();
 
-        $validatedPaciente = $request->validated();
+    \DB::transaction(function () use ($paciente, $validated) {
+    $paciente->update(\Arr::except($validated, ['responsables']));
 
-
-        \DB::transaction(function () use ($paciente, $validatedPaciente, $request) {
-    
-            $datosPaciente = \Illuminate\Support\Arr::except($validatedPaciente, ['responsables']);
-            $paciente->update($datosPaciente);
-            $paciente->familiarResponsables()->delete();
-            if ($request->has('responsables') && !empty($request->responsables)) {
-                $paciente->familiarResponsables()->createMany($request->responsables);
+    if (isset($validated['responsables'])) {
+        foreach ($validated['responsables'] as $resp) {
+            $existente = $paciente->familiarResponsables()
+                ->where('nombre_completo', $resp['nombre_completo'])
+                ->where('parentesco', $resp['parentesco'])
+                ->first();
+            if ($existente) {
+                $existente->update($resp);
+            } else {
+                $paciente->familiarResponsables()->create($resp);
             }
-        });
-
-        return redirect()->route('pacientes.index')
-                        ->with('success', 'Paciente actualizado correctamente.');
+        }
     }
+});
+    return redirect()->route('pacientes.index')->with('success', 'Paciente actualizado sin duplicados.');
+}
+
+   
 
     public function destroy(Paciente $paciente)
     {
