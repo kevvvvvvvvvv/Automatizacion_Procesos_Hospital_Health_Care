@@ -52,7 +52,7 @@ export default function Dashboard() {
                         onClick={() => router.visit(route('habitaciones.index'))}
                     />)}
                 </div>
-                <div>
+                {/*<div>
                     {can('consultar formatos') && (
                     <CardButton
                         icon={LuFileText} 
@@ -60,7 +60,7 @@ export default function Dashboard() {
                         onClick={() => window.open(route('liga-futbol.pdf'), '_blank')}
                     />
                     )}
-                </div>
+                </div>*/}
                 <div>
                     {can('consultar productos y servicios') && (
                     <CardButton
