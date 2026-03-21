@@ -65,7 +65,7 @@ use App\Http\Controllers\EncuestaPersonalController;
 use App\Http\Controllers\ReporteInterconsultaController;
 use App\Http\Controllers\ReporteConcienciaController;
 use App\Http\Controllers\ReporteSignosController;
-use App\http\Controllers\RecetaController;
+use App\Http\Controllers\RecetaController;
 use App\Http\Controllers\ResumenMedicoController;
 
 
