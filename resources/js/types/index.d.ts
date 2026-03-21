@@ -1232,4 +1232,9 @@ export interface HojaTerapiaIVMedicamento{
     created_at: string;
     updated_at: string;
 }
-
+export interface ResumenMedico{
+    id: number;
+    resumen_medico: string;
+    created_at: string;
+    updated_at: string; 
+}
