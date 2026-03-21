@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 use App\Models\Estancia;
-
+use App\Models\Formulario\ResumenMedico\ResumenMedico;
 use App\Models\Formulario\HistoriaClinica\HistoriaClinica;
 use App\Models\User;
 use App\Models\Formulario\HojaFrontal\HojaFrontal;
@@ -23,6 +23,7 @@ use App\Models\Formulario\NotaEvolucion\NotaEvolucion;
 use App\Models\Formulario\NotaUrgencia\NotaUrgencia;
 use App\Models\Formulario\NotaPreAnestesica\NotaPreAnestesica;
 use App\Models\Formulario\HojaEnfermeriaQuirofano\HojaEnfermeriaQuirofano;
+use App\Models\Formulario\LigaFutbol\LigaFutbol;
 use App\Models\Encuestas\EncuestaSatisfaccion;
 use App\Models\Encuestas\EncuestaPersonal;
 
@@ -82,6 +83,13 @@ class FormularioInstancia extends Model
         'formulario_catalogo_id',
         'user_id'
     ];
+    public function paquete():HasOne{
+        return $this->hasOne(Paquete::class, 'id', 'id');
+    }
+    public function resumenMedico(): HasOne
+    {
+            return $this->hasOne(ResumenMedico::class, 'id', 'id');
+    }
     public function historiaclinica(): HasOne
     {
             return $this->hasOne(HistoriaClinica::class, 'id', 'id');
@@ -167,4 +175,8 @@ class FormularioInstancia extends Model
     {
         return $this->hasOne(EncuestaPersonal::class, 'id', 'id');
     }
+    /*public function ligaFutbol(): HasOne
+    {
+        return $this->hasOne(LigaFutbol::class, 'id', 'id');
+    }*/
 }

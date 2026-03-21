@@ -127,6 +127,12 @@ class FormularioCatalogoSeeder extends Seeder
             'nombre_tabla_fisica' => 'encuesta_satisfaccions',
             'route_prefix' => 'encuesta-satisfaccions',
         ]);
+        FormularioCatalogo::create([
+            'id' => 17,
+            'nombre_formulario' => 'Resumen médico',
+            'nombre_tabla_fisica' => 'resumen_medicos',
+            'route_prefix' => 'resumenmedico',
+        ]);
         
     }
 }

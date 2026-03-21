@@ -217,57 +217,50 @@ public function store(UserRequest $request)
     }
 
    public function update(UserRequest $request, $id)
-{
-    $doctor = User::findOrFail($id);  
+    {
+        $doctor = User::findOrFail($id);  
 
-    $validated = $request->validated();
+        $validated = $request->validated();
 
-    DB::beginTransaction();
-    try {
-        // --- LÓGICA DE CONTRASEÑA ---
-        // Verificamos si el campo tiene contenido real
-        if ($request->filled('password')) {
-            $validated['password'] = Hash::make($request->password);
-        } else {
-            // Si está vacío, lo eliminamos del array para que el modelo no lo toque
-            unset($validated['password']);
-            unset($validated['password_confirmation']); 
-        }
+        DB::beginTransaction();
+        try {
+            if ($request->filled('password')) {
+                $validated['password'] = Hash::make($request->password);
+            } else {
+                unset($validated['password']);
+                unset($validated['password_confirmation']); 
+            }
 
-        // 2. Actualizar datos básicos (Laravel ignorará el password si hicimos unset)
-        $doctor->update($validated);
+            $doctor->update($validated);
 
-        // 3. Actualizar el Rol (Spatie)
-        if (isset($validated['cargo_id'])) {
-            $role = Role::find($validated['cargo_id']);
-            $doctor->syncRoles([$role->name]);
-        }
+            if (isset($validated['cargo_id'])) {
+                $role = Role::find($validated['cargo_id']);
+                $doctor->syncRoles([$role->name]);
+            }
 
-        // 4. Actualizar Cédulas Profesionales
-        if (isset($validated['professional_qualifications'])) {
-            $doctor->credenciales()->delete(); 
-            
-            foreach ($validated['professional_qualifications'] as $qual) {
-                if (!empty($qual['titulo'])) {
-                    $doctor->credenciales()->create([
-                        'titulo' => $qual['titulo'],
-                        // Soporte para ambos nombres de campo: cedula o cedula_profesional
-                        'cedula_profesional' => $qual['cedula_profesional'] ?? ($qual['cedula'] ?? null),
-                    ]);
+            if (isset($validated['professional_qualifications'])) {
+                $doctor->credenciales()->delete(); 
+                
+                foreach ($validated['professional_qualifications'] as $qual) {
+                    if (!empty($qual['titulo'])) {
+                        $doctor->credenciales()->create([
+                            'titulo' => $qual['titulo'],
+                            'cedula_profesional' => $qual['cedula_profesional'] ?? ($qual['cedula'] ?? null),
+                        ]);
+                    }
                 }
             }
+
+            DB::commit();
+            return redirect()->route('doctores.index')
+                ->with('success', 'Doctor actualizado exitosamente.');
+
+        } catch (Exception $e) {
+            DB::rollBack();
+            Log::error("Error al actualizar doctor: " . $e->getMessage());
+            return back()->with('error', 'Ocurrió un error al actualizar los datos.');
         }
-
-        DB::commit();
-        return redirect()->route('doctores.index')
-            ->with('success', 'Doctor actualizado exitosamente.');
-
-    } catch (Exception $e) {
-        DB::rollBack();
-        Log::error("Error al actualizar doctor: " . $e->getMessage());
-        return back()->with('error', 'Ocurrió un error al actualizar los datos.');
     }
-}
 
 
     public function destroy($id)

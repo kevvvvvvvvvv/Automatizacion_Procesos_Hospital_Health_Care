@@ -113,6 +113,8 @@ class FormularioHojaEnfermeriaController extends Controller implements HasMiddle
 
     public function edit(HojaEnfermeria $hojasenfermeria)
     {
+        if($hojasenfermeria->estado == 'Cerrado') return redirect()->back()->with('error','La hoja de enfermeria se ha cerrado.');
+
         $hojasenfermeria = $this->getRelaciones($hojasenfermeria);
 
         $estancia = $hojasenfermeria->formularioInstancia->estancia;
@@ -133,7 +135,6 @@ class FormularioHojaEnfermeriaController extends Controller implements HasMiddle
         $categoria_dietas = CategoriaDieta::with('dietas')->get();
         $sondas_cateters = ProductoServicio::where('nombre_prestacion','like','SONDA%')->orWhere('nombre_prestacion', 'like', 'CATETER%')->get();
         $vias_administracion = CatalogoViaAdministracion::all();
-
 
         $nota = $this->obtenerListaTratamiento($estancia);
 
@@ -179,7 +180,7 @@ class FormularioHojaEnfermeriaController extends Controller implements HasMiddle
             $message = '¡Hoja de enfermería cerrada exitosamente!';
         }
         
-        return Redirect::back()->with('success', $message);
+        return Redirect::route('estancias.show',$hojasenfermeria->formularioInstancia->estancia_id)->with('success', $message);
     }
 
     private function obtenerListaTratamiento(Estancia $estancia){
@@ -261,6 +262,7 @@ class FormularioHojaEnfermeriaController extends Controller implements HasMiddle
             'formularioInstancia.user.colaborador_responsable.credenciales',
             'formularioInstancia.estancia.paciente', 
             'hojasTerapiaIV.detalleSoluciones',
+            'hojasTerapiaIV.medicamentos',
             'hojaMedicamentos.productoServicio',
             'hojaMedicamentos.aplicaciones',
             'hojaOxigenos.userInicio',
