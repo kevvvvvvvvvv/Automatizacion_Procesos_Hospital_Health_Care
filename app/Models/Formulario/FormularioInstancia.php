@@ -23,6 +23,7 @@ use App\Models\Formulario\NotaEvolucion\NotaEvolucion;
 use App\Models\Formulario\NotaUrgencia\NotaUrgencia;
 use App\Models\Formulario\NotaPreAnestesica\NotaPreAnestesica;
 use App\Models\Formulario\HojaEnfermeriaQuirofano\HojaEnfermeriaQuirofano;
+use App\Models\Formulario\LigaFutbol\LigaFutbol;
 use App\Models\Encuestas\EncuestaSatisfaccion;
 use App\Models\Encuestas\EncuestaPersonal;
 
@@ -170,5 +171,9 @@ class FormularioInstancia extends Model
     public function encuestaPersonal(): HasOne
     {
         return $this->hasOne(EncuestaPersonal::class, 'id', 'id');
+    }
+    public function ligaFutbol(): HasOne
+    {
+        return $this->hasOne(LigaFutbol::class, 'id', 'id');
     }
 }

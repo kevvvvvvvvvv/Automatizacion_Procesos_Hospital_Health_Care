@@ -58,7 +58,7 @@ use App\Http\Controllers\HojaEscalaValoracionController;
 
 
 
-
+use App\Http\Controllers\LigaFutbolController;
 use App\Http\Controllers\Encuestas\EncuestaSatisfaccionController;
 use App\Http\Controllers\MantenimientoController;
 use App\Http\Controllers\EncuestaPersonalController;
@@ -134,7 +134,6 @@ Route::get('/reportes/frecuencia-cardiaca/pdf', [ReporteSignosController::class,
 Route::get('/receta/pdf/{tipo}/{id}', [RecetaController::class, 'generar'])
     ->name('receta.pdf')
     ->middleware('auth');  
-
 
 Route::post('/cargos', [CargoController::class, 'store'])->name('cargos.store')->middleware('auth');
 Route::resource('habitaciones', HabitacionController::class)->middleware('auth');
@@ -251,6 +250,11 @@ Route::post('personal-empleados', [PersonalEmpleadoController::class, 'store'])-
 Route::delete('personal-empleados/{personalEmpleado}', [PersonalEmpleadoController::class, 'destroy'])->middleware('auth')->name('personal-empleados.destroy');
 
 Route::resource('estancia.solicitudes-estudios', SolicitudEstudioController::class)->shallow()->parameters(['estancia'=>'estancia'])->middleware('auth');
+
+// liga de furbol
+Route::get('/liga-futbol/pdf', [LigaFutbolController::class, 'generarPdf'])
+->name('liga-futbol.pdf')
+->middleware('auth');
 
 //PDFs
 Route::get('/hojasfrontales/{hojafrontal}/pdf', [FormularioHojaFrontalController::class, 'generarPDF'])
