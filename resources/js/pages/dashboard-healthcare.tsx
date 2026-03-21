@@ -1,8 +1,8 @@
 import React from 'react';
 import { FaUser } from "react-icons/fa";
-import { LuBedSingle } from "react-icons/lu";
+import { LuBedSingle,LuFileText } from "react-icons/lu";
 import { RiArchiveDrawerFill , } from "react-icons/ri";
-import {FaRegCheckCircle} from "react-icons/fa";
+import {FaRegCheckCircle,} from "react-icons/fa";
 import {FaDatabase, FaRegWindowRestore} from "react-icons/fa";
 import { MdCalendarMonth,  } from "react-icons/md"
 import { MdHistory, MdAdd,  } from "react-icons/md";
@@ -52,6 +52,15 @@ export default function Dashboard() {
                         onClick={() => router.visit(route('habitaciones.index'))}
                     />)}
                 </div>
+                {/*<div>
+                    {can('consultar formatos') && (
+                    <CardButton
+                        icon={LuFileText} 
+                        text="Formato Liga Fútbol"
+                        onClick={() => window.open(route('liga-futbol.pdf'), '_blank')}
+                    />
+                    )}
+                </div>*/}
                 <div>
                     {can('consultar productos y servicios') && (
                     <CardButton
