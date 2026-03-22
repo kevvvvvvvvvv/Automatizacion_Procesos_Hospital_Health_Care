@@ -118,9 +118,6 @@ const MedicamentosForm: React.FC<Props> = ({
             fecha_hora_inicio: newDate 
         }, {
             preserveScroll: true,
-            onError: (errors) => {
-                alert('Error al actualizar: \n' + JSON.stringify(errors));
-            }
         });
     };
 

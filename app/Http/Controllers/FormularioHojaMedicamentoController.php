@@ -112,7 +112,7 @@ class FormularioHojaMedicamentoController extends Controller
                 $itemParaVenta = [
                     'id'       => $hojasmedicamento->producto_servicio_id ?? null,
                     'cantidad' => 1,
-                    'tipo'     => 'producto',
+                    'tipo'     => 'medicamento',
                     'nombre'   => $hojasmedicamento->nombre_medicamento,
                 ];
 
