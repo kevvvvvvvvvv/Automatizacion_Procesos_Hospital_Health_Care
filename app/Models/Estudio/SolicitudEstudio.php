@@ -85,4 +85,5 @@ class SolicitudEstudio extends Model
     {
         return $this->morphTo();
     }
+
 }
