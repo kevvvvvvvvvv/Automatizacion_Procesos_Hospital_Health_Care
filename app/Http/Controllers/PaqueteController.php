@@ -4,52 +4,61 @@ namespace App\Http\Controllers;
 
 use App\Models\Estancia;
 use App\Models\Estudio\SolicitudEstudio;
-use App\Models\Estudio\SolicitudItem;
+use App\Models\Paquete; 
 use App\Models\Estudio\CatalogoEstudio;
 use App\Models\Formulario\FormularioInstancia;
 use App\Models\Formulario\FormularioCatalogo;
 use App\Models\Inventario\ProductoServicio;
 use App\Models\Venta\Venta;
 use App\Models\User;
-use App\Services\PdfGeneratorService;
 use App\Services\VentaService;
-use App\Services\TwilioWhatsAppService;
-use App\Notifications\NuevaSolicitudEstudios;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
+use App\Services\PdfGeneratorService;
+
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+
 use Inertia\Inertia;
 
 class PaqueteController extends Controller
 {
     protected $pdfGenerator;
+    use AuthorizesRequests;
 
     public function __construct(PdfGeneratorService $pdfGenerator)
     {
         $this->pdfGenerator = $pdfGenerator;
     }
 
-    /**
-     * Muestra la vista de selección de paquetes/estudios
-     */
+    public static function middleware(): array
+    {
+        $permission = \Spatie\Permission\Middleware\PermissionMiddleware::class;
+        return [
+            new Middleware($permission . ':consultar solicitudes estudios', only: ['index', 'show', 'generarPDF']),
+            new Middleware($permission . ':crear solicitudes estudios', only: ['create', 'store']),
+            new Middleware($permission . ':editar solicitudes estudios', only: ['update','edit']),
+            new Middleware($permission . ':eliminar solicitudes estudios', only: ['destroy']),
+        ];
+    }
     public function create(Estancia $estancia)
     {
+
+        //dd($estancia->toArray());
         return Inertia::render('formularios/paquetes/create', [
             'estancia' => $estancia,
             'catalogoEstudios' => CatalogoEstudio::all(),
-            'medicos' => User::role('medico')->get(), // Asumiendo que tienes este rol
             'modeloTipo' => 'App\Models\Estancia',
         ]);
     }
 
     /**
-     * Procesa el formulario de los checkboxes
+     * Procesa el formulario
      */
-    public function store(Request $request, Estancia $estancia, VentaService $ventaService, TwilioWhatsAppService $twilio)
+    public function store(Request $request, Estancia $estancia, VentaService $ventaService)
     {
-        // 1. Validación básica
         $request->validate([
             'user_solicita_id' => 'required|exists:users,id',
             'estudios_agregados_ids' => 'array',
@@ -58,8 +67,8 @@ class PaqueteController extends Controller
 
         DB::beginTransaction();
         try {
-            // 2. Crear Cabecera (Reutilizando lógica de SolicitudEstudioController)
-            $formularioInstancia = FormularioInstancia::create([
+            // 1. Crear Instancia Maestra para la Solicitud (Cabecera)
+            $instanciaCabecera = FormularioInstancia::create([
                 'fecha_hora' => now(),
                 'estancia_id' => $estancia->id,
                 'formulario_catalogo_id' => FormularioCatalogo::ID_SOLICITUD_ESTUDIOS,
@@ -67,98 +76,112 @@ class PaqueteController extends Controller
             ]);
 
             $solicitud = SolicitudEstudio::create([
-                'id' => $formularioInstancia->id,
+                'id' => $instanciaCabecera->id,
                 'user_llena_id' => Auth::id(),
                 'user_solicita_id' => $request->user_solicita_id,
                 'itemable_id' => $estancia->id,
                 'itemable_type' => $request->itemable_type ?? 'App\Models\Estancia',
-                'estado' => 'SOLICITADO'
+                'estado' => SolicitudEstudio::ESTADO_SOLICITADO
             ]);
 
             $itemsCreados = collect();
 
-            // 3. Guardar Estudios del Catálogo (IDs)
-            if ($request->has('estudios_agregados_ids')) {
+            // 2. Procesar Estudios de Catálogo
+            if ($request->filled('estudios_agregados_ids')) {
                 foreach ($request->estudios_agregados_ids as $catalogoId) {
-                    $item = SolicitudItem::create([
+                    $estudioDb = CatalogoEstudio::find($catalogoId);
+
+                    // COMO TU MIGRACIÓN DE PAQUETES PIDE UN ID DE FORMULARIO_INSTANCIAS:
+                    $instanciaItem = FormularioInstancia::create([
+                        'fecha_hora' => now(),
+                        'estancia_id' => $estancia->id,
+                        'formulario_catalogo_id' => FormularioCatalogo::ID_SOLICITUD_ESTUDIOS, // O el ID correspondiente a un item
+                        'user_id' => Auth::id(),
+                    ]);
+
+                    $item = Paquete::create([
+                        'id' => $instanciaItem->id, // Primary Key vinculada a formulario_instancias
                         'solicitud_estudio_id' => $solicitud->id,
                         'catalogo_estudio_id' => $catalogoId,
+                        'departamento_destino' => $estudioDb->departamento ?? 'GENERAL',
                         'estado' => 'SOLICITADO',
                     ]);
-                    $itemsCreados->push($item);
 
-                    // Procesar la venta automáticamente
-                    $this->registrarVentaItem($ventaService, $estancia->id, $catalogoId);
+                    $itemsCreados->push($item);
+                    $this->registrarVentaItem($ventaService, $estancia, $catalogoId);
                 }
             }
 
-            // 4. Guardar Estudios Manuales (Los que no estaban en el catálogo)
-            if ($request->has('estudios_adicionales')) {
+            // 3. Procesar Estudios Manuales ("Otros")
+            if ($request->filled('estudios_adicionales')) {
                 foreach ($request->estudios_adicionales as $manual) {
-                    $item = SolicitudItem::create([
+                    $instanciaManual = FormularioInstancia::create([
+                        'fecha_hora' => now(),
+                        'estancia_id' => $estancia->id,
+                        'formulario_catalogo_id' => FormularioCatalogo::ID_SOLICITUD_ESTUDIOS,
+                        'user_id' => Auth::id(),
+                    ]);
+
+                    $item = Paquete::create([
+                        'id' => $instanciaManual->id, // Primary Key vinculada a formulario_instancias
                         'solicitud_estudio_id' => $solicitud->id,
                         'otro_estudio' => $manual['nombre'],
-                        'detalles' => ['departamento_manual' => $manual['departamento'] ?? 'GENERAL'],
+                        'departamento_destino' => $manual['departamento'] ?? 'GENERAL',
                         'estado' => 'SOLICITADO',
                     ]);
                     $itemsCreados->push($item);
                 }
             }
 
-            // 5. Notificaciones (Lógica simplificada del otro controller)
-            $this->notificarDepartamentos($solicitud, $itemsCreados);
+            // 4. Notificaciones
+            if ($itemsCreados->isNotEmpty()) {
+                $this->notificarDepartamentos($solicitud, $itemsCreados);
+            }
 
             DB::commit();
-            return Redirect::route('estancias.show', $estancia->id)->with('success', 'Paquetes y servicios solicitados correctamente.');
+            return Redirect::route('estancias.show', $estancia->id)->with('success', 'Solicitud y paquetes creados.');
 
         } catch (\Exception $e) {
             DB::rollback();
-            Log::error("Error en PaqueteController@store: " . $e->getMessage());
-            return Redirect::back()->with('error', 'Error al procesar la solicitud: ' . $e->getMessage());
+            Log::error("Error en PaqueteController: " . $e->getMessage());
+            return Redirect::back()->with('error', 'Error: ' . $e->getMessage());
         }
     }
 
-    /**
-     * Lógica para registrar el cobro en la venta actual de la estancia
-     */
-    private function registrarVentaItem(VentaService $ventaService, $estancia_id, $catalogo_estudio_id)
+    private function registrarVentaItem(VentaService $ventaService, Estancia $estancia, $catalogo_estudio_id)
     {
-        $estudio = ProductoServicio::find($catalogo_estudio_id);
-        if (!$estudio) return;
+        $producto = ProductoServicio::where('catalogo_estudio_id', $catalogo_estudio_id)->first();
+        if (!$producto) return;
 
-        $ventaExistente = Venta::where('estancia_id', $estancia_id)
+        $ventaExistente = Venta::where('estancia_id', $estancia->id)
             ->where('estado', Venta::ESTADO_PENDIENTE)
             ->first();
 
         $itemVenta = [
-            'id' => $estudio->id,
+            'id' => $producto->id,
             'cantidad' => 1,
-            'tipo' => 'producto',
-            'nombre' => $estudio->nombre,
+            'tipo' => 'servicio',
+            'nombre' => $producto->nombre,
+            'precio' => $producto->precio_venta,
         ];
 
         if ($ventaExistente) {
             $ventaService->addItemToVenta($ventaExistente, $itemVenta);
         } else {
-            $ventaService->crearVenta([$itemVenta], $estancia_id, Auth::id());
+            $ventaService->crearVenta([$itemVenta], $estancia->id, Auth::id());
         }
     }
 
-    /**
-     * Envía las notificaciones pertinentes a laboratorio, rayos x, etc.
-     */
     private function notificarDepartamentos($solicitud, $items)
     {
         $paciente = $solicitud->formularioInstancia->estancia->paciente;
-        
-        $grupos = $items->groupBy(function ($item) {
-            return $item->catalogoEstudio->departamento ?? $item->detalles['departamento_manual'] ?? 'GENERAL';
-        });
+        $grupos = $items->groupBy('departamento_destino');
 
         foreach ($grupos as $depto => $itemsGrupo) {
             $usuarios = $this->obtenerUsuariosPorDepto($depto);
             foreach ($usuarios as $user) {
-                $user->notify(new NuevaSolicitudEstudios($itemsGrupo, $paciente, $solicitud->id));
+                // Aquí asumo que tienes tu notificación creada
+                // $user->notify(new NuevaSolicitudEstudios($itemsGrupo, $paciente, $solicitud->id));
             }
         }
     }
@@ -167,8 +190,8 @@ class PaqueteController extends Controller
     {
         $d = mb_strtoupper($departamento, 'UTF-8');
         return match (true) {
-            in_array($d, ['HEMATOLOGÍA', 'QUÍMICA CLÍNICA', 'LABORATORIO']) => User::role('técnico de laboratorio')->get(),
-            in_array($d, ['RADIOLOGÍA GENERAL', 'ULTRASONIDO', 'RAYOS X']) => User::role('radiólogo')->get(),
+            str_contains($d, 'LABORATORIO') => User::role('técnico de laboratorio')->get(),
+            str_contains($d, 'RAYOS') || str_contains($d, 'ULTRA') => User::role('radiólogo')->get(),
             default => User::role('administrador')->get(),
         };
     }

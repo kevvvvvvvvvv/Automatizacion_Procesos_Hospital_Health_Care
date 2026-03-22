@@ -137,10 +137,10 @@ const Show = ({ estancia, historiaclinica }: ShowEstanciaProps) => {
                                     </Link>*/}
                                    
                 {/*<Link
-                href={route('paquetes.create')}
-                className={` 'bg-blue-500 text-white' : 'text-gray-900'} group flex rounded-md items-center w-full px-2 py-2 text-sm`}
+                    href={route('paquetes.create', { estancia: estancia.id })}
+                    className="group flex rounded-md items-center w-full px-2 py-2 text-sm bg-blue-500 text-white hover:bg-blue-600"
                 >
-                            Añadir paquete
+                    Añadir paquete
                 </Link>*/}
                 <Menu as="div" className="relative inline-block text-left">
                     <Menu.Button className="inline-flex items-center justify-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700 transition">
