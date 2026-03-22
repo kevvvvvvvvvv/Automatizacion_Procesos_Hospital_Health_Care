@@ -54,7 +54,7 @@ use App\Http\Controllers\FormularioHojaRiesgoCaidaController;
 use App\Http\Controllers\HojaControlLiquidoController;
 use App\Http\Controllers\HojaEscalaValoracionController;
 
-
+use App\Http\Controllers\Caja\CajaController;
 
 
 use App\Http\Controllers\PaqueteController;
@@ -347,6 +347,15 @@ Route::patch('/medicamentos/{medicamento}/actualizar-estado', [HojaMedicamentoCo
     ->name('medicamentos.actualizar-estado')
     ->middleware('auth');
 
+// Caja
+Route::middleware('auth:sanctum')->prefix('caja')->group(function () {
+    Route::get('/caja',[CajaController::class, 'index'])->name('caja.index');
+    Route::get('/turno-actual', [CajaController::class, 'turnoActual'])->name('caja-turno-actual');
+    Route::post('/abrir', [CajaController::class, 'abrirTurno'])->name('caja-abrir-turno');
+    Route::post('/movimiento', [CajaController::class, 'registrarMovimiento']);
+    Route::post('/cerrar', [CajaController::class, 'cerrarTurno']);
+});
+
 // Notificaciones
 Route::post('/notifications/mark-all-as-read', function () {
     Auth::user()->unreadNotifications->markAsRead();
@@ -367,7 +376,7 @@ Route::get('/historial', [HistoryController::class, 'index'])->name('historiales
 Route::get ('/rerservacion/reserva', [ReservacionController::class, 'reserva'])->name('rerservaciones.reserva')->middleware('auth');
 
 
-//RESTAURACIÓN DE LA BASE DE DATOS
+//Restauración de la base de datos  
 Route::get('/bd/respaldo/restauracion/', [RestaurationController::class, 'showView'])
     ->name('bd.restauracion'); 
 

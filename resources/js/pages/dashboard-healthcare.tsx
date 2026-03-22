@@ -152,6 +152,16 @@ export default function Dashboard() {
                     )}
                     
                 </div>
+
+                <div>
+                   {can('consultar caja') && (
+                    <CardButton
+                        icon={FaRegWindowRestore}
+                        text="Caja"
+                        onClick={() => router.visit(route('caja.index'))}
+                    />
+                   )} 
+                </div>
                 
                 <div>
                     {can('Reportes') && (
@@ -161,7 +171,6 @@ export default function Dashboard() {
                         onClick={() => router.visit(route('dashboard-reporte'))}
                     />
                     )}
-                    
                 </div>
                 
                 <div>

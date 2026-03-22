@@ -332,6 +332,7 @@ export interface Pago{
     folio: string;
     venta_id: number;
     metodo_pago_id: number;
+    sesion_caja_id: number;
     referencia: string;
     user_id: number;
     monto: number;
@@ -344,7 +345,6 @@ export interface Pago{
 
     subtotal_ventas: number;
     iva_ventas: number;
-    total_ventas: number,
 
     created_at: string;
     updated_at: string;
@@ -1238,3 +1238,60 @@ export interface ResumenMedico{
     created_at: string;
     updated_at: string; 
 }
+
+
+// types/caja.ts
+export interface Caja {
+  id: number;
+  nombre: string;
+  activa: boolean;
+  created_at: string;
+  updated_at?: string;
+}
+
+export interface SesionCaja {
+  id: number;
+  caja_id: number;
+  user_id: number;
+  fecha_apertura: string;
+  fecha_cierre: string | null;
+  monto_inicial: number;
+  estado: EstadoSesion;
+  
+  total_ingresos_efectivo: number;
+  total_egresos_efectivo: number;
+  total_otros_metodos: number;
+  
+  monto_declarado: number | null;
+  sobrante_faltante: number | null;
+  monto_esperado: number;
+  
+  created_at: string;
+  updated_at?: string;
+
+  caja?: Caja;
+  user?: User;
+}
+
+export interface MovimientoCaja {
+  id: number;
+  sesion_caja_id: number;
+  tipo: TipoMovimiento;
+  monto: number;
+  concepto: string;
+  comprobante: string | null;
+  user_id: number;
+  created_at: string;
+  updated_at?: string;
+}
+
+export interface DesgloseEfectivo {
+  id: number;
+  sesion_caja_id: number;
+  denominacion: number;
+  cantidad: number;
+  total: number;
+  created_at: string;
+  updated_at?: string;
+}
+
