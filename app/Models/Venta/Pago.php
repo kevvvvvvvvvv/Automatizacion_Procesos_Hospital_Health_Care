@@ -2,12 +2,14 @@
 
 namespace App\Models\Venta;
 
+use App\Models\Inventario\ProductoServicio;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 use App\Models\User;
 use App\Models\Venta\Venta;
+use Stripe\Product;
 
 /**
  * @property int $id
@@ -118,7 +120,7 @@ class Pago extends Model
     {
         return (float) $this->detalles->sum(function ($detallePago) {
             $dv = $detallePago->detalleVenta;
-            $porcentajeIva = $dv->iva ?? 16; 
+            $porcentajeIva = $dv->iva_aplicado ?? ProductoServicio::IVA; 
             return $dv->subtotal * ($porcentajeIva / 100);
         });
     }

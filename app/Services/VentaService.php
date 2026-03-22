@@ -10,7 +10,6 @@ use App\Models\Venta\MetodoPago;
 
 use Illuminate\Support\Facades\DB;
 use Exception;
-// use Stripe\Product; // Sugerencia: Eliminar si no se utiliza en esta clase.
 
 /**
  * Servicio encargado de gestionar la lógica de negocio para las ventas.
@@ -151,7 +150,7 @@ class VentaService
                 
             'clave_producto_servicio'=> $modelo 
                 ? ($modelo->clave_producto_servicio ?? $modelo->codigo_prestacion ?? 'Sin nombre') 
-                : ($itemData['nombre'] ?? 'Producto Manual'),
+                : '',
         ]);
     }
 
