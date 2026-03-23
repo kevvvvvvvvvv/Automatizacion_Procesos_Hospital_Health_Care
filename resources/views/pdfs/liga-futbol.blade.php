@@ -80,8 +80,8 @@
                 <table class="cost-table">
 
                     <tr><td></td><td>3 HRS</td><td><strong>SIN COSTO</strong></td></tr>
-                    <tr><td></td><td>48 HRS</td><td >$100.00</td></tr>
-                    <tr><td></td><td>mas de 48 HRS</td><td>$250.00</td></tr>
+                    <tr><td></td><td>48 HRS</td><td >$100.00 costo prefenrencial</td></tr>
+                    <tr><td></td><td>mas de 48 HRS</td><td>$250.00 costo preferencial</td></tr>
                 </table>
             </div>
             <div class="box">
@@ -98,15 +98,15 @@
             <div class="box">
                 <div class="section-title">Especialidad (Traumatologia)</div>
                 <table class="cost-table">
-                    <tr><td></td><td>GRATIS</td><td>Emitida por el mèdico</td></tr>
-                    <tr><td></td><td>$750.00</td><td>A solicitud</td></tr>
+                    <tr><td></td><td>GRATIS</td><td>Emitida por el médico general o de guardia</td></tr>
+                    <tr><td></td><td>$750.00</td><td>si el asegurado lo solicita</td></tr>
                 </table>
             </div>
             <div class="box">
                 <div class="section-title">Rayos X</div>
                 <table class="cost-table">
-                    <tr><td></td><td>SIN COSTO</td><td>Sospecha</td></tr>
-                    <tr><td></td><td>$300.00</td><td>Solicitud</td></tr>
+                    <tr><td></td><td>SIN COSTO</td><td>Si se tiene sospecha de fractura</td></tr>
+                    <tr><td></td><td>$300.00</td><td>Si el familiar quiere que se lo haga la toma</td></tr>
                 </table>
             </div>
         </td>
@@ -147,7 +147,7 @@
     <table style="border: none; margin-top: 20px;">
         <tr style="border: none;">
             <td style="border: none;">
-                <div class="signature-line">Firma de Padre o Tutor</div>
+                <div class="signature-line">Firma de padre o tutor que solicita</div>
             </td>
         </tr>
     </table>
@@ -216,7 +216,7 @@
     <table style="border: none; margin-top: 50px; margin-left: auto; margin-right: auto; width: 250px;">
     <tr style="border: none;">
         <td style="border: none; text-align: center;">
-            <div class="signature-line">Firma de enterado</div>
+            <div class="signature-line">Firma de enterado del padre o tutor</div>
         </td>
     </tr>
 </table>
