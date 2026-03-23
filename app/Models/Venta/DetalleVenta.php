@@ -65,7 +65,7 @@ class DetalleVenta extends Model
         'subtotal',
         'descuento',
         'estado',
-        'iva_aplicado',
+        'iva_aplicado', //IVA historico
         'venta_id',
         'monto pagado',
 
