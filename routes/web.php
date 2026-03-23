@@ -355,7 +355,7 @@ Route::middleware('auth:sanctum')->prefix('caja')->group(function () {
     Route::post('/movimiento', [CajaController::class, 'registrarMovimiento'])->name('caja-movimiento');
     Route::post('/cerrar', [CajaController::class, 'cerrarTurno'])->name('caja-cerrar');
     Route::post('/traspasos/solicitar', [TraspasoController::class, 'solicitar'])->name('traspasos.solicitar');
-    Route::post('/traspasos/{solicitud}/responder', [TraspasoCogitntroller::class, 'responder'])->name('traspasos.responder');
+    Route::post('/traspasos/{solicitud}/responder', [TraspasoController::class, 'responder'])->name('traspasos.responder');
 });
 
 // Notificaciones
