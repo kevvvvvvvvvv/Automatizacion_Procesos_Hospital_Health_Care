@@ -16,6 +16,7 @@ use App\Enums\TipoMovimientoCaja;
 use App\Http\Resources\Caja\SesionCajaResource;
 
 use App\Services\CajaService;
+use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 
 class CajaController extends Controller
@@ -27,11 +28,13 @@ class CajaController extends Controller
     public function index(Request $request)
     {
         $sesion = SesionCaja::where('user_id', $request->user()->id)
-            ->where('estado', EstadoSesionCaja::ABIERTA)
+            ->where('estado', EstadoSesionCaja::ABIERTA->value)
+            ->with('movimientos')
             ->first();
 
         $sesionData = $sesion ? new SesionCajaResource($sesion) : null;
         $cajas = Caja::all();
+
         return Inertia::render('caja/index', [
             'sesionActiva' => $sesionData,
             'cajas' => $cajas, 
@@ -86,23 +89,23 @@ class CajaController extends Controller
             'concepto' => 'required|string|max:255',
         ]);
 
-        // Buscar la sesión activa del usuario
         $sesion = SesionCaja::where('user_id', $request->user()->id)
             ->where('estado', EstadoSesionCaja::ABIERTA)
             ->firstOrFail();
 
         try {
-            $movimiento = $this->cajaService->registrarMovimiento(
+            $this->cajaService->registrarMovimiento(
                 $sesion,
                 TipoMovimientoCaja::from($validated['tipo']),
                 $validated['monto'],
                 $validated['concepto'],
                 $request->user()->id
             );
-
-            return new SesionCajaResource($sesion->refresh());
+            return Redirect::back()->with('success', 'Movimiento registrado correctamente.');
+            
         } catch (Exception $e) {
-            return response()->json(['message' => $e->getMessage()], 422);
+            \Log::error('Error al registrar el movimiento: ' . $e->getMessage());
+            return Redirect::back()->with('error','Error al registrar moviemiento.');
         }
     }
 
@@ -124,15 +127,17 @@ class CajaController extends Controller
             ->firstOrFail();
 
         try {
-            $sesionCerrada = $this->cajaService->cerrarTurno(
+            $this->cajaService->cerrarTurno(
                 $sesion,
                 $validated['monto_declarado'],
                 $validated['desglose'] ?? []
             );
 
-            return new SesionCajaResource($sesionCerrada);
+            return redirect()->back()->with('success', 'Caja cerrada exitosamente.');
+            
         } catch (Exception $e) {
-            return response()->json(['message' => $e->getMessage()], 422);
+            \Log::error('Error al cerrar el turno: ' . $e->getMessage());
+            return Redirect::back()->with('error','Error al cerrar el turno.');
         }
     }
 }

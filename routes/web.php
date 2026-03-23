@@ -55,7 +55,7 @@ use App\Http\Controllers\HojaControlLiquidoController;
 use App\Http\Controllers\HojaEscalaValoracionController;
 
 use App\Http\Controllers\Caja\CajaController;
-
+use App\Http\Controllers\Caja\TraspasoController;
 
 use App\Http\Controllers\PaqueteController;
 use App\Http\Controllers\LigaFutbolController;
@@ -352,8 +352,10 @@ Route::middleware('auth:sanctum')->prefix('caja')->group(function () {
     Route::get('/caja',[CajaController::class, 'index'])->name('caja.index');
     Route::get('/turno-actual', [CajaController::class, 'turnoActual'])->name('caja-turno-actual');
     Route::post('/abrir', [CajaController::class, 'abrirTurno'])->name('caja-abrir-turno');
-    Route::post('/movimiento', [CajaController::class, 'registrarMovimiento']);
-    Route::post('/cerrar', [CajaController::class, 'cerrarTurno']);
+    Route::post('/movimiento', [CajaController::class, 'registrarMovimiento'])->name('caja-movimiento');
+    Route::post('/cerrar', [CajaController::class, 'cerrarTurno'])->name('caja-cerrar');
+    Route::post('/traspasos/solicitar', [TraspasoController::class, 'solicitar'])->name('traspasos.solicitar');
+    Route::post('/traspasos/{solicitud}/responder', [TraspasoCogitntroller::class, 'responder'])->name('traspasos.responder');
 });
 
 // Notificaciones

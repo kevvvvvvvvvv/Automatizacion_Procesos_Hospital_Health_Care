@@ -13,8 +13,17 @@ return new class extends Migration
     {
         Schema::create('cajas', function (Blueprint $table) {
             $table->id();
-            $table->string('nombre')->comment('Nombre o ubicación de la caja (ej. Caja Principal, Farmacia)');
-            $table->boolean('activa')->default(true)->comment('Indica si la caja está habilitada para ser usada');            
+            $table->string('nombre')
+                ->comment('Nombre o ubicación de la caja (ej. Caja Principal, Farmacia)');
+
+            $table->boolean('activa')
+                ->default(true)
+                ->comment('Indica si la caja está habilitada para ser usada');
+                
+            $table->string('tipo')
+                ->default('operativa')
+                ->comment('operativa, fondo, boveda');
+
             $table->timestamps();
         });
     }

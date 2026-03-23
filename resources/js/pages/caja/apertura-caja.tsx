@@ -42,8 +42,7 @@ export const AperturaCaja = ({
                         onChange={e=>setData('caja_id',e)}
                         error={errors.caja_id}
                     />
-
-                    {/* Monto Inicial */}
+                    
                     <TextInput
                         label='Monto inicial'
                         id='monto_inicial'

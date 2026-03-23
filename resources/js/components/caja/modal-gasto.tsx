@@ -1,5 +1,6 @@
 import React from 'react';
 import { useForm } from '@inertiajs/react';
+import { route } from 'ziggy-js';
 
 import SelectInput from '@/components/ui/input-select';
 import TextInput from '@/components/ui/input-text';
@@ -9,7 +10,7 @@ interface Props {
 }
 
 const tipoMovimientoOptions = [
-    { value: 'gasto', label: 'Retiro / Gasto (-)' },
+    { value: 'egreso', label: 'Retiro / Gasto (-)' },
     { value: 'ingreso', label: 'Ingreso extra'}
 ]
 
@@ -22,7 +23,7 @@ const ModalGasto = ({ onClose }: Props) => {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        post('/caja/movimiento', {
+        post(route('caja-movimiento'), {
             preserveScroll: true,
             onSuccess: () => {
                 reset(); 
@@ -86,7 +87,7 @@ const ModalGasto = ({ onClose }: Props) => {
                             disabled={processing}
                             className="rounded-lg border border-transparent bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50"
                         >
-                            {processing ? 'Guardando...' : 'Guardar Movimiento'}
+                            {processing ? 'Guardando...' : 'Guardar movimiento'}
                         </button>
                     </div>
                 </form>

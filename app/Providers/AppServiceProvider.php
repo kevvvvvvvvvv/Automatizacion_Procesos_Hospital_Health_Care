@@ -3,10 +3,9 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Support\Facades\DB;  
-use Illuminate\Support\Facades\Log;
 use App\Observers\HistoryObserver;
 use Laravel\Cashier\Cashier;
+use Illuminate\Http\Resources\Json\JsonResource; 
 
 use App\Models\Paciente;
 use App\Models\Estancia;
@@ -40,7 +39,7 @@ class AppServiceProvider extends ServiceProvider
             );
         });
         */
-
+        JsonResource::withoutWrapping();
         Cashier::useCustomerModel(User::class);
 
         Paciente::observe(HistoryObserver::class);

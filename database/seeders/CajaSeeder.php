@@ -17,6 +17,21 @@ class CajaSeeder extends Seeder
             'activa' => true,
             'id' => 1,
             'nombre' => 'Caja principal',
+            'tipo' => 'operativo'
+        ]);
+
+        Caja::create([
+            'activa' => true,
+            'id' => 2,
+            'nombre' => 'Fondo',
+            'tipo' => 'fondo'
+        ]);
+
+        Caja::create([
+            'activa' => true,
+            'id' => 3,
+            'nombre' => 'Boveda',
+            'tipo' => 'boveda'
         ]);
     }
 }

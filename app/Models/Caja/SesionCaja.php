@@ -31,6 +31,12 @@ class SesionCaja extends Model
         'sobrante_faltante',
     ];
 
+    protected $casts = [
+        'fecha_apertura' => 'datetime', 
+        'fecha_cierre' => 'datetime', 
+        'monto_inicial' => 'decimal:2',
+    ];
+
     /**
      * Calcula cuánto efectivo DEBE haber en la caja en este momento exacto.
      */

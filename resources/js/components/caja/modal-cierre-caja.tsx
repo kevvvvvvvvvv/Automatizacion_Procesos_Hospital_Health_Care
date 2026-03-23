@@ -1,5 +1,10 @@
 import React from 'react';
 import { useForm } from '@inertiajs/react';
+import { route } from 'ziggy-js';
+import Swal from 'sweetalert2';
+
+import TextInput from '../ui/input-text';
+import PrimaryButton from '../ui/primary-button';
 
 interface Props {
     onClose: () => void;
@@ -13,15 +18,25 @@ const ModalCierreCaja = ({ onClose }: Props) => {
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         
-        if (!window.confirm('¿Estás seguro de cerrar la caja? Esta acción no se puede deshacer.')) {
-            return;
-        }
-
-        post('/caja/cerrar', {
-            preserveScroll: true,
-            onSuccess: () => {
-                onClose();
-            },
+        Swal.fire({
+            title: '¿Cerrar el turno?',
+            text: "Se realizará el corte de caja y esta acción no se puede deshacer.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#dc2626',
+            cancelButtonColor: '#6b7280',  
+            confirmButtonText: 'Sí, cerrar caja',
+            cancelButtonText: 'Cancelar',
+            reverseButtons: true 
+        }).then((result) => {
+            if (result.isConfirmed) {
+                post(route('caja-cerrar'), {
+                    preserveScroll: true,
+                    onSuccess: () => {
+                        onClose();
+                    },
+                });
+            }
         });
     };
 
@@ -35,44 +50,22 @@ const ModalCierreCaja = ({ onClose }: Props) => {
                 </p>
 
                 <form onSubmit={handleSubmit} className="space-y-4">
-                    <div>
-                        <label className="block text-sm font-bold text-gray-700 mb-1">
-                            Total en Efectivo (Billetes y Monedas)
-                        </label>
-                        <div className="relative">
-                            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4">
-                                <span className="text-gray-500 font-bold">$</span>
-                            </div>
-                            <input 
-                                type="number" 
-                                step="0.01" 
-                                min="0"
-                                required
-                                autoFocus
-                                value={data.monto_declarado}
-                                onChange={(e) => setData('monto_declarado', e.target.value)}
-                                className={`w-full rounded-lg border-gray-300 pl-8 text-2xl font-bold text-gray-900 shadow-sm focus:border-red-500 focus:ring-red-500 py-3 ${errors.monto_declarado ? 'border-red-500' : ''}`}
-                                placeholder="0.00"
-                            />
-                        </div>
-                        {errors.monto_declarado && <p className="mt-1 text-sm text-red-600">{errors.monto_declarado}</p>}
-                    </div>
+                    <TextInput
+                        id=''
+                        name=''
+                        label='Monto'
+                        value={data.monto_declarado}
+                        onChange={e=>setData('monto_declarado',e.target.value)}
+                        error={errors.monto_declarado}
+                    />
 
                     <div className="mt-8 flex justify-end space-x-3">
-                        <button 
-                            type="button" 
-                            onClick={onClose}
-                            className="rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50"
-                        >
-                            Cancelar
-                        </button>
-                        <button 
-                            type="submit" 
+                        <PrimaryButton
+                            type='submit'
                             disabled={processing}
-                            className="rounded-lg border border-transparent bg-red-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 disabled:opacity-50"
                         >
-                            {processing ? 'Procesando Corte...' : 'Confirmar Cierre'}
-                        </button>
+                            Cerrar
+                        </PrimaryButton>
                     </div>
                 </form>
             </div>

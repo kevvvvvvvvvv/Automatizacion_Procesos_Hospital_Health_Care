@@ -1250,27 +1250,29 @@ export interface Caja {
 }
 
 export interface SesionCaja {
-  id: number;
-  caja_id: number;
-  user_id: number;
-  fecha_apertura: string;
-  fecha_cierre: string | null;
-  monto_inicial: number;
-  estado: EstadoSesion;
-  
-  total_ingresos_efectivo: number;
-  total_egresos_efectivo: number;
-  total_otros_metodos: number;
-  
-  monto_declarado: number | null;
-  sobrante_faltante: number | null;
-  monto_esperado: number;
-  
-  created_at: string;
-  updated_at?: string;
+    id: number;
+    caja_id: number;
+    user_id: number;
+    fecha_apertura: string;
+    fecha_cierre: string | null;
+    monto_inicial: number;
+    estado: EstadoSesion;
+    
+    total_ingresos_efectivo: number;
+    total_egresos_efectivo: number;
+    total_otros_metodos: number;
+    
+    monto_declarado: number | null;
+    sobrante_faltante: number | null;
+    monto_esperado: number;
+    
+    created_at: string;
+    updated_at?: string;
 
-  caja?: Caja;
-  user?: User;
+    caja?: Caja;
+    user?: User;
+    movimientos: MovimientoCaja[];
+
 }
 
 export interface MovimientoCaja {

@@ -5,8 +5,11 @@ namespace App\Services;
 use App\Models\Caja\SesionCaja;
 use App\Models\Caja\MovimientoCaja;
 use App\Models\Venta\Pago;
+use App\Models\Caja\SolicitudTraspaso;
+
 use App\Enums\EstadoSesionCaja;
 use App\Enums\TipoMovimientoCaja;
+
 use Illuminate\Support\Facades\DB;
 use Exception;
 
@@ -39,8 +42,12 @@ class CajaService
      */
     public function registrarMovimiento(SesionCaja $sesion, TipoMovimientoCaja $tipo, float $monto, string $concepto, int $userId): MovimientoCaja
     {
-        if ($sesion->estado !== EstadoSesionCaja::ABIERTA) {
-            throw new Exception("No se pueden registrar movimientos en una caja cerrada.");
+        $estadoActual = $sesion->estado instanceof EstadoSesionCaja 
+            ? $sesion->estado->value 
+            : $sesion->estado;
+
+        if ($estadoActual !== 'abierta') {
+            throw new \Exception("No se pueden registrar movimientos en una caja cerrada.");
         }
 
         return DB::transaction(function () use ($sesion, $tipo, $monto, $concepto, $userId) {
@@ -82,7 +89,11 @@ class CajaService
      */
     public function cerrarTurno(SesionCaja $sesion, float $montoDeclarado, array $desgloseFisico = []): SesionCaja
     {
-        if ($sesion->estado !== EstadoSesionCaja::ABIERTA) {
+        $estadoActual = $sesion->estado instanceof EstadoSesionCaja 
+            ? $sesion->estado->value 
+            : $sesion->estado;
+
+        if ($sesion->estado !== 'abierta') {
             throw new Exception("La caja ya se encuentra cerrada.");
         }
 
@@ -101,6 +112,79 @@ class CajaService
             ]);
 
             return $sesion;
+        });
+    }
+
+    public function solicitarTraspaso(int $cajaOrigenId, int $cajaDestinoId, float $montoSolicitado, string $concepto, int $userId)
+    {
+        return SolicitudTraspaso::create([
+            'caja_origen_id' => $cajaOrigenId,   
+            'caja_destino_id' => $cajaDestinoId, 
+            'monto_solicitado' => $montoSolicitado,
+            'concepto' => $concepto,
+            'user_solicita_id' => $userId,
+            'estado' => 'pendiente'
+        ]);
+    }
+
+    public function responderTraspaso(SolicitudTraspaso $solicitud, bool $aprobar, float $montoAprobado, int $userId)
+    {
+        if ($solicitud->estado !== 'pendiente') {
+            throw new Exception("Esta solicitud ya fue procesada anteriormente.");
+        }
+
+        return DB::transaction(function () use ($solicitud, $aprobar, $montoAprobado, $userId) {
+            
+            if (!$aprobar) {
+                $solicitud->update([
+                    'estado' => 'rechazada',
+                    'user_aprueba_id' => $userId
+                ]);
+                return $solicitud;
+            }
+
+            // 1. Buscamos las sesiones ABIERTAS de ambas cajas
+            $sesionOrigen = SesionCaja::where('caja_id', $solicitud->caja_origen_id)
+                ->where('estado', 'abierta')
+                ->first();
+
+            $sesionDestino = SesionCaja::where('caja_id', $solicitud->caja_destino_id)
+                ->where('estado', 'abierta')
+                ->first();
+
+            if (!$sesionOrigen) {
+                throw new Exception("No se puede enviar el dinero: La caja de origen (Fondo/Bóveda) no tiene un turno abierto.");
+            }
+            if (!$sesionDestino) {
+                throw new Exception("No se puede enviar el dinero: La caja destino cerró su turno antes de recibir la transferencia.");
+            }
+
+            // 2. Actualizamos la solicitud como aprobada con el monto final
+            $solicitud->update([
+                'estado' => 'aprobada',
+                'monto_aprobado' => $montoAprobado,
+                'user_aprueba_id' => $userId
+            ]);
+
+            // 3. Le quitamos el dinero al Fondo (Egreso)
+            // Reutilizamos tu método registrarMovimiento para que afecte los totales de la sesión
+            $this->registrarMovimiento(
+                $sesionOrigen, 
+                TipoMovimientoCaja::EGRESO, // <-- Fíjate que usa tu Enum
+                $montoAprobado, 
+                "Traspaso autorizado a Caja ID: {$solicitud->caja_destino_id} (Ref: {$solicitud->id})", 
+                $userId
+            );
+
+            // 4. Le inyectamos el dinero a la Caja Operativa (Ingreso)
+            $this->registrarMovimiento(
+                $sesionDestino, 
+                TipoMovimientoCaja::INGRESO, 
+                $montoAprobado, 
+                "Traspaso recibido de Caja ID: {$solicitud->caja_origen_id} (Ref: {$solicitud->id})", 
+                $userId
+            );
+            return $solicitud;
         });
     }
 }
