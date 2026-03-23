@@ -109,10 +109,10 @@
         {{-- CAMPOS ESPECÍFICOS --}}
         <h3>Datos de Identificación</h3>
         <div class="section-content">
-            <p><strong>Paciente:</strong> {{ $paciente->nombre_completo ?? 'Sin datos.' }}</p>
-            <p><strong>Familiar Responsable y/o Representante legal:</strong> {{ $estancia->nombre_completo ?? 'Sin datos.' }}</p>
-            <p><strong>Diagnóstico:</strong> {{ $paciente->diagnostico_preoperatorio ?? 'Sin datos.' }}</p>
-            <p><strong>Procedimiento Quirúrgico:</strong> {{ $paciente->cirugia_programada ?? 'Sin datos.' }}</p>
+            <p><strong>Paciente:</strong> {{ $paciente->nombre_completo ?? '' }}</p>
+            <p><strong>Familiar Responsable y/o Representante legal:</strong> {{ $estancia->nombre_completo ?? '' }}</p>
+            <p><strong>Diagnóstico:</strong> {{ $paciente->diagnostico_preoperatorio ?? '' }}</p>
+            <p><strong>Procedimiento Quirúrgico:</strong> {{ $paciente->cirugia_programada ?? '' }}</p>
         </div>
 
         {{-- CUERPO DEL CONSENTIMIENTO BASADO EN EL PDF --}}
