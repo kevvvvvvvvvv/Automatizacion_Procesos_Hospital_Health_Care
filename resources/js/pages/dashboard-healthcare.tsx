@@ -162,6 +162,15 @@ export default function Dashboard() {
                     />
                    )} 
                 </div>
+                <div>
+                   {can('consultar caja') && (
+                    <CardButton
+                        icon={FaCashRegister}
+                        text="Contaduría"
+                        onClick={() => router.visit(route('contaduria.index'))}
+                    />
+                   )} 
+                </div>
                 
                 <div>
                     {can('Reportes') && (

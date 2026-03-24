@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { SesionCaja } from '@/types'; 
+import { MovimientoCaja, SesionCaja } from '@/types'; 
 
 import ModalCierreCaja from '@/components/caja/modal-cierre-caja';
 import ModalGasto from '@/components/caja/modal-gasto';
+import { ModalSolicitudFondo } from '@/components/caja/modal-solicitud-fondos';
 
 interface Props {
     sesion: SesionCaja; 
@@ -13,6 +14,7 @@ export const PanelCaja = ({
 }: Props) => {
     const [isGastoModalOpen, setIsGastoModalOpen] = useState(false);
     const [isCierreModalOpen, setIsCierreModalOpen] = useState(false);
+    const [isSolicitudModalOpen, setIsSolicitudModalOpen] = useState(false);
 
     const formatMoney = (amount: number | string | undefined) => {
         const num = Number(amount);
@@ -68,12 +70,19 @@ export const PanelCaja = ({
 
             <div className="flex space-x-4">
                 <button 
-                    onClick={() => setIsGastoModalOpen(true)}
+                    onClick={() => setIsGastoModalOpen(true)} 
                     className="bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm flex items-center"
                 >
-                    <span className="text-lg font-bold mr-2">+</span> Registrar gasto / Retiro
+                    + Registrar Gasto / Retiro
                 </button>
-            </div>
+                
+                <button 
+                    onClick={() => setIsSolicitudModalOpen(true)}
+                    className="bg-yellow-50 border border-yellow-200 text-yellow-800 hover:bg-yellow-100 px-4 py-2 rounded-lg text-sm font-bold transition-colors shadow-sm flex items-center"
+                >
+                    Retirar efectivo de fondo
+                </button>
+            </div>      
 
             <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
                 <div className="px-6 py-4 border-b border-gray-100 flex justify-between items-center">
@@ -92,10 +101,9 @@ export const PanelCaja = ({
                                 </tr>
                             </thead>
                             <tbody className="bg-white divide-y divide-gray-200">
-                                {sesion.movimientos.map((mov: any) => (
+                                {sesion.movimientos.map((mov: MovimientoCaja) => (
                                     <tr key={mov.id} className="hover:bg-gray-50 transition-colors">
                                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                            {/* Formatea la fecha para mostrar solo la hora */}
                                             {new Date(mov.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                         </td>
                                         <td className="px-6 py-4 text-sm text-gray-900 font-medium">
@@ -131,6 +139,7 @@ export const PanelCaja = ({
 
             {isGastoModalOpen && <ModalGasto onClose={() => setIsGastoModalOpen(false)} />} 
             {isCierreModalOpen && <ModalCierreCaja onClose={() => setIsCierreModalOpen(false)} />}
+                {isSolicitudModalOpen && <ModalSolicitudFondo onClose={() => setIsSolicitudModalOpen(false)} sesionActiva={sesion} />}
         </div>
     );
 };

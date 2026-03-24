@@ -55,6 +55,7 @@ use App\Http\Controllers\HojaControlLiquidoController;
 use App\Http\Controllers\HojaEscalaValoracionController;
 
 use App\Http\Controllers\Caja\CajaController;
+use App\Http\Controllers\Caja\ContaduriaController;
 use App\Http\Controllers\Caja\TraspasoController;
 
 use App\Http\Controllers\PaqueteController;
@@ -357,6 +358,10 @@ Route::middleware('auth:sanctum')->prefix('caja')->group(function () {
     Route::post('/traspasos/solicitar', [TraspasoController::class, 'solicitar'])->name('traspasos.solicitar');
     Route::post('/traspasos/{solicitud}/responder', [TraspasoController::class, 'responder'])->name('traspasos.responder');
 });
+
+//Contador
+Route::get('/tesoreria/boveda', [ContaduriaController::class, 'index'])->name('contaduria.index');
+
 
 // Notificaciones
 Route::post('/notifications/mark-all-as-read', function () {
