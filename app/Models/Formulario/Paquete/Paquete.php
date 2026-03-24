@@ -1,5 +1,6 @@
 <?php
-namespace App\Models;
+
+namespace App\Models\Formulario\Paquete;
 
 use App\Models\Estudio\SolicitudEstudio;
 use Illuminate\Database\Eloquent\Model;
@@ -7,7 +8,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Paquete extends Model
 {
+    public $incrementing = false;
+
+    protected $keyType = 'int';
     protected $fillable = [
+        'id',
         'solicitud_estudio_id',
         'catalogo_estudio_id',
         'otro_estudio',
@@ -26,9 +31,9 @@ class Paquete extends Model
     /**
      * Relación con el catálogo (si existe)
      */
-    public function catalogoEstudio(): BelongsTo
+   public function catalogoEstudio()
     {
-        return $this->belongsTo(CatalogoEstudio::class);
+        return $this->belongsTo(\App\Models\Estudio\CatalogoEstudio::class, 'catalogo_estudio_id');
     }
     public function formularioInstancia(): BelongsTo
     {
