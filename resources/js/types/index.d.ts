@@ -471,6 +471,8 @@ export interface HojaInsumosBasicos {
     id: number;
     cantidad:number;
     producto_servicio_id: number;
+    nombre_insumo: string;
+
     producto_servicio: ProductoServicio;
 }
 

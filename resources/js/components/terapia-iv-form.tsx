@@ -3,6 +3,7 @@ import { useForm, router } from '@inertiajs/react';
 import { HojaEnfermeria, ProductoServicio } from '@/types';
 import { route } from 'ziggy-js';
 import { optionsUnidadMedida } from '@/constant/const';
+import Swal from 'sweetalert2';
 
 import SelectInput from '@/components/ui/input-select';
 import InputText from '@/components/ui/input-text';
@@ -92,11 +93,11 @@ const TerapiaIVForm: React.FC<Props> = ({
     const handleAddToList = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         if (localData.es_manual && !localData.nombre_solucion.trim()) {
-            alert("Debe escribir el nombre de la solución manual.");
+            Swal.fire('Error', 'Debe escribir el nombre de la solución manual.');
             return;
         }
         if (!localData.es_manual && !localData.solucion_id) {
-            alert("Debe seleccionar una solución del catálogo.");
+            Swal.fire('Error', 'Debe seleccionar una solución del catálogo.');
             return;
         }
 
@@ -137,11 +138,11 @@ const TerapiaIVForm: React.FC<Props> = ({
     const agregarMedicamentoALaSolucion = () => {
 
         if (tempMedicamento.es_manual && !tempMedicamento.nombre.trim()) {
-            alert("Escriba el nombre del medicamento manual.");
+            Swal.fire("Error","Escriba el nombre del medicamento manual.");
             return;
         }
         if (!tempMedicamento.es_manual && !tempMedicamento.id) {
-            alert("Seleccione un medicamento del inventario.");
+            Swal.fire("Fire","Seleccione un medicamento del inventario.");
             return;
         }
         if (!tempMedicamento.dosis) return;
@@ -201,7 +202,7 @@ const TerapiaIVForm: React.FC<Props> = ({
                 <div>
                     <div className="flex justify-between items-center mb-1">
                         <label className="block font-medium text-sm text-gray-700">
-                            Solución Base
+                            Solución base
                         </label>
                         <button 
                             type="button"
