@@ -58,7 +58,7 @@ const SECCIONES_DATA = [
     }
 ];
 
-const SolicitudEstudiosForm = ({paciente, estancia, catalogoEstudios = [], modeloTipo }: Props) => {
+const SolicitudEstudiosForm = ({ paciente, estancia, catalogoEstudios = [], modeloTipo }: Props) => {
     const { auth } = usePage<PageProps>().props;
     const [otrosInputs, setOtrosInputs] = useState<Record<string, string>>({});
  
@@ -116,7 +116,7 @@ const SolicitudEstudiosForm = ({paciente, estancia, catalogoEstudios = [], model
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        post(route('pacientes.estancias.paquetes.store', {paciente:paciente.id, estancia: estancia.id }), {
+        post(route('pacientes.estancias.paquetes.store', { paciente: estancia.paciente_id, estancia: estancia.id }), {
             preserveScroll: true,
             onSuccess: () => {
                 reset();
@@ -149,7 +149,7 @@ const SolicitudEstudiosForm = ({paciente, estancia, catalogoEstudios = [], model
     };
 
     return (
-        <MainLayout pageTitle='Paquete de estudios para operación' link='estancias.show' linkParams={estancia.id} >
+        <MainLayout pageTitle='Paquete de estudios para operación' link='estancias.show'    linkParams={estancia.id}  >
          
             <form onSubmit={handleSubmit} className="pb-20 max-w-7xl mx-auto p-4">
                 <div className="grid grid-cols-1 gap-6">

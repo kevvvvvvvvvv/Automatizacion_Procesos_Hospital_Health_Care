@@ -54,30 +54,24 @@ class PaqueteController extends Controller
             'modeloTipo' => 'App\Models\Estancia',
         ]);
     }
-   public function show(SolicitudEstudio $paquete) // El nombre de la variable debe coincidir con el de la ruta en web.php
+   public function show(SolicitudEstudio $paquete) 
 {
-    // Cargamos toda la cadena de relaciones igual que en tu nota de evolución
     $paquete->load([
         'formularioInstancia.estancia.paciente',
         'formularioInstancia.user',
-        'paquetes.catalogoEstudio',
+        'paquetes.catalogoEstudio', 
         'userSolicita'
     ]);
 
     return Inertia::render('formularios/paquetes/show', [
-        // Extraemos el paciente y la estancia desde la relación cargada
-        'paciente' => $paquete->formularioInstancia->estancia->paciente,
-        'estancia' => $paquete->formularioInstancia->estancia,
-        'solicitud' => $paquete,
+        'paciente'  => $paquete->formularioInstancia->estancia->paciente,
+        'estancia'  => $paquete->formularioInstancia->estancia,
+        'solicitud' => $paquete, 
     ]);
 }
 
-    /**
-     * Procesa el formulario
-     */
-   public function store(Request $request, Estancia $estancia, VentaService $ventaService)
+   public function store(Request $request, Paciente $paciente, Estancia $estancia, VentaService $ventaService)
 {
-    dd($request->all());
     $request->validate([
         'user_solicita_id' => 'required|exists:users,id',
         'estudios_agregados_ids' => 'array',
@@ -86,95 +80,103 @@ class PaqueteController extends Controller
 
     DB::beginTransaction();
     try {
-        // --- 1. SE CREA UNA ÚNICA INSTANCIA PARA TODO EL GRUPO ---
+        // --- 1. CREAR INSTANCIA MAESTRA ---
         $instanciaMaestra = FormularioInstancia::create([
             'fecha_hora' => now(),
             'estancia_id' => $estancia->id,
-            'formulario_catalogo_id' => FormularioCatalogo::ID_SOLICITUD_ESTUDIOS,
+            'formulario_catalogo_id' => FormularioCatalogo::ID_PAQUETES, // ID 19
             'user_id' => Auth::id(),
         ]);
 
-        // --- 2. SE CREA LA CABECERA DE LA SOLICITUD ---
+        // --- 2. CREAR CABECERA (IMPORTANTE: SIN EL dd() ) ---
         $solicitud = SolicitudEstudio::create([
-            'id' => $instanciaMaestra->id, // Comparte ID con la instancia
-            'user_llena_id' => Auth::id(),
+            'id'               => $instanciaMaestra->id, 
+            'user_llena_id'    => Auth::id(),
             'user_solicita_id' => $request->user_solicita_id,
-            'itemable_id' => $estancia->id,
-            'itemable_type' => 'App\Models\Estancia',
-            'estado' => SolicitudEstudio::ESTADO_SOLICITADO
+            'itemable_id'      => $estancia->id,
+            'itemable_type'    => 'App\Models\Estancia',
+            'estado'           => SolicitudEstudio::ESTADO_SOLICITADO
         ]);
 
-        $itemsCreados = collect();
+        // --- 3. PROCESAR ESTUDIOS DEL CATÁLOGO ---
+        if ($request->filled('estudios_agregados_ids')) {
+            foreach ($request->estudios_agregados_ids as $catalogoId) {
+                $estudioDb = CatalogoEstudio::find($catalogoId);
 
-      if ($request->filled('estudios_agregados_ids')) {
-    foreach ($request->estudios_agregados_ids as $catalogoId) {
-        $estudioDb = CatalogoEstudio::find($catalogoId);
-
-      $item = Paquete::create([
-        'formulario_instancia_id' => $instanciaMaestra->id,
-        'solicitud_estudio_id'    => $solicitud->id,
-        'catalogo_estudio_id'     => $catalogoId,
-        'departamento_destino'    => $estudioDb->departamento ?? 'GENERAL',
-        'estado'                  => 'SOLICITADO',
-    ]);
-        dd($item->toArray());
-        $this->registrarVentaItem($ventaService, $estancia, $catalogoId);
-    }
-}
+                Paquete::create([
+                    'formulario_instancia_id' => $instanciaMaestra->id,
+                    'solicitud_estudio_id'    => $solicitud->id,
+                    'catalogo_estudio_id'     => $catalogoId,
+                    'departamento_destino'    => $estudioDb->departamento ?? 'GENERAL',
+                    'estado'                  => 'SOLICITADO',
+                ]);
+                
+                $this->registrarVentaItem($ventaService, $estancia, $catalogoId);
+            }
+        }
 
         // --- 4. PROCESAR ESTUDIOS MANUALES ---
-      if ($request->filled('estudios_adicionales')) {
-    foreach ($request->estudios_adicionales as $manual) {
-        // Validamos si 'manual' es un array (viene de un input dinámico) o un string
-        $nombreEstudio = is_array($manual) ? ($manual['nombre'] ?? 'Estudio manual') : $manual;
-        $deptoEstudio  = is_array($manual) ? ($manual['departamento'] ?? 'GENERAL') : 'GENERAL';
+        if ($request->filled('estudios_adicionales')) {
+            foreach ($request->estudios_adicionales as $manual) {
+                $nombreEstudio = is_array($manual) ? ($manual['nombre'] ?? 'Estudio manual') : $manual;
+                $deptoEstudio  = is_array($manual) ? ($manual['departamento'] ?? 'GENERAL') : 'GENERAL';
 
-        Paquete::create([
-            'formulario_instancia_id' => $instanciaMaestra->id,
-            'solicitud_estudio_id'    => $solicitud->id,
-            'catalogo_estudio_id'     => null,
-            'otro_estudio'            => $nombreEstudio,
-            'departamento_destino'    => $deptoEstudio,
-            'estado'                  => 'SOLICITADO',
-        ]);
-    }
-}
+                Paquete::create([
+                    'formulario_instancia_id' => $instanciaMaestra->id,
+                    'solicitud_estudio_id'    => $solicitud->id,
+                    'catalogo_estudio_id'     => null,
+                    'otro_estudio'            => $nombreEstudio,
+                    'departamento_destino'    => $deptoEstudio,
+                    'estado'                  => 'SOLICITADO',
+                ]);
+            }
+        }
 
         DB::commit();
-        // Redirigimos al SHOW del paquete recién creado
+        
         return Redirect::route('paquetes.show', $solicitud->id)
-            ->with('success', 'Solicitud generada correctamente.');
+            ->with('success', 'Solicitud y Paquete generados correctamente.');
 
     } catch (\Exception $e) {
         DB::rollback();
-        Log::error("Error en PaqueteController: " . $e->getMessage());
-        return Redirect::back()->with('error', 'Error: ' . $e->getMessage());
+        Log::error("Error en PaqueteController@store: " . $e->getMessage());
+        return Redirect::back()->with('error', 'Error al crear: ' . $e->getMessage());
     }
 }
 
-    private function registrarVentaItem(VentaService $ventaService, Estancia $estancia, $catalogo_estudio_id)
-    {
-        $producto = ProductoServicio::where('catalogo_estudio_id', $catalogo_estudio_id)->first();
-        if (!$producto) return;
+   private function registrarVentaItem(VentaService $ventaService, Estancia $estancia, $catalogo_estudio_id)
+{
+    // 1. Obtenemos el estudio del catálogo para saber qué estamos buscando
+    $estudio = CatalogoEstudio::find($catalogo_estudio_id);
+    if (!$estudio) return;
 
-        $ventaExistente = Venta::where('estancia_id', $estancia->id)
-            ->where('estado', Venta::ESTADO_PENDIENTE)
-            ->first();
+    // 2. Buscamos en producto_servicios por nombre_prestacion
+    $producto = ProductoServicio::where('nombre_prestacion', $estudio->nombre)->first();
 
-        $itemVenta = [
-            'id' => $producto->id,
-            'cantidad' => 1,
-            'tipo' => 'servicio',
-            'nombre' => $producto->nombre,
-            'precio' => $producto->precio_venta,
-        ];
-
-        if ($ventaExistente) {
-            $ventaService->addItemToVenta($ventaExistente, $itemVenta);
-        } else {
-            $ventaService->crearVenta([$itemVenta], $estancia->id, Auth::id());
-        }
+    if (!$producto) {
+        Log::warning("No se encontró un producto/servicio con el nombre: " . $estudio->nombre);
+        return;
     }
+
+    // 3. Buscamos si ya hay una venta pendiente para esta estancia
+    $ventaExistente = Venta::where('estancia_id', $estancia->id)
+        ->where('estado', Venta::ESTADO_PENDIENTE)
+        ->first();
+
+    $itemVenta = [
+        'id'       => $producto->id,
+        'cantidad' => 1,
+        'tipo'     => 'servicio',
+        'nombre'   => $producto->nombre_prestacion,
+        'precio'   => $producto->importe, // Usamos 'importe' según tu migración
+    ];
+
+    if ($ventaExistente) {
+        $ventaService->addItemToVenta($ventaExistente, $itemVenta);
+    } else {
+        $ventaService->crearVenta([$itemVenta], $estancia->id, Auth::id());
+    }
+}
 
     private function notificarDepartamentos($solicitud, $items)
     {

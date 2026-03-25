@@ -63,8 +63,7 @@ class SolicitudEstudio extends Model
     public $incrementing = false;
     public function paquetes()
     {
-        return $this->hasMany(Paquete::class, 'solicitud_estudio_id');
-    }
+        return $this->hasMany(\App\Models\Formulario\Paquete\Paquete::class, 'solicitud_estudio_id');    }
     public function userSolicita():BelongsTo
     {
         return $this->belongsTo(User::class, 'user_solicita_id', 'id');

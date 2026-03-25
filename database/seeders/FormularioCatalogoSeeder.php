@@ -133,6 +133,12 @@ class FormularioCatalogoSeeder extends Seeder
             'nombre_tabla_fisica' => 'resumen_medicos',
             'route_prefix' => 'resumenmedico',
         ]);
+        FormularioCatalogo::create([
+            'id' => 19,
+            'nombre_formulario' => 'Paquete',
+            'nombre_tabla_fisica' => 'paquetes',
+            'route_prefix' => 'paquetes',
+        ]);
         
     }
 }
