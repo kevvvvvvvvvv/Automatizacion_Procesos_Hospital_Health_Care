@@ -33,6 +33,7 @@ class HojaInsumosBasicos extends Model
         'producto_servicio_id',
         'hoja_enfermeria_quirofano_id',
         'cantidad',
+        'nombre_insumo',
     ];
 
     public function productoServicio(): BelongsTo
