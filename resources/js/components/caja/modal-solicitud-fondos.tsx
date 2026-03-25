@@ -34,15 +34,11 @@ export const ModalSolicitudFondo = ({
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
             <div className="bg-white rounded-xl shadow-2xl w-full max-w-md overflow-hidden transform transition-all">
                 <div className="bg-blue-600 px-6 py-4 flex justify-between items-center">
-                    <h3 className="text-lg font-bold text-white">Solicitar Efectivo al Fondo</h3>
+                    <h3 className="text-lg font-bold text-white">Solicitar efectivo al fondo</h3>
                     <button onClick={onClose} className="text-white hover:text-gray-200 text-xl font-bold">&times;</button>
                 </div>
 
                 <form onSubmit={handleSubmit} className="p-6 space-y-4">
-                    <div className="bg-blue-50 p-3 rounded-md text-sm text-blue-800 border border-blue-100 mb-4">
-                        ℹ️ El dinero no se reflejará en tu caja hasta que Contaduría lo autorice.
-                    </div>
-
                     <TextInput
                         id='concepto'
                         name='concepto'
@@ -50,6 +46,15 @@ export const ModalSolicitudFondo = ({
                         value={data.concepto}
                         onChange={e=>setData('concepto',e.target.value)}
                         error={errors.concepto}
+                    />
+
+                    <TextInput
+                        id=''
+                        name=''
+                        label='Total dinero retirado'
+                        value={data.monto}
+                        onChange={e=>setData('monto',e.target.value)}
+                        error={errors.monto}
                     />
 
                     <div className="flex justify-end space-x-3 pt-4 border-t border-gray-100">

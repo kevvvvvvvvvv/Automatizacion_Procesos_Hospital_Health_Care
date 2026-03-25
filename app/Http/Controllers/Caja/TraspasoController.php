@@ -23,12 +23,7 @@ protected $cajaService;
      */
     public function solicitar(Request $request)
     {
-        $validated = $request->validate([
-            'caja_origen_id' => 'required|exists:cajas,id', // A quién le pide (El Fondo)
-            'caja_destino_id' => 'required|exists:cajas,id', // Quién pide (Urgencias)
-            'monto' => 'required|numeric|min:1',
-            'concepto' => 'required|string|max:255',
-        ]);
+        $validated = $request->validated();
 
         try {
             $this->cajaService->solicitarTraspaso(
