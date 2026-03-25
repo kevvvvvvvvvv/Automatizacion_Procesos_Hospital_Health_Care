@@ -20,6 +20,7 @@ class FormularioHojaInsumosBasicosController extends Controller
                 'producto_servicio_id' => $request->material_id,
                 'hoja_enfermeria_quirofano_id' => $hojasenfermeriasquirofano->id,
                 'cantidad' => $request->cantidad,
+                'nombre_insumo' =>$request->nombre_insumo,
             ]);
 
             return Redirect::route('hojasenfermeriasquirofanos.edit', $hojasenfermeriasquirofano->id)->with('success','Se ha registrado el insumo.');

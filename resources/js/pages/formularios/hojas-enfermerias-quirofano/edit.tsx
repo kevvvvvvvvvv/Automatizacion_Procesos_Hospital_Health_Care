@@ -1,6 +1,7 @@
 import { Estancia, HojaEnfermeriaQuirofano, Paciente, ProductoServicio, User } from '@/types';
 import React, { useState } from 'react';
 import { Head } from '@inertiajs/react';
+import { MORPH_MAP } from '@/types/model';
 
 import PacienteCard from '@/components/paciente-card';
 import MainLayout from '@/layouts/MainLayout';
@@ -11,6 +12,7 @@ import PersonalQuirurgicoForm from '@/components/forms/personal-quirurgico-form'
 import EquipoLaparoscopiaForm from '@/components/forms/equipo-laparoscopia-form';
 import EnvioPiezaHojaEnfermeria from '@/components/forms/envio-pieza-hoja-enfermeria-form';
 import CerrarHoja from '@/components/app-cerrrar-hoja';
+
 
 
 
@@ -81,7 +83,7 @@ const CreateHojaEnfermeriaQuirofano:CreateComponent = ({paciente, estancia, hoja
                 return <EnvioPiezaHojaEnfermeria
                             medicos={users}
                             modeloId={hoja.id}
-                            modeloTipo='App\Models\HojaEnfermeriaQuirofano'
+                            modeloTipo={MORPH_MAP.HOJA_ENFERMERIA_QUIROFANO}
                             estancia={estancia}
                         />
             case 'servicios_especiales':
