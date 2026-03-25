@@ -8,17 +8,16 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Paquete extends Model
 {
-    public $incrementing = false;
-
-    protected $keyType = 'int';
+    // Esta línea es la que permite que el Controller guarde los datos
     protected $fillable = [
-        'id',
+        'formulario_instancia_id', // <--- ¡ASEGÚRATE QUE ESTE ESTÉ AQUÍ!
         'solicitud_estudio_id',
         'catalogo_estudio_id',
         'otro_estudio',
         'departamento_destino',
-        'estado'
+        'estado',
     ];
+
 
     /**
      * Relación inversa con la solicitud
@@ -31,10 +30,10 @@ class Paquete extends Model
     /**
      * Relación con el catálogo (si existe)
      */
-   public function catalogoEstudio()
-    {
-        return $this->belongsTo(\App\Models\Estudio\CatalogoEstudio::class, 'catalogo_estudio_id');
-    }
+  public function catalogoEstudio()
+{
+    return $this->belongsTo(\App\Models\Estudio\CatalogoEstudio::class, 'catalogo_estudio_id');
+}
     public function formularioInstancia(): BelongsTo
     {
         return $this->belongsTo(FormularioInstancia::class, 'id', 'id');

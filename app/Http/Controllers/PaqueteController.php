@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Paciente;
 use App\Models\Estancia;
 use App\Models\Estudio\SolicitudEstudio;
-use App\Models\Paquete; 
+use App\Models\Formulario\Paquete\Paquete; 
 use App\Models\Estudio\CatalogoEstudio;
 use App\Models\Formulario\FormularioInstancia;
 use App\Models\Formulario\FormularioCatalogo;
@@ -43,7 +44,7 @@ class PaqueteController extends Controller
             new Middleware($permission . ':eliminar solicitudes estudios', only: ['destroy']),
         ];
     }
-    public function create(Estancia $estancia)
+    public function create(Paciente $paciente, Estancia $estancia)
     {
 
         //dd($estancia->toArray());
@@ -53,100 +54,103 @@ class PaqueteController extends Controller
             'modeloTipo' => 'App\Models\Estancia',
         ]);
     }
+   public function show(SolicitudEstudio $paquete) // El nombre de la variable debe coincidir con el de la ruta en web.php
+{
+    // Cargamos toda la cadena de relaciones igual que en tu nota de evolución
+    $paquete->load([
+        'formularioInstancia.estancia.paciente',
+        'formularioInstancia.user',
+        'paquetes.catalogoEstudio',
+        'userSolicita'
+    ]);
+
+    return Inertia::render('formularios/paquetes/show', [
+        // Extraemos el paciente y la estancia desde la relación cargada
+        'paciente' => $paquete->formularioInstancia->estancia->paciente,
+        'estancia' => $paquete->formularioInstancia->estancia,
+        'solicitud' => $paquete,
+    ]);
+}
 
     /**
      * Procesa el formulario
      */
-    public function store(Request $request, Estancia $estancia, VentaService $ventaService)
-    {
-        $request->validate([
-            'user_solicita_id' => 'required|exists:users,id',
-            'estudios_agregados_ids' => 'array',
-            'estudios_adicionales' => 'array',
+   public function store(Request $request, Estancia $estancia, VentaService $ventaService)
+{
+    dd($request->all());
+    $request->validate([
+        'user_solicita_id' => 'required|exists:users,id',
+        'estudios_agregados_ids' => 'array',
+        'estudios_adicionales' => 'array',
+    ]);
+
+    DB::beginTransaction();
+    try {
+        // --- 1. SE CREA UNA ÚNICA INSTANCIA PARA TODO EL GRUPO ---
+        $instanciaMaestra = FormularioInstancia::create([
+            'fecha_hora' => now(),
+            'estancia_id' => $estancia->id,
+            'formulario_catalogo_id' => FormularioCatalogo::ID_SOLICITUD_ESTUDIOS,
+            'user_id' => Auth::id(),
         ]);
 
-        DB::beginTransaction();
-        try {
-            // 1. Crear Instancia Maestra para la Solicitud (Cabecera)
-            $instanciaCabecera = FormularioInstancia::create([
-                'fecha_hora' => now(),
-                'estancia_id' => $estancia->id,
-                'formulario_catalogo_id' => FormularioCatalogo::ID_SOLICITUD_ESTUDIOS,
-                'user_id' => Auth::id(),
-            ]);
+        // --- 2. SE CREA LA CABECERA DE LA SOLICITUD ---
+        $solicitud = SolicitudEstudio::create([
+            'id' => $instanciaMaestra->id, // Comparte ID con la instancia
+            'user_llena_id' => Auth::id(),
+            'user_solicita_id' => $request->user_solicita_id,
+            'itemable_id' => $estancia->id,
+            'itemable_type' => 'App\Models\Estancia',
+            'estado' => SolicitudEstudio::ESTADO_SOLICITADO
+        ]);
 
-            $solicitud = SolicitudEstudio::create([
-                'id' => $instanciaCabecera->id,
-                'user_llena_id' => Auth::id(),
-                'user_solicita_id' => $request->user_solicita_id,
-                'itemable_id' => $estancia->id,
-                'itemable_type' => $request->itemable_type ?? 'App\Models\Estancia',
-                'estado' => SolicitudEstudio::ESTADO_SOLICITADO
-            ]);
+        $itemsCreados = collect();
 
-            $itemsCreados = collect();
+      if ($request->filled('estudios_agregados_ids')) {
+    foreach ($request->estudios_agregados_ids as $catalogoId) {
+        $estudioDb = CatalogoEstudio::find($catalogoId);
 
-            // 2. Procesar Estudios de Catálogo
-            if ($request->filled('estudios_agregados_ids')) {
-                foreach ($request->estudios_agregados_ids as $catalogoId) {
-                    $estudioDb = CatalogoEstudio::find($catalogoId);
-
-                    // COMO TU MIGRACIÓN DE PAQUETES PIDE UN ID DE FORMULARIO_INSTANCIAS:
-                    $instanciaItem = FormularioInstancia::create([
-                        'fecha_hora' => now(),
-                        'estancia_id' => $estancia->id,
-                        'formulario_catalogo_id' => FormularioCatalogo::ID_SOLICITUD_ESTUDIOS, // O el ID correspondiente a un item
-                        'user_id' => Auth::id(),
-                    ]);
-
-                    $item = Paquete::create([
-                        'id' => $instanciaItem->id, // Primary Key vinculada a formulario_instancias
-                        'solicitud_estudio_id' => $solicitud->id,
-                        'catalogo_estudio_id' => $catalogoId,
-                        'departamento_destino' => $estudioDb->departamento ?? 'GENERAL',
-                        'estado' => 'SOLICITADO',
-                    ]);
-
-                    $itemsCreados->push($item);
-                    $this->registrarVentaItem($ventaService, $estancia, $catalogoId);
-                }
-            }
-
-            // 3. Procesar Estudios Manuales ("Otros")
-            if ($request->filled('estudios_adicionales')) {
-                foreach ($request->estudios_adicionales as $manual) {
-                    $instanciaManual = FormularioInstancia::create([
-                        'fecha_hora' => now(),
-                        'estancia_id' => $estancia->id,
-                        'formulario_catalogo_id' => FormularioCatalogo::ID_SOLICITUD_ESTUDIOS,
-                        'user_id' => Auth::id(),
-                    ]);
-
-                    $item = Paquete::create([
-                        'id' => $instanciaManual->id, // Primary Key vinculada a formulario_instancias
-                        'solicitud_estudio_id' => $solicitud->id,
-                        'otro_estudio' => $manual['nombre'],
-                        'departamento_destino' => $manual['departamento'] ?? 'GENERAL',
-                        'estado' => 'SOLICITADO',
-                    ]);
-                    $itemsCreados->push($item);
-                }
-            }
-
-            // 4. Notificaciones
-            if ($itemsCreados->isNotEmpty()) {
-                $this->notificarDepartamentos($solicitud, $itemsCreados);
-            }
-
-            DB::commit();
-            return Redirect::route('estancias.show', $estancia->id)->with('success', 'Solicitud y paquetes creados.');
-
-        } catch (\Exception $e) {
-            DB::rollback();
-            Log::error("Error en PaqueteController: " . $e->getMessage());
-            return Redirect::back()->with('error', 'Error: ' . $e->getMessage());
-        }
+      $item = Paquete::create([
+        'formulario_instancia_id' => $instanciaMaestra->id,
+        'solicitud_estudio_id'    => $solicitud->id,
+        'catalogo_estudio_id'     => $catalogoId,
+        'departamento_destino'    => $estudioDb->departamento ?? 'GENERAL',
+        'estado'                  => 'SOLICITADO',
+    ]);
+        dd($item->toArray());
+        $this->registrarVentaItem($ventaService, $estancia, $catalogoId);
     }
+}
+
+        // --- 4. PROCESAR ESTUDIOS MANUALES ---
+      if ($request->filled('estudios_adicionales')) {
+    foreach ($request->estudios_adicionales as $manual) {
+        // Validamos si 'manual' es un array (viene de un input dinámico) o un string
+        $nombreEstudio = is_array($manual) ? ($manual['nombre'] ?? 'Estudio manual') : $manual;
+        $deptoEstudio  = is_array($manual) ? ($manual['departamento'] ?? 'GENERAL') : 'GENERAL';
+
+        Paquete::create([
+            'formulario_instancia_id' => $instanciaMaestra->id,
+            'solicitud_estudio_id'    => $solicitud->id,
+            'catalogo_estudio_id'     => null,
+            'otro_estudio'            => $nombreEstudio,
+            'departamento_destino'    => $deptoEstudio,
+            'estado'                  => 'SOLICITADO',
+        ]);
+    }
+}
+
+        DB::commit();
+        // Redirigimos al SHOW del paquete recién creado
+        return Redirect::route('paquetes.show', $solicitud->id)
+            ->with('success', 'Solicitud generada correctamente.');
+
+    } catch (\Exception $e) {
+        DB::rollback();
+        Log::error("Error en PaqueteController: " . $e->getMessage());
+        return Redirect::back()->with('error', 'Error: ' . $e->getMessage());
+    }
+}
 
     private function registrarVentaItem(VentaService $ventaService, Estancia $estancia, $catalogo_estudio_id)
     {
