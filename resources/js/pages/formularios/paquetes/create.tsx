@@ -2,6 +2,7 @@ import React, { useMemo, useState } from 'react';
 import { useForm, usePage, router } from '@inertiajs/react';
 import { Estancia, CatalogoEstudio, SolicitudEstudio, User, PageProps } from '@/types';
 import { route } from 'ziggy-js';
+import PacienteCard from '@/components/paciente-card';
 
 import PrimaryButton from '@/components/ui/primary-button';
 import Checkbox from '@/components/ui/input-checkbox';
@@ -59,7 +60,7 @@ const SECCIONES_DATA = [
 const SolicitudEstudiosForm = ({ estancia, catalogoEstudios = [], modeloTipo }: Props) => {
     const { auth } = usePage<PageProps>().props;
     const [otrosInputs, setOtrosInputs] = useState<Record<string, string>>({});
-
+ 
     const { data, setData, post, processing, reset } = useForm({
         user_solicita_id: auth.user.id,
         estudios_agregados_ids: [] as number[],
@@ -92,7 +93,7 @@ const SolicitudEstudiosForm = ({ estancia, catalogoEstudios = [], modeloTipo }: 
     const addOtroEstudio = (categoria: string) => {
         const nombre = otrosInputs[categoria];
         if (!nombre || nombre.trim() === '') return;
-
+        
         // Evitar duplicados
         if (!data.estudios_adicionales.some(e => e.nombre === nombre && e.departamento === categoria)) {
             setData('estudios_adicionales', [...data.estudios_adicionales, { nombre: nombre.trim(), departamento: categoria }]);
@@ -147,7 +148,8 @@ const SolicitudEstudiosForm = ({ estancia, catalogoEstudios = [], modeloTipo }: 
     };
 
     return (
-        <MainLayout>
+        <MainLayout pageTitle='Paquete de estudios para operación'  >
+         
             <form onSubmit={handleSubmit} className="pb-20 max-w-7xl mx-auto p-4">
                 <div className="grid grid-cols-1 gap-6">
                     {SECCIONES_DATA.map((seccion) => (
@@ -218,19 +220,43 @@ const SolicitudEstudiosForm = ({ estancia, catalogoEstudios = [], modeloTipo }: 
                     ))}
 
                     {/* Resumen Flotante */}
-                    <div className="bg-gray-400 text-white p-6 rounded-xl shadow-lg sticky bottom-4 flex justify-between items-center border-t-4 border-blue-400 z-10">
-                        <div>
-                            <p className="text-sm opacity-80 font-medium">Seleccionados:</p>
-                            <h4 className="text-xl font-bold">
-                                {data.estudios_agregados_ids.length + data.estudios_adicionales.length} Servicios
+                  <div className="bg-gray-500 text-white p-4 sm:p-6 rounded-xl shadow-2xl sticky bottom-4 border-t-4 border-blue-500 z-50 
+                flex flex-col sm:flex-row gap-4 sm:gap-0 justify-between items-center transition-all duration-300">
+    
+                        {/* Sección de Contador: Se centra en móvil, se alinea a la izquierda en desktop */}
+                        <div className="text-center sm:text-left w-full sm:w-auto">
+                            <p className="text-xs sm:text-sm opacity-80 font-medium uppercase tracking-wider">
+                                Servicios seleccionados
+                            </p>
+                            <h4 className="text-lg sm:text-2xl font-black">
+                                {data.estudios_agregados_ids.length + data.estudios_adicionales.length} Ítems
                             </h4>
                         </div>
-                        <div className="flex gap-4">
-                            <Button type="button" onClick={() => {reset(); setOtrosInputs({});}} className="bg-transparent border border-white/30 hover:bg-white/10">
-                                Limpiar
+
+                        {/* Sección de Botones: Stack vertical en móvil, horizontal en desktop */}
+                        <div className="flex flex-col-reverse sm:flex-row gap-3 w-full sm:w-auto">
+                            <Button 
+                                type="button" 
+                                onClick={() => {reset(); setOtrosInputs({});}} 
+                                className="w-full sm:w-auto bg-transparent border border-white/20 hover:bg-white/10 text-white py-3 sm:py-2"
+                            >
+                                Limpiar Todo
                             </Button>
-                            <PrimaryButton type="submit" disabled={processing} className="px-8">
-                                {processing ? 'Enviando...' : 'Confirmar Solicitud'}
+                            
+                            <PrimaryButton 
+                                type="submit" 
+                                disabled={processing} 
+                                className="w-full sm:w-auto px-10 py-3 sm:py-2 shadow-lg shadow-blue-900/20"
+                            >
+                                {processing ? (
+                                    <span className="flex items-center justify-center gap-2">
+                                        <svg className="animate-spin h-4 w-4 text-white" viewBox="0 0 24 24">
+                                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"></circle>
+                                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                        </svg>
+                                        Enviando...
+                                    </span>
+                                ) : 'Confirmar Solicitud'}
                             </PrimaryButton>
                         </div>
                     </div>

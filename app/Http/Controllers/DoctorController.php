@@ -94,62 +94,62 @@ class DoctorController extends Controller implements HasMiddleware
     }
 
    
-public function store(UserRequest $request)
-{
-    // 1. Obtener datos validados
-    $validatedData = $request->validated();
+    public function store(UserRequest $request)
+    {
+        // 1. Obtener datos validados
+        $validatedData = $request->validated();
 
-    // 2. LOG DE DEPURACIÓN (Revisa tu archivo storage/logs/laravel.log)
-    Log::info('Datos de calificaciones recibidos:', [
-        'qualifications' => $validatedData['professional_qualifications'] ?? 'No llegaron calificaciones'
-    ]);
-
-    DB::beginTransaction();
-    try {
-        $user = User::create([
-            'nombre'           => $validatedData['nombre'],
-            'apellido_paterno' => $validatedData['apellido_paterno'],
-            'apellido_materno' => $validatedData['apellido_materno'],
-            'curp'             => $validatedData['curp'],
-            'sexo'             => $validatedData['sexo'],
-            'fecha_nacimiento' => $validatedData['fecha_nacimiento'],
-            'telefono'         => $validatedData['telefono'],
-            'colaborador_responsable_id' => $validatedData['colaborador_responsable_id'],
-            'email'            => $validatedData['email'],
-            'password'         => Hash::make($validatedData['password']),
+        // 2. LOG DE DEPURACIÓN (Revisa tu archivo storage/logs/laravel.log)
+        Log::info('Datos de calificaciones recibidos:', [
+            'qualifications' => $validatedData['professional_qualifications'] ?? 'No llegaron calificaciones'
         ]);
 
-        $role = Role::find($validatedData['cargo_id']);
-        $user->assignRole($role);
+        DB::beginTransaction();
+        try {
+            $user = User::create([
+                'nombre'           => $validatedData['nombre'],
+                'apellido_paterno' => $validatedData['apellido_paterno'],
+                'apellido_materno' => $validatedData['apellido_materno'],
+                'curp'             => $validatedData['curp'],
+                'sexo'             => $validatedData['sexo'],
+                'fecha_nacimiento' => $validatedData['fecha_nacimiento'],
+                'telefono'         => $validatedData['telefono'],
+                'colaborador_responsable_id' => $validatedData['colaborador_responsable_id'],
+                'email'            => $validatedData['email'],
+                'password'         => Hash::make($validatedData['password']),
+            ]);
 
-        // 3. GUARDAR CREDENCIALES
-        if (!empty($validatedData['professional_qualifications'])) {
-            foreach ($validatedData['professional_qualifications'] as $qual) {
-                
-                // Extraemos el valor de la cédula buscando en ambos nombres posibles
-                $cedulaValor = $qual['cedula_profesional'] ?? ($qual['cedula'] ?? null);
+            $role = Role::find($validatedData['cargo_id']);
+            $user->assignRole($role);
 
-                // IMPORTANTE: Si el título no está vacío, intentamos guardar
-                if (!empty($qual['titulo'])) {
-                    CredencialEmpleado::create([
-                        'user_id'            => $user->id,
-                        'titulo'             => $qual['titulo'],
-                        // Si el valor sigue siendo null, ponemos un string vacío para evitar el error de SQL
-                        'cedula_profesional' => $cedulaValor ?? '', 
-                    ]);
+            // 3. GUARDAR CREDENCIALES
+            if (!empty($validatedData['professional_qualifications'])) {
+                foreach ($validatedData['professional_qualifications'] as $qual) {
+                    
+                    // Extraemos el valor de la cédula buscando en ambos nombres posibles
+                    $cedulaValor = $qual['cedula_profesional'] ?? ($qual['cedula'] ?? null);
+
+                    // IMPORTANTE: Si el título no está vacío, intentamos guardar
+                    if (!empty($qual['titulo'])) {
+                        CredencialEmpleado::create([
+                            'user_id'            => $user->id,
+                            'titulo'             => $qual['titulo'],
+                            // Si el valor sigue siendo null, ponemos un string vacío para evitar el error de SQL
+                            'cedula_profesional' => $cedulaValor ?? '', 
+                        ]);
+                    }
                 }
             }
+
+            DB::commit();
+            return redirect()->back()->with('success', 'Doctor creado correctamente.');
+
+        } catch (Exception $e) {
+            DB::rollBack();
+            Log::error("Error detallado en store: " . $e->getMessage());
+            return back()->withInput()->with('error', 'Error al registrar: ' . $e->getMessage());
         }
-
-        DB::commit();
-        return redirect()->route('doctores.index')->with('success', 'Doctor creado correctamente.');
-
-    } catch (Exception $e) {
-        DB::rollBack();
-        Log::error("Error detallado en store: " . $e->getMessage());
-        return back()->withInput()->with('error', 'Error al registrar: ' . $e->getMessage());
     }
-}
 
 
     public function create()
@@ -252,7 +252,7 @@ public function store(UserRequest $request)
             }
 
             DB::commit();
-            return redirect()->route('doctores.index')
+            return redirect()->back()
                 ->with('success', 'Doctor actualizado exitosamente.');
 
         } catch (Exception $e) {

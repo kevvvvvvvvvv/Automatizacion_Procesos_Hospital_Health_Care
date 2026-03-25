@@ -73,7 +73,7 @@ export default function TicketPago({
                                     <td className="text-left align-top">
                                         {detalleVenta?.clave_producto_servicio || ''}
                                     </td>                                    
-                                    <td className="text-left align-top break-words pr-1">
+                                    <td className="text-left align-top wrap-break-word pr-1">
                                         {nombreItem}
                                     </td>
                                     <td className="text-right align-top">

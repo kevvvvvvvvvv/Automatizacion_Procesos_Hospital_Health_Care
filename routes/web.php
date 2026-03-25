@@ -66,7 +66,7 @@ use App\Http\Controllers\EncuestaPersonalController;
 use App\Http\Controllers\ReporteInterconsultaController;
 use App\Http\Controllers\ReporteConcienciaController;
 use App\Http\Controllers\ReporteSignosController;
-use App\http\Controllers\RecetaController;
+use App\Http\Controllers\RecetaController;
 use App\Http\Controllers\ResumenMedicoController;
 
 
@@ -137,7 +137,6 @@ Route::get('/receta/pdf/{tipo}/{id}', [RecetaController::class, 'generar'])
     ->middleware('auth');  
 
 Route::post('/cargos', [CargoController::class, 'store'])->name('cargos.store')->middleware('auth');
-Route::resource('paquetes', PaqueteController::class)->middleware('auth');
 Route::resource('habitaciones', HabitacionController::class)->middleware('auth');
 Route::resource('producto-servicios', ProductoServicioController::class)->middleware('auth');
 Route::resource('pacientes', PacienteController::class)->middleware('auth');
@@ -151,6 +150,7 @@ Route::resource('mantenimiento', MantenimientoController::class)->middleware('au
 
 Route::resource('respaldo', BackupsController::class)->middleware('auth');
 Route::get('respaldo/{backup}/download', [BackupsController::class, 'download'])->name('bd.respaldo.download')->middleware('auth');
+Route::resource('pacientes.estancias.paquetes', PaqueteController::class)->shallow()->middleware('auth');
 
 Route::resource('pacientes.responsable', FamiliarResponsableController::class)->middleware('auth');
 Route::resource('pacientes.estancias', EstanciaController::class)->shallow()->middleware('auth');

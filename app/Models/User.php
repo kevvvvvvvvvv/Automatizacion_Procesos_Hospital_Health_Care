@@ -15,6 +15,7 @@ use App\Models\CredencialEmpleado;
 use App\Models\BackupsRestauration\Backups;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Laravel\Cashier\Billable;
+use Illuminate\Support\Facades\Auth;
 
 /**
  * @property int $id
@@ -199,6 +200,26 @@ class User extends Authenticatable
     public function backups()
     {
         return $this->hasMany(Backups::class, 'user_id', 'id');
+    }
+
+    protected static function booted()
+    {
+        static::creating(function ($user) {
+            if (Auth::check()) {
+                $user->created_by = Auth::id();
+            }
+        });
+
+        static::updating(function ($user) {
+            if (Auth::check()) {
+                $user->updated_by = Auth::id();
+            }
+        });
+    }
+
+    public function creator()
+    {
+        return $this->belongsTo(User::class, 'created_by');
     }
 
 }

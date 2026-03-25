@@ -24,13 +24,25 @@ class HojaInsumosBasicosRequest extends FormRequest
         return [
             'cantidad' => 'required|integer|min:1', 
             'producto_servicio_id' => 'nullable|integer',
+            'nombre_insumo' => 'required|string',
+        ];
+    }
+
+    public function attributes(): array
+    {
+        return [
+            'nombre_insumo' => 'nombre del insumo',
+            'cantidad' => 'cantidad',
+            'producto_servicio_id' => 'insumo del catálogo',
         ];
     }
 
     public function messages(): array
     {
         return [
-            'cantidad.min' => 'La cantidad no puede ser menor a 1'
+            'required' => 'El campo :attribute es indispensable para el registro.',
+            'min'      => 'La :attribute debe ser de al menos :min.',
+            'integer'  => 'Asegúrate de que :attribute sea un número entero.',
         ];
     }
 }

@@ -48,16 +48,16 @@ const PlanSoluciones: React.FC<Props> = ({ value, onChange, error, soluciones })
 
     return (
         <div className="p-4 bg-white rounded-lg shadow-sm border mt-4">
-            <h4 className="text-lg font-semibold mb-3 border-b pb-2">Plan de Soluciones</h4>
+            <h4 className="text-lg font-semibold mb-3 border-b pb-2">Plan de soluciones</h4>
             
             <div className="p-4 border rounded-lg bg-gray-50 space-y-4 mb-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
                      <SelectInput
                         label="Solución"
-                        options={solucionesOptions} // Ahora es [] si no hay datos
+                        options={solucionesOptions} 
                         value={localSolucion.solucion_id}
                         onChange={(val) => {
-                            const sel = solucionesOptions.find(o => o.value === val); // Ahora solucionesOptions es array
+                            const sel = solucionesOptions.find(o => o.value === val);
                             setLocalSolucion(prev => ({ ...prev, solucion_id: val, solucion_nombre: sel?.label || '' }));
                         }}
                     />

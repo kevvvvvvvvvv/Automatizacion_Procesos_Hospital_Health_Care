@@ -1,6 +1,6 @@
 import React from 'react';
 import { useForm, router } from '@inertiajs/react';
-import { HojaEnfermeriaQuirofano, ProductoServicio } from '@/types';
+import { HojaEnfermeriaQuirofano, HojaInsumosBasicos, ProductoServicio } from '@/types';
 import { route } from 'ziggy-js';
 import Swal from 'sweetalert2';
 
@@ -24,12 +24,19 @@ const MaterialesForm: React.FC<Props> = ({ hoja, materiales }) => {
     const { data, setData, post, processing, errors } = useForm({
         material_id: '',
         cantidad: '',
+        es_manual: false,
+        nombre_insumo: '',
     });
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        if (!data.material_id || !data.cantidad) {
-            Swal.fire('Error', 'Selecciona material y cantidad', 'warning');
+
+        if (data.es_manual && !data.nombre_insumo.trim()) {
+            Swal.fire("Error", "Escriba el nombre del insumo manual.");
+            return;
+        }
+        if (!data.es_manual && !data.material_id) {
+            Swal.fire("Error","Seleccione un insumo del inventario.");
             return;
         }
 
@@ -70,6 +77,7 @@ const MaterialesForm: React.FC<Props> = ({ hoja, materiales }) => {
             }
         });
     }
+
     return (
 
         <div>
@@ -78,19 +86,50 @@ const MaterialesForm: React.FC<Props> = ({ hoja, materiales }) => {
                 
                 <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
                     <div className="md:col-span-7">
-                        <SelectInput
-                            label="Seleccionar insumo"
-                            options={materialesOptions} 
-                            value={data.material_id}
-                            onChange={(value) => setData('material_id', value as string)}
-                            error={errors.material_id}
-                        />
+                        <div className="flex justify-between items-center mb-1">
+                            <label className="block font-medium text-sm text-gray-700">
+                                {data.es_manual ? "Escribir insumo" : "Seleccionar insumo"}
+                            </label>
+                            <button 
+                                type="button"
+                                onClick={() => setData('es_manual', !data.es_manual)}
+                                className="text-xs text-blue-600 font-semibold hover:text-blue-800 transition-colors cursor-pointer"
+                            >
+                                {data.es_manual ? "← Buscar en catálogo" : "Escribir manual →"}
+                            </button>
+                        </div>
+
+                        {!data.es_manual ? (
+                            <SelectInput
+                                options={materialesOptions} 
+                                value={data.material_id}
+                                onChange={(value) => {
+                                    const insumoSeleccionado = materiales.find(m => m.id == value);
+                                    setData(d => ({
+                                        ...d,
+                                        material_id: value,
+                                        nombre_insumo: insumoSeleccionado?.nombre_prestacion ?? '',
+                                    }))
+                                }}
+                                error={errors.material_id}
+                            />
+                        ) : (
+                            <InputText
+                                id=''
+                                name=''
+                                label=''
+                                value={data.nombre_insumo}
+                                onChange={e => setData('nombre_insumo', e.target.value)}
+                                error={errors.nombre_insumo}
+                                placeholder="Nombre del insumo..."
+                            />
+                        )}
                     </div>
-                    
+ 
                     <div className="md:col-span-3">
                         <InputText 
+                            name=""
                             id="cantidad_new"
-                            name="cantidad"
                             label="Cantidad" 
                             type="number"
                             value={data.cantidad} 
@@ -99,7 +138,7 @@ const MaterialesForm: React.FC<Props> = ({ hoja, materiales }) => {
                         />
                     </div>
                     
-                    <div className="md:col-span-2 mb-1">
+                    <div className="md:col-span-2">
                         <PrimaryButton type="submit" disabled={processing} className="w-full justify-center">
                             {processing ? '...' : 'Agregar +'}
                         </PrimaryButton>
@@ -126,12 +165,10 @@ const MaterialesForm: React.FC<Props> = ({ hoja, materiales }) => {
                                     </td>
                                 </tr>
                             ) : (
-                                hoja.hoja_insumos_basicos.map((item: any) => (
+                                hoja.hoja_insumos_basicos.map((item: HojaInsumosBasicos) => (
                                     <tr key={item.id} className="hover:bg-gray-50 transition-colors">
                                         <td className="px-6 py-4 text-sm font-medium text-gray-900">
-                                            {item.producto_servicio 
-                                                ? item.producto_servicio.nombre_prestacion 
-                                                : 'Cargando nombre...'}
+                                            {item.nombre_insumo}
                                         </td>
                                         
                                         <td className="px-6 py-2">
