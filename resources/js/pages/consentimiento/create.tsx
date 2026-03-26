@@ -28,6 +28,7 @@ const CONSENTIMIENTOS = [
   'Consentimiento 8: Procedimientos diagnósticos y terapéuticos considerados por el médico como de alto riesgo *',
   'Consentimiento 9: Cualquier procedimiento que entrañe mutilación *',
   '10: Reanimación cardiopulmonar, intubación y maniobras de resucitación',
+  '11: Indicaciones para el ingreso hospitalario',
 ];
 
 const CreateConsentimiento: React.FC<Props> = ({ paciente, estancia }) => {
@@ -77,7 +78,7 @@ const CreateConsentimiento: React.FC<Props> = ({ paciente, estancia }) => {
 
               <div className="grid grid-cols-1 gap-3">
                 {CONSENTIMIENTOS.map((label, idx) => {
-                  const key = idx === CONSENTIMIENTOS.length - 1 ? '10' : String(idx);
+                  const key = idx === CONSENTIMIENTOS.length - 1 ? '11' : String(idx);
                   const selected = (data.route_pdf ?? []).includes(key);
 
                   return (
@@ -96,7 +97,7 @@ const CreateConsentimiento: React.FC<Props> = ({ paciente, estancia }) => {
                       <div className="flex-1">
                         <div className="text-sm font-medium text-gray-900">{label}</div>
 
-                        {key === '10' && selected && (
+                        {key === '10'&& selected && (
                           <div className="mt-2">
                             <textarea
                               value={data.diagnostico ?? ''}
