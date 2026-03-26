@@ -156,30 +156,31 @@
                 <li>Por seguridad de todos los usuarios del hospital, en la recepción le pedirá que se indentifique al acceder a las instalaciones.</li>
                 <li>Silencio. Es conveniente mantener el silencio en la medida de lo posible y limitar el número de acompañantes. Moderar el tono de voz y de cualquiermedio audiovisual ayuda a respetar el descanso de los pacientes.</li>
                 <li>Se pide sean respetados los señalamientos internos, así como <span class="important"> guardar silencio</span> en las salas de espera, pasillos y habitaciones</li>
-
-                <li>Se permite un máximo de <span style="font-weight:bold">2 visitantes</span> a la vez por habitación.</li>
-                <li>Quedan prohibidas las visitas de <span style="font-weight:bold">menores de 12 años</span> de edad.</li>
-                <li>Solo podrá pernoctar un acompañante por cuarto.</li>
-                <li>Es obligatorio mantener el silencio en pasillos y habitaciones.</li>
-                <li>Las puertas de las habitaciones deben permanecer cerradas por seguridad.</li>
+                <li>Se debe mantener el orden dentro de las inatlaciones</li>
+                <li>Por disposición de la secretaria de salud, <span class="important">queda prohibido las visitasde menores de 12 años de edad </span> al interior, esto con el fin de proteger a los pequeños de cualquier contacto con microorganismos intrahospitalarios</li>
+                <li>Por el buenestar de nuestros pacientes solo se permite un máximo de 2 visitas a la vez por habitación, (horarios de visitas)</li>
+                <li>Los pacientes deberán estar acompañados por un familiar o un responsable durante su hospitalización</li>
+                <li>Por higiene y seguridad, los familiares y visistantes <span class="important"> no deberán sentarse o acostarse en la cama del paciente</span></li>
+                <li>Por higiene y seguridad, los familiares y visitantes <span class="important"> no están autorizados a bañarse en las habitaciones, es exclusivo del paciente</span></li>
+                <li>El médico tiene la facultad de prihibir visitas al paciente.</li>
+                <li>Por seguridad del paciente <span class="important"> no deberánsalir de su habitacion para paseo, </span> salvo indicación médica y únicamente en el pasillo de su área de hospitalización.</li>
+                <li><span class="important">Se prohibe introducior peluches, mascotas, globos inflados con helio, y arreglos florales y frutales</span> ya que interfieren con el tratamiento y cuidado que le otorgamos a su paciente.</li>
+                <li>Todos los medicamentoss que requira durante su estancia hospitalaria serán proporcionados por el hospital. <span class="important">No esta permitido que usted o sus familiares, ingresen medicamenttos para su consumo</span> que no hayan sido suministrados por el hospital. Lo anterior es por su seguridadm, con la finalidad de disminuir los riesgos en el proceso de medicación</li>
+                <li>La alimentación del pacienyte es parte de su tratamiento , por lo que <span class="important"> queda prohibido introducir alimentos a las habitaciones </span> y le recomendamos cuidar que su paciente no ingiera alimentos y bebidas <span class="important">fuera de los indicados por su médico tratante. </span></li>
+                <li>El servicio de nutrición funciona a de las 7 a las 19 horas. Despúes de este horario solo será posible ofrecerle una colación</li>
+                <li>Los aliementos que no consuma el paciente no son transferibles a sus acompañantes </li>
+                <li>Está estrictamente prohibido fumar o ingerir bebidas alcohólicas dentro de las instalaciones del hospital</li>
+                <li>Por bienestar y respeto a nuestros pacientes, <span class="important"> no se permiten ningun tipo de festejoo</span> en las habitaciones</li>
+                <li>Pasado las 19 horas solo podrá permanecer un acompañante por paciente en la habiatción</li>
+                <li>Soló podrá pernoctaar un acompañante por cuarto</li>
+                <li>Está prohibido permanecer en la sala de espera despúes de la hora de la visita (19:hrs)</li>
+                <li>En caso de traer consigo estudios especiales, <span class="important">favor de recoger originales antes de su egreso</span></li>
+                <li><span class="important">El hospital no se hace responsable por daños o perdidas de objeros personales u objetos de valor</span></li>
             </ul>
         </div>
 
-        <h3>Restricciones Importantes</h3>
-        <div class="section-content">
-            <ul>
-                <li>Está estrictamente prohibido introducir alimentos ajenos a la dieta hospitalaria.</li>
-                <li>Prohibido fumar o ingerir bebidas alcohólicas dentro de las instalaciones.</li>
-                <li>No se permite introducir peluches, mascotas, globos de helio o arreglos florales/frutales.</li>
-                <li>El uso de la ducha es exclusivo para el paciente; familiares y visitas no deberán bañarse en la habitación.</li>
-            </ul>
-        </div>
 
-        <h3>Responsabilidades</h3>
-        <div class="section-content">
-            <p>El hospital no se hace responsable por la pérdida de objetos de valor. Se recomienda no traer alhajas ni grandes sumas de dinero.</p>
-            <p>Al finalizar su estancia, favor de recoger todos sus estudios clínicos originales antes del egreso.</p>
-        </div>
+       
 
         <div style="margin-top: 40px; text-align: center;">
             <p>He leído y acepto el reglamento de la institución:</p>
