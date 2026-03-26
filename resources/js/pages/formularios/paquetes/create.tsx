@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { useForm, usePage, router } from '@inertiajs/react';
-import { Estancia, CatalogoEstudio, SolicitudEstudio, User, PageProps } from '@/types';
+import { Estancia, CatalogoEstudio, SolicitudEstudio, User, PageProps, Paciente } from '@/types';
 import { route } from 'ziggy-js';
 import PacienteCard from '@/components/paciente-card';
 
@@ -12,6 +12,7 @@ import MainLayout from '@/layouts/MainLayout';
 
 interface Props {
     estancia: Estancia;
+    paciente: Paciente;
     catalogoEstudios: CatalogoEstudio[];
     solicitudesAnteriores: SolicitudEstudio[];
     medicos: User[];
@@ -57,7 +58,7 @@ const SECCIONES_DATA = [
     }
 ];
 
-const SolicitudEstudiosForm = ({ estancia, catalogoEstudios = [], modeloTipo }: Props) => {
+const SolicitudEstudiosForm = ({ paciente, estancia, catalogoEstudios = [], modeloTipo }: Props) => {
     const { auth } = usePage<PageProps>().props;
     const [otrosInputs, setOtrosInputs] = useState<Record<string, string>>({});
  
@@ -115,7 +116,7 @@ const SolicitudEstudiosForm = ({ estancia, catalogoEstudios = [], modeloTipo }: 
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        post(route('estancia.solicitudes-estudios.store', { estancia: estancia.id }), {
+        post(route('pacientes.estancias.paquetes.store', { paciente: estancia.paciente_id, estancia: estancia.id }), {
             preserveScroll: true,
             onSuccess: () => {
                 reset();
@@ -148,7 +149,7 @@ const SolicitudEstudiosForm = ({ estancia, catalogoEstudios = [], modeloTipo }: 
     };
 
     return (
-        <MainLayout pageTitle='Paquete de estudios para operación'  >
+        <MainLayout pageTitle='Paquete de estudios para operación' link='estancias.show'    linkParams={estancia.id}  >
          
             <form onSubmit={handleSubmit} className="pb-20 max-w-7xl mx-auto p-4">
                 <div className="grid grid-cols-1 gap-6">
