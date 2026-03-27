@@ -15,9 +15,18 @@ use App\Models\Inventario\CatalogoViaAdministracion;
 use App\Models\Inventario\ProductoServicio;
 use App\Models\Inventario\Medicamento;
 use App\Models\Estudio\CatalogoEstudios;
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class ProductoServicioController extends Controller
 {
+    protected function failedValidation(Validator $validator)
+{
+    throw new HttpResponseException(response()->json([
+        'success' => false,
+        'errors' => $validator->errors()
+    ], 422));
+}
     public function index()
     {
         $productoServicios = ProductoServicio::with(['medicamento', 'insumo'])->get(); 
@@ -37,63 +46,55 @@ class ProductoServicioController extends Controller
 
     // ... (cabecera del controlador igual)
 
-    public function store(ProductoServicioRequest $request)
-    {
-        return DB::transaction(function () use ($request) {
-            // 1. Creamos el registro base
-            $producto = ProductoServicio::create($request->validated());
-           {/*$producto = ProfuctoServicio::create([
-                'tipo' => $request->tipo,
-                'subtipo' => $request->subtipo,
-                'codigo_presentacion' $request->codigo_presentacion,
-                'codigo_barra' => $request->codigo_barra,
-                'nombre_presentacion' => $request->nombre_presentacion,
-                'importe' => $request->importe * $request->iva,
-                'cantidad' => $reques
-                'cantidad_maxima'
-                'cantidad_minima'
-                'proveedor'
-                'fecha_caducidad'
-                'iva'
-            ])*/}
-            if ($request->subtipo === 'MEDICAMENTOS') {
-                $medicamento = $producto->medicamento()->create([
-                    'id' => $producto->id,
-                    'excipiente_activo_gramaje' => $request->excipiente_activo_gramaje,
-                    'volumen_total' => $request->volumen_total,
-                    'nombre_comercial' => $request->nombre_comercial,
-                    'gramaje' => $request->gramaje,
-                    'fraccion' => $request->fraccion ? 1 : 0,
-                ]);
+ public function store(ProductoServicioRequest $request)
+{
+    return DB::transaction(function () use ($request) {
+        // 1. Crear registro base (Esto guarda el Servicio siempre)
+        $producto = ProductoServicio::create($request->validated());
+       // dd($producto);
+        $subtipo = strtoupper($request->subtipo);
 
-                if ($request->via_administracion) {
-                    $medicamento->vias()->sync($request->via_administracion);
-                }
-            } 
-            elseif ($request->subtipo === 'ESTUDIOS') {
-                // SOLUCIÓN AL ERROR 1364: Agregamos 'nombre'
-                $producto->estudio()->create([
-                    'id'             => $producto->id,
-                    'nombre'         => $request->nombre_prestacion, // <-- IMPORTANTE
-                    'tipo_estudio'   => $request->tipo_estudio,
-                    'departamento'   => $request->departamento,
-                    'tiempo_entrega' => $request->tiempo_entrega,
-                    'link'           => $request->link,
-                ]);
-            } 
-            elseif ($request->subtipo === 'INSUMOS') {
-                $producto->insumo()->create([
-                    'id' => $producto->id,
-                    'categoria' => $request->categoria,
-                    'especificacion' => $request->especificacion,
-                    'categoria_unitaria' => $request->categoria_unitaria,
-                ]);
+        // 2. Lógica para hijos específicos
+        if ($subtipo === 'MEDICAMENTOS') {
+            $medicamento = Medicamento::create([
+                'id' => $producto->id,
+                'excipiente_activo_gramaje' => $request->excipiente_activo_gramaje,
+                'volumen_total' => $request->volumen_total,
+                'nombre_comercial' => $request->nombre_comercial,
+                'gramaje' => $request->gramaje,
+                'fraccion' => $request->fraccion ? 1 : 0,
+            ]);
+
+            if ($request->filled('viasAdministracion')) {
+                $medicamento->vias()->sync($request->viasAdministracion);
             }
-            
-            return Redirect::route('producto-servicios.index')
-                ->with('success', 'Registro completado correctamente');
-        });
-    }
+        } 
+        elseif ($subtipo === 'ESTUDIOS') {
+            // Solo entra aquí si es estudio, evitando el error de 'tipo_estudio' null en servicios
+            $producto->estudio()->create([
+                'id'             => $producto->id,
+                'nombre'         => $request->nombre_prestacion ?? $request->nombre,
+                'tipo_estudio'   => $request->tipo_estudio, 
+                'departamento'   => $request->departamento,
+                'tiempo_entrega' => $request->tiempo_entrega,
+                'link'           => $request->link,
+            ]);
+        } 
+        elseif ($subtipo === 'INSUMOS') {
+            $producto->insumo()->create([
+                'id' => $producto->id,
+                'categoria' => $request->categoria,
+                'especificacion' => $request->especificacion,
+                'categoria_unitaria' => $request->categoria_unitaria,
+            ]);
+        }
+        // Si es 'SERVICIOS', simplemente termina aquí y el commit guarda el ProductoServicio.
+
+        return Redirect::route('producto-servicios.index')
+            ->with('success', "Registro de {$subtipo} guardado correctamente.");
+    });
+
+}
 
     public function update(ProductoServicioRequest $request, ProductoServicio $productoServicio)
     {
