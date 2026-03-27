@@ -6,6 +6,7 @@ use App\Models\Caja\SesionCaja;
 use App\Models\Caja\MovimientoCaja;
 use App\Models\Venta\Pago;
 use App\Models\Caja\SolicitudTraspaso;
+use App\Models\Caja\Caja;
 
 use App\Enums\EstadoSesionCaja;
 use App\Enums\TipoMovimientoCaja;
@@ -143,7 +144,6 @@ class CajaService
                 return $solicitud;
             }
 
-            // 1. Buscamos las sesiones ABIERTAS de ambas cajas
             $sesionOrigen = SesionCaja::where('caja_id', $solicitud->caja_origen_id)
                 ->where('estado', 'abierta')
                 ->first();
@@ -159,24 +159,19 @@ class CajaService
                 throw new Exception("No se puede enviar el dinero: La caja destino cerró su turno antes de recibir la transferencia.");
             }
 
-            // 2. Actualizamos la solicitud como aprobada con el monto final
             $solicitud->update([
                 'estado' => 'aprobada',
                 'monto_aprobado' => $montoAprobado,
                 'user_aprueba_id' => $userId
             ]);
 
-            // 3. Le quitamos el dinero al Fondo (Egreso)
-            // Reutilizamos tu método registrarMovimiento para que afecte los totales de la sesión
             $this->registrarMovimiento(
                 $sesionOrigen, 
-                TipoMovimientoCaja::EGRESO, // <-- Fíjate que usa tu Enum
+                TipoMovimientoCaja::EGRESO,
                 $montoAprobado, 
-                "Traspaso autorizado a Caja ID: {$solicitud->caja_destino_id} (Ref: {$solicitud->id})", 
+                "Traspaso autorizado a caja: {$solicitud->cajaDestino->nombre} (Ref: {$solicitud->id})", 
                 $userId
             );
-
-            // 4. Le inyectamos el dinero a la Caja Operativa (Ingreso)
             $this->registrarMovimiento(
                 $sesionDestino, 
                 TipoMovimientoCaja::INGRESO, 
@@ -185,6 +180,54 @@ class CajaService
                 $userId
             );
             return $solicitud;
+        });
+    }
+
+    /**
+     * La Caja toma dinero del Fondo directamente y alerta a Bóveda
+     */    
+    public function tomarDineroDeFondo(int $cajaOperativaId, float $monto, string $concepto, int $userId)
+    {
+        return DB::transaction(function () use ($cajaOperativaId, $monto, $concepto, $userId) {
+            
+            // Identificar quién es el fondo, y quien es la bóveda
+            $fondo = Caja::where('tipo', 'fondo')->firstOrFail();
+            $boveda = Caja::where('tipo', 'boveda')->firstOrFail();
+
+            // Se buscan las sesiones abiertas
+            $sesionCaja = SesionCaja::where('caja_id', $cajaOperativaId)->where('estado', 'abierta')->first();
+            $sesionFondo = SesionCaja::where('caja_id', $fondo->id)->where('estado', 'abierta')->first();
+
+            if (!$sesionCaja || !$sesionFondo) {
+                throw new Exception("Error: La caja operativa o el fondo no tienen un turno abierto.");
+            }
+
+            // 3. MOVIMIENTO INMEDIATO: Le quitamos al Fondo y le damos a la Caja
+            $this->registrarMovimiento(
+                $sesionFondo, 
+                TipoMovimientoCaja::EGRESO, 
+                $monto, 
+                "Retiro directo hacia caja operativa - concepto: $concepto", 
+                $userId
+            );
+
+            $this->registrarMovimiento(
+                $sesionCaja, 
+                TipoMovimientoCaja::INGRESO, 
+                $monto, 
+                "Ingreso tomado del fondo - Concepto: $concepto", 
+                $userId
+            );
+
+            // Se crea la solicitud para que la Bóveda reponga el Fondo
+            return SolicitudTraspaso::create([
+                'caja_origen_id' => $boveda->id, // Bóveda paga
+                'caja_destino_id' => $fondo->id, // Fondo recibe
+                'monto_solicitado' => $monto,
+                'concepto' => "Reposición automática: La Caja " . $sesionCaja->caja->nombre . " tomó dinero del Fondo. ($concepto)",
+                'user_solicita_id' => $userId,
+                'estado' => 'pendiente'
+            ]);
         });
     }
 }

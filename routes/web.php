@@ -360,7 +360,7 @@ Route::middleware('auth:sanctum')->prefix('caja')->group(function () {
 });
 
 //Contador
-Route::get('/tesoreria/boveda', [ContaduriaController::class, 'index'])->name('contaduria.index');
+Route::get('/tesoreria/boveda', [ContaduriaController::class, 'index'])->name('contaduria.index')->middleware('auth');
 
 
 // Notificaciones

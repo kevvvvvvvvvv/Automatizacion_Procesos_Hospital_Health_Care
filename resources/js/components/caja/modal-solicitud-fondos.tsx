@@ -27,11 +27,14 @@ export const ModalSolicitudFondo = ({
         
         post(route('traspasos.solicitar'), {
             preserveScroll: true,
+            onSuccess: () => {
+                onClose();
+            }  
         });
     };
 
     return (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div className="fixed inset-0 flex items-center justify-center z-50 p-4">
             <div className="bg-white rounded-xl shadow-2xl w-full max-w-md overflow-hidden transform transition-all">
                 <div className="bg-blue-600 px-6 py-4 flex justify-between items-center">
                     <h3 className="text-lg font-bold text-white">Solicitar efectivo al fondo</h3>
@@ -52,6 +55,7 @@ export const ModalSolicitudFondo = ({
                         id=''
                         name=''
                         label='Total dinero retirado'
+                        type='number'
                         value={data.monto}
                         onChange={e=>setData('monto',e.target.value)}
                         error={errors.monto}

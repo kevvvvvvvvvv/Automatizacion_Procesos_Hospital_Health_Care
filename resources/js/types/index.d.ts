@@ -1241,8 +1241,6 @@ export interface ResumenMedico{
     updated_at: string; 
 }
 
-
-// types/caja.ts
 export interface Caja {
   id: number;
   nombre: string;
@@ -1285,8 +1283,12 @@ export interface MovimientoCaja {
   concepto: string;
   comprobante: string | null;
   user_id: number;
+
   created_at: string;
   updated_at?: string;
+
+  sesion_caja: SesionCaja;
+  user: User;
 }
 
 export interface DesgloseEfectivo {
@@ -1297,5 +1299,27 @@ export interface DesgloseEfectivo {
   total: number;
   created_at: string;
   updated_at?: string;
+}
+
+
+export interface SolicitudTraspaso {
+    id: number;
+    caja_origen_id: number;
+    caja_destino_id: number;
+    monto_solicitado: number; 
+    monto_aprobado: number | null; 
+    
+    estado: 'pendiente' | 'aprobada' | 'rechazada';
+    concepto: string;
+    user_solicita_id: number;
+    user_aprueba_id: number | null;
+
+    created_at: string;
+    updated_at: string;
+
+    caja_origen: Caja;
+    caja_destino: Caja;
+    usuario_solicita: User;
+    usuario_aprueba: User;
 }
 

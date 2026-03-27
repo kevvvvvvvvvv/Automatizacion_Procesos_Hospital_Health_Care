@@ -21,6 +21,8 @@ export const PanelCaja = ({
         return isNaN(num) ? '0.00' : num.toFixed(2);
     };
 
+    
+
     return (
         <div className="p-6 max-w-7xl mx-auto space-y-6">
             <div className="flex justify-between items-center">
@@ -73,7 +75,7 @@ export const PanelCaja = ({
                     onClick={() => setIsGastoModalOpen(true)} 
                     className="bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm flex items-center"
                 >
-                    + Registrar Gasto / Retiro
+                    + Registrar gasto / retiro
                 </button>
                 
                 <button 

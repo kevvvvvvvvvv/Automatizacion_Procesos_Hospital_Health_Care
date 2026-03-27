@@ -33,7 +33,7 @@ class CajaController extends Controller
             ->first();
 
         $sesionData = $sesion ? new SesionCajaResource($sesion) : null;
-        $cajas = Caja::all();
+        $cajas = Caja::where('tipo','operativa')->get();
 
         return Inertia::render('caja/index', [
             'sesionActiva' => $sesionData,

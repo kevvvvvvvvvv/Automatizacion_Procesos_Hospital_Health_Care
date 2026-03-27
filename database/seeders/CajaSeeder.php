@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Caja\Caja;
+use App\Models\Caja\SesionCaja;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 

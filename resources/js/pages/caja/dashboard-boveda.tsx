@@ -1,44 +1,61 @@
 import React from 'react';
-import { useForm } from '@inertiajs/react';
 import Swal from 'sweetalert2';
+import { useState } from 'react';
+import { MovimientoCaja, SolicitudTraspaso } from '@/types';
+import { route } from 'ziggy-js';
+import { router } from '@inertiajs/react';
+
 import MainLayout from '@/layouts/MainLayout';
 
 interface Props {
-    solicitudesPendientes: any;
+    solicitudesPendientes: SolicitudTraspaso[];
+    movimientosHoy: MovimientoCaja[];
+    resumenHoy: {
+        ingresos: number;
+        egresos: number;
+        balance: number;
+    };
 }
 
 export default function DashboardBoveda({ 
-    solicitudesPendientes 
+    solicitudesPendientes = [],
+    movimientosHoy = [],
+    resumenHoy
 }: Props) {
-    const { post } = useForm();
 
-    const handleAprobar = (solicitud: any) => {
+    const [vistaActiva, setVistaActiva] = useState<'solicitudes' | 'diario'>('solicitudes');
+    const [isEnviarDineroFondo, setIsEnviarDineroFondo] = useState(false);
+
+    const formatMoney = (amount: number) => {
+        return Number(amount || 0).toLocaleString('es-MX', { minimumFractionDigits: 2 });
+    };
+
+    const handleAprobar = (solicitud: SolicitudTraspaso) => {
         Swal.fire({
-            title: 'Autorizar Traspaso',
+            title: 'Autorizar traspaso',
             html: `La caja <b>${solicitud.caja_destino.nombre}</b> está pidiendo efectivo.<br/>Motivo: <i>${solicitud.concepto}</i>`,
             input: 'number',
             inputLabel: '¿Cuánto dinero enviarás realmente?',
-            inputValue: solicitud.monto_solicitado, // Le sugerimos lo que pidió
+            inputValue: solicitud.monto_solicitado, 
             showCancelButton: true,
-            confirmButtonText: 'Autorizar y Enviar Dinero',
+            confirmButtonText: 'Autorizar y enviar dinero',
             cancelButtonText: 'Cancelar',
-            confirmButtonColor: '#16a34a', // Verde Tailwind
+            confirmButtonColor: '#16a34a', 
             inputValidator: (value) => {
                 if (!value || Number(value) <= 0) return 'Debes ingresar un monto mayor a 0';
             }
         }).then((result) => {
             if (result.isConfirmed) {
-                // Si le da a confirmar, disparamos a Laravel
-                post(`/traspasos/${solicitud.id}/responder`, {
-                    data: { aprobar: true, monto_aprobado: result.value },
+                router.post(route('traspasos.responder',{solicitud: solicitud.id}), {
+                    aprobar: true, 
+                    monto_aprobado: result.value
+                },{
                     preserveScroll: true,
-                    onSuccess: () => Swal.fire('¡Transferido!', 'El dinero ya está en la caja destino.', 'success')
                 });
             }
         });
     };
 
-    // Función rápida para rechazar
     const handleRechazar = (solicitudId: number) => {
         Swal.fire({
             title: '¿Rechazar solicitud?',
@@ -49,8 +66,11 @@ export default function DashboardBoveda({
             confirmButtonText: 'Sí, rechazar'
         }).then((result) => {
             if (result.isConfirmed) {
-                post(`/traspasos/${solicitudId}/responder`, {
-                    data: { aprobar: false },
+                router.post(route('traspasos.responder', {solicitud: solicitudId}), 
+                {
+                     aprobar: false 
+                },
+                {
                     preserveScroll: true
                 });
             }
@@ -63,20 +83,48 @@ export default function DashboardBoveda({
             link='dashboard'
         >
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                <div className="flex justify-between items-center mb-8">
+                <div className="flex flex-col md:flex-row justify-between items-end mb-6 border-b border-gray-200 pb-4">
                     <div>
-                        <h1 className="text-3xl font-black text-gray-900">Tesorería y Fondo</h1>
-                        <p className="text-gray-500">Gestión de bóveda y solicitudes de efectivo</p>
+                        <h1 className="text-3xl font-black text-gray-900">Tesorería Central</h1>
+                        <p className="text-gray-500">Gestión de bóveda y libro diario</p>
+                    </div>
+                    
+                    <div className="flex space-x-2 mt-4 md:mt-0">
+                        <button 
+                            onClick={() => setVistaActiva('solicitudes')}
+                            className={`px-4 py-2 rounded-lg font-bold transition-colors ${
+                                vistaActiva === 'solicitudes' 
+                                ? 'bg-blue-600 text-white shadow-md' 
+                                : 'bg-white text-gray-600 hover:bg-gray-50 border border-gray-200'
+                            }`}
+                        >
+                            Solicitudes 
+                            {solicitudesPendientes?.length > 0 && (
+                                <span className="ml-2 bg-red-500 text-white text-xs px-2 py-0.5 rounded-full">
+                                    {solicitudesPendientes.length}
+                                </span>
+                            )}
+                        </button>
+                        <button 
+                            onClick={() => setVistaActiva('diario')}
+                            className={`px-4 py-2 rounded-lg font-bold transition-colors ${
+                                vistaActiva === 'diario' 
+                                ? 'bg-blue-600 text-white shadow-md' 
+                                : 'bg-white text-gray-600 hover:bg-gray-50 border border-gray-200'
+                            }`}
+                        >
+                            Libro Diario (Hoy)
+                        </button>
                     </div>
                 </div>
-
+                {vistaActiva === 'solicitudes' && (
                 <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
                     <div className="bg-gray-50 px-6 py-4 border-b border-gray-200">
                         <h2 className="text-lg font-bold text-gray-800 flex items-center">
                             <span className="bg-red-500 text-white text-xs px-2 py-1 rounded-full mr-2">
                                 {solicitudesPendientes?.length || 0}
                             </span>
-                            Solicitudes Pendientes
+                            Solicitudes pendientes
                         </h2>
                     </div>
 
@@ -84,21 +132,21 @@ export default function DashboardBoveda({
                         <table className="min-w-full divide-y divide-gray-200 text-left">
                             <thead className="bg-white">
                                 <tr>
-                                    <th className="px-6 py-3 text-xs font-bold text-gray-500 uppercase">Caja Destino</th>
+                                    <th className="px-6 py-3 text-xs font-bold text-gray-500 uppercase">Caja destino</th>
                                     <th className="px-6 py-3 text-xs font-bold text-gray-500 uppercase">Solicitante</th>
-                                    <th className="px-6 py-3 text-xs font-bold text-gray-500 uppercase text-right">Monto Pedido</th>
+                                    <th className="px-6 py-3 text-xs font-bold text-gray-500 uppercase text-right">Monto pedido</th>
                                     <th className="px-6 py-3 text-xs font-bold text-gray-500 uppercase text-center">Acciones</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-gray-100">
-                                {solicitudesPendientes.map((solicitud: any) => (
+                                {solicitudesPendientes.map((solicitud: SolicitudTraspaso) => (
                                     <tr key={solicitud.id} className="hover:bg-gray-50">
                                         <td className="px-6 py-4">
                                             <p className="font-bold text-gray-900">{solicitud.caja_destino?.nombre}</p>
                                             <p className="text-xs text-gray-500">{solicitud.concepto}</p>
                                         </td>
                                         <td className="px-6 py-4 text-sm text-gray-600">
-                                            {solicitud.usuario_solicita?.name}
+                                            {solicitud.usuario_solicita?.nombre_completo}
                                         </td>
                                         <td className="px-6 py-4 text-right">
                                             <span className="text-lg font-black text-blue-600">
@@ -129,7 +177,87 @@ export default function DashboardBoveda({
                         </div>
                     )}
                 </div>
+                )}
+                {vistaActiva === 'diario' && (
+                    <>
+                    <button
+                        onClick = {()=>setIsEnviarDineroFondo(true)}
+                        className=''
+                    >
+                        Enviar dinero a fondo
+                    </button>
+
+                    <div className="space-y-6">
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div className="bg-white p-5 rounded-xl shadow-sm border border-green-100">
+                                <p className="text-sm font-medium text-green-600">Total Ingresos Hoy</p>
+                                <p className="text-2xl font-bold text-gray-800 mt-1">${formatMoney(resumenHoy.ingresos)}</p>
+                            </div>
+                            <div className="bg-white p-5 rounded-xl shadow-sm border border-red-100">
+                                <p className="text-sm font-medium text-red-600">Total Egresos Hoy</p>
+                                <p className="text-2xl font-bold text-gray-800 mt-1">${formatMoney(resumenHoy.egresos)}</p>
+                            </div>
+                            <div className="bg-white p-5 rounded-xl shadow-sm border border-blue-100">
+                                <p className="text-sm font-medium text-blue-800">Flujo Neto del Día</p>
+                                <p className="text-2xl font-black text-blue-900 mt-1">${formatMoney(resumenHoy.balance)}</p>
+                            </div>
+                        </div>
+
+                        <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+                            <div className="bg-gray-50 px-6 py-4 border-b border-gray-200">
+                                <h2 className="text-lg font-bold text-gray-800">Todos los movimientos ({new Date().toLocaleDateString()})</h2>
+                            </div>
+                            
+                            {movimientosHoy && movimientosHoy.length > 0 ? (
+                                <div className="overflow-x-auto">
+                                    <table className="min-w-full divide-y divide-gray-200 text-left">
+                                        <thead className="bg-white">
+                                            <tr>
+                                                <th className="px-6 py-3 text-xs font-bold text-gray-500 uppercase">Hora</th>
+                                                <th className="px-6 py-3 text-xs font-bold text-gray-500 uppercase">Caja / Origen</th>
+                                                <th className="px-6 py-3 text-xs font-bold text-gray-500 uppercase">Concepto</th>
+                                                <th className="px-6 py-3 text-xs font-bold text-gray-500 uppercase">Usuario</th>
+                                                <th className="px-6 py-3 text-xs font-bold text-gray-500 uppercase text-right">Monto</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody className="divide-y divide-gray-100">
+                                            {movimientosHoy.map((mov: MovimientoCaja) => (
+                                                <tr key={mov.id} className="hover:bg-gray-50 transition-colors">
+                                                    <td className="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
+                                                        {new Date(mov.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                                    </td>
+                                                    <td className="px-6 py-4">
+                                                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                                                            {mov.sesion_caja?.caja?.nombre || 'Caja Desconocida'}
+                                                        </span>
+                                                    </td>
+                                                    <td className="px-6 py-4 text-sm text-gray-900 font-medium">
+                                                        {mov.concepto}
+                                                    </td>
+                                                    <td className="px-6 py-4 text-sm text-gray-500">
+                                                        {mov.user?.nombre_completo || 'Sistema'}
+                                                    </td>
+                                                    <td className="px-6 py-4 text-right whitespace-nowrap">
+                                                        <span className={`text-sm font-bold ${mov.tipo === 'ingreso' ? 'text-green-600' : 'text-red-600'}`}>
+                                                            {mov.tipo === 'ingreso' ? '+' : '-'}${formatMoney(mov.monto)}
+                                                        </span>
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            ) : (
+                                <div className="p-12 text-center text-gray-500">
+                                    No hay ningún movimiento registrado el día de hoy.
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                    </>
+                )}
             </div>
+            {isEnviarDineroFondo}
         </MainLayout>
     );
 }
