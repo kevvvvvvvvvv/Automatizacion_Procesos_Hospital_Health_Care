@@ -230,4 +230,37 @@ class CajaService
             ]);
         });
     }
+
+    /**
+     * El Cajero envía su corte/exceso de efectivo a Contaduría (Bóveda)
+     */
+    public function enviarDineroABoveda(int $cajaOperativaId, float $monto, string $concepto, int $userId)
+    {
+        return DB::transaction(function () use ($cajaOperativaId, $monto, $concepto, $userId) {
+            
+            $boveda = Caja::where('tipo', 'boveda')->firstOrFail();
+            $sesionCaja = SesionCaja::where('caja_id', $cajaOperativaId)->where('estado', 'abierta')->first();
+
+            if (!$sesionCaja) {
+                throw new Exception("Tu caja no tiene un turno abierto.");
+            }
+
+            $this->registrarMovimiento(
+                $sesionCaja, 
+                TipoMovimientoCaja::EGRESO, 
+                $monto, 
+                "Envío de efectivo a Contaduría - Concepto: $concepto", 
+                $userId
+            );
+
+            return SolicitudTraspaso::create([
+                'caja_origen_id' => $cajaOperativaId, 
+                'caja_destino_id' => $boveda->id,     
+                'monto_solicitado' => $monto,
+                'concepto' => $concepto,
+                'user_solicita_id' => $userId,
+                'estado' => 'pendiente'
+            ]);
+        });
+    }
 }

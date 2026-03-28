@@ -8,6 +8,10 @@ use Illuminate\Support\Carbon;
 
 use Inertia\Inertia;
 
+use App\Services\CajaService;
+
+use App\Enums\TipoMovimientoCaja;
+
 use App\Models\Caja\SolicitudTraspaso;
 use App\Models\Caja\Caja;
 use App\Models\Caja\SesionCaja;
@@ -28,7 +32,7 @@ class ContaduriaController extends Controller
             [
                 'user_id' => $request->user()->id,
                 'fecha_apertura' => now(),
-                'monto_inicial' => 0,
+                'monto_inicial' => 50000,
                 'monto_esperado' => 0,
             ]
         );
@@ -38,7 +42,7 @@ class ContaduriaController extends Controller
             [
                 'user_id' => $request->user()->id,
                 'fecha_apertura' => now(),
-                'monto_inicial' => 0,
+                'monto_inicial' => 10000,
                 'monto_esperado' => 0,
             ]
         );
@@ -65,5 +69,28 @@ class ContaduriaController extends Controller
                 'balance' => $ingresosHoy - $egresosHoy
             ]
         ]);
+    }
+
+    public function registrarGasto(Request $request, CajaService $cajaService)
+    {
+        $validated = $request->validate([
+            'caja_origen_id' => 'required|exists:cajas,id', 
+            'monto' => 'required|numeric|min:0.1',
+            'concepto' => 'required|string|max:255',
+        ]);
+
+        $sesion = SesionCaja::where('caja_id', $validated['caja_origen_id'])
+                            ->where('estado', 'abierta')
+                            ->firstOrFail();
+
+        $cajaService->registrarMovimiento(
+            $sesion,
+            TipoMovimientoCaja::EGRESO,
+            $validated['monto'],
+            "Gasto Externo / Pago: " . $validated['concepto'],
+            $request->user()->id
+        );
+
+        return redirect()->back()->with('success', 'Pago / Gasto externo registrado correctamente.');
     }
 }

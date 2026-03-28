@@ -4,6 +4,9 @@ import { MovimientoCaja, SesionCaja } from '@/types';
 import ModalCierreCaja from '@/components/caja/modal-cierre-caja';
 import ModalGasto from '@/components/caja/modal-gasto';
 import { ModalSolicitudFondo } from '@/components/caja/modal-solicitud-fondos';
+import ModalEnviarCajaAConta from '@/components/caja/modal-enviar-caja-a-conta';
+import { ActionButton } from '@/components/ui/buttons/action-button';
+import { SummaryCard } from '@/components/ui/money/summary-card';
 
 interface Props {
     sesion: SesionCaja; 
@@ -15,13 +18,14 @@ export const PanelCaja = ({
     const [isGastoModalOpen, setIsGastoModalOpen] = useState(false);
     const [isCierreModalOpen, setIsCierreModalOpen] = useState(false);
     const [isSolicitudModalOpen, setIsSolicitudModalOpen] = useState(false);
+    const [isEnviarDineroBovedaOpen, setIsEnviarDineroBovedaOpen] = useState(false);
 
     const formatMoney = (amount: number | string | undefined) => {
         const num = Number(amount);
         return isNaN(num) ? '0.00' : num.toFixed(2);
     };
 
-    
+
 
     return (
         <div className="p-6 max-w-7xl mx-auto space-y-6">
@@ -41,50 +45,52 @@ export const PanelCaja = ({
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-100">
-                    <p className="text-sm font-medium text-gray-500">Fondo inicial</p>
-                    <p className="text-2xl font-bold text-gray-800 mt-1">
-                        ${formatMoney(sesion.monto_inicial)}
-                    </p>
-                </div>
+                <SummaryCard 
+                    label="Fondo inicial" 
+                    amount={formatMoney(sesion.monto_inicial)} 
+                />
                 
-                <div className="bg-white p-5 rounded-xl shadow-sm border border-green-50">
-                    <p className="text-sm font-medium text-green-600">Ingresos (+)</p>
-                    <p className="text-2xl font-bold text-gray-800 mt-1">
-                        ${formatMoney(sesion.total_ingresos_efectivo)}
-                    </p>
-                </div>
-
-                <div className="bg-white p-5 rounded-xl shadow-sm border border-red-50">
-                    <p className="text-sm font-medium text-red-600">Egresos (-)</p>
-                    <p className="text-2xl font-bold text-gray-800 mt-1">
-                        ${formatMoney(sesion.total_egresos_efectivo)}
-                    </p>
-                </div>
-
-                <div className="bg-blue-50 p-5 rounded-xl shadow-sm border border-blue-100 ring-1 ring-blue-500 ring-opacity-50">
-                    <p className="text-sm font-bold text-blue-700 uppercase tracking-wider">Efectivo esperado</p>
-                    <p className="text-3xl font-black text-blue-900 mt-1">
-                        ${formatMoney(sesion.monto_esperado)}
-                    </p>
-                </div>
+                <SummaryCard 
+                    label="Ingresos (+)" 
+                    amount={formatMoney(sesion.total_ingresos_efectivo)} 
+                    theme="success" 
+                />
+                
+                <SummaryCard 
+                    label="Egresos (-)" 
+                    amount={formatMoney(sesion.total_egresos_efectivo)} 
+                    theme="danger" 
+                />
+                
+                <SummaryCard 
+                    label="Efectivo esperado" 
+                    amount={formatMoney(sesion.monto_esperado)} 
+                    theme="highlight" 
+                />
             </div>
 
             <div className="flex space-x-4">
-                <button 
+                <ActionButton 
                     onClick={() => setIsGastoModalOpen(true)} 
-                    className="bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm flex items-center"
+                    className="bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 font-medium"
                 >
                     + Registrar gasto / retiro
-                </button>
+                </ActionButton>
                 
-                <button 
-                    onClick={() => setIsSolicitudModalOpen(true)}
-                    className="bg-yellow-50 border border-yellow-200 text-yellow-800 hover:bg-yellow-100 px-4 py-2 rounded-lg text-sm font-bold transition-colors shadow-sm flex items-center"
+                <ActionButton 
+                    onClick={() => setIsSolicitudModalOpen(true)} 
+                    className="bg-yellow-50 border border-yellow-200 text-yellow-800 hover:bg-yellow-100 font-bold"
                 >
                     Retirar efectivo de fondo
-                </button>
-            </div>      
+                </ActionButton>
+
+                <ActionButton 
+                    onClick={() => setIsEnviarDineroBovedaOpen(true)} 
+                    className="bg-purple-50 border border-purple-200 text-purple-800 hover:bg-purple-100 font-bold"
+                >
+                    Enviar dinero a contaduría
+                </ActionButton>
+            </div>    
 
             <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
                 <div className="px-6 py-4 border-b border-gray-100 flex justify-between items-center">
@@ -141,7 +147,8 @@ export const PanelCaja = ({
 
             {isGastoModalOpen && <ModalGasto onClose={() => setIsGastoModalOpen(false)} />} 
             {isCierreModalOpen && <ModalCierreCaja onClose={() => setIsCierreModalOpen(false)} />}
-                {isSolicitudModalOpen && <ModalSolicitudFondo onClose={() => setIsSolicitudModalOpen(false)} sesionActiva={sesion} />}
+            {isSolicitudModalOpen && <ModalSolicitudFondo onClose={() => setIsSolicitudModalOpen(false)} sesionActiva={sesion} />}
+            {isEnviarDineroBovedaOpen && <ModalEnviarCajaAConta onClose={()=> setIsEnviarDineroBovedaOpen(false)} sesionActiva={sesion}/>}
         </div>
     );
 };

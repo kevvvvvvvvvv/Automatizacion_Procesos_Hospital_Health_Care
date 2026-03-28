@@ -66,4 +66,27 @@ protected $cajaService;
             return back()->withErrors(['general' => $e->getMessage()]);
         }
     }
+
+    public function enviarABoveda(Request $request)
+    {
+        $validated = $request->validate([
+            'caja_origen_id' => 'required|exists:cajas,id',
+            'monto' => 'required|numeric|min:1',
+            'concepto' => 'required|string|max:255',
+        ]);
+
+        try {
+            $this->cajaService->enviarDineroABoveda(
+                $validated['caja_origen_id'],
+                $validated['monto'],
+                $validated['concepto'],
+                $request->user()->id
+            );
+
+            return redirect()->back()->with('success', 'Dinero descontado de tu caja y enviado a Contaduría.');
+        } catch (\Exception $e) {
+            return back()->withErrors(['general' => $e->getMessage()]);
+        }
+    }
+
 }

@@ -357,11 +357,12 @@ Route::middleware('auth:sanctum')->prefix('caja')->group(function () {
     Route::post('/cerrar', [CajaController::class, 'cerrarTurno'])->name('caja-cerrar');
     Route::post('/traspasos/solicitar', [TraspasoController::class, 'solicitar'])->name('traspasos.solicitar');
     Route::post('/traspasos/{solicitud}/responder', [TraspasoController::class, 'responder'])->name('traspasos.responder');
+    Route::post('/traspasos/enviar-boveda', [TraspasoController::class, 'enviarABoveda'])->name('traspasos.enviarABoveda');
 });
 
 //Contador
 Route::get('/tesoreria/boveda', [ContaduriaController::class, 'index'])->name('contaduria.index')->middleware('auth');
-
+Route::post('/tesoreria/boveda/gasto', [ContaduriaController::class, 'registrarGasto'])->name('boveda.registrarGasto');
 
 // Notificaciones
 Route::post('/notifications/mark-all-as-read', function () {

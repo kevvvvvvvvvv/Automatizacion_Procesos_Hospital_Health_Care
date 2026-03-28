@@ -5,6 +5,8 @@ import { MovimientoCaja, SolicitudTraspaso } from '@/types';
 import { route } from 'ziggy-js';
 import { router } from '@inertiajs/react';
 
+import {ModalGastoBoveda} from  '@/components/caja/modal-gasto-boveda';
+
 import MainLayout from '@/layouts/MainLayout';
 
 interface Props {
@@ -25,6 +27,7 @@ export default function DashboardBoveda({
 
     const [vistaActiva, setVistaActiva] = useState<'solicitudes' | 'diario'>('solicitudes');
     const [isEnviarDineroFondo, setIsEnviarDineroFondo] = useState(false);
+    const [isGastoModalOpen, setIsGastoModalOpen] = useState(false);
 
     const formatMoney = (amount: number) => {
         return Number(amount || 0).toLocaleString('es-MX', { minimumFractionDigits: 2 });
@@ -114,6 +117,13 @@ export default function DashboardBoveda({
                             }`}
                         >
                             Libro Diario (Hoy)
+                        </button>
+
+                        <button 
+                            onClick={() => setIsGastoModalOpen(true)}
+                            className="bg-red-50 border border-red-200 text-red-700 hover:bg-red-100 px-4 py-2 rounded-lg font-bold transition-colors shadow-sm mr-4"
+                        >
+                            💸 Registrar Pago / Gasto
                         </button>
                     </div>
                 </div>
@@ -258,6 +268,7 @@ export default function DashboardBoveda({
                 )}
             </div>
             {isEnviarDineroFondo}
+            {isGastoModalOpen && <ModalGastoBoveda onClose={() => setIsGastoModalOpen(false)} />}
         </MainLayout>
     );
 }
