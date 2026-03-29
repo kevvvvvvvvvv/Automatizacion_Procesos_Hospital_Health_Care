@@ -256,7 +256,8 @@ Route::resource('estancia.solicitudes-estudios', SolicitudEstudioController::cla
 Route::get('/liga-futbol/pdf', [LigaFutbolController::class, 'generarPdf'])
 ->name('liga-futbol.pdf')
 ->middleware('auth');
-Route::get('/paquetes/pdf', [PaqueteController::class, 'generarPDF'])
+
+Route::get('/paquetes/{paquete}/pdf', [PaqueteController::class, 'generarPDF'])
     ->name('paquetes.pdf')
     ->middleware('auth');
 

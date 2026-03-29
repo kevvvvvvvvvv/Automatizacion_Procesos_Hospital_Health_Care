@@ -4,6 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\Paciente;
 use App\Models\Estancia;
+
+use App\Services\PdfGeneratorService;
+
+use Spatie\LaravelPdf\Facades\Pdf;
+use Spatie\Browsershot\Browsershot;
 use App\Models\Estudio\SolicitudEstudio;
 use App\Models\Formulario\Paquete\Paquete; 
 use App\Models\Estudio\CatalogoEstudio;
@@ -18,7 +23,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
-use App\Services\PdfGeneratorService;
+
+use Carbon\Carbon;
 
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
@@ -201,4 +207,82 @@ class PaqueteController extends Controller
             default => User::role('administrador')->get(),
         };
     }
+   public function generarPDF(Request $request, Paquete $paquete)
+{   
+    // 1. Cargar la data EXACTAMENTE como en el método show()
+    // Añadimos 'userSolicita.credenciales' para que aparezca la firma/cédula en el PDF
+    $paquete->load([
+        'formularioInstancia.estancia.paciente',
+        'formularioInstancia.user',
+        'paquetes.catalogoEstudio', 
+        'userSolicita.credenciales'
+    ]);
+
+    $paciente = $paquete->formularioInstancia->estancia->paciente;
+    $estancia = $paquete->formularioInstancia->estancia;
+    $medico   = $paquete->user; // El médico que solicitó los estudios
+
+    // 2. Lógica del Logo
+    $imagePath = public_path('images/Logo_HC_2.png');
+    $logo = null; 
+    if (file_exists($imagePath)) {
+        $imageData = base64_encode(file_get_contents($imagePath));
+        $logo = 'data:' . mime_content_type($imagePath) . ';base64,' . $imageData;
+    }
+    $fecha = $paquete->created_at;
+    $meses = [1 => 'enero', 2 => 'febrero', 3 => 'marzo', 4 => 'abril', 5 => 'mayo', 6 => 'junio', 
+                  7 => 'julio', 8 => 'agosto', 9 => 'septiembre', 10 => 'octubre', 11 => 'noviembre', 12 => 'diciembre'];
+        
+    // 3. Procesar seleccionados para las "X" en la vista
+    $seleccionados = $paquete->paquetes->map(function ($item) {
+        return $item->catalogo_estudio_id 
+            ? trim(mb_strtolower($item->catalogoEstudio->nombre, 'UTF-8'))
+            : trim(mb_strtolower($item->otro_estudio, 'UTF-8'));
+    })->toArray();
+
+    // 4. Preparar datos para la vista y el header
+    $viewData = [
+        'notaData'     => $paquete, // Data principal
+        'paciente'      => $paciente,
+        'medico'        => $medico,
+        'fecha' => [
+                'dia' => $fecha->day,
+                'mes' => $meses[$fecha->month],
+                'anio' => $fecha->year,
+            ],
+        
+    ];
+
+    $headerData = [
+        'historiaclinica' => $paquete,
+        'paciente' => $paciente,
+        'estancia' => $estancia,
+
+    ];
+
+    // 5. Generación del PDF
+    // Usamos $paquete->route_pdf si el modelo tiene esa propiedad definida
+    return Pdf::view($paquete->route_pdf ?? 'pdfs.paquetes', $viewData)
+        ->format('Letter')
+        ->name('paquetes-' . ($paquete->estancia->folio ?? 'N/A') . '.pdf')
+        ->withBrowsershot(function (Browsershot $browsershot) {
+            $this->configureBrowsershot($browsershot);
+        })
+        ->headerView('header', $headerData) // Tu vista de encabezado
+        ->inline();
+}
+
+
+protected function configureBrowsershot(Browsershot $browsershot)
+{
+    $chromePath = config('services.browsershot.chrome_path');
+    if ($chromePath) {
+        $browsershot->setChromePath($chromePath);
+        $browsershot->noSandbox();
+        $browsershot->addChromiumArguments([
+            'disable-dev-shm-usage',
+            'disable-gpu',
+        ]);
+    }
+}
 }
