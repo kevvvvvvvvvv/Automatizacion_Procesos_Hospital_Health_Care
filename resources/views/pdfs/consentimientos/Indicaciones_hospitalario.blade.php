@@ -112,19 +112,15 @@
                 </td>
                 <td>
                     <div class="signature-line"></div>
-                    <p>{{ $estancia->familiarResponsable->nombre ?? 'Sin datos.' }}</p>
+                    <p>{{ $estancia->familiarResponsable->nombre_completo ?? 'Sin datos.' }}</p>
                     <p style="font-size: 9pt; color: #555;">Firma del Familiar Responsable</p>
                 </td>
             </tr>
         </table>
+        
     </main>
-</body>
-</html>
-
-
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
+    <br>
+<div style="page-break-after: always;"></div>
     <title>Reglamento para Pacientes y Acompañantes</title>
     <style>
         /* Se mantienen los estilos del documento anterior para consistencia */
@@ -179,14 +175,6 @@
             </ul>
         </div>
 
-
-       
-
-        <div style="margin-top: 40px; text-align: center;">
-            <p>He leído y acepto el reglamento de la institución:</p>
-            <div style="width: 300px; border-top: 1px solid #000; margin: 40px auto 5px auto;"></div>
-            <p>{{ $paciente->nombre_completo ?? 'Nombre del Paciente / Responsable' }}</p>
-        </div>
     </main>
 </body>
 </html>
