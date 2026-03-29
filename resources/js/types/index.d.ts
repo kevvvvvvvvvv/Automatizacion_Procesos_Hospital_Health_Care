@@ -1240,3 +1240,12 @@ export interface ResumenMedico{
     created_at: string;
     updated_at: string; 
 }
+export interface Paquete{
+    id: number;
+    formulario_instancia_id: number;
+    solicitud_estudios_id: number;
+    catalogo_estudios_id: number;
+    otros_estudio: string;
+    departamento_destino: string;
+    estado: string;
+}

@@ -133,7 +133,7 @@ public function generarPDF(string $file, Request $request, Paciente $paciente, E
             'notaData' => $consentimiento,
             'paciente' => $consentimiento->estancia->paciente,
             'medico'   => $medicoFirmante, // Ahora este objeto tiene 'credenciales'
-            'estancia' => $consentimiento->estancia->familiarResponsable,
+            'estancia' => $consentimiento->estancia,
             'fecha' => [
                 'dia' => $fecha->day,
                 'mes' => $meses[$fecha->month],
