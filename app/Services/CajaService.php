@@ -130,31 +130,50 @@ class CajaService
 
     public function responderTraspaso(SolicitudTraspaso $solicitud, bool $aprobar, float $montoAprobado, int $userId)
     {
+        // Tu excelente validación inicial
         if ($solicitud->estado !== 'pendiente') {
             throw new Exception("Esta solicitud ya fue procesada anteriormente.");
         }
 
         return DB::transaction(function () use ($solicitud, $aprobar, $montoAprobado, $userId) {
             
+            // Identificamos la Bóveda para saber de qué tipo de traspaso estamos hablando
+            $boveda = Caja::where('tipo', 'boveda')->firstOrFail();
+            $esEnvioABoveda = $solicitud->caja_destino_id === $boveda->id;
+
+            // ==========================================
+            // SI EL CONTADOR RECHAZA
+            // ==========================================
             if (!$aprobar) {
                 $solicitud->update([
                     'estado' => 'rechazada',
                     'user_aprueba_id' => $userId
                 ]);
+
+                // Si era un envío a bóveda y el contador lo rechazó, 
+                // debemos DEVOLVERLE el dinero a la caja operativa (porque se lo habíamos quitado en enviarDineroABoveda)
+                if ($esEnvioABoveda) {
+                    $sesionOrigen = SesionCaja::where('caja_id', $solicitud->caja_origen_id)->where('estado', 'abierta')->first();
+                    if ($sesionOrigen) {
+                        $this->registrarMovimiento(
+                            $sesionOrigen, 
+                            TipoMovimientoCaja::INGRESO,
+                            $solicitud->monto_solicitado, 
+                            "Devolución: Contaduría rechazó el envío de efectivo (Ref: {$solicitud->id})", 
+                            $userId
+                        );
+                    }
+                }
                 return $solicitud;
             }
 
-            $sesionOrigen = SesionCaja::where('caja_id', $solicitud->caja_origen_id)
-                ->where('estado', 'abierta')
-                ->first();
+            // ==========================================
+            // SI EL CONTADOR APRUEBA
+            // ==========================================
+            $sesionOrigen = SesionCaja::where('caja_id', $solicitud->caja_origen_id)->where('estado', 'abierta')->first();
+            $sesionDestino = SesionCaja::where('caja_id', $solicitud->caja_destino_id)->where('estado', 'abierta')->first();
 
-            $sesionDestino = SesionCaja::where('caja_id', $solicitud->caja_destino_id)
-                ->where('estado', 'abierta')
-                ->first();
-
-            if (!$sesionOrigen) {
-                throw new Exception("No se puede enviar el dinero: La caja de origen (Fondo/Bóveda) no tiene un turno abierto.");
-            }
+            // Validamos que el destino siga abierto (Tu validación)
             if (!$sesionDestino) {
                 throw new Exception("No se puede enviar el dinero: La caja destino cerró su turno antes de recibir la transferencia.");
             }
@@ -165,24 +184,57 @@ class CajaService
                 'user_aprueba_id' => $userId
             ]);
 
-            $this->registrarMovimiento(
-                $sesionOrigen, 
-                TipoMovimientoCaja::EGRESO,
-                $montoAprobado, 
-                "Traspaso autorizado a caja: {$solicitud->cajaDestino->nombre} (Ref: {$solicitud->id})", 
-                $userId
-            );
-            $this->registrarMovimiento(
-                $sesionDestino, 
-                TipoMovimientoCaja::INGRESO, 
-                $montoAprobado, 
-                "Traspaso recibido de Caja ID: {$solicitud->caja_origen_id} (Ref: {$solicitud->id})", 
-                $userId
-            );
+            // ESCENARIO A: La Caja Operativa le manda dinero a la Bóveda
+            if ($esEnvioABoveda) {
+                // SOLO registramos el ingreso a la bóveda (Evitamos el doble egreso de la caja origen)
+                $this->registrarMovimiento(
+                    $sesionDestino, 
+                    TipoMovimientoCaja::INGRESO, 
+                    $montoAprobado, 
+                    "Recepción de corte/efectivo de Caja ID: {$solicitud->caja_origen_id} (Ref: {$solicitud->id})", 
+                    $userId
+                );
+
+                // EXTRA: Si el contador aprobó menos dinero del que la caja dijo mandar, regresamos la diferencia
+                if ($montoAprobado < $solicitud->monto_solicitado && $sesionOrigen) {
+                    $diferencia = $solicitud->monto_solicitado - $montoAprobado;
+                    $this->registrarMovimiento(
+                        $sesionOrigen,
+                        TipoMovimientoCaja::INGRESO,
+                        $diferencia,
+                        "Ajuste automático: Contaduría recibió un monto menor al enviado. (Ref: {$solicitud->id})",
+                        $userId
+                    );
+                }
+
+            // ESCENARIO B: Traspaso normal (Ej. de Bóveda a Fondo)
+            } else {
+                
+                // Aquí sí validamos que el origen esté abierto para quitarle el dinero
+                if (!$sesionOrigen) {
+                    throw new Exception("No se puede enviar el dinero: La caja de origen no tiene un turno abierto.");
+                }
+
+                $this->registrarMovimiento(
+                    $sesionOrigen, 
+                    TipoMovimientoCaja::EGRESO,
+                    $montoAprobado, 
+                    "Traspaso autorizado a caja: {$solicitud->cajaDestino->nombre} (Ref: {$solicitud->id})", 
+                    $userId
+                );
+                
+                $this->registrarMovimiento(
+                    $sesionDestino, 
+                    TipoMovimientoCaja::INGRESO, 
+                    $montoAprobado, 
+                    "Traspaso recibido de Caja ID: {$solicitud->caja_origen_id} (Ref: {$solicitud->id})", 
+                    $userId
+                );
+            }
+
             return $solicitud;
         });
     }
-
     /**
      * La Caja toma dinero del Fondo directamente y alerta a Bóveda
      */    

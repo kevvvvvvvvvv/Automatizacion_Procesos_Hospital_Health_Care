@@ -131,6 +131,11 @@ class UserSeeder extends Seeder
         ]);
 
         $user->assignRole('administrador');
+        CredencialEmpleado::create([
+            'user_id' => $user->id,
+            'titulo' => 'Médico Especialista en Pediatría',
+            'cedula_profesional' => '8765432'
+        ]);
 
         $user = User::create([
             'curp' => 'HEAL000101HDFXXX01', 

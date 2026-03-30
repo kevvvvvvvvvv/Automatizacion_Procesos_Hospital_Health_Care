@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Caja;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Caja\SolicitudTraspasoRequest;
+use App\Http\Requests\Caja\Traspaso\EnviarABovedaRequest;
+use App\Http\Requests\Caja\Traspaso\ResponderRequest;
+use App\Http\Requests\Caja\Traspaso\SolicitudTraspasoRequest;
 use Illuminate\Http\Request;
 
 use App\Services\CajaService;
@@ -44,12 +46,9 @@ protected $cajaService;
     /**
      * Contaduría / Fondo aprueba o rechaza la petición
      */
-    public function responder(Request $request, SolicitudTraspaso $solicitud)
+    public function responder(ResponderRequest $request, SolicitudTraspaso $solicitud)
     {
-        $validated = $request->validate([
-            'aprobar' => 'required|boolean',
-            'monto_aprobado' => 'required_if:aprobar,true|numeric|min:0',
-        ]);
+        $validated = $request->validated();
 
         try {
             $this->cajaService->responderTraspaso(
@@ -67,13 +66,9 @@ protected $cajaService;
         }
     }
 
-    public function enviarABoveda(Request $request)
+    public function enviarABoveda(EnviarABovedaRequest $request)
     {
-        $validated = $request->validate([
-            'caja_origen_id' => 'required|exists:cajas,id',
-            'monto' => 'required|numeric|min:1',
-            'concepto' => 'required|string|max:255',
-        ]);
+        $validated = $request->validated();
 
         try {
             $this->cajaService->enviarDineroABoveda(

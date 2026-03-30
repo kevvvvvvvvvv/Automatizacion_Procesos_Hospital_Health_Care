@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Caja;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rules\Enum;
+use Illuminate\Support\Facades\Auth;
 use Exception;
 
 use App\Models\Caja\SesionCaja;
@@ -12,7 +13,9 @@ use App\Models\Caja\Caja;
 
 use App\Enums\EstadoSesionCaja;
 use App\Enums\TipoMovimientoCaja;
-
+use App\Http\Requests\Caja\Caja\AbrirTurnoRequest;
+use App\Http\Requests\Caja\Caja\CerrarTurnoRequest;
+use App\Http\Requests\Caja\Caja\RegistrarMovimientoRequest;
 use App\Http\Resources\Caja\SesionCajaResource;
 
 use App\Services\CajaService;
@@ -33,7 +36,7 @@ class CajaController extends Controller
             ->first();
 
         $sesionData = $sesion ? new SesionCajaResource($sesion) : null;
-        $cajas = Caja::where('tipo','operativa')->get();
+        $cajas = Caja::where('tipo','operativo')->get();
 
         return Inertia::render('caja/index', [
             'sesionActiva' => $sesionData,
@@ -44,9 +47,9 @@ class CajaController extends Controller
     /**
      * Obtiene el turno activo del usuario autenticado.
      */
-    public function turnoActual(Request $request)
+    public function turnoActual()
     {
-        $sesion = SesionCaja::where('user_id', $request->user()->id)
+        $sesion = SesionCaja::where('user_id', Auth::id())
             ->where('estado', EstadoSesionCaja::ABIERTA)
             ->first();
 
@@ -60,12 +63,9 @@ class CajaController extends Controller
     /**
      * Abre un nuevo turno de caja.
      */
-    public function abrirTurno(Request $request)
+    public function abrirTurno(AbrirTurnoRequest $request)
     {
-        $validated = $request->validate([
-            'caja_id' => 'required|exists:cajas,id',
-            'monto_inicial' => 'required|numeric|min:0',
-        ]);
+        $validated = $request->validated();
 
         $this->cajaService->abrirTurno(
             $validated['caja_id'],
@@ -73,21 +73,15 @@ class CajaController extends Controller
             $validated['monto_inicial']
         );
 
-        // Al estilo Inertia: Redirigimos de vuelta. 
-        // Inertia detecta esto y recarga la página 'caja/index' con los nuevos props automáticamente.
         return redirect()->back()->with('success', 'Turno de caja abierto correctamente.');
     }
 
     /**
      * Registra un movimiento (ingreso/egreso) manual en la caja activa.
      */
-    public function registrarMovimiento(Request $request)
+    public function registrarMovimiento(RegistrarMovimientoRequest $request)
     {
-        $validated = $request->validate([
-            'tipo' => ['required', new Enum(TipoMovimientoCaja::class)],
-            'monto' => 'required|numeric|min:0.01',
-            'concepto' => 'required|string|max:255',
-        ]);
+        $validated = $request->validated();
 
         $sesion = SesionCaja::where('user_id', $request->user()->id)
             ->where('estado', EstadoSesionCaja::ABIERTA)
@@ -112,17 +106,11 @@ class CajaController extends Controller
     /**
      * Realiza el corte y cierra la caja.
      */
-    public function cerrarTurno(Request $request)
+    public function cerrarTurno(CerrarTurnoRequest $request)
     {
-        $validated = $request->validate([
-            'monto_declarado' => 'required|numeric|min:0',
-            'desglose' => 'nullable|array', 
-            'desglose.*.denominacion' => 'required_with:desglose|numeric|min:0.1',
-            'desglose.*.cantidad' => 'required_with:desglose|integer|min:1',
-            'desglose.*.total' => 'required_with:desglose|numeric',
-        ]);
+        $validated = $request->validated();
 
-        $sesion = SesionCaja::where('user_id', $request->user()->id)
+        $sesion = SesionCaja::where('user_id', Auth::id())
             ->where('estado', EstadoSesionCaja::ABIERTA)
             ->firstOrFail();
 

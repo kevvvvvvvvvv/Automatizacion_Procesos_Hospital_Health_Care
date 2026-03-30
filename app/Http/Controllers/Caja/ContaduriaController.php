@@ -11,16 +11,16 @@ use Inertia\Inertia;
 use App\Services\CajaService;
 
 use App\Enums\TipoMovimientoCaja;
-
+use App\Http\Requests\Caja\Contaduria\ContaduriaRequest;
 use App\Models\Caja\SolicitudTraspaso;
 use App\Models\Caja\Caja;
 use App\Models\Caja\SesionCaja;
 use App\Models\Caja\MovimientoCaja;
-
+use Illuminate\Support\Facades\Auth;
 
 class ContaduriaController extends Controller
 {
-    public function index(Request $request)
+    public function index()
     {
         // Cajas maestras
         $boveda = Caja::where('tipo', 'boveda')->firstOrFail();
@@ -30,7 +30,7 @@ class ContaduriaController extends Controller
         SesionCaja::firstOrCreate(
             ['caja_id' => $boveda->id, 'estado' => 'abierta'],
             [
-                'user_id' => $request->user()->id,
+                'user_id' => Auth::id(),
                 'fecha_apertura' => now(),
                 'monto_inicial' => 50000,
                 'monto_esperado' => 0,
@@ -40,7 +40,7 @@ class ContaduriaController extends Controller
         SesionCaja::firstOrCreate(
             ['caja_id' => $fondo->id, 'estado' => 'abierta'],
             [
-                'user_id' => $request->user()->id,
+                'user_id' => Auth::id(),
                 'fecha_apertura' => now(),
                 'monto_inicial' => 10000,
                 'monto_esperado' => 0,
@@ -71,13 +71,9 @@ class ContaduriaController extends Controller
         ]);
     }
 
-    public function registrarGasto(Request $request, CajaService $cajaService)
+    public function registrarGasto(ContaduriaRequest $request, CajaService $cajaService)
     {
-        $validated = $request->validate([
-            'caja_origen_id' => 'required|exists:cajas,id', 
-            'monto' => 'required|numeric|min:0.1',
-            'concepto' => 'required|string|max:255',
-        ]);
+        $validated = $request->validated();
 
         $sesion = SesionCaja::where('caja_id', $validated['caja_origen_id'])
                             ->where('estado', 'abierta')
