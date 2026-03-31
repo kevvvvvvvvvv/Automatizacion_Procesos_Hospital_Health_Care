@@ -96,13 +96,7 @@ class DoctorController extends Controller implements HasMiddleware
    
     public function store(UserRequest $request)
     {
-        // 1. Obtener datos validados
         $validatedData = $request->validated();
-
-        // 2. LOG DE DEPURACIÓN (Revisa tu archivo storage/logs/laravel.log)
-        Log::info('Datos de calificaciones recibidos:', [
-            'qualifications' => $validatedData['professional_qualifications'] ?? 'No llegaron calificaciones'
-        ]);
 
         DB::beginTransaction();
         try {
@@ -122,19 +116,13 @@ class DoctorController extends Controller implements HasMiddleware
             $role = Role::find($validatedData['cargo_id']);
             $user->assignRole($role);
 
-            // 3. GUARDAR CREDENCIALES
             if (!empty($validatedData['professional_qualifications'])) {
                 foreach ($validatedData['professional_qualifications'] as $qual) {
-                    
-                    // Extraemos el valor de la cédula buscando en ambos nombres posibles
                     $cedulaValor = $qual['cedula_profesional'] ?? ($qual['cedula'] ?? null);
-
-                    // IMPORTANTE: Si el título no está vacío, intentamos guardar
                     if (!empty($qual['titulo'])) {
                         CredencialEmpleado::create([
                             'user_id'            => $user->id,
                             'titulo'             => $qual['titulo'],
-                            // Si el valor sigue siendo null, ponemos un string vacío para evitar el error de SQL
                             'cedula_profesional' => $cedulaValor ?? '', 
                         ]);
                     }
@@ -208,7 +196,6 @@ class DoctorController extends Controller implements HasMiddleware
                     'nombre_completo' => $u->nombre_completo,
                 ];
             });
-        //dd($doctore ->toArray());
         return Inertia::render('Medicos/create', [
             'user' => $doctorData,
             'cargos' => $cargos,

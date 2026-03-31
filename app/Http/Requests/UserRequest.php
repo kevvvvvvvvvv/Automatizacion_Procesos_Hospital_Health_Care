@@ -39,7 +39,7 @@ class UserRequest extends FormRequest
 
             'professional_qualifications' => 'nullable|array',
             'professional_qualifications.*.titulo' => 'nullable|string|max:100',
-            'professional_qualifications.*.cedula' => 'nullable|string|max:50|unique:credencial_empleados,cedula_profesional', 
+            'professional_qualifications.*.cedula_profesional' => 'nullable|string|max:50|unique:credencial_empleados,cedula_profesional', 
         ];
     }
 
