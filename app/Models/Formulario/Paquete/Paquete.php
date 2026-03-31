@@ -16,6 +16,15 @@ class Paquete extends Model
         'otro_estudio',
         'departamento_destino',
         'estado',
+        'ta_sistolica',
+        'ta_diastolica',
+        'fc',
+        'fr',
+        'temp',
+        'so2',
+        'glucemia',
+        'peso',
+        'talla',
     ];
 
 

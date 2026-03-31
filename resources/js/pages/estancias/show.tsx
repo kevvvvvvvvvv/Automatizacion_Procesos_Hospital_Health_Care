@@ -137,6 +137,7 @@ const Show = ({ estancia, historiaclinica }: ShowEstanciaProps) => {
                                     </Link>*/}
                                    
                 {/*<Link
+               {/* <Link
                     href={route('pacientes.estancias.paquetes.create', { paciente: paciente.id, estancia: estancia.id })}
                     className="group flex rounded-md items-center w-full px-2 py-2 text-sm bg-blue-500 text-white hover:bg-blue-600"
                 >

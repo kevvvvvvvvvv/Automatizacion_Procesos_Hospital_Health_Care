@@ -56,6 +56,7 @@ class PaqueteController extends Controller
         //dd($estancia->toArray());
         return Inertia::render('formularios/paquetes/create', [
             'estancia' => $estancia,
+            'hojaenfermeria' => $estancia->hojaEnfermeria,
             'catalogoEstudios' => CatalogoEstudio::all(),
             'modeloTipo' => 'App\Models\Estancia',
         ]);
@@ -76,77 +77,110 @@ class PaqueteController extends Controller
     ]);
 }
 
-   public function store(Request $request, Paciente $paciente, Estancia $estancia, VentaService $ventaService)
+  public function store(Request $request, Paciente $paciente, Estancia $estancia, VentaService $ventaService)
 {
     $request->validate([
         'user_solicita_id' => 'required|exists:users,id',
-        'estudios_agregados_ids' => 'array',
-        'estudios_adicionales' => 'array',
+        'estudios_agregados_ids' => 'nullable|array',
+        'estudios_adicionales' => 'nullable|array',
+        // Validamos que los signos sean opcionales pero consistentes
+        'ta_sistolica' => 'nullable|string',
+        'ta_diastolica' => 'nullable|string',
+        'fc' => 'nullable|string',
+        'fr' => 'nullable|string',
+        'temp' => 'nullable|string',
+        'so2' => 'nullable|string',
+        'glucemia' => 'nullable|string',
+        'peso' => 'nullable|string',
+        'talla' => 'nullable|string',
     ]);
 
     DB::beginTransaction();
     try {
-        // --- 1. CREAR INSTANCIA MAESTRA ---
+        // 1. Crear Instancia Maestra
         $instanciaMaestra = FormularioInstancia::create([
             'fecha_hora' => now(),
             'estancia_id' => $estancia->id,
-            'formulario_catalogo_id' => FormularioCatalogo::ID_PAQUETES, // ID 19
+            'formulario_catalogo_id' => FormularioCatalogo::ID_PAQUETES, 
             'user_id' => Auth::id(),
         ]);
 
-        // --- 2. CREAR CABECERA (IMPORTANTE: SIN EL dd() ) ---
+        // 2. Crear Cabecera de Solicitud
         $solicitud = SolicitudEstudio::create([
             'id'               => $instanciaMaestra->id, 
             'user_llena_id'    => Auth::id(),
             'user_solicita_id' => $request->user_solicita_id,
             'itemable_id'      => $estancia->id,
             'itemable_type'    => 'App\Models\Estancia',
-            'estado'           => SolicitudEstudio::ESTADO_SOLICITADO
         ]);
 
-        // --- 3. PROCESAR ESTUDIOS DEL CATÁLOGO ---
+        $itemsParaNotificar = collect();
+
+        // --- PREPARAMOS LOS DATOS DE SIGNOS VITALES ---
+        $datosSignos = [
+            'ta_sistolica'  => $request->ta_sistolica,
+            'ta_diastolica' => $request->ta_diastolica,
+            'fc'            => $request->fc,
+            'fr'            => $request->fr,
+            'temp'          => $request->temp,
+            'so2'           => $request->so2,
+            'glucemia'      => $request->glucemia,
+            'peso'          => $request->peso,
+            'talla'         => $request->talla,
+        ];
+
+        // 3. Procesar Estudios del Catálogo
         if ($request->filled('estudios_agregados_ids')) {
             foreach ($request->estudios_agregados_ids as $catalogoId) {
                 $estudioDb = CatalogoEstudio::find($catalogoId);
-
-                Paquete::create([
-                    'formulario_instancia_id' => $instanciaMaestra->id,
-                    'solicitud_estudio_id'    => $solicitud->id,
-                    'catalogo_estudio_id'     => $catalogoId,
-                    'departamento_destino'    => $estudioDb->departamento ?? 'GENERAL',
-                    'estado'                  => 'SOLICITADO',
-                ]);
                 
-                $this->registrarVentaItem($ventaService, $estancia, $catalogoId);
+                if ($estudioDb) {
+                    // Combinamos los datos base del paquete con los signos vitales
+                    $item = Paquete::create(array_merge([
+                        'formulario_instancia_id' => $instanciaMaestra->id,
+                        'solicitud_estudio_id'    => $solicitud->id,
+                        'catalogo_estudio_id'     => $catalogoId,
+                        'departamento_destino'    => $estudioDb->departamento ?? 'GENERAL',
+                        'estado'                  => 'SOLICITADO',
+                    ], $datosSignos)); // <--- AQUÍ SE INSERTAN LOS SIGNOS
+                    
+                    $itemsParaNotificar->push($item);
+                    $this->registrarVentaItem($ventaService, $estancia, $catalogoId);
+                }
             }
         }
 
-        // --- 4. PROCESAR ESTUDIOS MANUALES ---
+        // 5. Procesar Estudios Manuales
         if ($request->filled('estudios_adicionales')) {
             foreach ($request->estudios_adicionales as $manual) {
-                $nombreEstudio = is_array($manual) ? ($manual['nombre'] ?? 'Estudio manual') : $manual;
-                $deptoEstudio  = is_array($manual) ? ($manual['departamento'] ?? 'GENERAL') : 'GENERAL';
-
-                Paquete::create([
+                $nombre = is_array($manual) ? ($manual['nombre'] ?? 'Estudio') : $manual;
+                
+                $itemManual = Paquete::create(array_merge([
                     'formulario_instancia_id' => $instanciaMaestra->id,
                     'solicitud_estudio_id'    => $solicitud->id,
                     'catalogo_estudio_id'     => null,
-                    'otro_estudio'            => $nombreEstudio,
-                    'departamento_destino'    => $deptoEstudio,
+                    'otro_estudio'            => $nombre,
+                    'departamento_destino'    => 'GENERAL',
                     'estado'                  => 'SOLICITADO',
-                ]);
+                ], $datosSignos)); // <--- TAMBIÉN PARA LOS MANUALES
+                
+                $itemsParaNotificar->push($itemManual);
             }
+        }
+
+        if ($itemsParaNotificar->isNotEmpty()) {
+            $this->notificarDepartamentos($solicitud, $itemsParaNotificar);
         }
 
         DB::commit();
         
         return Redirect::route('paquetes.show', $solicitud->id)
-            ->with('success', 'Solicitud y Paquete generados correctamente.');
+            ->with('success', 'Solicitud creada con signos vitales.');
 
     } catch (\Exception $e) {
         DB::rollback();
-        Log::error("Error en PaqueteController@store: " . $e->getMessage());
-        return Redirect::back()->with('error', 'Error al crear: ' . $e->getMessage());
+        Log::error('Error en PaqueteController@store: ' . $e->getMessage());
+        return Redirect::back()->with('error', 'Error: ' . $e->getMessage());
     }
 }
 

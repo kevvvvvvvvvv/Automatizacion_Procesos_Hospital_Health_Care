@@ -61,6 +61,7 @@ class SolicitudEstudio extends Model
     ];
     
     public $incrementing = false;
+    protected $keyType = 'int';
     public function paquetes()
     {
         return $this->hasMany(\App\Models\Formulario\Paquete\Paquete::class, 'solicitud_estudio_id');    }

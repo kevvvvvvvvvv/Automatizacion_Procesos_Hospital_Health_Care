@@ -1248,4 +1248,13 @@ export interface Paquete{
     otros_estudio: string;
     departamento_destino: string;
     estado: string;
+    ta_sistolica: number ,
+    ta_diastolica : number,
+    fc: number,
+    fr: number,
+    temp:number,
+    so2: number,
+    glucemia: number,
+    peso: number,
+    talla: number,
 }
