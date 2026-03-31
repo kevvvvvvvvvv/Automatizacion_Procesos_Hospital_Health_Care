@@ -21,7 +21,7 @@ class SessionTimeoutMiddleware
         if (Auth::check()) {
             $user = Auth::user();
             if ($user->hasRole('enfermera(o)')) { 
-                Config::set('session.lifetime', 5);
+                Config::set('session.lifetime', 120);
             } else {
                 Config::set('session.lifetime', 120);
             }
