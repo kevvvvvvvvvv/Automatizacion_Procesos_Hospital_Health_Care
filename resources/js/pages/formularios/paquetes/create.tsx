@@ -3,7 +3,7 @@ import { useForm, usePage, router } from '@inertiajs/react';
 import { Estancia, CatalogoEstudio, SolicitudEstudio, User, PageProps, Paciente } from '@/types';
 import { route } from 'ziggy-js';
 import PacienteCard from '@/components/paciente-card';
-
+import SignosVitalesForm from '@/components/forms/signos-vitales-form';
 import PrimaryButton from '@/components/ui/primary-button';
 import Checkbox from '@/components/ui/input-checkbox';
 import InputText from '@/components/ui/input-text';
@@ -18,6 +18,7 @@ interface Props {
     medicos: User[];
     modeloId: number;
     modeloTipo: string;
+    hojaenfermeria: any;
 }
 
 interface EstudioManual {
@@ -29,7 +30,7 @@ const SECCIONES_DATA = [
     {
         titulo: 'Paquetes Cirugía',
         color: 'border-red-500',
-        items: ['Colecistectomía por laparo', 'HTA', 'Cesarea', 'Vasectomía', 'RTUP', 'Herminiplastia umbilical', 'Hernia inguinal', 'Quiste de ovario', 'Hernioplastia bilateral', 'Fractura']
+        items: ['Colecistectomía por laparo', 'HTA', 'Histerectomia' , 'Cesarea', 'Vasectomía', 'RTUP', 'Herminiplastia umbilical', 'Hernia inguinal', 'Quiste de ovario', 'Hernioplastia bilateral', 'Fractura']
     },
     {
         titulo: 'Estudios de Laboratorio',
@@ -58,7 +59,7 @@ const SECCIONES_DATA = [
     }
 ];
 
-const SolicitudEstudiosForm = ({ paciente, estancia, catalogoEstudios = [], modeloTipo }: Props) => {
+const SolicitudEstudiosForm = ({ paciente, hojaenfermeria, estancia, catalogoEstudios = [], modeloTipo }: Props) => {
     const { auth } = usePage<PageProps>().props;
     const [otrosInputs, setOtrosInputs] = useState<Record<string, string>>({});
  
@@ -69,6 +70,15 @@ const SolicitudEstudiosForm = ({ paciente, estancia, catalogoEstudios = [], mode
         detallesEstudios: {} as Record<number, { modalidad?: string, via?: string, especificacion?: string }>,
         itemable_id: estancia.id,
         itemable_type: modeloTipo,
+        ta_sistolica: '',
+        ta_diastolica: '',
+        fc: '',
+        fr: '',
+        temp: '',
+        so2: '',
+        glucemia: '',
+        peso: '',
+        talla: '',
     });
 
     const handleToggleEstudio = (nombre: string, categoria: string, checked: boolean) => {
@@ -124,6 +134,7 @@ const SolicitudEstudiosForm = ({ paciente, estancia, catalogoEstudios = [], mode
             },
         });
     };
+    
 
     // Componente interno para renderizar los "badges" de lo que se va escribiendo en otros
     const OtrosBadges = ({ categoria }: { categoria: string }) => {
@@ -150,9 +161,29 @@ const SolicitudEstudiosForm = ({ paciente, estancia, catalogoEstudios = [], mode
 
     return (
         <MainLayout pageTitle='Paquete de estudios para operación' link='estancias.show'    linkParams={estancia.id}  >
-         
+        <div className="max-w-7xl mx-auto p-4 space-y-6">
+                
+               <div className="bg-white rounded-xl shadow-sm border-t-4 border-red-600 p-6 mb-6">
+                <h2 className="text-xl font-bold text-gray-800 mb-4">SIGNOS VITALES AL MOMENTO DE LA SOLICITUD</h2>
+                <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+                    <InputText id='ta_sistolica' name='ta_sistolica' label="Sistólica" value={data.ta_sistolica} onChange={e => setData('ta_sistolica', e.target.value)} />
+                    <span className="text-center">/</span>
+                    <InputText id='ta_diastolica' name='ta_diastolica' label="Diastólica" value={data.ta_diastolica} onChange={e => setData('ta_diastolica', e.target.value)} />
+                    <InputText id='fc' name='fc' label="F. Cardíaca" value={data.fc} onChange={e => setData('fc', e.target.value)} />
+                    <InputText id='temp' name='temp' label="Temp °C" value={data.temp} onChange={e => setData('temp', e.target.value)} />
+                    <InputText id='so2' name='so2' label="Sat. Oxígeno %" value={data.so2} onChange={e => setData('so2', e.target.value)} />
+                    <InputText id='fr' name='fr' label="F. Respiratoria" value={data.fr} onChange={e => setData('fr', e.target.value)} />
+                    <InputText id='glucemia' name='glucemia' label="glusemia" value={data.glucemia} onChange={e => setData('glucemia', e.target.value)} />
+                    <InputText id='peso' name='peso' label="peso" value={data.peso} onChange={e => setData('peso', e.target.value)} />
+                    <InputText id='talla' name='talla' label="talla" value={data.talla} onChange={e => setData('talla', e.target.value)} />
+
+
+                
+                </div>
+            </div>
             <form onSubmit={handleSubmit} className="pb-20 max-w-7xl mx-auto p-4">
                 <div className="grid grid-cols-1 gap-6">
+
                     {SECCIONES_DATA.map((seccion) => (
                         <div key={seccion.titulo} className={`bg-white rounded-xl shadow-sm border-t-4 ${seccion.color} p-6`}>
                             <h2 className="text-xl font-bold text-gray-800 mb-4">{seccion.titulo}</h2>
@@ -263,6 +294,7 @@ const SolicitudEstudiosForm = ({ paciente, estancia, catalogoEstudios = [], mode
                     </div>
                 </div>
             </form>
+            </div>
         </MainLayout>
     );
 };
