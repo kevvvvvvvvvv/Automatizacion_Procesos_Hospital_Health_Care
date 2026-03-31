@@ -107,12 +107,12 @@
             <tr>
                 <td>
                     <div class="signature-line"></div>
-                    <p>{{ $paciente->nombre_completo ?? 'Sin datos.' }}</p>
+                    <p>{{ $paciente->nombre_completo ?? '' }}</p>
                     <p style="font-size: 9pt; color: #555;">Firma del Paciente</p>
                 </td>
                 <td>
                     <div class="signature-line"></div>
-                    <p>{{ $estancia->familiarResponsable->nombre_completo ?? 'Sin datos.' }}</p>
+                    <p>{{ $estancia->familiarResponsable->nombre_completo ?? '' }}</p>
                     <p style="font-size: 9pt; color: #555;">Firma del Familiar Responsable</p>
                 </td>
             </tr>

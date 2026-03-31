@@ -183,7 +183,7 @@
                 {{-- 2. Familiar responsable --}}
                 <td>
                     <div class="signature-line"></div>
-                    <p>{{ $estancia->nombre_completo ?? '' }}</p>
+                    <p>{{ $estancia->familiarResponsable->nombre_completo ?? '' }}</p>
                     <p style="font-size: 9pt; color: #555;">Nombre y firma del familiar responsable</p>
                 </td>
 

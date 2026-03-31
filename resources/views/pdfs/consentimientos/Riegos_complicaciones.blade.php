@@ -143,7 +143,7 @@
             {{-- Columna izquierda: Paciente --}}
             <div class="signature-box">
                 <div class="signature-line"></div>
-                <p>{{ $paciente->nombre ?? 'Sin datos.' }}</p>
+                <p>{{ $paciente->nombre ?? '' }}</p>
                 <p style="font-size: 9pt; color: #555;">Nombre y firma del paciente</p>
             </div>
 

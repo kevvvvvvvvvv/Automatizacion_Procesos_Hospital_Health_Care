@@ -140,7 +140,6 @@ public function generarPDF(string $file, Request $request, Paciente $paciente, E
                 'anio' => $fecha->year,
             ],
         ];
-
         
         $imagePath = public_path('images/Logo_HC_2.png');
         $logo = null; 
@@ -158,6 +157,7 @@ public function generarPDF(string $file, Request $request, Paciente $paciente, E
             'medico' => $medicoFirmante, 
             'estancia'=> $consentimiento->estancia
         ];
+
         return Pdf::view($consentimiento->route_pdf, $viewData)
             ->format('Letter')
             ->name('consentimiento-' . ($consentimiento->estancia->folio ?? 'SN') . '.pdf')
