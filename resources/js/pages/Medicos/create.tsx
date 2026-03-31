@@ -31,7 +31,6 @@ const CreateDoctor: React.FC<Props> = ({ cargos = [], user, credenciales}) => {
 
     const [qualifications, setQualifications] = useState<CredencialEmpleado[]>(
         user?.credenciales || []
-        
     );
     
     
@@ -110,8 +109,7 @@ const CreateDoctor: React.FC<Props> = ({ cargos = [], user, credenciales}) => {
         professional_qualifications: user?.credenciales || [], 
         credenciales: credenciales?.titulo || '',
     });
-    //console.log(" ", credenciales );
-    //console.log("", data.professional_qualifications);
+
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         
