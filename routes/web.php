@@ -3,7 +3,7 @@
 use App\Http\Controllers\BackupsRestauration\BackupsController;
 use App\Http\Controllers\BackupsRestauration\RestaurationController;
 use App\Http\Controllers\Inventario\ProductoServicioController;
-
+use App\Http\Controllers\RecienNacidosController;
 
 use App\Http\Controllers\PacienteController;
 use App\Http\Controllers\EstanciaController;
@@ -67,6 +67,7 @@ use App\Http\Controllers\ReporteConcienciaController;
 use App\Http\Controllers\ReporteSignosController;
 use App\Http\Controllers\RecetaController;
 use App\Http\Controllers\ResumenMedicoController;
+
 
 
 use App\Http\Controllers\ReporteEstanciaController;
@@ -145,6 +146,9 @@ Route::resource('quirofanos', ReservacionQuirofanoController::class)->middleware
 Route::post('/reservaciones/{reservacione}/pagar',[ReservacionController::class,'pagar'])->middleware('auth');
 Route::resource('dietas',DietaController::class)->middleware('auth');
 Route::resource('mantenimiento', MantenimientoController::class)->middleware('auth');
+
+//Recien nacidos
+Route::resource('pacientes.estancias.reciennacido',RecienNacidosController::class)->shallow()-> middleware('auth');
 
 
 Route::resource('respaldo', BackupsController::class)->middleware('auth');
