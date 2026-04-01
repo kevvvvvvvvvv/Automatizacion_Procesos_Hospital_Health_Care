@@ -20,6 +20,7 @@ class RoleAndPermissionSeeder extends Seeder
         $roleMedico = Role::firstOrCreate(['name' => 'medico']);
         $roleMedicoEspecialista = Role::firstOrCreate(['name' => 'medico especialista']);
         $roleEnfermera = Role::firstOrCreate(['name' => 'enfermera(o)']);
+        $roleEnfermeraQuirofano = Role::firstOrCreate(['name' => 'enfermera(o) quirofano']);
         $roleAdministrativos = Role::firstOrCreate(['name' => 'administrativo']);
         $roleCocina = Role::firstOrCreate(['name' => 'cocina']);
         $roleFarmacia = Role::firstOrCreate(['name' => 'farmacia']);
@@ -292,5 +293,30 @@ class RoleAndPermissionSeeder extends Seeder
             'consultar habitaciones',
         ]);
 
+        $roleEnfermeraQuirofano->syncPermissions([
+            'consultar pacientes',
+            'crear pacientes',
+            'editar pacientes',
+
+            'consultar estancias',
+            'crear estancias',
+
+            'consultar hojas enfermerias',
+            'crear hojas enfermerias',
+
+            'consultar hojas', 
+            
+            'consultar solicitudes estudios',
+            'crear solicitudes estudios',
+
+            'consultar solicitudes estudios patologicos',
+            'crear solicitudes estudios patologicos',
+
+            'consultar habitaciones',
+
+            'crear consentimientos',
+
+            'crear colaboradores',
+        ]);
     }
 }
