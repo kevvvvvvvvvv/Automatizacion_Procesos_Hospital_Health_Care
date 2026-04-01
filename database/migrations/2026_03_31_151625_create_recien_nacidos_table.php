@@ -31,7 +31,6 @@ return new class extends Migration
         // CORRECCIÓN: En Laravel el método es integer(), no int()
         $table->integer('talla'); 
         
-        $table->json('habitus_exterior')->nullable();
         $table->string('estado');
 
         $table->timestamps();
