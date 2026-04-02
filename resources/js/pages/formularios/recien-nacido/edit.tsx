@@ -17,6 +17,7 @@ import SignosVitalesForm from '@/components/forms/signos-vitales-form';
 import MedicamentosForm from '@/components/forms/medicamentos-form';
 import TerapiaIVForm from '@/components/terapia-iv-form';
 import CerrarHoja from '@/components/app-cerrrar-hoja';
+import reciennacido from '@/routes/reciennacido';
 
 interface CreateProps {
     paciente: Paciente;
@@ -38,8 +39,11 @@ const seccionesRN: { id: SeccionRN, label: string }[] = [
     { id: 'ingresos_egresos', label: 'Ingresos y Egresos' },
     { id: 'somatometria', label: 'Somatometría' },
 ];
+type CreateComponent = React.FC<CreateProps> & {
+    layout: (page: React.ReactElement) => React.ReactNode;
+};
 
-const CreateRN: React.FC<CreateProps> & { layout: any } = ({ 
+const Create: CreateComponent = ({ 
     paciente, 
     estancia, 
     hojaenfermeria,
@@ -98,13 +102,12 @@ const CreateRN: React.FC<CreateProps> & { layout: any } = ({
                         <p className="text-sm text-gray-500">Registro clínico especializado para recién nacidos</p>
                     </div>
                     
-                    {/* Botón para finalizar turno/hoja */}
                     <CerrarHoja 
                         hoja={hojaenfermeria} 
                         title='hoja neonatal'
                         routeConfig={{ 
-                            name: 'hojasenfermerias.update', // Ajusta a tu ruta de RN
-                            params: { hojasenfermeria: hojaenfermeria.id } 
+                            name: 'reciennacido.update', // 1. Asegúrate que este sea el nombre de tu ruta
+                            params: { reciennacido: hojaenfermeria.id } // 2. El nombre de la llave debe coincidir con el parámetro de la ruta
                         }}
                     />
                 </div>
@@ -125,7 +128,7 @@ const CreateRN: React.FC<CreateProps> & { layout: any } = ({
     );
 }
 
-CreateRN.layout = (page: React.ReactElement) => {
+Create.layout = (page: React.ReactElement) => {
     const { estancia } = page.props as CreateProps;
     return (
         <MainLayout 
@@ -137,4 +140,4 @@ CreateRN.layout = (page: React.ReactElement) => {
     );
 }
 
-export default CreateRN;
+export default Create;

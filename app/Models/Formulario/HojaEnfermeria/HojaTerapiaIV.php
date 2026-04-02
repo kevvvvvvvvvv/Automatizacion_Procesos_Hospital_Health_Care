@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Models\Formulario\HojaEnfermeria;
-
+ 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -64,4 +64,9 @@ class HojaTerapiaIV extends Model
     {
         return $this->hasMany(HojaTerapiaIVMedicamento::class,'hoja_terapia_id');
     }
+    public function recienNacido(): BelongsTo 
+    {
+        return $this->belongsTo(RecienNacido::class, 'hoja_enfermeria_id', 'id');
+    }
+    
 }

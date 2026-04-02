@@ -143,7 +143,7 @@ class FormularioCatalogoSeeder extends Seeder
             'id' => 20,
             'nombre_formulario' => 'Enfermeria Recien Nacidos',
             'nombre_tabla_fisica' => 'recien_nacidos',
-            'route_prefix' => 'reciennacidos',
+            'route_prefix' => 'reciennacido',
         ]);
     }
 }

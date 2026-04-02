@@ -343,6 +343,9 @@ Route::get('/encuestapersonal/{encuestapersonal}/pdf', [EncuestaPersonalControll
     ->name('encuestapersonal.pdf')
     ->middleware('auth');
 
+Route::get('/reciennacido/{reciennacido}/pdf', [RecienNacidosController::class, 'generarPDF'])
+    ->name('reciennacido.pdf')
+    ->middleware('auth');
 // Farmacia
 Route::get('farmacia/solicitudes-medicamentos/{hojasenfermeria}', [FarmaciaController::class, 'show'])
     ->name('solicitudes-medicamentos.show')
