@@ -4,7 +4,7 @@ namespace App\Models\Formulario\HojaEnfermeria;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-
+ 
 
 
 /**
@@ -64,5 +64,9 @@ class HojaSignos extends Model
     public function hojaEnfermeria():BelongsTo
     {   
         return $this->belongsTo(HojaEnfermeria::class,'hoja_enfermeria_id','id');
+    }
+    public function recienNacido(): BelongsTo 
+    {
+        return $this->belongsTo(RecienNacido::class, 'hoja_enfermeria_id', 'id');
     }
 }
