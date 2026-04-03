@@ -500,22 +500,19 @@ class UserSeeder extends Seeder
 
         $userRamirez->assignRole('medico especialista');
 
-        $userJose = User::create([
-            'curp' => 'PMSA000000xxxxx004', 
-            'nombre' => 'Jose',
-            'apellido_paterno' => 'Frias',
-            'apellido_materno' => 'Frias',
+        $user = User::create([
+            'curp' => 'PRUEBA000000XXXX03',
+            'nombre' => 'Carlos',
+            'apellido_paterno' => 'Rodríguez',
+            'apellido_materno' => 'Martínez',
             'sexo' => 'Masculino',
-            'fecha_nacimiento' => '1980-01-01',
-            'telefono' => '7773289498',
-            'email' => 'PMSA004@test.com',
+            'fecha_nacimiento' => '1985-12-01',
+            'telefono' => '5550001122',
+            'email' => 'contador@test.com',
             'password' => Hash::make('12345678'),
         ]);
-
-        $userJose->assignRole('medico especialista');
-
-
         
+        $user->assignRole('contador');
 
-        }
+    }
 }

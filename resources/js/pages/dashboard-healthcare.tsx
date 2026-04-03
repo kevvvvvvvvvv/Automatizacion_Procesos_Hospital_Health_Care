@@ -163,7 +163,7 @@ export default function Dashboard() {
                    )} 
                 </div>
                 <div>
-                   {can('consultar caja') && (
+                   {can('consultar contaduria') && (
                     <CardButton
                         icon={FaCashRegister}
                         text="Contaduría"

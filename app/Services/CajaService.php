@@ -14,6 +14,8 @@ use App\Enums\TipoMovimientoCaja;
 use Illuminate\Support\Facades\DB;
 use Exception;
 
+use App\Events\Caja\NuevoMovimientoCaja;
+
 class CajaService
 {
     /**
@@ -64,6 +66,8 @@ class CajaService
             } else {
                 $sesion->increment('total_egresos_efectivo', $monto);
             }
+
+            broadcast(new NuevoMovimientoCaja($sesion->caja_id));
 
             return $movimiento;
         });

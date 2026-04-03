@@ -10,10 +10,12 @@ import { SummaryCard } from '@/components/ui/money/summary-card';
 
 interface Props {
     sesion: SesionCaja; 
+    fondo: SesionCaja;
 }
 
 export const PanelCaja = ({ 
-    sesion 
+    sesion,
+    fondo,
 }: Props) => {
     const [isGastoModalOpen, setIsGastoModalOpen] = useState(false);
     const [isCierreModalOpen, setIsCierreModalOpen] = useState(false);
@@ -24,8 +26,6 @@ export const PanelCaja = ({
         const num = Number(amount);
         return isNaN(num) ? '0.00' : num.toFixed(2);
     };
-
-
 
     return (
         <div className="p-6 max-w-7xl mx-auto space-y-6">
@@ -46,25 +46,32 @@ export const PanelCaja = ({
 
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <SummaryCard 
-                    label="Fondo inicial" 
-                    amount={formatMoney(sesion.monto_inicial)} 
+                    label="Caja inicial" 
+                    amount={(sesion.monto_esperado)} 
+
                 />
-                
+                <SummaryCard 
+                    label="Fondo disponible" 
+                    amount={(fondo.monto_esperado)} 
+                />
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <SummaryCard 
                     label="Ingresos (+)" 
-                    amount={formatMoney(sesion.total_ingresos_efectivo)} 
+                    amount={(sesion.total_ingresos_efectivo)} 
                     theme="success" 
                 />
                 
                 <SummaryCard 
                     label="Egresos (-)" 
-                    amount={formatMoney(sesion.total_egresos_efectivo)} 
+                    amount={(sesion.total_egresos_efectivo)} 
                     theme="danger" 
                 />
                 
                 <SummaryCard 
                     label="Efectivo esperado" 
-                    amount={formatMoney(sesion.monto_esperado)} 
+                    amount={(sesion.monto_esperado)} 
                     theme="highlight" 
                 />
             </div>

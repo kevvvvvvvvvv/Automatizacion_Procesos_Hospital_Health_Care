@@ -9,11 +9,13 @@ import MainLayout from '@/layouts/MainLayout';
 interface Props {
     sesionActiva: SesionCaja;
     cajas: Caja[];
+    fondo: SesionCaja;
 }
 
 const Index = ({ 
     sesionActiva,
     cajas, 
+    fondo
 }: Props) => {
 
     const renderContent = () => {
@@ -23,7 +25,10 @@ const Index = ({
                     />;
         }
 
-        return <PanelCaja sesion={sesionActiva} />;
+        return <PanelCaja 
+                    sesion={sesionActiva} 
+                    fondo={fondo}
+                />;
     };
 
     return (

@@ -37,6 +37,10 @@ class SesionCaja extends Model
         'monto_inicial' => 'decimal:2',
     ];
 
+    protected $appends = [
+        'monto_esperado',
+    ];
+
     /**
      * Calcula cuánto efectivo DEBE haber en la caja en este momento exacto.
      */

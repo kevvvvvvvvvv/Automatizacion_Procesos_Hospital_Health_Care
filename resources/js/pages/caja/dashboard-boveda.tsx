@@ -1,11 +1,13 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import Swal from 'sweetalert2';
 import { useState } from 'react';
-import { MovimientoCaja, SolicitudTraspaso } from '@/types';
+import { MovimientoCaja, SesionCaja, SolicitudTraspaso } from '@/types';
 import { route } from 'ziggy-js';
 import { router } from '@inertiajs/react';
 
 import {ModalGastoBoveda} from  '@/components/caja/modal-gasto-boveda';
+
+import { SummaryCard } from '@/components/ui/money/summary-card'; 
 
 import MainLayout from '@/layouts/MainLayout';
 
@@ -17,13 +19,39 @@ interface Props {
         egresos: number;
         balance: number;
     };
+    cajaId: number;
+    fondo: SesionCaja,
+    sesion: SesionCaja,
+    caja: SesionCaja;
 }
 
 export default function DashboardBoveda({ 
+    cajaId,
     solicitudesPendientes = [],
     movimientosHoy = [],
-    resumenHoy
+    resumenHoy,
+    fondo,
+    sesion,
+    caja,
 }: Props) {
+
+    useEffect(() => {
+        window.Echo.channel(`caja.${cajaId}`)
+            .listen('NuevoMovimientoCaja', () => {
+
+                router.reload({
+                    only: [
+                        'solicitudesPendientes', 
+                        'movimientosHoy', 
+                        'resumenHoy'
+                    ],
+                });
+                
+            });
+        return () => {
+            window.Echo.leave(`caja.${cajaId}`);
+        };
+    }, [cajaId]);
 
     const [vistaActiva, setVistaActiva] = useState<'solicitudes' | 'diario'>('solicitudes');
     const [isEnviarDineroFondo, setIsEnviarDineroFondo] = useState(false);
@@ -85,11 +113,28 @@ export default function DashboardBoveda({
             pageTitle='Registro contaduría'
             link='dashboard'
         >
+             <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+                    <SummaryCard
+                        label='Caja'
+                        amount={caja.monto_esperado}
+                    />
+
+                    <SummaryCard
+                        label="Fondo"
+                        amount={fondo.monto_esperado}
+                    />  
+
+                    <SummaryCard
+                        label='Boveda'
+                        amount={sesion.monto_esperado}
+                    /> 
+            </div>
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 <div className="flex flex-col md:flex-row justify-between items-end mb-6 border-b border-gray-200 pb-4">
                     <div>
-                        <h1 className="text-3xl font-black text-gray-900">Tesorería Central</h1>
-                        <p className="text-gray-500">Gestión de bóveda y libro diario</p>
+                        <h1 className="text-3xl font-black text-gray-900">Contaduría</h1>
+                        <p className="text-gray-500">Gestión de bóveda y movimiento de caja</p>
                     </div>
                     
                     <div className="flex space-x-2 mt-4 md:mt-0">
@@ -116,14 +161,14 @@ export default function DashboardBoveda({
                                 : 'bg-white text-gray-600 hover:bg-gray-50 border border-gray-200'
                             }`}
                         >
-                            Libro Diario (Hoy)
+                            Movimientos (hoy)
                         </button>
 
                         <button 
                             onClick={() => setIsGastoModalOpen(true)}
                             className="bg-red-50 border border-red-200 text-red-700 hover:bg-red-100 px-4 py-2 rounded-lg font-bold transition-colors shadow-sm mr-4"
                         >
-                            💸 Registrar Pago / Gasto
+                            Registrar egreso
                         </button>
                     </div>
                 </div>
@@ -200,15 +245,15 @@ export default function DashboardBoveda({
                     <div className="space-y-6">
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                             <div className="bg-white p-5 rounded-xl shadow-sm border border-green-100">
-                                <p className="text-sm font-medium text-green-600">Total Ingresos Hoy</p>
+                                <p className="text-sm font-medium text-green-600">Total ingresos hoy</p>
                                 <p className="text-2xl font-bold text-gray-800 mt-1">${formatMoney(resumenHoy.ingresos)}</p>
                             </div>
                             <div className="bg-white p-5 rounded-xl shadow-sm border border-red-100">
-                                <p className="text-sm font-medium text-red-600">Total Egresos Hoy</p>
+                                <p className="text-sm font-medium text-red-600">Total egresos hoy</p>
                                 <p className="text-2xl font-bold text-gray-800 mt-1">${formatMoney(resumenHoy.egresos)}</p>
                             </div>
                             <div className="bg-white p-5 rounded-xl shadow-sm border border-blue-100">
-                                <p className="text-sm font-medium text-blue-800">Flujo Neto del Día</p>
+                                <p className="text-sm font-medium text-blue-800">Flujo neto del día</p>
                                 <p className="text-2xl font-black text-blue-900 mt-1">${formatMoney(resumenHoy.balance)}</p>
                             </div>
                         </div>

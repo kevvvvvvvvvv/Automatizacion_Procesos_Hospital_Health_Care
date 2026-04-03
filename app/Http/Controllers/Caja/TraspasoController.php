@@ -30,6 +30,7 @@ protected $cajaService;
         $validated = $request->validated(); 
 
         try {
+            
             $this->cajaService->tomarDineroDeFondo(
                 $validated['caja_destino_id'],
                 $validated['monto'],
@@ -37,7 +38,7 @@ protected $cajaService;
                 $request->user()->id
             );
 
-            return redirect()->back()->with('success', 'Dinero transferido a tu caja exitosamente. Se ha notificado a Bóveda para reponer el fondo.');
+            return Redirect::back()->with('success', 'Dinero transferido a tu caja exitosamente. Se ha notificado a Bóveda para reponer el fondo.');
         } catch (\Exception $e) {
             return back()->withErrors(['general' => $e->getMessage()]);
         }

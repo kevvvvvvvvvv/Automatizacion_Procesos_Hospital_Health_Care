@@ -11,11 +11,14 @@ use Inertia\Inertia;
 use App\Services\CajaService;
 
 use App\Enums\TipoMovimientoCaja;
+use App\Enums\EstadoSesionCaja;
+
 use App\Http\Requests\Caja\Contaduria\ContaduriaRequest;
 use App\Models\Caja\SolicitudTraspaso;
 use App\Models\Caja\Caja;
 use App\Models\Caja\SesionCaja;
 use App\Models\Caja\MovimientoCaja;
+
 use Illuminate\Support\Facades\Auth;
 
 class ContaduriaController extends Controller
@@ -33,7 +36,6 @@ class ContaduriaController extends Controller
                 'user_id' => Auth::id(),
                 'fecha_apertura' => now(),
                 'monto_inicial' => 50000,
-                'monto_esperado' => 0,
             ]
         );
 
@@ -43,7 +45,6 @@ class ContaduriaController extends Controller
                 'user_id' => Auth::id(),
                 'fecha_apertura' => now(),
                 'monto_inicial' => 10000,
-                'monto_esperado' => 0,
             ]
         );
         $solicitudes = SolicitudTraspaso::with(['cajaDestino', 'usuarioSolicita'])
@@ -59,15 +60,37 @@ class ContaduriaController extends Controller
 
         $ingresosHoy = $movimientosHoy->where('tipo', 'ingreso')->sum('monto');
         $egresosHoy = $movimientosHoy->where('tipo', 'egreso')->sum('monto');
+        $boveda = Caja::where('tipo', 'boveda')->firstOrFail();
+
+        $cajaFondo = Caja::where('tipo', 'fondo')->firstOrFail();
+
+        $fondo = SesionCaja::where('caja_id', $cajaFondo->id)
+            ->where('estado', 'abierta')
+            ->first();
+        
+        $sesion = SesionCaja::where('user_id', Auth::id())
+            ->where('estado', EstadoSesionCaja::ABIERTA->value)
+            ->with('movimientos')
+            ->first();
+
+        $caja = Caja::where('tipo', 'operativo')->firstOrFail();
+
+        $caja = SesionCaja::where('caja_id', $caja->id)
+            ->where('estado', 'abierta')
+            ->first();
 
         return Inertia::render('caja/dashboard-boveda', [
+            'cajaId' => $boveda->id,
             'solicitudesPendientes' => $solicitudes,
             'movimientosHoy' => $movimientosHoy,
             'resumenHoy' => [
                 'ingresos' => $ingresosHoy,
                 'egresos' => $egresosHoy,
                 'balance' => $ingresosHoy - $egresosHoy
-            ]
+            ],
+            'fondo' => $fondo,
+            'sesion' => $sesion,
+            'caja' => $caja
         ]);
     }
 

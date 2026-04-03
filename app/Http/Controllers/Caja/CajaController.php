@@ -34,13 +34,20 @@ class CajaController extends Controller
             ->where('estado', EstadoSesionCaja::ABIERTA->value)
             ->with('movimientos')
             ->first();
+        
+        $cajaFondo = Caja::where('tipo', 'fondo')->firstOrFail();
+
+        $fondo = SesionCaja::where('caja_id', $cajaFondo->id)
+            ->where('estado', 'abierta')
+            ->first();
 
         $sesionData = $sesion ? new SesionCajaResource($sesion) : null;
         $cajas = Caja::where('tipo','operativo')->get();
 
         return Inertia::render('caja/index', [
             'sesionActiva' => $sesionData,
-            'cajas' => $cajas, 
+            'cajas' => $cajas,
+            'fondo' => $fondo,
         ]);
     }
 

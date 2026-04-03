@@ -25,7 +25,6 @@ class Caja extends Model
         return $this->hasMany(SolicitudTraspaso::class, 'caja_destino_id');
     }
 
-    // Las solicitudes donde esta caja es a la que LE PIDEN dinero (aplica mucho para Contaduría)
     public function solicitudesRecibidas():HasMany
     {
         return $this->hasMany(SolicitudTraspaso::class, 'caja_origen_id');

@@ -9,8 +9,9 @@ interface Echo {
 
 declare global {
     interface Window {
-        Echo: Echo;
-        Pusher: any;
+        axios: AxiosInstance;
+        Pusher: typeof Pusher;
+        Echo: Echo; 
     }
 }
 
