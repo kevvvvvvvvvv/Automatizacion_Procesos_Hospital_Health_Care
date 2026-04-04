@@ -270,7 +270,9 @@ export default function DashboardBoveda({
                                             <tr>
                                                 <th className="px-6 py-3 text-xs font-bold text-gray-500 uppercase">Hora</th>
                                                 <th className="px-6 py-3 text-xs font-bold text-gray-500 uppercase">Caja / Origen</th>
+                                                <th className="px-6 py-3 text-xs font-bold text-gray-500 uppercase">Área</th>
                                                 <th className="px-6 py-3 text-xs font-bold text-gray-500 uppercase">Concepto</th>
+                                                <th className="px-6 py-3 text-xs font-bold text-gray-500 uppercase">Método de pago</th>
                                                 <th className="px-6 py-3 text-xs font-bold text-gray-500 uppercase">Usuario</th>
                                                 <th className="px-6 py-3 text-xs font-bold text-gray-500 uppercase text-right">Monto</th>
                                             </tr>
@@ -286,8 +288,14 @@ export default function DashboardBoveda({
                                                             {mov.sesion_caja?.caja?.nombre || 'Caja Desconocida'}
                                                         </span>
                                                     </td>
+                                                     <td className="px-6 py-4 text-sm text-gray-900 font-medium">
+                                                        {mov?.area ?  mov.area : ''} 
+                                                    </td>                                                   
                                                     <td className="px-6 py-4 text-sm text-gray-900 font-medium">
                                                         {mov.concepto}
+                                                    </td>
+                                                    <td className="px-6 py-4 text-sm text-gray-900 font-medium">
+                                                        {mov.metodo_pago?.nombre ? mov.metodo_pago.nombre : ''}
                                                     </td>
                                                     <td className="px-6 py-4 text-sm text-gray-500">
                                                         {mov.user?.nombre_completo || 'Sistema'}
@@ -313,7 +321,7 @@ export default function DashboardBoveda({
                 )}
             </div>
             {isEnviarDineroFondo}
-            {isGastoModalOpen && <ModalGastoBoveda onClose={() => setIsGastoModalOpen(false)} />}
+            {isGastoModalOpen && <ModalGastoBoveda onClose={() => setIsGastoModalOpen(false)} sesionBovedo={sesion}/>}
         </MainLayout>
     );
 }

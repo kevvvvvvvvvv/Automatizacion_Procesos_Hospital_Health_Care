@@ -53,7 +53,7 @@ class ContaduriaController extends Controller
             ->get();
         
         
-        $movimientosHoy = MovimientoCaja::with(['sesionCaja.caja', 'user'])
+        $movimientosHoy = MovimientoCaja::with(['sesionCaja.caja', 'user','metodoPago'])
             ->whereDate('created_at', Carbon::today())
             ->latest()
             ->get();
@@ -70,7 +70,7 @@ class ContaduriaController extends Controller
         
         $sesion = SesionCaja::where('user_id', Auth::id())
             ->where('estado', EstadoSesionCaja::ABIERTA->value)
-            ->with('movimientos')
+            ->with('movimientos.metodoPago')
             ->first();
 
         $caja = Caja::where('tipo', 'operativo')->firstOrFail();
@@ -106,7 +106,7 @@ class ContaduriaController extends Controller
             $sesion,
             TipoMovimientoCaja::EGRESO,
             $validated['monto'],
-            "Gasto Externo / Pago: " . $validated['concepto'],
+            "Gasto externo: " . $validated['concepto'],
             $request->user()->id
         );
 
