@@ -63,6 +63,7 @@ class ConsentimientoController extends Controller
             '8' => 'Consentimiento_mutilacion',
             '9' => 'Consentimiento_transfusion_sanguinea',
             '10' => 'consentimiento_reanimacion',
+            '11' => 'Indicaciones_hospitalario',
         ];
 
         $diagnostico = $validated['diagnostico'] ?? null;
@@ -106,7 +107,6 @@ public function generarPDF(string $file, Request $request, Paciente $paciente, E
     if ($request->has('consentimiento_id')) {
         $consentimientoId = intval($request->query('consentimiento_id'));
         
-        // 1. Cargamos la relación del usuario que creó el consentimiento y sus credenciales
         $consentimiento = Consentimiento::with([
             'user.credenciales', // <--- Importante
             'estancia.paciente',
@@ -116,7 +116,6 @@ public function generarPDF(string $file, Request $request, Paciente $paciente, E
 
         if (!$consentimiento) abort(404, "Consentimiento no encontrado.");
 
-        // ... (tu lógica de búsqueda de médico frontal se mantiene igual)
         $instanciaConFrontal = $consentimiento->estancia->formularioInstancias
             ->whereNotNull('hojaFrontal')
             ->first();
@@ -134,14 +133,13 @@ public function generarPDF(string $file, Request $request, Paciente $paciente, E
             'notaData' => $consentimiento,
             'paciente' => $consentimiento->estancia->paciente,
             'medico'   => $medicoFirmante, // Ahora este objeto tiene 'credenciales'
-            'estancia' => $consentimiento->estancia->familiarResponsable,
+            'estancia' => $consentimiento->estancia,
             'fecha' => [
                 'dia' => $fecha->day,
                 'mes' => $meses[$fecha->month],
                 'anio' => $fecha->year,
             ],
         ];
-
         
         $imagePath = public_path('images/Logo_HC_2.png');
         $logo = null; 
@@ -159,6 +157,7 @@ public function generarPDF(string $file, Request $request, Paciente $paciente, E
             'medico' => $medicoFirmante, 
             'estancia'=> $consentimiento->estancia
         ];
+
         return Pdf::view($consentimiento->route_pdf, $viewData)
             ->format('Letter')
             ->name('consentimiento-' . ($consentimiento->estancia->folio ?? 'SN') . '.pdf')

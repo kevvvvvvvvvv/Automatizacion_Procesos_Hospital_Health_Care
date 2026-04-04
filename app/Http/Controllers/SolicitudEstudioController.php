@@ -73,7 +73,7 @@ class SolicitudEstudioController extends Controller implements HasMiddleware
             $solicitud = $this->crearCabeceraSolicitud($request, $estancia);
             $itemsParaNotificar = $this->guardarItems($request, $solicitud);
             $this->procesarNotificaciones($solicitud, $itemsParaNotificar);
-            $this->enviarRecordatorioCita($twilio);
+            //$this->enviarRecordatorioCita($twilio);
 
             foreach($request->estudios_agregados_ids as $estudio){
                 $this->procesarVenta($venta, $estancia['id'],$estudio);
@@ -433,7 +433,7 @@ class SolicitudEstudioController extends Controller implements HasMiddleware
         }
 
     }
-
+    /*
     public function enviarRecordatorioCita(TwilioWhatsAppService $twilio)
     {
         $numeroCliente = '+5217774571517'; 
@@ -447,5 +447,5 @@ class SolicitudEstudioController extends Controller implements HasMiddleware
 
         return "Notificación de cita enviada (En inglés por Sandbox)";
     }
-
+    */
 }

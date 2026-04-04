@@ -96,13 +96,7 @@ class DoctorController extends Controller implements HasMiddleware
    
     public function store(UserRequest $request)
     {
-        // 1. Obtener datos validados
         $validatedData = $request->validated();
-
-        // 2. LOG DE DEPURACIÓN (Revisa tu archivo storage/logs/laravel.log)
-        Log::info('Datos de calificaciones recibidos:', [
-            'qualifications' => $validatedData['professional_qualifications'] ?? 'No llegaron calificaciones'
-        ]);
 
         DB::beginTransaction();
         try {
@@ -122,19 +116,13 @@ class DoctorController extends Controller implements HasMiddleware
             $role = Role::find($validatedData['cargo_id']);
             $user->assignRole($role);
 
-            // 3. GUARDAR CREDENCIALES
             if (!empty($validatedData['professional_qualifications'])) {
                 foreach ($validatedData['professional_qualifications'] as $qual) {
-                    
-                    // Extraemos el valor de la cédula buscando en ambos nombres posibles
                     $cedulaValor = $qual['cedula_profesional'] ?? ($qual['cedula'] ?? null);
-
-                    // IMPORTANTE: Si el título no está vacío, intentamos guardar
                     if (!empty($qual['titulo'])) {
                         CredencialEmpleado::create([
                             'user_id'            => $user->id,
                             'titulo'             => $qual['titulo'],
-                            // Si el valor sigue siendo null, ponemos un string vacío para evitar el error de SQL
                             'cedula_profesional' => $cedulaValor ?? '', 
                         ]);
                     }
@@ -208,7 +196,6 @@ class DoctorController extends Controller implements HasMiddleware
                     'nombre_completo' => $u->nombre_completo,
                 ];
             });
-        //dd($doctore ->toArray());
         return Inertia::render('Medicos/create', [
             'user' => $doctorData,
             'cargos' => $cargos,
@@ -216,14 +203,13 @@ class DoctorController extends Controller implements HasMiddleware
         ]);
     }
 
-   public function update(UserRequest $request, $id)
+    public function update(UserRequest $request, User $doctore)
     {
-        $doctor = User::findOrFail($id);  
-
         $validated = $request->validated();
 
         DB::beginTransaction();
         try {
+            // 1. Manejo seguro de la contraseña
             if ($request->filled('password')) {
                 $validated['password'] = Hash::make($request->password);
             } else {
@@ -231,23 +217,36 @@ class DoctorController extends Controller implements HasMiddleware
                 unset($validated['password_confirmation']); 
             }
 
-            $doctor->update($validated);
+            // 2. Actualizar datos principales del usuario
+            $doctore->update($validated);
 
+            // 3. Sincronizar roles (Verificando que el rol exista)
             if (isset($validated['cargo_id'])) {
                 $role = Role::find($validated['cargo_id']);
-                $doctor->syncRoles([$role->name]);
+                if ($role) {
+                    $doctore->syncRoles([$role->name]);
+                }
             }
 
+            // 4. Manejo de Credenciales (La solución al Error 500)
             if (isset($validated['professional_qualifications'])) {
-                $doctor->credenciales()->delete(); 
                 
-                foreach ($validated['professional_qualifications'] as $qual) {
-                    if (!empty($qual['titulo'])) {
-                        $doctor->credenciales()->create([
-                            'titulo' => $qual['titulo'],
-                            'cedula_profesional' => $qual['cedula_profesional'] ?? ($qual['cedula'] ?? null),
-                        ]);
-                    }
+                // Filtramos el arreglo para quedarnos SOLO con las credenciales que tengan AMBOS campos completos
+                $credencialesValidas = collect($validated['professional_qualifications'])->filter(function ($qual) {
+                    $cedula = $qual['cedula_profesional'] ?? ($qual['cedula'] ?? null);
+                    // Retorna true solo si el título y la cédula tienen texto
+                    return !empty(trim($qual['titulo'])) && !empty(trim($cedula));
+                });
+
+                // Borramos las credenciales viejas para reemplazarlas por las nuevas
+                $doctore->credenciales()->delete(); 
+                
+                // Insertamos únicamente las credenciales limpias y válidas
+                foreach ($credencialesValidas as $qual) {
+                    $doctore->credenciales()->create([
+                        'titulo' => $qual['titulo'],
+                        'cedula_profesional' => $qual['cedula_profesional'] ?? ($qual['cedula'] ?? null),
+                    ]);
                 }
             }
 
@@ -255,7 +254,7 @@ class DoctorController extends Controller implements HasMiddleware
             return redirect()->back()
                 ->with('success', 'Doctor actualizado exitosamente.');
 
-        } catch (Exception $e) {
+        } catch (\Exception $e) { // Agregué la diagonal invertida por si no tienes importada la clase Exception
             DB::rollBack();
             Log::error("Error al actualizar doctor: " . $e->getMessage());
             return back()->with('error', 'Ocurrió un error al actualizar los datos.');

@@ -132,8 +132,7 @@ const DoctorIndex = ({doctores} : Props) => {
     router.delete(route('doctores.destroy', id), {
       preserveState: true,
       preserveScroll: true,
-      onSuccess: (page) => {
-        // Recarga solo los doctores para actualizar la lista
+      onSuccess: () => {
         router.reload({ only: ['doctores'] });
         setDeletingId(null);  
        
@@ -154,20 +153,16 @@ const DoctorIndex = ({doctores} : Props) => {
 
   return (
     <>
-      <Head title="Doctores" />
+      <Head title="Consulta de colaboradores" />
       <div >
         <div className="flex items-center justify-between mb-6">
-          <h1 className="text-3xl font-bold text-black">Listado de Doctores</h1>
+          <h1 className="text-3xl font-bold text-black">Listado de colaboradores</h1>
         </div>
         <div className="flex justify-between items-center mb-6">
             <div className="flex items-center space-x-4">
-                
-            
-
-            
             </div>
             <AddButton href={route('doctores.create')}>
-            Agregar Doctor
+            Agregar colaborador
           </AddButton>
             </div>
             <div className="mb-4">

@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Head, useForm, router, Link } from '@inertiajs/react';
-import MainLayout from '@/layouts/MainLayout';
+import { Head, useForm, Link } from '@inertiajs/react';
 import { route } from 'ziggy-js';
-import { Doctor } from '@/types';
-import BackButton from '@/components/ui/back-button';
+import { User } from '@/types';
 import InputText from '@/components/ui/input-text';
 import InputDate from '@/components/ui/input-date';
 import SelectInput from '@/components/ui/input-select';
@@ -30,25 +28,11 @@ type Props = {
   submitlLabel?: string;
 };
 
-type DoctorFormData = {
-  nombre: string;
-  apellido_paterno: string;
-  apellido_materno: string;
-  curp: string;
-  sexo: string;
-  fecha_nacimiento: string;
-  cargo_id: string;
-  colaborador_responsable_id: string;
-  email: string;
-  password: string;
-  password_confirmation: string;
-  professional_qualifications: { titulo: string; cedula?: string }[];
-};
 export const MedicoForm = ({
     doctor,
     onSubmit,
     submitlLabel
-}: Props) =>{ 
+}: Props) => { 
     const form = useForm ({
     nombre: doctor?.nombre || 'N/A',
     apellido_paterno: doctor?.apellido_paterno || 'N/A',

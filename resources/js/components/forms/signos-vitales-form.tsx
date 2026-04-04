@@ -214,7 +214,7 @@ const SignosVitalesForm: React.FC<Props> = ({ hoja }) => {
                 </div>
             </form>
             <div className="mt-12">
-                <DataTable columns={columnasSignos} data={hoja.hoja_signos} />
+                <DataTable columns={columnasSignos} data={hoja?.hoja_signos || []} />
             </div>
         </>
     );

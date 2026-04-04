@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 use App\Models\User;
+use App\Models\Formulario\Paquete\Paquete;
 use App\Models\Formulario\FormularioInstancia;
 
 /**
@@ -58,9 +59,12 @@ class SolicitudEstudio extends Model
         'itemable_type',
         'itemable_id'
     ];
-
+    
     public $incrementing = false;
-
+    protected $keyType = 'int';
+    public function paquetes()
+    {
+        return $this->hasMany(\App\Models\Formulario\Paquete\Paquete::class, 'solicitud_estudio_id');    }
     public function userSolicita():BelongsTo
     {
         return $this->belongsTo(User::class, 'user_solicita_id', 'id');

@@ -17,8 +17,6 @@ type ShowDoctorProps = {
 };
 
 const Show = ({ doctor, credencial }: ShowDoctorProps) => {
-
-  // Safeguard: Si no hay doctor, muestra error
   if (!doctor) {
     return (
       <div className="p-4 md:p-8">
@@ -29,26 +27,19 @@ const Show = ({ doctor, credencial }: ShowDoctorProps) => {
       </div>
     );
   }
-
-  // Fallback para nombre completo: Prioriza accessor, luego construye
-  const nombreCompleto = doctor.nombre || 
-    `${doctor.nombre || ''} ${doctor.apellido_paterno || ''} ${doctor.apellido_materno || ''}`.trim() || 
-    'Nombre no disponible';
-  const credenciales = credencial?.user_id;
-  // Formatear fecha si no es accessor
   const fechaNacimientoFormatted = doctor.fecha_nacimiento || 
     (doctor.fecha_nacimiento ? new Date(doctor.fecha_nacimiento).toLocaleDateString('es-MX') : 'No especificada');
 
   return (
     <>
-      <Head title={`Doctor: ${nombreCompleto}`} />
+      <Head title={`Doctor: ${doctor.nombre_completo}`} />
       
       <div >
         <div className="flex justify-between items-center mb-6">
           
           
           <h1 className="flex-1 text-center text-3xl font-bold text-black">
-            Ficha del Doctor: {nombreCompleto}
+            Ficha del Doctor: {doctor.nombre_completo}
           </h1>
           
           <div className="flex items-center space-x-2">
@@ -70,7 +61,7 @@ const Show = ({ doctor, credencial }: ShowDoctorProps) => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <InfoField
               label="Nombre Completo"
-              value={nombreCompleto}
+              value={doctor.nombre_completo}
             />
             <InfoField
               label="Sexo"
@@ -97,7 +88,6 @@ const Show = ({ doctor, credencial }: ShowDoctorProps) => {
           </div>
         </InfoCard>
 <InfoCard title="Calificaciones Profesionales" className="mt-8">
-  {/* Verificamos si hay credenciales y que sea un array con contenido */}
   {Array.isArray(credencial) && credencial.length > 0 ? (
     <div className="overflow-x-auto">
       <table className="w-full border-collapse border border-gray-300 bg-white rounded-lg shadow">
@@ -108,14 +98,12 @@ const Show = ({ doctor, credencial }: ShowDoctorProps) => {
           </tr>
         </thead>
         <tbody>
-          {/* RECORREMOS TODAS LAS CREDENCIALES */}
           {credencial.map((item, index) => (
             <tr key={index} className="hover:bg-gray-50 transition-colors">
               <td className="border border-gray-300 px-4 py-2 text-gray-800">
                 {item.titulo || 'No especificado'}
               </td>
               <td className="border border-gray-300 px-4 py-2 text-gray-800 font-mono">
-                {/* Fallback por si la propiedad se llama cedula o cedula_profesional */}
                 {item.cedula_profesional || item.cedula || 'Sin cédula'}
               </td>
             </tr>

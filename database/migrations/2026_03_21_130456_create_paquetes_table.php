@@ -6,29 +6,34 @@ use Illuminate\Support\Facades\Schema;
 
 
 
-return new class extends Migration
+return new class extends Migration 
 {
     public function up(): void
     {
-        Schema::create('paquetes', function (Blueprint $table) {
-            $table->unsignedBigInteger('id');
-            $table->primary('id');
-            $table->foreign('id')
-                ->references('id')
-                ->on('formulario_instancias')
-                ->onDelete('cascade');
-            $table->foreignId('solicitud_estudio_id')
-                ->constrained('solicitud_estudios')
-                ->onDelete('cascade');
-            $table->foreignId('catalogo_estudio_id')
-                ->nullable()
-                ->constrained('catalogo_estudios');
-            $table->string('otro_estudio')->nullable();
-            $table->string('departamento_destino');
-            $table->string('estado')->default('SOLICITADO'); 
+       Schema::create('paquetes', function (Blueprint $table) {
+    $table->id(); 
+    $table->foreignId('formulario_instancia_id')->constrained('formulario_instancias')->onDelete('cascade');
+    $table->foreignId('solicitud_estudio_id')->constrained('solicitud_estudios')->onDelete('cascade');
 
-            $table->timestamps();
-        });
+    // Datos del estudio
+    $table->foreignId('catalogo_estudio_id')->nullable()->constrained('catalogo_estudios');
+    $table->string('otro_estudio')->nullable();
+    $table->string('departamento_destino');
+
+    // --- CAMPOS DE SIGNOS VITALES (NUEVOS) ---
+    $table->string('ta_sistolica')->nullable();
+    $table->string('ta_diastolica')->nullable();
+    $table->string('fc')->nullable();
+    $table->string('fr')->nullable();
+    $table->string('temp')->nullable();
+    $table->string('so2')->nullable();
+    $table->string('glucemia')->nullable();
+    $table->string('peso')->nullable();
+    $table->string('talla')->nullable();
+
+    $table->string('estado')->default('SOLICITADO'); 
+    $table->timestamps();
+});
     }
 
     public function down(): void
