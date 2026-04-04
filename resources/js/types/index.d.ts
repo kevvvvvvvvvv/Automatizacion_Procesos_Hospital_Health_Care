@@ -455,9 +455,21 @@ export interface HojaEnfermeriaQuirofano {
     };
 
     anestesia: {
-        anestesia_general: boolean;
-        anestesia_local: boolean;
-        bloqueo: boolean;
+        general: boolean,
+        local: boolean,
+        sedacion: boolean;
+
+        regional: {
+            neuroaxial: {
+                bsa: boolean,
+                epidural: boolean,
+                mixto: boolean,
+            },
+            periferico: {
+                plexo_braquial: boolean,
+                otros: boolean,
+            }
+        }
     }
 
     hoja_insumos_basicos: HojaInsumosBasicos[];

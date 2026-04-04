@@ -115,7 +115,7 @@ class HojaEnfemeriaQuirofanoController extends Controller implements HasMiddlewa
             $hojasenfermeriasquirofano->update([
                 ...$validatedData
             ]);
-
+            
             return Redirect::route('hojasenfermeriasquirofanos.edit', $hojasenfermeriasquirofano->id)->with('success','Se ha actualizado la hoja de enfermería en quirófano.');
         }catch(\Exception $e){
             Log::error('Error al actualizar la hoja de enfermería en quirófano: ' . $e->getMessage());

@@ -37,9 +37,21 @@ const TiemposQuirofanoForm: React.FC<Props> = ({ hoja }) => {
 
     const { data, setData, put} = useForm({
         anestesia: {
-            anestesia_general: hoja.anestesia?.anestesia_general ?? false,
-            anestesia_local: hoja.anestesia?.anestesia_local ?? false,
-            bloqueo: hoja.anestesia?.bloqueo ?? false,
+            general: hoja.anestesia?.general ?? false,
+            local: hoja.anestesia?.local ?? false,
+            sedacion: hoja.anestesia?.sedacion ?? false,
+
+            regional: {
+                neuroaxial: {
+                    bsa: hoja.anestesia?.regional?.neuroaxial?.bsa ?? false,
+                    epidural: hoja.anestesia?.regional?.neuroaxial?.epidural ?? false,
+                    mixto: hoja.anestesia?.regional?.neuroaxial?.mixto ?? false,
+                },
+                periferico: {
+                    plexo_braquial: hoja.anestesia?.regional?.periferico?.plexo_braquial ?? false,
+                    otros: hoja.anestesia?.regional?.periferico?.otros ?? false,
+                }
+            }
         }
     });
 
@@ -167,42 +179,102 @@ const TiemposQuirofanoForm: React.FC<Props> = ({ hoja }) => {
         });
     },[data.anestesia]);
 
-    const handleCheckboxChange = (field: string, value: boolean ) => {
-        setData('anestesia',{
-            ...data.anestesia,
-            [field]:value
-        });
+    const handleCheckboxChange = (field: string, value: boolean) => {
+        const nuevaAnestesia = JSON.parse(JSON.stringify(data.anestesia));
+        const keys = field.split('.');
+        let actual: any = nuevaAnestesia; 
+        
+        for (let i = 0; i < keys.length - 1; i++) {
+            actual = actual[keys[i]];
+        }
+        actual[keys[keys.length - 1]] = value;
+        
+        setData('anestesia', nuevaAnestesia);
     };
-
 
 
     return (
         <>
-            <form onSubmit={(e)=>e.preventDefault()} className='border shadow-sm rounded-lg p-6 mb-4'>
-                <h3 className="text-lg font-semibold text-gray-800 border-b pb-2">
+            <form onSubmit={(e) => e.preventDefault()} className='border shadow-sm rounded-lg p-6 mb-4'>
+                <h3 className="text-lg font-semibold text-gray-800 border-b pb-2 mb-4">
                     Anestesia
                 </h3>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-2">
+                {/* 1. Tipos Generales / Básicos */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
                     <Checkbox
-                        id="anestesia_general"
-                        label="Anestesía general"
-                        checked={data.anestesia.anestesia_general}
-                        onChange={(e)=>handleCheckboxChange('anestesia_general',e.target.checked)}
+                        id="general"
+                        label="Anestesia General"
+                        checked={data.anestesia.general}
+                        onChange={(e) => handleCheckboxChange('general', e.target.checked)}
                     />
                     <Checkbox
-                        id="anestesia_local"
-                        label="Anestesía local"
-                        checked={data.anestesia.anestesia_local}
-                        onChange={e=>handleCheckboxChange('anestesia_local',e.target.checked)}
+                        id="local"
+                        label="Anestesia Local"
+                        checked={data.anestesia.local}
+                        onChange={(e) => handleCheckboxChange('local', e.target.checked)}
                     />
+                    <Checkbox
+                        id="sedacion"
+                        label="Sedación (MAC)"
+                        checked={data.anestesia.sedacion}
+                        onChange={(e) => handleCheckboxChange('sedacion', e.target.checked)}
+                    />
+                </div>
 
-                    <Checkbox
-                        id="bloqueo"
-                        label="Anestesía bloqueo"
-                        checked={data.anestesia.bloqueo}
-                        onChange={e=>handleCheckboxChange('bloqueo',e.target.checked)}
-                    />
+                {/* 2. Anestesia Regional (Bloqueos) */}
+                <div className="bg-gray-50 p-4 rounded-md border border-gray-100">
+                    <h4 className="text-md font-medium text-gray-700 mb-4">
+                        Anestesia Regional (Bloqueos)
+                    </h4>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        
+                        {/* Columna Neuroaxial */}
+                        <div className="flex flex-col gap-3">
+                            <h5 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">
+                                Neuroaxial (Central)
+                            </h5>
+                            <Checkbox
+                                id="bsa"
+                                label="BSA (Subaracnoideo / Raquídea)"
+                                checked={data.anestesia.regional.neuroaxial.bsa}
+                                onChange={(e) => handleCheckboxChange('regional.neuroaxial.bsa', e.target.checked)}
+                            />
+                            <Checkbox
+                                id="epidural"
+                                label="Epidural"
+                                checked={data.anestesia.regional.neuroaxial.epidural}
+                                onChange={(e) => handleCheckboxChange('regional.neuroaxial.epidural', e.target.checked)}
+                            />
+                            <Checkbox
+                                id="mixto"
+                                label="Bloqueo Mixto (CSE)"
+                                checked={data.anestesia.regional.neuroaxial.mixto}
+                                onChange={(e) => handleCheckboxChange('regional.neuroaxial.mixto', e.target.checked)}
+                            />
+                        </div>
+
+                        {/* Columna Periférico */}
+                        <div className="flex flex-col gap-3">
+                            <h5 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">
+                                Periférico
+                            </h5>
+                            <Checkbox
+                                id="plexo_braquial"
+                                label="Plexo Braquial"
+                                checked={data.anestesia.regional.periferico.plexo_braquial}
+                                onChange={(e) => handleCheckboxChange('regional.periferico.plexo_braquial', e.target.checked)}
+                            />
+                            <Checkbox
+                                id="otros_perifericos"
+                                label="Otros (Femoral, Ciático, etc.)"
+                                checked={data.anestesia.regional.periferico.otros}
+                                onChange={(e) => handleCheckboxChange('regional.periferico.otros', e.target.checked)}
+                            />
+                        </div>
+
+                    </div>
                 </div>
             </form>
 
