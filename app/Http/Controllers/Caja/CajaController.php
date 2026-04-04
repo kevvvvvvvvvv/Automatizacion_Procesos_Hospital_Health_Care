@@ -17,7 +17,7 @@ use App\Http\Requests\Caja\Caja\AbrirTurnoRequest;
 use App\Http\Requests\Caja\Caja\CerrarTurnoRequest;
 use App\Http\Requests\Caja\Caja\RegistrarMovimientoRequest;
 use App\Http\Resources\Caja\SesionCajaResource;
-
+use App\Models\Venta\MetodoPago;
 use App\Services\CajaService;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
@@ -32,7 +32,7 @@ class CajaController extends Controller
     {
         $sesion = SesionCaja::where('user_id', $request->user()->id)
             ->where('estado', EstadoSesionCaja::ABIERTA->value)
-            ->with('movimientos')
+            ->with('movimientos.metodoPago')
             ->first();
         
         $cajaFondo = Caja::where('tipo', 'fondo')->firstOrFail();
@@ -44,10 +44,13 @@ class CajaController extends Controller
         $sesionData = $sesion ? new SesionCajaResource($sesion) : null;
         $cajas = Caja::where('tipo','operativo')->get();
 
+        $metodosPago = MetodoPago::all();
+
         return Inertia::render('caja/index', [
             'sesionActiva' => $sesionData,
             'cajas' => $cajas,
             'fondo' => $fondo,
+            'metodos_pago' => $metodosPago,
         ]);
     }
 
@@ -100,7 +103,9 @@ class CajaController extends Controller
                 TipoMovimientoCaja::from($validated['tipo']),
                 $validated['monto'],
                 $validated['concepto'],
-                $request->user()->id
+                Auth::id(),
+                $validated['metodo_pago_id'],
+                $validated['area'],
             );
             return Redirect::back()->with('success', 'Movimiento registrado correctamente.');
             

@@ -5,12 +5,19 @@ import Swal from 'sweetalert2';
 
 import TextInput from '../ui/input-text';
 import PrimaryButton from '../ui/primary-button';
+import { SesionCaja } from '@/types';
 
 interface Props {
     onClose: () => void;
+    sesion: SesionCaja;
+    fondo: SesionCaja;
 }
 
-const ModalCierreCaja = ({ onClose }: Props) => {
+const ModalCierreCaja = ({ 
+    onClose,
+    sesion,
+    fondo,
+}: Props) => {
     const { data, setData, post, processing, errors } = useForm({
         monto_declarado: ''
     });
@@ -41,13 +48,15 @@ const ModalCierreCaja = ({ onClose }: Props) => {
     };
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto overflow-x-hidden bg-black bg-opacity-60 p-4 backdrop-blur-sm">
+        <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto overflow-x-hidden bg-opacity-60 p-4 backdrop-blur-sm">
             <div className="relative w-full max-w-md rounded-xl bg-white p-6 shadow-2xl border-t-4 border-red-500">
                 
                 <h3 className="mb-2 text-xl font-bold text-gray-800">Corte y cierre de caja</h3>
                 <p className="mb-6 text-sm text-gray-500">
                     Por favor, cuenta el dinero físico que hay en el cajón y escribe el total. El sistema calculará automáticamente si hay algún faltante o sobrante.
                 </p>
+                <p>Dinero esperado en caja: {sesion.monto_esperado}</p>
+                <p>Dinero esperado en fondo: {fondo.monto_esperado}</p>
 
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <TextInput

@@ -25,9 +25,12 @@ return new class extends Migration
             $table->decimal('monto', 10, 2)
                 ->comment('Cantidad de dinero del movimiento');
 
+            $table->string('area')
+                ->nullable()
+                ->comment('A que área hace referencia el concepto a colocar');    
             $table->string('concepto')
                 ->comment('Motivo (ej. Pago de garrafones, Retiro de exceso de efectivo)');
-            
+
             $table->string('comprobante')
                 ->nullable()
                 ->comment('Ruta al archivo o foto del ticket de respaldo');
@@ -35,6 +38,11 @@ return new class extends Migration
             $table->foreignId('user_id')
                 ->constrained('users')
                 ->comment('Usuario que registró o autorizó el movimiento');
+
+            $table->foreignId('metodo_pago_id')
+                ->nullable()
+                ->constrained('metodo_pagos')
+                ->comment('El metodo de pago que se utilizó en la transaccion');
 
             $table->timestamps();
         });

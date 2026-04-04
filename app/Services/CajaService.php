@@ -43,7 +43,15 @@ class CajaService
     /**
      * Registra entradas o salidas de dinero ajenas a una venta (ej. pago a proveedores).
      */
-    public function registrarMovimiento(SesionCaja $sesion, TipoMovimientoCaja $tipo, float $monto, string $concepto, int $userId): MovimientoCaja
+    public function registrarMovimiento(
+        SesionCaja $sesion, 
+        TipoMovimientoCaja $tipo, 
+        float $monto, 
+        string $concepto, 
+        int $userId,
+        ?int $metodoPagoId = null,
+        ?string $area = null,
+    ): MovimientoCaja
     {
         $estadoActual = $sesion->estado instanceof EstadoSesionCaja 
             ? $sesion->estado->value 
@@ -53,11 +61,13 @@ class CajaService
             throw new \Exception("No se pueden registrar movimientos en una caja cerrada.");
         }
 
-        return DB::transaction(function () use ($sesion, $tipo, $monto, $concepto, $userId) {
+        return DB::transaction(function () use ($sesion, $tipo, $monto, $area, $concepto, $metodoPagoId ,$userId) {
             $movimiento = $sesion->movimientos()->create([
                 'tipo' => $tipo,
                 'monto' => $monto,
+                'area' => $area,
                 'concepto' => $concepto,
+                'metodo_pago_id' => $metodoPagoId,
                 'user_id' => $userId,
             ]);
 

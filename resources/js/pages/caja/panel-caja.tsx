@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { MovimientoCaja, SesionCaja } from '@/types'; 
+import { MetodoPago, MovimientoCaja, SesionCaja } from '@/types'; 
 
 import ModalCierreCaja from '@/components/caja/modal-cierre-caja';
 import ModalGasto from '@/components/caja/modal-gasto';
@@ -11,11 +11,13 @@ import { SummaryCard } from '@/components/ui/money/summary-card';
 interface Props {
     sesion: SesionCaja; 
     fondo: SesionCaja;
+    metodos_pago: MetodoPago[];
 }
 
 export const PanelCaja = ({ 
     sesion,
     fondo,
+    metodos_pago,
 }: Props) => {
     const [isGastoModalOpen, setIsGastoModalOpen] = useState(false);
     const [isCierreModalOpen, setIsCierreModalOpen] = useState(false);
@@ -47,7 +49,7 @@ export const PanelCaja = ({
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <SummaryCard 
                     label="Caja inicial" 
-                    amount={(sesion.monto_esperado)} 
+                    amount={(sesion.monto_inicial)} 
 
                 />
                 <SummaryCard 
@@ -81,7 +83,7 @@ export const PanelCaja = ({
                     onClick={() => setIsGastoModalOpen(true)} 
                     className="bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 font-medium"
                 >
-                    + Registrar gasto / retiro
+                    Registrar ingreso / egreso 
                 </ActionButton>
                 
                 <ActionButton 
@@ -110,7 +112,9 @@ export const PanelCaja = ({
                             <thead className="bg-gray-50">
                                 <tr>
                                     <th className="px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Hora</th>
+                                    <th className="px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Área</th>
                                     <th className="px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Concepto</th>
+                                    <th className="px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Metodo pago</th>
                                     <th className="px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Tipo</th>
                                     <th className="px-6 py-3 text-xs font-medium text-gray-500 uppercase text-right tracking-wider">Monto</th>
                                 </tr>
@@ -122,7 +126,13 @@ export const PanelCaja = ({
                                             {new Date(mov.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                         </td>
                                         <td className="px-6 py-4 text-sm text-gray-900 font-medium">
+                                            {mov.area ? mov.area : ''}
+                                        </td>
+                                        <td className="px-6 py-4 text-sm text-gray-900 font-medium">
                                             {mov.concepto}
+                                        </td>
+                                        <td className="px-6 py-4 text-sm text-gray-900 font-medium">
+                                            {mov.metodo_pago?.nombre ? mov.metodo_pago?.nombre : ''}
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap text-sm">
                                             <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
@@ -152,8 +162,8 @@ export const PanelCaja = ({
                 )}
             </div>
 
-            {isGastoModalOpen && <ModalGasto onClose={() => setIsGastoModalOpen(false)} />} 
-            {isCierreModalOpen && <ModalCierreCaja onClose={() => setIsCierreModalOpen(false)} />}
+            {isGastoModalOpen && <ModalGasto onClose={() => setIsGastoModalOpen(false)}  metodos_pagos={metodos_pago}/>} 
+            {isCierreModalOpen && <ModalCierreCaja onClose={() => setIsCierreModalOpen(false)} sesion={sesion} fondo={fondo}/>}
             {isSolicitudModalOpen && <ModalSolicitudFondo onClose={() => setIsSolicitudModalOpen(false)} sesionActiva={sesion} />}
             {isEnviarDineroBovedaOpen && <ModalEnviarCajaAConta onClose={()=> setIsEnviarDineroBovedaOpen(false)} sesionActiva={sesion}/>}
         </div>

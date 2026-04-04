@@ -3,6 +3,7 @@
 namespace App\Models\Caja;
 
 use App\Models\User;
+use App\Models\Venta\MetodoPago;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -14,8 +15,11 @@ class MovimientoCaja extends Model
         'user_id',
         'tipo',
         'monto',
+        'area',
         'concepto',
         'comprobante',
+
+        'metodo_pago_id'
     ];
 
     public function sesionCaja(): BelongsTo
@@ -26,5 +30,10 @@ class MovimientoCaja extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function metodoPago(): BelongsTo
+    {
+        return $this->belongsTo(MetodoPago::class);
     }
 }

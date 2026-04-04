@@ -1276,29 +1276,33 @@ export interface SesionCaja {
 }
 
 export interface MovimientoCaja {
-  id: number;
-  sesion_caja_id: number;
-  tipo: TipoMovimiento;
-  monto: number;
-  concepto: string;
-  comprobante: string | null;
-  user_id: number;
+    id: number;
+    sesion_caja_id: number;
+    tipo: TipoMovimiento;
+    monto: number;
+    area: string;
+    concepto: string;
+    comprobante: string | null;
+    user_id: number;
 
-  created_at: string;
-  updated_at?: string;
+    created_at: string;
+    updated_at?: string;
 
-  sesion_caja: SesionCaja;
-  user: User;
+    sesion_caja: SesionCaja;
+    metodo_pago: MetodoPago;
+
+    user: User;
 }
 
+
 export interface DesgloseEfectivo {
-  id: number;
-  sesion_caja_id: number;
-  denominacion: number;
-  cantidad: number;
-  total: number;
-  created_at: string;
-  updated_at?: string;
+    id: number;
+    sesion_caja_id: number;
+    denominacion: number;
+    cantidad: number;
+    total: number;
+    created_at: string;
+    updated_at?: string;
 }
 
 

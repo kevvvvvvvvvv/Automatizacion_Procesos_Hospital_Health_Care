@@ -4,22 +4,189 @@ import { route } from 'ziggy-js';
 
 import SelectInput from '@/components/ui/input-select';
 import TextInput from '@/components/ui/input-text';
+import { MetodoPago } from '@/types';
 
 interface Props {
     onClose: () => void;
+    metodos_pagos: MetodoPago[];
 }
 
 const tipoMovimientoOptions = [
-    { value: 'egreso', label: 'Retiro / Gasto (-)' },
-    { value: 'ingreso', label: 'Ingreso extra'}
+    { value: 'egreso', label: 'Egreso' },
+    { value: 'ingreso', label: 'Ingreso'}
 ]
 
-const ModalGasto = ({ onClose }: Props) => {
+export const conceptosPorArea = {
+    CAJA: {
+        ingresos: [
+        { value: 'inicial', label: 'Inicial' }
+        ],
+        egresos: [
+        { value: 'corte_caja', label: 'Corte de caja' },
+        { value: 'retiro_efectivo', label: 'Retiro de efectivo' },
+        { value: 'honorarios_diversos', label: 'Honorarios diversos' }
+        ]
+    },
+    CAFETERIA: {
+        ingresos: [
+        { value: 'efectivo', label: 'Efectivo' },
+        { value: 'tarjeta', label: 'Tarjeta' },
+        { value: 'transferencia', label: 'Transferencia' },
+        { value: 'cortesia', label: 'Cortesía' },
+        { value: 'cortesia_px', label: 'Cortesía PX' },
+        { value: 'deudor', label: 'Deudor' }
+        ],
+        egresos: [
+        { value: 'pollo', label: 'Pollo' },
+        { value: 'pan', label: 'Pan' },
+        { value: 'garrafones_agua', label: 'Garrafones de agua' },
+        { value: 'lechuga', label: 'Lechuga' },
+        { value: 'yogurt', label: 'Yogurt' },
+        { value: 'refresco', label: 'Refresco' },
+        { value: 'bacalao', label: 'Bacalao' },
+        { value: 'compras_diversas', label: 'Compras diversas' },
+        { value: 'compras_mantenimiento', label: 'Compras de mantenimiento' },
+        { value: 'tortillas', label: 'Tortillas' },
+        { value: 'fondo', label: 'Fondo' }
+        ]
+    },
+    CONSULTA: {
+        ingresos: [
+        { value: 'efectivo', label: 'Efectivo' },
+        { value: 'tarjeta', label: 'Tarjeta' },
+        { value: 'transferencia', label: 'Transferencia' }
+        ],
+        egresos: [
+        { value: 'honorarios_consulta', label: 'Honorarios consulta' }
+        ]
+    },
+    RAYOS_X: {
+        ingresos: [
+        { value: 'efectivo', label: 'Efectivo' },
+        { value: 'tarjeta', label: 'Tarjeta' },
+        { value: 'transferencia', label: 'Transferencia' },
+        { value: 'liga', label: 'Liga' },
+        { value: 'preoperatorio', label: 'Preoperatorio' },
+        { value: 'en_piso', label: 'En piso' },
+        { value: 'en_cirugia', label: 'En cirugía' },
+        { value: 'promocion', label: 'Promoción' }
+        ],
+        egresos: [] 
+    },
+    ESTUDIOS: {
+        ingresos: [
+        { value: 'efectivo', label: 'Efectivo' },
+        { value: 'tarjeta', label: 'Tarjeta' },
+        { value: 'transferencia', label: 'Transferencia' }
+        ],
+        egresos: [
+        { value: 'comision', label: 'Comisión' },
+        { value: 'patologia', label: 'Patología' }
+        ]
+    },
+    ULTRASONIDO: {
+        ingresos: [
+        { value: 'efectivo', label: 'Efectivo' },
+        { value: 'tarjeta', label: 'Tarjeta' },
+        { value: 'transferencia', label: 'Transferencia' }
+        ],
+        egresos: [
+        { value: 'comision', label: 'Comisión' }
+        ]
+    },
+    CIRUGIA: {
+        ingresos: [
+        { value: 'efectivo', label: 'Efectivo' },
+        { value: 'tarjeta', label: 'Tarjeta' },
+        { value: 'transferencia', label: 'Transferencia' }
+        ],
+        egresos: [
+        { value: 'cirujano', label: 'Cirujano' },
+        { value: 'anestesiologo', label: 'Anestesiólogo' },
+        { value: 'ayudante', label: 'Ayudante' },
+        { value: 'instrumentista', label: 'Instrumentista' },
+        { value: 'farmacia', label: 'Farmacia' },
+        { value: 'pediatra', label: 'Pediatra' },
+        { value: 'devolucion_cancelacion', label: 'Devolución y cancelación' },
+        { value: 'retiro_efectivo', label: 'Retiro de efectivo' },
+        { value: 'apartado', label: 'Apartado' },
+        { value: 'cafeteria', label: 'Cafetería' },
+        { value: 'dieta', label: 'Dieta' }
+        ]
+    },
+    ANTICIPO_CIRUGIA: {
+        ingresos: [
+        { value: 'efectivo', label: 'Efectivo' },
+        { value: 'tarjeta', label: 'Tarjeta' },
+        { value: 'transferencia', label: 'Transferencia' }
+        ],
+        egresos: [
+        { value: 'devolucion_cancelacion', label: 'Devolución y cancelación' }
+        ]
+    },
+    PRESTAMO: {
+        ingresos: [
+        { value: 'conta', label: 'Conta' },
+        { value: 'fondo', label: 'Fondo' },
+        { value: 'josue', label: 'Josué' }
+        ],
+        egresos: [
+        { value: 'pago_prestamo_conta', label: 'Pago préstamo Conta' },
+        { value: 'pago_prestamo_josue', label: 'Pago préstamo Josué' },
+        { value: 'fondo', label: 'Fondo' }
+        ]
+    },
+    FONDO_COMPRAS_MERCADO: {
+        ingresos: [],
+        egresos: [
+        { value: 'fondo_luis', label: 'Fondo Luis' }
+        ]
+    },
+    LIGA: {
+        ingresos: [],
+        egresos: [
+        { value: 'retiro_efectivo', label: 'Retiro de efectivo' }
+        ]
+    }
+};
+
+export const areasDisponibles = [
+    { value: 'CAJA', label: 'Caja' },
+    { value: 'CAFETERIA', label: 'Cafetería' },
+    { value: 'CONSULTA', label: 'Consulta' },
+    { value: 'RAYOS_X', label: 'Rayos X' },
+    { value: 'ESTUDIOS', label: 'Estudios' },
+    { value: 'ULTRASONIDO', label: 'Ultrasonido' },
+    { value: 'CIRUGIA', label: 'Cirugía' },
+    { value: 'ANTICIPO_CIRUGIA', label: 'Anticipo de Cirugía' },
+    { value: 'PRESTAMO', label: 'Préstamo' },
+    { value: 'FONDO_COMPRAS_MERCADO', label: 'Fondo Compras Mercado' },
+    { value: 'LIGA', label: 'Liga' }
+];
+
+
+
+const ModalGasto = ({ 
+    onClose,
+    metodos_pagos = [],
+}: Props) => {
     const { data, setData, post, processing, errors, reset } = useForm({
         tipo: 'egreso', 
         monto: '',
-        concepto: ''
+        area: '',
+        concepto: '',
+        metodo_pago_id: ''
     });
+
+    const optionsMetodoPago = metodos_pagos.map((met) => (
+        {value: met.id, label: met.nombre}
+    ))
+
+    const tipoMovimiento = data.tipo === 'ingreso' ? 'ingresos' : 'egresos';
+    
+    const opcionesConcepto = data.area 
+        ? conceptosPorArea[data.area as keyof typeof conceptosPorArea]?.[tipoMovimiento] || [] 
+        : [];
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -33,7 +200,7 @@ const ModalGasto = ({ onClose }: Props) => {
     };
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto overflow-x-hidden bg-black bg-opacity-50 p-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto overflow-x-hidden bg-opacity-50 backdrop-blur-sm p-4">
             <div className="relative w-full max-w-md rounded-xl bg-white p-6 shadow-2xl">
                 
                 
@@ -55,13 +222,31 @@ const ModalGasto = ({ onClose }: Props) => {
                         error={errors.tipo}
                     />
 
-                    <TextInput
-                        id='concepto'
-                        name='concepto'
+                    <SelectInput
+                        label='Área'
+                        options={areasDisponibles}
+                        value={data.area}
+                        onChange={e=>{
+                            setData('area',e)
+                            setData('concepto', '');
+                        }}
+                        error={errors.area}
+                    />
+
+                    <SelectInput
                         label='Concepto'
+                        options={opcionesConcepto}
                         value={data.concepto}
-                        onChange={e=>setData('concepto',e.target.value)}
+                        onChange={e=>setData('concepto',e)}
                         error={errors.concepto}
+                    />
+
+                    <SelectInput
+                        label='Método de pago'
+                        options={optionsMetodoPago}
+                        value={data.metodo_pago_id}
+                        onChange={e=>setData('metodo_pago_id',e)}
+                        error={errors.metodo_pago_id}
                     />
 
                     <TextInput

@@ -27,6 +27,8 @@ class RegistrarMovimientoRequest extends FormRequest
             'tipo' => ['required', new Enum(TipoMovimientoCaja::class)],
             'monto' => 'required|numeric|min:0.01',
             'concepto' => 'required|string|max:255',
+            'metodo_pago_id' => 'required|exists:metodo_pagos,id',
+            'area' => 'required|string',
         ];
     }
 
@@ -36,6 +38,8 @@ class RegistrarMovimientoRequest extends FormRequest
             'tipo' => 'tipo de movimiento',
             'monto' => 'monto del movimiento',
             'concepto' => 'concepto',
+            'metodo_pago_id' => 'método de pago',
+            'area' => 'área',
         ];
     }
 
@@ -48,6 +52,7 @@ class RegistrarMovimientoRequest extends FormRequest
             'min' => 'El campo :attribute debe ser de al menos $:min.',
             'string' => 'El campo :attribute debe ser texto válido.',
             'max' => 'El campo :attribute no puede tener más de :max caracteres.',
+            'exists' => 'El campo :attribute debe existir en los métodos de pago disponibles',
         ];
     }
 }
