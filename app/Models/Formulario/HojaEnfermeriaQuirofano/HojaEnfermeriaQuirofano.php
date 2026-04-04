@@ -92,4 +92,9 @@ class HojaEnfermeriaQuirofano extends Model
     {
         return $this->morphMany(HojaOxigeno::class, 'itemable');
     }
+
+    public function conteoMaterialQuirofano(): HasMany
+    {
+        return $this->hasMany(ConteoMaterialQuirofano::class);
+    }
 }

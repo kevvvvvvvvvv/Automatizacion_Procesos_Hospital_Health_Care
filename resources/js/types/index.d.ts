@@ -477,6 +477,8 @@ export interface HojaEnfermeriaQuirofano {
     hoja_oxigenos: HojaOxigeno[] | null;
 
     oxigeno_activo: HojaOxigeno[];
+
+    conteo_material_quirofano: ConteoMaterialQuirofano[];
 }
 
 export interface HojaInsumosBasicos {
@@ -1269,4 +1271,13 @@ export interface Paquete{
     glucemia: number,
     peso: number,
     talla: number,
+}
+
+export interface ConteoMaterialQuirofano {
+    id?: number;
+    hoja_enfermeria_quirofano_id?: number;
+    tipo_material: string;
+    cantidad_inicial: number;
+    cantidad_agregada: numnber;
+    cantidad_final:number;
 }

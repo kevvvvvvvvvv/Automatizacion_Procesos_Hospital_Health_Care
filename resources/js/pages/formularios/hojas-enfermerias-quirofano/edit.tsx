@@ -12,8 +12,8 @@ import PersonalQuirurgicoForm from '@/components/forms/personal-quirurgico-form'
 import EquipoLaparoscopiaForm from '@/components/forms/equipo-laparoscopia-form';
 import EnvioPiezaHojaEnfermeria from '@/components/forms/envio-pieza-hoja-enfermeria-form';
 import CerrarHoja from '@/components/app-cerrrar-hoja';
-
-
+import InformacionGeneralCirugia from '@/components/forms/hoja-enfermeria-quirofano/informacion-general-cirugia';
+import ConteoMaterialQuirofano from '@/components/forms/hoja-enfermeria-quirofano/conteo-material-quirofano';
 
 
 interface CreateProps {
@@ -24,7 +24,7 @@ interface CreateProps {
     users: User[];
 }
 
-type SeccionHoja = 'insumos' | 'servicios_especiales' | 'pieza_patologica' | 'general' | 'personal';
+type SeccionHoja = 'insumos' | 'servicios_especiales' | 'pieza_patologica' | 'general' | 'personal' | 'informacion_general' | 'conteo_material_quirofano';
 
 
 
@@ -37,7 +37,9 @@ const secciones: {id: SeccionHoja, label: string}[] = [
     { id: 'insumos', label : 'Insumos' },
     { id: 'servicios_especiales', label: 'Servicios especiales' },
     { id: 'pieza_patologica', label: 'Envio de pieza patológica' },
-    { id: 'personal', label: 'Personal' }
+    { id: 'personal', label: 'Personal' },
+    { id: 'informacion_general', label:'Información general'},
+    { id: 'conteo_material_quirofano', label: 'Conteo de material en quirófano'}
 ];
 
 const CreateHojaEnfermeriaQuirofano:CreateComponent = ({paciente, estancia, hoja, insumos, users}) => {
@@ -79,6 +81,11 @@ const CreateHojaEnfermeriaQuirofano:CreateComponent = ({paciente, estancia, hoja
                             hoja={hoja}
                             materiales={insumos}
                         />
+            case 'conteo_material_quirofano':
+                return <ConteoMaterialQuirofano
+                            materiales={}
+                        />
+
             case 'pieza_patologica':
                 return <EnvioPiezaHojaEnfermeria
                             medicos={users}
@@ -97,7 +104,10 @@ const CreateHojaEnfermeriaQuirofano:CreateComponent = ({paciente, estancia, hoja
                             users={users}
                             personalEmpleados={hoja.personal_empleados}
                         />
+            case 'informacion_general':
+                return <InformacionGeneralCirugia
 
+                        />
             default:
                 return null;
         }

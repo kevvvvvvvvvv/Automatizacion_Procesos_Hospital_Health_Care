@@ -2,11 +2,12 @@ import React, { useEffect, useRef } from 'react';
 import { router, useForm } from '@inertiajs/react';
 import { route } from 'ziggy-js';
 import Swal from 'sweetalert2';
+import { HojaEnfermeriaQuirofano } from '@/types';
 
 import PrimaryButton from '@/components/ui/primary-button';
 import ContadorTiempo from '@/components/counter-time'; 
 import Checkbox from '../ui/input-checkbox';
-import { HojaEnfermeriaQuirofano } from '@/types';
+
 
 interface Props {
     hoja: HojaEnfermeriaQuirofano;
@@ -200,17 +201,17 @@ const TiemposQuirofanoForm: React.FC<Props> = ({ hoja }) => {
                     Anestesia
                 </h3>
 
-                {/* 1. Tipos Generales / Básicos */}
+                {/* 1. Tipos generales */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
                     <Checkbox
                         id="general"
-                        label="Anestesia General"
+                        label="Anestesia general"
                         checked={data.anestesia.general}
                         onChange={(e) => handleCheckboxChange('general', e.target.checked)}
                     />
                     <Checkbox
                         id="local"
-                        label="Anestesia Local"
+                        label="Anestesia local"
                         checked={data.anestesia.local}
                         onChange={(e) => handleCheckboxChange('local', e.target.checked)}
                     />
@@ -222,22 +223,22 @@ const TiemposQuirofanoForm: React.FC<Props> = ({ hoja }) => {
                     />
                 </div>
 
-                {/* 2. Anestesia Regional (Bloqueos) */}
+                {/* 2. Anestesia regional (bloqueos) */}
                 <div className="bg-gray-50 p-4 rounded-md border border-gray-100">
                     <h4 className="text-md font-medium text-gray-700 mb-4">
-                        Anestesia Regional (Bloqueos)
+                        Anestesia regional (bloqueos)
                     </h4>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                         
-                        {/* Columna Neuroaxial */}
+                        {/* Columna neuroaxial */}
                         <div className="flex flex-col gap-3">
                             <h5 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">
-                                Neuroaxial (Central)
+                                Neuroaxial (central)
                             </h5>
                             <Checkbox
                                 id="bsa"
-                                label="BSA (Subaracnoideo / Raquídea)"
+                                label="BSA (subaracnoideo / raquídea)"
                                 checked={data.anestesia.regional.neuroaxial.bsa}
                                 onChange={(e) => handleCheckboxChange('regional.neuroaxial.bsa', e.target.checked)}
                             />
@@ -249,26 +250,26 @@ const TiemposQuirofanoForm: React.FC<Props> = ({ hoja }) => {
                             />
                             <Checkbox
                                 id="mixto"
-                                label="Bloqueo Mixto (CSE)"
+                                label="Bloqueo mixto (CSE)"
                                 checked={data.anestesia.regional.neuroaxial.mixto}
                                 onChange={(e) => handleCheckboxChange('regional.neuroaxial.mixto', e.target.checked)}
                             />
                         </div>
 
-                        {/* Columna Periférico */}
+                        {/* Columna periférico */}
                         <div className="flex flex-col gap-3">
                             <h5 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">
                                 Periférico
                             </h5>
                             <Checkbox
                                 id="plexo_braquial"
-                                label="Plexo Braquial"
+                                label="Plexo braquial"
                                 checked={data.anestesia.regional.periferico.plexo_braquial}
                                 onChange={(e) => handleCheckboxChange('regional.periferico.plexo_braquial', e.target.checked)}
                             />
                             <Checkbox
                                 id="otros_perifericos"
-                                label="Otros (Femoral, Ciático, etc.)"
+                                label="Otros (femoral, ciático, etc.)"
                                 checked={data.anestesia.regional.periferico.otros}
                                 onChange={(e) => handleCheckboxChange('regional.periferico.otros', e.target.checked)}
                             />
