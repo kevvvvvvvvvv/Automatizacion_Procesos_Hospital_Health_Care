@@ -39,11 +39,9 @@ class RecienNacido extends Model
     {
         return $this->belongsTo(FormularioInstancia::class, 'id');
     }
-    // App\Models\RecienNacido.php
-
+    
     public function hojaSignos(): HasMany 
     {
-        // Relacionamos el ID del RN con la columna hoja_enfermeria_id de los signos
         return $this->hasMany(HojaSignos::class, 'hoja_enfermeria_id', 'id');
     }
 
