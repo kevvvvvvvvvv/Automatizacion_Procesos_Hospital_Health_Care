@@ -162,9 +162,9 @@ export const PanelCaja = ({
                 )}
             </div>
 
-            {isGastoModalOpen && <ModalGasto onClose={() => setIsGastoModalOpen(false)}  metodos_pagos={metodos_pago}/>} 
+            {isGastoModalOpen && <ModalGasto onClose={() => setIsGastoModalOpen(false)}  metodos_pagos={metodos_pago} sesion={sesion}/>} 
             {isCierreModalOpen && <ModalCierreCaja onClose={() => setIsCierreModalOpen(false)} sesion={sesion} fondo={fondo}/>}
-            {isSolicitudModalOpen && <ModalSolicitudFondo onClose={() => setIsSolicitudModalOpen(false)} sesionActiva={sesion} />}
+            {isSolicitudModalOpen && <ModalSolicitudFondo onClose={() => setIsSolicitudModalOpen(false)} sesionActiva={sesion} sesionFondo={fondo}/>}
             {isEnviarDineroBovedaOpen && <ModalEnviarCajaAConta onClose={()=> setIsEnviarDineroBovedaOpen(false)} sesionActiva={sesion}/>}
         </div>
     );

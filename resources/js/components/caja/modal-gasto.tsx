@@ -4,11 +4,13 @@ import { route } from 'ziggy-js';
 
 import SelectInput from '@/components/ui/input-select';
 import TextInput from '@/components/ui/input-text';
-import { MetodoPago } from '@/types';
+import { MetodoPago, SesionCaja } from '@/types';
+import Swal from 'sweetalert2';
 
 interface Props {
     onClose: () => void;
     metodos_pagos: MetodoPago[];
+    sesion: SesionCaja;
 }
 
 const tipoMovimientoOptions = [
@@ -169,6 +171,7 @@ export const areasDisponibles = [
 const ModalGasto = ({ 
     onClose,
     metodos_pagos = [],
+    sesion,
 }: Props) => {
     const { data, setData, post, processing, errors, reset } = useForm({
         tipo: 'egreso', 
@@ -190,6 +193,14 @@ const ModalGasto = ({
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
+        if(data.tipo === 'egreso' && Number(data.monto) > sesion.monto_esperado){
+            Swal.fire(
+                'Advertencia',
+                'Vas a enviar más dinero del disponible',
+                'warning',
+            )
+            return;
+        }
         post(route('caja-movimiento'), {
             preserveScroll: true,
             onSuccess: () => {

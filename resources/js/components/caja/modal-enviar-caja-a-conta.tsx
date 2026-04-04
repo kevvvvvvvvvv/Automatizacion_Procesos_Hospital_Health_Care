@@ -5,6 +5,7 @@ import { route } from 'ziggy-js';
 
 import TextInput from '../ui/input-text';
 import PrimaryButton from '../ui/primary-button';
+import Swal from 'sweetalert2';
 
 interface Props {
     sesionActiva: SesionCaja;
@@ -22,6 +23,16 @@ const ModalEnviarCajaAConta = ({ sesionActiva, onClose }: Props) => {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
+        
+        if(sesionActiva.monto_esperado < Number(data.monto)){
+            Swal.fire(
+                'Advertencia',
+                'Estás enviando más dinero del que se encuentra actualmente en caja principal.',
+                'warning',
+            );
+            return;
+        }
+
         post(route('traspasos.enviarABoveda'), {
             preserveScroll: true,
             onSuccess: () => {
@@ -32,22 +43,22 @@ const ModalEnviarCajaAConta = ({ sesionActiva, onClose }: Props) => {
     };
 
     return (
-        <div className="fixed inset-0  bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div className="fixed inset-0  bg-opacity-50 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
             <div className="bg-white rounded-xl shadow-2xl w-full max-w-md overflow-hidden transform transition-all">
                 <div className="bg-purple-700 px-6 py-4 flex justify-between items-center">
-                    <h3 className="text-lg font-bold text-white">Enviar efectivo a Contaduría</h3>
+                    <h3 className="text-lg font-bold text-white">Enviar efectivo a contaduría</h3>
                     <button onClick={onClose} className="text-white hover:text-gray-200 text-xl font-bold">&times;</button>
                 </div>
 
                 <form onSubmit={handleSubmit} className="p-6 space-y-4">
                     <div className="bg-purple-50 p-3 rounded-md text-sm text-purple-800 border border-purple-100 mb-4">
-                        ℹ️ El dinero se descontará de tu caja en cuanto Contaduría apruebe la recepción.
+                        El dinero se descontará de tu caja en cuanto Contaduría apruebe la recepción.
                     </div>
 
                     <TextInput
                         id='concepto'
                         name='concepto'
-                        label='Concepto / Motivo'
+                        label='Concepto'
                         value={data.concepto}
                         onChange={e => setData('concepto', e.target.value)}
                         error={errors.concepto}

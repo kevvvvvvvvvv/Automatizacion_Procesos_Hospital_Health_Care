@@ -5,14 +5,17 @@ import { route } from 'ziggy-js';
 
 import TextInput from '../ui/input-text';
 import PrimaryButton from '../ui/primary-button';
+import Swal from 'sweetalert2';
 
 interface Props {
     sesionActiva: SesionCaja;
+    sesionFondo: SesionCaja;
     onClose: () => void;
 }
 
 export const ModalSolicitudFondo = ({ 
     sesionActiva,
+    sesionFondo,
     onClose
 }: Props) => {
     const { data, setData, post, processing, errors } = useForm({
@@ -24,7 +27,14 @@ export const ModalSolicitudFondo = ({
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        
+        if(sesionFondo.monto_esperado < Number(data.monto)){
+            Swal.fire(
+                'Advertencia',
+                'Estás retirando más dinero del que se encuentra actualmente en fondo, solicita un ingreso a fondo o un ajuste.',
+                'warning'
+            )
+            return;
+        }
         post(route('traspasos.solicitar'), {
             preserveScroll: true,
             onSuccess: () => {
@@ -34,7 +44,7 @@ export const ModalSolicitudFondo = ({
     };
 
     return (
-        <div className="fixed inset-0 flex items-center justify-center z-50 p-4">
+        <div className="fixed inset-0 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
             <div className="bg-white rounded-xl shadow-2xl w-full max-w-md overflow-hidden transform transition-all">
                 <div className="bg-blue-600 px-6 py-4 flex justify-between items-center">
                     <h3 className="text-lg font-bold text-white">Solicitar efectivo al fondo</h3>
