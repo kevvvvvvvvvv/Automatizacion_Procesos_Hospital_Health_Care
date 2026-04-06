@@ -18,8 +18,7 @@ export const SummaryCard = ({ label, amount, theme = 'default' }: SummaryCardPro
     const isHighlight = theme === 'highlight';
 
     const formatMoney = (amount: number | string | undefined) => {
-        const num = Number(amount);
-        return isNaN(num) ? '0.00' : num.toFixed(2);
+        return Number(amount || 0).toLocaleString('es-MX', { minimumFractionDigits: 2 });
     };
 
     return (

@@ -29,6 +29,9 @@ class RegistrarMovimientoRequest extends FormRequest
             'concepto' => 'required|string|max:255',
             'metodo_pago_id' => 'required|exists:metodo_pagos,id',
             'area' => 'required|string',
+            'origen' => 'required|string',
+            'descripcion' => 'string|nullable',
+            'nombre_paciente' => 'nullable|string',
         ];
     }
 
@@ -40,6 +43,9 @@ class RegistrarMovimientoRequest extends FormRequest
             'concepto' => 'concepto',
             'metodo_pago_id' => 'método de pago',
             'area' => 'área',
+            'origen' => 'dinero de origin',
+            'descripcion' => 'descripción',
+            'nombre_paciente'=> 'nombre del paciente',
         ];
     }
 

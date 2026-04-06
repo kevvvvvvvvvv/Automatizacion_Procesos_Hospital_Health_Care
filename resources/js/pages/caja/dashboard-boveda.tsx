@@ -244,18 +244,21 @@ export default function DashboardBoveda({
 
                     <div className="space-y-6">
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            <div className="bg-white p-5 rounded-xl shadow-sm border border-green-100">
-                                <p className="text-sm font-medium text-green-600">Total ingresos hoy</p>
-                                <p className="text-2xl font-bold text-gray-800 mt-1">${formatMoney(resumenHoy.ingresos)}</p>
-                            </div>
-                            <div className="bg-white p-5 rounded-xl shadow-sm border border-red-100">
-                                <p className="text-sm font-medium text-red-600">Total egresos hoy</p>
-                                <p className="text-2xl font-bold text-gray-800 mt-1">${formatMoney(resumenHoy.egresos)}</p>
-                            </div>
-                            <div className="bg-white p-5 rounded-xl shadow-sm border border-blue-100">
-                                <p className="text-sm font-medium text-blue-800">Flujo neto del día</p>
-                                <p className="text-2xl font-black text-blue-900 mt-1">${formatMoney(resumenHoy.balance)}</p>
-                            </div>
+                            <SummaryCard
+                                label='Total ingresos hoy'
+                                amount={resumenHoy.ingresos}
+                                theme='success'
+                            />
+                            <SummaryCard
+                                label='Total egresos hoy'
+                                amount={resumenHoy.egresos}
+                                theme='danger'
+                            />
+                            <SummaryCard
+                                label='Flujo neto del día'
+                                amount={resumenHoy.balance}
+                                theme='default'
+                            />
                         </div>
 
                         <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">

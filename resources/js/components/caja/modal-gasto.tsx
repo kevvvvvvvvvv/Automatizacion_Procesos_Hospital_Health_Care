@@ -166,6 +166,11 @@ export const areasDisponibles = [
     { value: 'LIGA', label: 'Liga' }
 ];
 
+const tiposCajas = [
+    {value:'operativo', label: 'Caja principal'},
+    {value:'fondo', label: 'Fondo'},
+];
+
 
 
 const ModalGasto = ({ 
@@ -178,7 +183,10 @@ const ModalGasto = ({
         monto: '',
         area: '',
         concepto: '',
-        metodo_pago_id: ''
+        descripcion: '',
+        origen: 'operativo',
+        metodo_pago_id: '',
+        nombre_paciente:'',
     });
 
     const optionsMetodoPago = metodos_pagos.map((met) => (
@@ -193,7 +201,7 @@ const ModalGasto = ({
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        if(data.tipo === 'egreso' && Number(data.monto) > sesion.monto_esperado){
+        if(data.tipo === 'egreso' && (Number(data.monto) > sesion.monto_esperado) && data.origen===('operativo')){
             Swal.fire(
                 'Advertencia',
                 'Vas a enviar más dinero del disponible',
@@ -261,6 +269,32 @@ const ModalGasto = ({
                     />
 
                     <TextInput
+                        name=''
+                        id=''
+                        label="Descripción"
+                        value={data.descripcion}
+                        onChange={e=>setData('descripcion',e.target.value)}
+                        error={errors.descripcion}
+                    />
+
+                    <SelectInput
+                        label='Apartado que realiza el envio'
+                        options={tiposCajas}
+                        value={data.origen}
+                        onChange={e=>setData('origen',e)}
+                        error={errors.origen}
+                    />
+
+                    <TextInput
+                        id=''
+                        name=''
+                        label='Nombre del paciente'
+                        value={data.nombre_paciente}
+                        onChange={e=>setData('nombre_paciente',e.target.value)}
+                        error={errors.nombre_paciente}
+                    />
+
+                    <TextInput
                         id=''
                         name=''
                         label='Monto'
@@ -269,6 +303,7 @@ const ModalGasto = ({
                         type='number'
                         error={errors.concepto}
                     />
+
 
                     <div className="mt-6 flex justify-end space-x-3">
                         <button 

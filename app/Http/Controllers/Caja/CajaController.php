@@ -77,6 +77,16 @@ class CajaController extends Controller
     {
         $validated = $request->validated();
 
+        $existeTurno = SesionCaja::where('caja_id', $validated['caja_id'])
+            ->where('estado', 'abierta')
+            ->exists();
+
+        if ($existeTurno) {
+            return Redirect::back()->with('error', 'Ya existe un turno abierto para esta caja.'); 
+        }
+
+
+
         $this->cajaService->abrirTurno(
             $validated['caja_id'],
             $request->user()->id,
@@ -91,27 +101,17 @@ class CajaController extends Controller
      */
     public function registrarMovimiento(RegistrarMovimientoRequest $request)
     {
-        $validated = $request->validated();
-
-        $sesion = SesionCaja::where('user_id', $request->user()->id)
+        $sesion = SesionCaja::where('user_id', Auth::id())
             ->where('estado', EstadoSesionCaja::ABIERTA)
             ->firstOrFail();
 
         try {
-            $this->cajaService->registrarMovimiento(
-                $sesion,
-                TipoMovimientoCaja::from($validated['tipo']),
-                $validated['monto'],
-                $validated['concepto'],
-                Auth::id(),
-                $validated['metodo_pago_id'],
-                $validated['area'],
-            );
+            $this->cajaService->registrarGastoConTriangulacion($sesion, $request->validated());
+
             return Redirect::back()->with('success', 'Movimiento registrado correctamente.');
-            
         } catch (Exception $e) {
-            \Log::error('Error al registrar el movimiento: ' . $e->getMessage());
-            return Redirect::back()->with('error','Error al registrar moviemiento.');
+            \Log::error("Error en movimiento: " . $e->getMessage());
+            return Redirect::back()->with('error', 'No se pudo procesar el movimiento.');
         }
     }
 

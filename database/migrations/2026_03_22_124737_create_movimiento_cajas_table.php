@@ -19,6 +19,10 @@ return new class extends Migration
                 ->cascadeOnDelete()
                 ->comment('Turno al que pertenece este movimiento');
             
+            $table->string('nombre_paciente')
+                ->nullable()
+                ->comment('nombre del paciente de manera temporal');
+
             $table->string('tipo')
                 ->comment('Indica si el dinero entró o salió de la caja física (ingreso o egreso)');
             
@@ -27,9 +31,13 @@ return new class extends Migration
 
             $table->string('area')
                 ->nullable()
-                ->comment('A que área hace referencia el concepto a colocar');    
+                ->comment('A que área hace referencia el concepto a colocar');   
+
             $table->string('concepto')
-                ->comment('Motivo (ej. Pago de garrafones, Retiro de exceso de efectivo)');
+                ->comment('Motivo (ej. Pago de garrafones, retiro de exceso de efectivo)');
+            $table->string('descripcion')
+                ->nullable()
+                ->comment('La descripcion con informacion general de los ingresos y egresos');
 
             $table->string('comprobante')
                 ->nullable()

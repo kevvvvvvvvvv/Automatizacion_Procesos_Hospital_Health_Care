@@ -18,7 +18,7 @@ const ModalEnviarCajaAConta = ({ sesionActiva, onClose }: Props) => {
         caja_origen_id: sesionActiva.caja_id, // El dinero sale de esta caja
         caja_destino_id: 3, //Dinero de la caja del conta (boveda)
         monto: '',
-        concepto: 'Exceso de efectivo enviado a contaduría',
+        concepto: 'Retiro de efectivo enviado a contaduría',
     });
 
     const handleSubmit = (e: React.FormEvent) => {

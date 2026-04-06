@@ -13,6 +13,7 @@ use App\Enums\TipoMovimientoCaja;
 
 use Illuminate\Support\Facades\DB;
 use Exception;
+use Illuminate\Support\Facades\Auth;
 
 use App\Events\Caja\NuevoMovimientoCaja;
 
@@ -49,6 +50,7 @@ class CajaService
         float $monto, 
         string $concepto, 
         int $userId,
+        ?string $descripcion = null,
         ?int $metodoPagoId = null,
         ?string $area = null,
     ): MovimientoCaja
@@ -61,12 +63,13 @@ class CajaService
             throw new \Exception("No se pueden registrar movimientos en una caja cerrada.");
         }
 
-        return DB::transaction(function () use ($sesion, $tipo, $monto, $area, $concepto, $metodoPagoId ,$userId) {
+        return DB::transaction(function () use ($sesion, $tipo, $monto, $area, $concepto, $metodoPagoId ,$userId, $descripcion) {
             $movimiento = $sesion->movimientos()->create([
                 'tipo' => $tipo,
                 'monto' => $monto,
                 'area' => $area,
                 'concepto' => $concepto,
+                'descrion' => $descripcion,
                 'metodo_pago_id' => $metodoPagoId,
                 'user_id' => $userId,
             ]);
@@ -144,28 +147,20 @@ class CajaService
 
     public function responderTraspaso(SolicitudTraspaso $solicitud, bool $aprobar, float $montoAprobado, int $userId)
     {
-        // Tu excelente validación inicial
         if ($solicitud->estado !== 'pendiente') {
             throw new Exception("Esta solicitud ya fue procesada anteriormente.");
         }
 
         return DB::transaction(function () use ($solicitud, $aprobar, $montoAprobado, $userId) {
-            
-            // Identificamos la Bóveda para saber de qué tipo de traspaso estamos hablando
             $boveda = Caja::where('tipo', 'boveda')->firstOrFail();
             $esEnvioABoveda = $solicitud->caja_destino_id === $boveda->id;
 
-            // ==========================================
-            // SI EL CONTADOR RECHAZA
-            // ==========================================
             if (!$aprobar) {
                 $solicitud->update([
                     'estado' => 'rechazada',
                     'user_aprueba_id' => $userId
                 ]);
 
-                // Si era un envío a bóveda y el contador lo rechazó, 
-                // debemos DEVOLVERLE el dinero a la caja operativa (porque se lo habíamos quitado en enviarDineroABoveda)
                 if ($esEnvioABoveda) {
                     $sesionOrigen = SesionCaja::where('caja_id', $solicitud->caja_origen_id)->where('estado', 'abierta')->first();
                     if ($sesionOrigen) {
@@ -181,13 +176,10 @@ class CajaService
                 return $solicitud;
             }
 
-            // ==========================================
-            // SI EL CONTADOR APRUEBA
-            // ==========================================
+            //Si el contador aprueba
             $sesionOrigen = SesionCaja::where('caja_id', $solicitud->caja_origen_id)->where('estado', 'abierta')->first();
             $sesionDestino = SesionCaja::where('caja_id', $solicitud->caja_destino_id)->where('estado', 'abierta')->first();
 
-            // Validamos que el destino siga abierto (Tu validación)
             if (!$sesionDestino) {
                 throw new Exception("No se puede enviar el dinero: La caja destino cerró su turno antes de recibir la transferencia.");
             }
@@ -198,9 +190,7 @@ class CajaService
                 'user_aprueba_id' => $userId
             ]);
 
-            // ESCENARIO A: La Caja Operativa le manda dinero a la Bóveda
             if ($esEnvioABoveda) {
-                // SOLO registramos el ingreso a la bóveda (Evitamos el doble egreso de la caja origen)
                 $this->registrarMovimiento(
                     $sesionDestino, 
                     TipoMovimientoCaja::INGRESO, 
@@ -209,7 +199,6 @@ class CajaService
                     $userId
                 );
 
-                // EXTRA: Si el contador aprobó menos dinero del que la caja dijo mandar, regresamos la diferencia
                 if ($montoAprobado < $solicitud->monto_solicitado && $sesionOrigen) {
                     $diferencia = $solicitud->monto_solicitado - $montoAprobado;
                     $this->registrarMovimiento(
@@ -221,10 +210,8 @@ class CajaService
                     );
                 }
 
-            // ESCENARIO B: Traspaso normal (Ej. de Bóveda a Fondo)
             } else {
                 
-                // Aquí sí validamos que el origen esté abierto para quitarle el dinero
                 if (!$sesionOrigen) {
                     throw new Exception("No se puede enviar el dinero: La caja de origen no tiene un turno abierto.");
                 }
@@ -328,5 +315,50 @@ class CajaService
                 'estado' => 'pendiente'
             ]);
         });
+    }
+
+    public function registrarGastoConTriangulacion(SesionCaja $sesionCajero, array $datos): void
+    {
+        DB::transaction(function () use ($sesionCajero, $datos) {
+            if ($datos['origen'] === 'fondo') {
+                $this->ejecutarTraspasoInternoFondoACaja($sesionCajero, $datos['monto'], $datos['concepto']);
+            }
+
+            $this->registrarMovimiento(
+                sesion: $sesionCajero,
+                tipo: TipoMovimientoCaja::from($datos['tipo']),
+                monto: $datos['monto'],
+                concepto: $datos['concepto'],
+                userId: Auth::id(),
+                descripcion: $datos['descripcion'],
+                area: $datos['area'] ?? null,
+                metodoPagoId: $datos['metodo_pago_id'] ?? null
+            );
+        });
+    }
+
+    private function ejecutarTraspasoInternoFondoACaja(SesionCaja $sesionCajero, float $monto, string $concepto): void
+    {
+        $sesionFondo = SesionCaja::whereHas('caja', fn($q) => $q->where('tipo', 'fondo'))
+            ->where('estado', 'abierta')
+            ->firstOrFail();
+
+        // Salida de fondo
+        $this->registrarMovimiento(
+            sesion: $sesionFondo,
+            tipo: TipoMovimientoCaja::EGRESO,
+            monto: $monto,
+            concepto: "FONDO: Envío para pago de " . $concepto,
+            userId: Auth::id()
+        );
+
+        // Entrada a la caja del cajero
+        $this->registrarMovimiento(
+            sesion: $sesionCajero,
+            tipo: TipoMovimientoCaja::INGRESO,
+            monto: $monto,
+            concepto: "FONDO: Recepción para pago de " . $concepto,
+            userId: Auth::id()
+        );
     }
 }
