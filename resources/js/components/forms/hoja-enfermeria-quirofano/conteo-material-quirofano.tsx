@@ -8,7 +8,6 @@ import SelectInput from '@/components/ui/input-select';
 import TextInput from '@/components/ui/input-text';
 
 const materialQuirofanoOptions = [
-    { value: '', label: 'Seleccione un material...' },
     { value: 'gasas_con_trama', label: 'Gasas con trama' },
     { value: 'compresas', label: 'Compresas' },
     { value: 'puchitos', label: 'Puchitos' },
@@ -16,27 +15,22 @@ const materialQuirofanoOptions = [
     { value: 'agujas', label: 'Agujas' },
 ];
 
-// 1. Ahora solo recibimos la hoja completa
 interface Props {
     hoja: HojaEnfermeriaQuirofano;
 }
 
 const MaterialQuirofano = ({ hoja }: Props) => {
 
-    // 2. Inicializamos el useForm con los datos de la hoja
     const { data, setData, put, processing } = useForm({
-        // Asegúrate de que el nombre coincida con tu relación en Laravel
         conteo_materiales: hoja.conteo_material_quirofano || [] 
     });
 
     const guardarConteo = () => {
         put(route('hojas-quirofano.actualizar-conteo', hoja.id), {
             preserveScroll: true,
-            onSuccess: () => alert('Conteo guardado exitosamente')
         });
     };    
 
-    // 3. Reemplazamos `onChange` por `setData` directo al form
     const handleAddRow = () => {
         const nuevoMaterial: ConteoMaterialQuirofano = {
             tipo_material: '',
@@ -79,7 +73,6 @@ const MaterialQuirofano = ({ hoja }: Props) => {
                 </button>
             </div>
 
-            {/* 4. Cambiamos `materiales` por `data.conteo_materiales` */}
             {data.conteo_materiales.length === 0 ? (
                 <div className="text-center py-6 text-gray-400 text-sm italic">
                     No hay materiales registrados. Haga clic en "Agregar insumo" para comenzar.
@@ -87,7 +80,6 @@ const MaterialQuirofano = ({ hoja }: Props) => {
             ) : (
                 <div className="overflow-x-auto">
                     <table className="w-full text-sm text-left">
-                        {/* ... THEAD SE QUEDA IGUAL ... */}
                         <thead className="text-xs text-gray-600 uppercase bg-gray-50 border-b">
                             <tr>
                                 <th className="px-4 py-3">Material</th>
@@ -169,16 +161,8 @@ const MaterialQuirofano = ({ hoja }: Props) => {
                 </div>
             )}
 
-            {/* 5. Agregamos el botón para enviar el formulario a Laravel */}
             <div className="flex justify-end pt-4 border-t mt-2">
-                <button
-                    type="button"
-                    onClick={guardarConteo}
-                    disabled={processing}
-                    className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md shadow-sm disabled:opacity-50 transition-colors"
-                >
-                    {processing ? 'Guardando...' : 'Guardar Conteo'}
-                </button>
+                <PrimaryButton></PrimaryButton>
             </div>
         </div>
     );

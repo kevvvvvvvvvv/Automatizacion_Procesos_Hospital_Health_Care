@@ -62,6 +62,7 @@ use App\Http\Controllers\LigaFutbolController;
 use App\Http\Controllers\Encuestas\EncuestaSatisfaccionController;
 use App\Http\Controllers\MantenimientoController;
 use App\Http\Controllers\EncuestaPersonalController;
+use App\Http\Controllers\Formulario\HojaEnfermeriaQuirofano\ConteoMaterialQuirofanoController;
 use App\Http\Controllers\ReporteInterconsultaController;
 use App\Http\Controllers\ReporteConcienciaController;
 use App\Http\Controllers\ReporteSignosController;
@@ -77,7 +78,6 @@ use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;
 
 use App\Http\Controllers\NotificacionController;
-
 Route::get('/', function () {
     return Inertia::render('auth/login');
 })->name('home');
@@ -219,11 +219,14 @@ Route::post('hojas-habitus-exterior/{hojasenfermeria}', [FormularioHojaHabitusEx
 
 
 
-Route::post('/notificaciones/marcar-leidas', [NotificacionController::class, 'markAllAsRead'])->name('notificaciones.read');
+Route::post('/notificaciones/marcar-leidas', [NotificacionController::class, 'markAllAsRead'])->name('notificaciones.read')->middleware('auth');
 //Rutas Hoja de enfermeria en quirofano
 Route::post('hojasinsumosbasicos/{hojasenfermeriasquirofano}', [FormularioHojaInsumosBasicosController::class, 'store'])->name('hojasinsumosbasicos.store')->middleware('auth');
 Route::patch('hojasinsumosbasicos/{hojasinsumosbasico}', [FormularioHojaInsumosBasicosController::class, 'update'])->name('hojasinsumosbasicos.update')->middleware('auth');
 Route::delete('hojasinsumosbasicos/{hojasinsumosbasico}', [FormularioHojaInsumosBasicosController::class, 'delete'])->name('hojasinsumosbasicos.destroy')->middleware('auth');
+
+Route::post('conteo-material-quirofano/{hojasenfermeriasquirofano}',[ConteoMaterialQuirofanoController::class, 'store']);
+
 
 Route::get('/pacientes/{paciente}/estancias/{estancia}/notas-urgencias/{notaUrgencia}',[NotaUrgenciaController::class, 'show'])->name('pacientes.estancias.notasurgencias.show')->middleware('auth');
 
@@ -380,13 +383,16 @@ Route::get ('/rerservacion/reserva', [ReservacionController::class, 'reserva'])-
 
 //RESTAURACIÓN DE LA BASE DE DATOS
 Route::get('/bd/respaldo/restauracion/', [RestaurationController::class, 'showView'])
-    ->name('bd.restauracion'); 
+    ->name('bd.restauracion')
+    ->middleware('auth'); 
 
 Route::get('/bd/respaldo/restauracion', [RestaurationController::class, 'showView'])
-    ->name('bd.restauracion'); 
+    ->name('bd.restauracion')
+    ->middleware('auth'); 
 
 Route::post('/bd/respaldo/restauracion', [RestaurationController::class, 'restore'])
-    ->name('bd.restauracion.store');
+    ->name('bd.restauracion.store')
+    ->middleware('auth');
 
 require __DIR__.'/settings.php';
 require __DIR__.'/auth.php';

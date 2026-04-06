@@ -13,7 +13,7 @@ import EquipoLaparoscopiaForm from '@/components/forms/equipo-laparoscopia-form'
 import EnvioPiezaHojaEnfermeria from '@/components/forms/envio-pieza-hoja-enfermeria-form';
 import CerrarHoja from '@/components/app-cerrrar-hoja';
 import InformacionGeneralCirugia from '@/components/forms/hoja-enfermeria-quirofano/informacion-general-cirugia';
-import ConteoMaterialQuirofano from '@/components/forms/hoja-enfermeria-quirofano/conteo-material-quirofano';
+import MaterialQuirofano from '@/components/forms/hoja-enfermeria-quirofano/conteo-material-quirofano';
 
 
 interface CreateProps {
@@ -42,7 +42,13 @@ const secciones: {id: SeccionHoja, label: string}[] = [
     { id: 'conteo_material_quirofano', label: 'Conteo de material en quirófano'}
 ];
 
-const CreateHojaEnfermeriaQuirofano:CreateComponent = ({paciente, estancia, hoja, insumos, users}) => {
+const CreateHojaEnfermeriaQuirofano:CreateComponent = ({
+    paciente, 
+    estancia, 
+    hoja, 
+    insumos, 
+    users,
+}) => {
     const [activeSection, setActiveSection] = useState<SeccionHoja>('general');
 
     const NavigationTabs = () => (
@@ -82,8 +88,8 @@ const CreateHojaEnfermeriaQuirofano:CreateComponent = ({paciente, estancia, hoja
                             materiales={insumos}
                         />
             case 'conteo_material_quirofano':
-                return <ConteoMaterialQuirofano
-                            materiales={}
+                return <MaterialQuirofano
+                            hoja={hoja}
                         />
 
             case 'pieza_patologica':
