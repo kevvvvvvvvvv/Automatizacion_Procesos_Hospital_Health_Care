@@ -1263,6 +1263,7 @@ export interface Caja {
   id: number;
   nombre: string;
   activa: boolean;
+  tipo: string;
   created_at: string;
   updated_at?: string;
 }
@@ -1287,6 +1288,12 @@ export interface SesionCaja {
     created_at: string;
     updated_at?: string;
 
+    auditada: boolean;
+    monto_ajuste: number;
+    observacion_auditoria: string;
+    
+    auditor
+
     caja?: Caja;
     user?: User;
     movimientos: MovimientoCaja[];
@@ -1301,6 +1308,9 @@ export interface MovimientoCaja {
     area: string;
     concepto: string;
     comprobante: string | null;
+    descripcion: string | null;
+    nombre_paciente:string | null;
+
     user_id: number;
 
     created_at: string;

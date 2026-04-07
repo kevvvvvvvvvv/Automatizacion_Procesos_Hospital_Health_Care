@@ -20,11 +20,21 @@ use App\Models\Caja\SesionCaja;
 use App\Models\Caja\MovimientoCaja;
 
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\DB;
 
 class ContaduriaController extends Controller
 {
     public function index()
     {
+
+        $turno = SesionCaja::where('caja_id', 3)
+            ->where('estado', 'abierta')
+            ->first();
+
+        if ($turno && ($turno['user_id'] !== Auth::id())) {
+            return Redirect::back()->with('error', 'Ya existe un turno abierto para esta caja.'); 
+        }
         // Cajas maestras
         $boveda = Caja::where('tipo', 'boveda')->firstOrFail();
         $fondo = Caja::where('tipo', 'fondo')->firstOrFail();
@@ -79,6 +89,12 @@ class ContaduriaController extends Controller
             ->where('estado', 'abierta')
             ->first();
 
+
+        $allSesiones = SesionCaja::with(['user', 'caja'])
+            ->where('fecha_apertura', '>=', now()->subDays(3))
+            ->orderBy('fecha_apertura', 'desc')
+            ->get();
+
         return Inertia::render('caja/dashboard-boveda', [
             'cajaId' => $boveda->id,
             'solicitudesPendientes' => $solicitudes,
@@ -90,7 +106,8 @@ class ContaduriaController extends Controller
             ],
             'fondo' => $fondo,
             'sesion' => $sesion,
-            'caja' => $caja
+            'caja' => $caja,
+            'allSesiones' =>$allSesiones,
         ]);
     }
 
@@ -111,5 +128,70 @@ class ContaduriaController extends Controller
         );
 
         return redirect()->back()->with('success', 'Pago / Gasto externo registrado correctamente.');
+    }
+
+    public function auditarSesion(Request $request, SesionCaja $sesion)
+    {
+        $validated = $request->validate([
+            'monto_ajuste' => 'required|numeric',
+            'observacion_auditoria' => 'required|string|min:10|max:1000',
+        ], [
+            'monto_ajuste.required' => 'Debes ingresar un monto, aunque sea 0.',
+            'observacion_auditoria.required' => 'Es obligatorio dejar una nota del porqué del ajuste.',
+            'observacion_auditoria.min' => 'La nota debe ser más descriptiva (mínimo 10 caracteres).',
+        ]);
+
+        $sesion->update([
+            'auditada' => true,
+            'monto_ajuste' => $validated['monto_ajuste'],
+            'observacion_auditoria' => $validated['observacion_auditoria'],
+            'auditor_id' => Auth::id(), 
+            'fecha_auditoria' => now(),
+        ]);
+
+        return Redirect::back()->with('success', 'La sesión ha sido auditada y cerrada correctamente.');
+    }
+
+    public function traspasoDirectoBovedaFondo(Request $request)
+    {
+        $request->validate([
+            'monto_envio' => 'required|numeric|min:0.01',
+            'sesion_origen_id' => 'required|exists:sesion_cajas,id',
+            'sesion_destino_id' => 'required|exists:sesion_cajas,id',
+            'observacion' => 'nullable|string|max:255'
+        ]);
+
+        try {
+            DB::transaction(function () use ($request) {
+                $monto = $request->monto_envio;
+                $origen = SesionCaja::findOrFail($request->sesion_origen_id);
+                $destino = SesionCaja::findOrFail($request->sesion_destino_id);
+
+                $origen->increment('total_egresos_efectivo', $monto);
+                MovimientoCaja::create([
+                    'sesion_caja_id' => $origen->id,
+                    'tipo' => 'egreso',
+                    'monto' => $monto,
+                    'concepto' => 'TRASPASO DIRECTO A FONDO',
+                    'descripcion' => $request->observacion ?? 'Envío de efectivo para operación.',
+                    'user_id' => Auth::id(),
+                ]);
+
+                $destino->increment('total_ingresos_efectivo', $monto);
+                MovimientoCaja::create([
+                    'sesion_caja_id' => $destino->id,
+                    'tipo' => 'ingreso',
+                    'monto' => $monto,
+                    'concepto' => 'RECEPCIÓN DIRECTA DE BÓVEDA',
+                    'descripcion' => 'Ingreso de efectivo desde contaduría.',
+                    'user_id' => Auth::id(),
+                ]);
+            });
+
+            return back()->with('success', 'Traspaso realizado con éxito.');
+
+        } catch (\Exception $e) {
+            return back()->withErrors(['monto_envio' => 'Error al procesar el traspaso: ' . $e->getMessage()]);
+        }
     }
 }

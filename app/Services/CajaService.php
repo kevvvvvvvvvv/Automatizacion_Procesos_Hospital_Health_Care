@@ -7,6 +7,7 @@ use App\Models\Caja\MovimientoCaja;
 use App\Models\Venta\Pago;
 use App\Models\Caja\SolicitudTraspaso;
 use App\Models\Caja\Caja;
+use App\Models\User;
 
 use App\Enums\EstadoSesionCaja;
 use App\Enums\TipoMovimientoCaja;
@@ -14,8 +15,11 @@ use App\Enums\TipoMovimientoCaja;
 use Illuminate\Support\Facades\DB;
 use Exception;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Notification;
+use App\Notifications\Caja\DiscrepanciaSesion;
 
 use App\Events\Caja\NuevoMovimientoCaja;
+
 
 class CajaService
 {
@@ -24,6 +28,7 @@ class CajaService
      */
     public function abrirTurno(int $cajaId, int $userId, float $montoInicial): SesionCaja
     {
+        // 1. Evitar doble sesión abierta para el mismo usuario
         $sesionAbierta = SesionCaja::where('user_id', $userId)
             ->where('estado', EstadoSesionCaja::ABIERTA)
             ->first();
@@ -32,12 +37,36 @@ class CajaService
             throw new Exception("El usuario ya tiene un turno abierto en la caja ID: {$sesionAbierta->caja_id}");
         }
 
+        // 2. Buscar la última sesión CERRADA de esta caja para comparar saldos
+        $ultimaSesion = SesionCaja::where('caja_id', $cajaId)
+            ->where('estado', EstadoSesionCaja::CERRADA)
+            ->latest('fecha_cierre')
+            ->first();
+
+        $diferenciaApertura = 0;
+
+        if ($ultimaSesion) {
+            // Dinero que debió quedar: (Lo que declaró el anterior - lo que mandó a contaduría)
+            $saldoEsperado = $ultimaSesion->monto_declarado - ($ultimaSesion->monto_enviado_contaduria ?? 0);
+            
+            $diferenciaApertura = $montoInicial - $saldoEsperado;
+
+            // 3. Si hay diferencia, notificamos de inmediato
+            if ($diferenciaApertura != 0) {
+                $usuarioEntrante = User::find($userId);
+                $this->notificarDiscrepanciaApertura($ultimaSesion, $usuarioEntrante, $diferenciaApertura);
+            }
+        }
+
+        // 4. Crear la nueva sesión guardando el rastro de la diferencia
         return SesionCaja::create([
             'caja_id' => $cajaId,
             'user_id' => $userId,
             'monto_inicial' => $montoInicial,
             'estado' => EstadoSesionCaja::ABIERTA,
             'fecha_apertura' => now(),
+            // Es vital guardar esto para que el contador lo vea en su tabla
+            'sobrante_faltante' => $diferenciaApertura, 
         ]);
     }
 
@@ -51,6 +80,7 @@ class CajaService
         string $concepto, 
         int $userId,
         ?string $descripcion = null,
+        ?string $nombre_paciente=null,
         ?int $metodoPagoId = null,
         ?string $area = null,
     ): MovimientoCaja
@@ -63,13 +93,14 @@ class CajaService
             throw new \Exception("No se pueden registrar movimientos en una caja cerrada.");
         }
 
-        return DB::transaction(function () use ($sesion, $tipo, $monto, $area, $concepto, $metodoPagoId ,$userId, $descripcion) {
+        return DB::transaction(function () use ($sesion, $tipo, $monto, $area, $concepto, $metodoPagoId ,$userId, $descripcion, $nombre_paciente) {
             $movimiento = $sesion->movimientos()->create([
                 'tipo' => $tipo,
                 'monto' => $monto,
                 'area' => $area,
                 'concepto' => $concepto,
-                'descrion' => $descripcion,
+                'descripcion' => $descripcion,
+                'nombre_paciente' =>$nombre_paciente,
                 'metodo_pago_id' => $metodoPagoId,
                 'user_id' => $userId,
             ]);
@@ -105,7 +136,7 @@ class CajaService
     /**
      * Realiza el corte y cierra la sesión.
      */
-    public function cerrarTurno(SesionCaja $sesion, float $montoDeclarado, array $desgloseFisico = []): SesionCaja
+    public function cerrarTurno(SesionCaja $sesion, float $montoDeclarado, float $montoEnviadoContaduria,array $desgloseFisico = []): SesionCaja
     {
         $estadoActual = $sesion->estado instanceof EstadoSesionCaja 
             ? $sesion->estado->value 
@@ -115,19 +146,58 @@ class CajaService
             throw new Exception("La caja ya se encuentra cerrada.");
         }
 
-        return DB::transaction(function () use ($sesion, $montoDeclarado, $desgloseFisico) {
+        return DB::transaction(function () use ($sesion, $montoDeclarado, $desgloseFisico, $montoEnviadoContaduria) {
             if (!empty($desgloseFisico)) {
                 $sesion->desglosesEfectivo()->createMany($desgloseFisico);
             }
             
+            
             $diferencia = $montoDeclarado - $sesion->monto_esperado;
 
             $sesion->update([
-                'estado' => EstadoSesionCaja::CERRADA,
                 'fecha_cierre' => now(),
+                'monto_enviado_contaduria' => $montoEnviadoContaduria,
                 'monto_declarado' => $montoDeclarado,
                 'sobrante_faltante' => $diferencia,
             ]);
+
+            $diferencia = $sesion->monto_declarado - $sesion->monto_esperado;
+
+            // Cierre de caja y realizar el movimiento
+            $this->registrarMovimiento(
+                $sesion,
+                TipoMovimientoCaja::EGRESO,
+                $montoEnviadoContaduria,
+                'Cierre de caja - Traspaso a Contaduría',
+                Auth::id(),
+            );
+
+            $sesionBoveda = SesionCaja::whereHas('caja', function($query) {
+                    $query->where('tipo', 'boveda'); 
+                })
+                ->where('estado', 'abierta')
+                ->first();
+
+            if ($sesionBoveda) {
+                $this->registrarMovimiento(
+                    $sesionBoveda,
+                    TipoMovimientoCaja::INGRESO,
+                    $montoEnviadoContaduria,
+                    "Recepción de efectivo: {$sesion->caja->nombre} - Cajero: {$sesion->user?->nombre_completo}",
+                    Auth::id(),
+                );
+
+            } else {
+                throw new Exception("No hay una sesión de Bóveda abierta para recibir el dinero.");
+            }
+
+            $sesion->update([
+                'estado' => EstadoSesionCaja::CERRADA,
+            ]);
+
+            if ($diferencia != 0) {
+                $this->notificarDiscrepanciaAContador($sesion, $diferencia);
+            }
 
             return $sesion;
         });
@@ -331,6 +401,7 @@ class CajaService
                 concepto: $datos['concepto'],
                 userId: Auth::id(),
                 descripcion: $datos['descripcion'],
+                nombre_paciente: $datos['nombre_paciente'],
                 area: $datos['area'] ?? null,
                 metodoPagoId: $datos['metodo_pago_id'] ?? null
             );
@@ -361,4 +432,36 @@ class CajaService
             userId: Auth::id()
         );
     }
+        
+
+    private function notificarDiscrepanciaAContador(SesionCaja $sesion, float $diferencia)
+    {
+        $contadores = User::whereHas('roles', fn($q) => $q->where('name', 'contador'))->get();
+
+        $mensaje = [
+            'title' => '⚠️ Discrepancia en Cierre',
+            'message' => "La {$sesion->caja->nombre} cerró con una diferencia de $" . number_format($diferencia, 2),
+            'type' => 'warning',
+            'sesion_id' => $sesion->id
+        ];
+
+        Notification::send($contadores, new DiscrepanciaSesion($sesion, $diferencia));
+    }
+
+    private function notificarDiscrepanciaApertura($ultimaSesion, $usuarioEntrante, $diferencia)
+    {
+        $contadores = User::whereHas('roles', fn($q) => $q->where('name', 'contador'))->get();
+
+        $tipo = $diferencia < 0 ? 'FALTANTE' : 'SOBRANTE';
+        
+        $mensaje = [
+            'title' => "⚠️ DISCREPANCIA EN APERTURA",
+            'message' => "El usuario {$usuarioEntrante->nombre_completo} inició caja con un $tipo de $" . abs($diferencia) . " respecto al cierre anterior.",
+            'type' => 'error', 
+            'action_url' => "tesoreria/boveda?tab=sesiones",
+        ];
+
+        Notification::send($contadores, new DiscrepanciaSesion($ultimaSesion, $diferencia));
+    }
+
 }

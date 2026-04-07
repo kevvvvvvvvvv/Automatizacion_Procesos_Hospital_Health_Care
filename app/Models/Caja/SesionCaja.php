@@ -29,6 +29,13 @@ class SesionCaja extends Model
 
         'monto_declarado',
         'sobrante_faltante',
+        'monto_enviado_contaduria',
+
+        'auditada',
+        'monto_ajuste',
+        'observacion_auditoria',
+        'auditor_id',
+        'fecha_auditoria',
     ];
 
     protected $casts = [
@@ -51,12 +58,17 @@ class SesionCaja extends Model
         );
     }
     
-    public function caja(): BelongsTo
+    public function auditor(): BelongsTo
     {
-        return $this->belongsTo(Caja::class);
+        return $this->belongsTo(User::class, 'auditor_id');
     }
 
-    public function usuario(): BelongsTo
+    public function caja(): BelongsTo
+    {
+        return $this->belongsTo(Caja::class, 'caja_id');
+    }
+
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id');
     }

@@ -59,6 +59,16 @@ return new class extends Migration
                 ->nullable()
                 ->comment('Diferencia matemática: Declarado - (Inicial + Ingresos - Egresos)');   
                          
+            $table->decimal('monto_enviado_contaduria')
+                ->nullable()
+                ->comment('El monto que se retira de caja para enviar a contaduria.');
+
+            $table->boolean('auditada')->default(false);
+            $table->decimal('monto_ajuste', 10, 2)->default(0); // Por si el contador recupera dinero
+            $table->text('observacion_auditoria')->nullable(); // El "por qué" del ajuste
+            $table->foreignId('auditor_id')->nullable()->constrained('users'); // Quién lo hizo
+            $table->timestamp('fecha_auditoria')->nullable();
+
             $table->timestamps();
         });
     }

@@ -11,6 +11,7 @@ interface Props {
     onClose: () => void;
     metodos_pagos: MetodoPago[];
     sesion: SesionCaja;
+    fondo: SesionCaja;
 }
 
 const tipoMovimientoOptions = [
@@ -177,6 +178,7 @@ const ModalGasto = ({
     onClose,
     metodos_pagos = [],
     sesion,
+    fondo,
 }: Props) => {
     const { data, setData, post, processing, errors, reset } = useForm({
         tipo: 'egreso', 
@@ -204,7 +206,16 @@ const ModalGasto = ({
         if(data.tipo === 'egreso' && (Number(data.monto) > sesion.monto_esperado) && data.origen===('operativo')){
             Swal.fire(
                 'Advertencia',
-                'Vas a enviar más dinero del disponible',
+                'Vas a enviar más dinero del disponible en caja',
+                'warning',
+            )
+            return;
+        }
+
+        if(data.tipo === 'egreso' && (Number(data.monto) > fondo.monto_esperado) && data.origen===('fondo')){
+            Swal.fire(
+                'Advertencia',
+                'Vas a enviar más dinero del disponible desde fondo',
                 'warning',
             )
             return;

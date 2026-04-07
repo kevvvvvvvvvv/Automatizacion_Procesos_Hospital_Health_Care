@@ -212,8 +212,6 @@ const MainLayout = ({ pageTitle, children, link, linkParams }: MainLayoutProps) 
 
             });
 
-        
-
         return () => {
             window.Echo.leave(`App.Models.User.${userId}`);
         };

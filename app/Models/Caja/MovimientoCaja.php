@@ -18,8 +18,9 @@ class MovimientoCaja extends Model
         'area',
         'concepto',
         'comprobante',
-
-        'metodo_pago_id'
+        'descripcion',
+        'nombre_paciente',
+        'metodo_pago_id',
     ];
 
     public function sesionCaja(): BelongsTo

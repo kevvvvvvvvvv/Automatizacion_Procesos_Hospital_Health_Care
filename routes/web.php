@@ -370,7 +370,9 @@ Route::middleware('auth:sanctum')->prefix('caja')->group(function () {
 
 //Contador
 Route::get('/tesoreria/boveda', [ContaduriaController::class, 'index'])->name('contaduria.index')->middleware('auth');
-Route::post('/tesoreria/boveda/gasto', [ContaduriaController::class, 'registrarGasto'])->name('boveda.registrarGasto');
+Route::post('/tesoreria/boveda/gasto', [ContaduriaController::class, 'registrarGasto'])->name('boveda.registrarGasto')->middleware('auth');
+Route::post('/sesiones/auditar/{sesion}',[ContaduriaController::class, 'auditarSesion'])->name('sesiones.auditar')->middleware('auth');
+Route::post('/tesoreria/boveda/traspaso',[ContaduriaController::class,'traspasoDirectoBovedaFondo'])->name('boveda.traspaso-directo')->middleware('auth');
 
 // Notificaciones
 Route::post('/notifications/mark-all-as-read', function () {

@@ -23,6 +23,7 @@ class CerrarTurnoRequest extends FormRequest
     {
         return [
             'monto_declarado' => 'required|numeric|min:0',
+            'monto_enviado_contaduria' => 'required|numeric|min:0',
             'desglose' => 'nullable|array', 
             'desglose.*.denominacion' => 'required_with:desglose|numeric|min:0.1',
             'desglose.*.cantidad' => 'required_with:desglose|integer|min:1',
@@ -34,6 +35,7 @@ class CerrarTurnoRequest extends FormRequest
     {
         return [
             'monto_declarado' => 'monto declarado',
+            'monto_enviado_contaduria' => 'monto a enviar a contaduría',
             'desglose' => 'desglose de efectivo',
             'desglose.*.denominacion' => 'denominación del billete/moneda',
             'desglose.*.cantidad' => 'cantidad de piezas',

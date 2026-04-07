@@ -85,8 +85,6 @@ class CajaController extends Controller
             return Redirect::back()->with('error', 'Ya existe un turno abierto para esta caja.'); 
         }
 
-
-
         $this->cajaService->abrirTurno(
             $validated['caja_id'],
             $request->user()->id,
@@ -126,10 +124,12 @@ class CajaController extends Controller
             ->where('estado', EstadoSesionCaja::ABIERTA)
             ->firstOrFail();
 
+            
         try {
             $this->cajaService->cerrarTurno(
                 $sesion,
                 $validated['monto_declarado'],
+                $validated['monto_enviado_contaduria'],
                 $validated['desglose'] ?? []
             );
 
