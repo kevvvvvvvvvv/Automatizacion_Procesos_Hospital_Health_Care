@@ -12,7 +12,6 @@ return new class extends Migration
     public function up(): void
 {
     Schema::create('recien_nacidos', function (Blueprint $table) {
-        // CORRECCIÓN: Nombre correcto del método y sin la S mayúscula inicial
         $table->unsignedBigInteger('id'); 
         $table->primary('id');
         
@@ -26,9 +25,8 @@ return new class extends Migration
         $table->string('sexo');
         $table->date('fecha_rn');
         $table->time('hora_rn');
-        $table->float('peso'); // Para peso ej: 3.500
-        
-        // CORRECCIÓN: En Laravel el método es integer(), no int()
+        $table->float('peso'); 
+   
         $table->integer('talla'); 
         
         $table->string('estado');

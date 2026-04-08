@@ -42,7 +42,6 @@ export default function Modal({ show = false, maxWidth = '2xl', onClose, childre
     return (
         <div className="fixed inset-0 z-50 overflow-y-auto px-4 py-6 sm:px-0 flex items-center justify-center">
             
-            {/* Backdrop (Fondo oscuro) */}
             <div 
                 className="fixed inset-0 transform transition-all" 
                 onClick={onClose}
@@ -50,7 +49,6 @@ export default function Modal({ show = false, maxWidth = '2xl', onClose, childre
                 <div className="absolute inset-0 bg-gray-900 opacity-75"></div>
             </div>
 
-            {/* Contenido del Modal */}
             <div className={`mb-6 bg-white rounded-lg overflow-hidden shadow-xl transform transition-all sm:w-full sm:mx-auto ${maxWidthClass} relative z-10`}>
                 {children}
             </div>
