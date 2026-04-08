@@ -54,8 +54,9 @@ use App\Http\Controllers\FormularioHojaRiesgoCaidaController;
 use App\Http\Controllers\HojaControlLiquidoController;
 use App\Http\Controllers\HojaEscalaValoracionController;
 
-
-
+use App\Http\Controllers\Caja\CajaController;
+use App\Http\Controllers\Caja\ContaduriaController;
+use App\Http\Controllers\Caja\TraspasoController;
 
 use App\Http\Controllers\PaqueteController;
 use App\Http\Controllers\LigaFutbolController;
@@ -364,6 +365,24 @@ Route::patch('/medicamentos/{medicamento}/actualizar-estado', [HojaMedicamentoCo
     ->name('medicamentos.actualizar-estado')
     ->middleware('auth');
 
+// Caja
+Route::middleware('auth:sanctum')->prefix('caja')->group(function () {
+    Route::get('/caja',[CajaController::class, 'index'])->name('caja.index');
+    Route::get('/turno-actual', [CajaController::class, 'turnoActual'])->name('caja-turno-actual');
+    Route::post('/abrir', [CajaController::class, 'abrirTurno'])->name('caja-abrir-turno');
+    Route::post('/movimiento', [CajaController::class, 'registrarMovimiento'])->name('caja-movimiento');
+    Route::post('/cerrar', [CajaController::class, 'cerrarTurno'])->name('caja-cerrar');
+    Route::post('/traspasos/solicitar', [TraspasoController::class, 'solicitar'])->name('traspasos.solicitar');
+    Route::post('/traspasos/{solicitud}/responder', [TraspasoController::class, 'responder'])->name('traspasos.responder');
+    Route::post('/traspasos/enviar-boveda', [TraspasoController::class, 'enviarABoveda'])->name('traspasos.enviarABoveda');
+});
+
+//Contador
+Route::get('/tesoreria/boveda', [ContaduriaController::class, 'index'])->name('contaduria.index')->middleware('auth');
+Route::post('/tesoreria/boveda/gasto', [ContaduriaController::class, 'registrarGasto'])->name('boveda.registrarGasto')->middleware('auth');
+Route::post('/sesiones/auditar/{sesion}',[ContaduriaController::class, 'auditarSesion'])->name('sesiones.auditar')->middleware('auth');
+Route::post('/tesoreria/boveda/traspaso',[ContaduriaController::class,'traspasoDirectoBovedaFondo'])->name('boveda.traspaso-directo')->middleware('auth');
+
 // Notificaciones
 Route::post('/notifications/mark-all-as-read', function () {
     Auth::user()->unreadNotifications->markAsRead();
@@ -384,7 +403,7 @@ Route::get('/historial', [HistoryController::class, 'index'])->name('historiales
 Route::get ('/rerservacion/reserva', [ReservacionController::class, 'reserva'])->name('rerservaciones.reserva')->middleware('auth');
 
 
-//RESTAURACIÓN DE LA BASE DE DATOS
+//Restauración de la base de datos  
 Route::get('/bd/respaldo/restauracion/', [RestaurationController::class, 'showView'])
     ->name('bd.restauracion'); 
 

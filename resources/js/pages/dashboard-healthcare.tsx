@@ -3,7 +3,7 @@ import { FaUser } from "react-icons/fa";
 import { LuBedSingle,LuFileText } from "react-icons/lu";
 import { RiArchiveDrawerFill , } from "react-icons/ri";
 import {FaRegCheckCircle,} from "react-icons/fa";
-import {FaDatabase, FaRegWindowRestore} from "react-icons/fa";
+import {FaDatabase, FaRegWindowRestore, FaCashRegister} from "react-icons/fa";
 import { MdCalendarMonth,  } from "react-icons/md"
 import { MdHistory, MdAdd,  } from "react-icons/md";
 import { FaUserDoctor, FaBowlFood,  FaFileSignature} from "react-icons/fa6";
@@ -152,6 +152,25 @@ export default function Dashboard() {
                     )}
                     
                 </div>
+
+                <div>
+                   {can('consultar caja') && (
+                    <CardButton
+                        icon={FaCashRegister}
+                        text="Caja"
+                        onClick={() => router.visit(route('caja.index'))}
+                    />
+                   )} 
+                </div>
+                <div>
+                   {can('consultar contaduria') && (
+                    <CardButton
+                        icon={FaCashRegister}
+                        text="Contaduría"
+                        onClick={() => router.visit(route('contaduria.index'))}
+                    />
+                   )} 
+                </div>
                 
                 <div>
                     {can('Reportes') && (
@@ -161,12 +180,7 @@ export default function Dashboard() {
                         onClick={() => router.visit(route('dashboard-reporte'))}
                     />
                     )}
-                    
-                </div>
-                
-                <div>
-                    
-                </div>                   
+                </div>                
             </MainLayout>
         </>
     );
