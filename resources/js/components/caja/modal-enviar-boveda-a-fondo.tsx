@@ -89,7 +89,7 @@ const ModalEnviarBovedaAFondo = ({
                             disabled={processing}
                             type='submit'
                         >
-                            {processing ? 'Enviando...' : 'Confirmar Envío'}
+                            {processing ? 'Enviando...' : 'Enviar'}
                         </PrimaryButton>
                     </div>
                 </form>
