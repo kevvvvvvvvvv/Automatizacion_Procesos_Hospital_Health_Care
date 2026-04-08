@@ -18,13 +18,13 @@ class LigaFutbolController extends Controller
     }
 
     public function generarPdf()
-{
-    $data = [
-        'fecha_hoy' => date('d/m/Y'),
-        'folio'     => 'S/F',
-        'paciente'  => null, 
-        'tutor'     => null,
-    ];
+    {
+        $data = [
+            'fecha_hoy' => date('d/m/Y'),
+            'folio'     => 'S/F',
+            'paciente'  => null, 
+            'tutor'     => null,
+        ];
 
     return Pdf::view('pdfs.liga-futbol', $data)
         ->withBrowsershot(function (Browsershot $browsershot) {

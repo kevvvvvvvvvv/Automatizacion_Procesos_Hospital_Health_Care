@@ -2,6 +2,7 @@
 
 namespace App\Models\Venta;
 
+use App\Models\Caja\SesionCaja;
 use App\Models\Inventario\ProductoServicio;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -64,6 +65,7 @@ class Pago extends Model
         'monto_restante',
         'referencia',
         'user_id',
+        'sesion_caja_id',
         'monto_ingresado',
         'cambio_dispensado',
         'clave_cajero',
@@ -94,6 +96,11 @@ class Pago extends Model
     public function metodoPago(): BelongsTo
     {
         return $this->belongsTo(MetodoPago::class);
+    }
+
+    public function sesionCaja(): BelongsTo
+    {
+        return $this->belongsTo(SesionCaja::class);
     }
 
     protected $appends = [

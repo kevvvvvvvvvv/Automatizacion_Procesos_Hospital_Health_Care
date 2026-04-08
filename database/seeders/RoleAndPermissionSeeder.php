@@ -29,6 +29,7 @@ class RoleAndPermissionSeeder extends Seeder
         $roleFisoterapeuta = Role::firstOrCreate(['name' => 'fisoterapeuta']);
         $roleRecepcion = Role::firstOrCreate(['name' => 'recepcion']);
         $roleCaja = Role::firstOrCreate(['name'  => 'caja']);
+        $roleContador = Role::firstOrCreate(['name' => 'contador']);
         $roleQuimico = Role::firstOrCreate(['name' => 'químico']);
         $roleMantenimiento = Role::firstOrCreate(['name' => 'mantenimiento']);
         $roleLimpieza = Role::firstOrCreate(['name' => 'limpieza']);
@@ -65,6 +66,9 @@ class RoleAndPermissionSeeder extends Seeder
             'peticion dietas' => ['consultar','editar'],
 
             'reservaciones' => ['crear','consultar'],
+
+            'caja' => ['consultar'],
+            'contaduria' => ['consultar'],
         ];  
 
         foreach ($permissions as $module => $actions) {
@@ -154,6 +158,8 @@ class RoleAndPermissionSeeder extends Seeder
             'eliminar productos y servicios',
 
             'consultar habitaciones',
+
+            'consultar caja',
         ]);
 
         $roleMedicoEspecialista->syncPermissions([
@@ -318,5 +324,29 @@ class RoleAndPermissionSeeder extends Seeder
 
             'crear colaboradores',
         ]);
+        $roleContador->syncPermissions([
+            'consultar pacientes',
+            'consultar estancias',
+            
+            'consultar ventas',
+            'crear ventas',
+            'editar ventas',
+            'eliminar ventas',
+            
+            'consultar detalles ventas',
+            'crear detalles ventas',
+            'editar detalles ventas',
+            'eliminar detalles ventas',
+
+            'consultar productos y servicios',
+            'crear productos y servicios',
+            'editar productos y servicios',
+            'eliminar productos y servicios',
+
+            'consultar habitaciones',
+
+            'consultar contaduria',
+        ]);
+
     }
 }
