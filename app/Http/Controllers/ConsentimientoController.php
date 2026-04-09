@@ -64,6 +64,7 @@ class ConsentimientoController extends Controller
             '9' => 'Consentimiento_transfusion_sanguinea',
             '10' => 'consentimiento_reanimacion',
             '11' => 'Indicaciones_hospitalario',
+            '12' => 'Consentimiento_alta_voluntaria'
         ];
 
         $diagnostico = $validated['diagnostico'] ?? null;
