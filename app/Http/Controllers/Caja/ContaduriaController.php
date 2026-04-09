@@ -65,8 +65,8 @@ class ContaduriaController extends Controller
         
         
         $movimientosHoy = MovimientoCaja::with(['sesionCaja.caja', 'user','metodoPago'])
-            ->whereDate('created_at', Carbon::today())
-            ->latest()
+/*             ->whereDate('created_at', Carbon::today())
+            ->latest() */
             ->get();
 
         $ingresosHoy = $movimientosHoy->where('tipo', 'ingreso')->sum('monto');
