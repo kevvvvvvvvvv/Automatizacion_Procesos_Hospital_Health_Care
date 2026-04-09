@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useForm, router } from '@inertiajs/react';
-import { HojaEnfermeria, ProductoServicio, HojaMedicamento, CatalogoViaAdministracion } from '@/types';
+import { HojaEnfermeria, ProductoServicio, HojaMedicamento, CatalogoViaAdministracion, RecienNacido } from '@/types';
 import { route } from 'ziggy-js';
 import { optionsUnidadMedida, optionsUnidadTiempo } from '@/constant/const';
 
@@ -25,7 +25,7 @@ interface MedicamentoAgregado {
 }
 
 interface Props {
-    hoja: HojaEnfermeria;
+    hoja?: HojaEnfermeria | RecienNacido;
     medicamentos: ProductoServicio[]; 
     vias_administracion: CatalogoViaAdministracion[];
 }
@@ -112,7 +112,7 @@ const MedicamentosForm: React.FC<Props> = ({
     
     const handleDateUpdate = (medicamentoId: number, newDate: string) => {
         router.patch(route('hojasmedicamentos.update', { 
-            hojasenfermeria: hoja.id, 
+            hojasenfermeria: hoja?.id, 
             hojasmedicamento: medicamentoId 
         }), {
             fecha_hora_inicio: newDate 
@@ -173,7 +173,7 @@ const MedicamentosForm: React.FC<Props> = ({
 
     const handleSubmitList = (e: React.FormEvent) => {
         e.preventDefault();
-        post(route('hojasmedicamentos.store', { hojasenfermeria: hoja.id }), {
+        post(route('hojasmedicamentos.store', { hojasenfermeria: hoja?.id }), {
             preserveScroll: true,
             onSuccess: () => reset(), 
         });
@@ -406,12 +406,12 @@ const MedicamentosForm: React.FC<Props> = ({
                             </tr>
                         </thead>
                         <tbody className="bg-white divide-y divide-gray-200">
-                            {(hoja.hoja_medicamentos ?? []).length === 0 ? (
+                            {(hoja?.hoja_medicamentos ?? []).length === 0 ? (
                                 <tr>
                                     <td className="px-4 py-4 text-sm text-gray-500">No hay medicamentos</td>
                                 </tr>
                             ) : (
-                                (hoja.hoja_medicamentos ?? []).map((med: HojaMedicamento) => (
+                                (hoja?.hoja_medicamentos ?? []).map((med: HojaMedicamento) => (
                                     <tr key={med.id}>
                                         <td className="px-4 py-4 text-sm text-gray-900">
                                             {med.nombre_medicamento|| '...'}
