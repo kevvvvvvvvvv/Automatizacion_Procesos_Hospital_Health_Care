@@ -151,13 +151,13 @@ public function generarPDF(string $file, Request $request, Paciente $paciente, E
             $logo = 'data:' . $imageMime . ';base64,' . $imageData;
         }
 
-        /*$headerData = [
+        $headerData = [
             'logoDataUri' => $logo,
             'notaData' => $consentimiento,
             'paciente' => $consentimiento->estancia?->paciente,
             'medico' => $medicoFirmante, 
             'estancia'=> $consentimiento->estancia
-        ];*/
+        ];
 
         return Pdf::view($consentimiento->route_pdf, $viewData)
             ->format('Letter')
@@ -165,7 +165,7 @@ public function generarPDF(string $file, Request $request, Paciente $paciente, E
             ->withBrowsershot(function (Browsershot $browsershot) {
                 $this->configureBrowsershot($browsershot);
             })
-            //->headerView('headerConsentimiento', $headerData)
+            ->headerView('headerConsentimiento', $headerData)
             ->inline();
     }
 }
