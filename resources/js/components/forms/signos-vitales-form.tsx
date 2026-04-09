@@ -1,6 +1,6 @@
 import React from 'react';
 import { useForm } from '@inertiajs/react';
-import { HojaEnfermeria, HojaSignos } from '@/types'; 
+import { HojaEnfermeria, HojaSignos, RecienNacido } from '@/types'; 
 import { route } from 'ziggy-js';
 import { Pencil } from 'lucide-react'; 
 import Swal from 'sweetalert2';
@@ -10,7 +10,7 @@ import PrimaryButton from '@/components/ui/primary-button';
 import { DataTable } from '../ui/data-table';
 
 interface Props {
-    hoja: HojaEnfermeria;
+    hoja: HojaEnfermeria | RecienNacido;
 }
 
 const SignosVitalesForm: React.FC<Props> = ({ hoja }) => {

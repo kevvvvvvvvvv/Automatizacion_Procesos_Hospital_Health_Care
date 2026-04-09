@@ -1,6 +1,7 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Formulario\RecienNacido;
+
 
 use App\Models\Formulario\FormularioInstancia;
 use Illuminate\Database\Eloquent\Model;
@@ -10,6 +11,8 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 use App\Models\Formulario\HojaEnfermeria\HojaTerapiaIV;
 use App\Models\Formulario\HojaEnfermeria\HojaSignos;      // Haz lo mismo con estos
 use App\Models\Formulario\HojaEnfermeria\HojaMedicamento;
+use App\Models\Formulario\RecienNacido\Somatometria;
+use App\Models\Formulario\RecienNacido\Ingresos_Egresos_RN;
 
 class RecienNacido extends Model
 {
@@ -39,7 +42,6 @@ class RecienNacido extends Model
     {
         return $this->belongsTo(FormularioInstancia::class, 'id');
     }
-    
     public function hojaSignos(): HasMany 
     {
         return $this->hasMany(HojaSignos::class, 'hoja_enfermeria_id', 'id');
@@ -53,5 +55,13 @@ class RecienNacido extends Model
     public function hojasTerapiasIV(): HasMany 
     {
         return $this->hasMany(HojaTerapiaIV::class, 'hoja_enfermeria_id', 'id');
+    }
+    public function somatometrias(): HasMany 
+    {
+        return $this->hasMany(Somatometria::class, 'id', 'id'); 
+    }
+    public function Ingresos_Egresos_RN(): HasMany
+    {
+        return $this->hasMany(Ingresos_Egresos_RN::class, 'hoja_enfermeria_id');
     }
 }

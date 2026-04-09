@@ -228,7 +228,7 @@ const Show = ({ estancia, historiaclinica }: ShowEstanciaProps) => {
                                                     Añadir hoja de enfermería de recien nacido
                                                 </Link>
                                             )}
-                                        </Menu.Item>*/}
+                                        </Menu.Item>{/**/}
                                     </>
                                     )}
                                     <Menu.Item>
