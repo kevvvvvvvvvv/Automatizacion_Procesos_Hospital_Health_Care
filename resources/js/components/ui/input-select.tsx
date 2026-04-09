@@ -50,12 +50,14 @@ const SelectInput: React.FC<SelectInputProps> = ({
     indicatorSeparator: () => ({ display: 'none' }),
   };
 
-  // Buscamos la(s) opción(es) seleccionada(s)
   const selectedOption = useMemo(() => {
+    if (!options) return isMulti ? [] : null;
+
     if (isMulti && Array.isArray(value)) {
       return options.filter((opt) => value.map(String).includes(String(opt.value)));
     }
-    return options.find((opt) => String(opt.value) === String(value)) || null;
+
+    return options?.find((opt) => String(opt.value) === String(value)) || null;
   }, [options, value, isMulti]);
 
   const handleChange = (selected: OnChangeValue<SelectOption, boolean>) => {

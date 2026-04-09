@@ -3,7 +3,7 @@ import { ConteoMaterialQuirofano, HojaEnfermeriaQuirofano } from '@/types';
 import { useForm } from '@inertiajs/react';
 import { route } from 'ziggy-js';
 
-
+import PrimaryButton from '@/components/ui/primary-button';
 import SelectInput from '@/components/ui/input-select';
 import TextInput from '@/components/ui/input-text';
 
@@ -26,7 +26,7 @@ const MaterialQuirofano = ({ hoja }: Props) => {
     });
 
     const guardarConteo = () => {
-        put(route('hojas-quirofano.actualizar-conteo', hoja.id), {
+        put(route('conteo-material-quirofano', hoja.id), {
             preserveScroll: true,
         });
     };    
@@ -60,6 +60,7 @@ const MaterialQuirofano = ({ hoja }: Props) => {
 
     return (
         <div className="border shadow-sm rounded-lg p-6 mb-4 bg-white flex flex-col gap-4">
+            
             <div className="flex justify-between items-center border-b pb-2">
                 <h3 className="text-lg font-semibold text-gray-800">
                     Conteo de material
@@ -78,7 +79,7 @@ const MaterialQuirofano = ({ hoja }: Props) => {
                     No hay materiales registrados. Haga clic en "Agregar insumo" para comenzar.
                 </div>
             ) : (
-                <div className="overflow-x-auto">
+                <div className="">
                     <table className="w-full text-sm text-left">
                         <thead className="text-xs text-gray-600 uppercase bg-gray-50 border-b">
                             <tr>
@@ -100,9 +101,12 @@ const MaterialQuirofano = ({ hoja }: Props) => {
                                     <tr key={index} className="border-b hover:bg-gray-50">
                                         <td className="px-4 py-2">
                                             <SelectInput
-                                                value={item.tipo_material}
-                                                options={materialQuirofanoOptions}
-                                                onChange={(e) => handleUpdateRow(index, 'tipo_material', e.target.value)}
+                                                label="Material"
+                                                value={item.tipo_material} 
+                                                options={materialQuirofanoOptions} 
+                                                onChange={(valorSeleccionado) => {
+                                                    handleUpdateRow(index, 'tipo_material', valorSeleccionado)
+                                                }}
                                             />
                                         </td>
                                         <td className="px-4 py-2">
@@ -162,7 +166,13 @@ const MaterialQuirofano = ({ hoja }: Props) => {
             )}
 
             <div className="flex justify-end pt-4 border-t mt-2">
-                <PrimaryButton></PrimaryButton>
+                <PrimaryButton
+                    type='button'
+                    disabled={processing}
+                    onClick={guardarConteo}
+                >   
+                    {processing ? 'Guardando...' : 'Guardar'}
+                </PrimaryButton>
             </div>
         </div>
     );

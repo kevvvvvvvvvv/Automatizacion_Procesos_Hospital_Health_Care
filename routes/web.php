@@ -182,7 +182,6 @@ Route::resource('estancias.encuesta-satisfaccions', EncuestaSatisfaccionControll
 Route::resource('notificaciones', NotificacionController::class)->shallow()->middleware('auth');
 Route::resource('estancias.encuestapersonal', EncuestaPersonalController::class)->shallow()->middleware('auth');
 
-
 Route::post('/checklist/toggle', [ChecklistController::class, 'toggle'])->name('checklist.toggle')->middleware('auth');
 
 Route::post('/pacientes/{paciente}/estancias/{estancia}/consentimientos', [ConsentimientoController::class, 'store'])->name('consentimientos.store')->middleware('auth');
@@ -226,7 +225,7 @@ Route::post('hojasinsumosbasicos/{hojasenfermeriasquirofano}', [FormularioHojaIn
 Route::patch('hojasinsumosbasicos/{hojasinsumosbasico}', [FormularioHojaInsumosBasicosController::class, 'update'])->name('hojasinsumosbasicos.update')->middleware('auth');
 Route::delete('hojasinsumosbasicos/{hojasinsumosbasico}', [FormularioHojaInsumosBasicosController::class, 'delete'])->name('hojasinsumosbasicos.destroy')->middleware('auth');
 
-Route::post('conteo-material-quirofano/{hojasenfermeriasquirofano}',[ConteoMaterialQuirofanoController::class, 'store']);
+Route::put('conteo-material-quirofano/{hojasenfermeriasquirofano}',[ConteoMaterialQuirofanoController::class, 'store'])->name('conteo-material-quirofano')->middleware('auth');
 
 
 Route::get('/pacientes/{paciente}/estancias/{estancia}/notas-urgencias/{notaUrgencia}',[NotaUrgenciaController::class, 'show'])->name('pacientes.estancias.notasurgencias.show')->middleware('auth');
@@ -350,6 +349,7 @@ Route::get('/encuestapersonal/{encuestapersonal}/pdf', [EncuestaPersonalControll
 Route::get('/reciennacido/{reciennacido}/pdf', [RecienNacidosController::class, 'generarPDF'])
     ->name('reciennacido.pdf')
     ->middleware('auth');
+
 // Farmacia
 Route::get('farmacia/solicitudes-medicamentos/{hojasenfermeria}', [FarmaciaController::class, 'show'])
     ->name('solicitudes-medicamentos.show')

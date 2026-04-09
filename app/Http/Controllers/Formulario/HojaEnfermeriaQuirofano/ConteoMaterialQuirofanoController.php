@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Formulario\HojaEnfermeriaQuirofano;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Formulario\HojaEnfermeriaQuirofano\ConteoMaterialQuirofanoRequest;
 use App\Models\Formulario\HojaEnfermeriaQuirofano\ConteoMaterialQuirofano;
 use App\Models\Formulario\HojaEnfermeriaQuirofano\HojaEnfermeriaQuirofano;
 
@@ -12,7 +13,7 @@ use Illuminate\Support\Facades\DB;
 
 class ConteoMaterialQuirofanoController extends Controller
 {
-    public function store(Request $request, HojaEnfermeriaQuirofano $hojasenfermeriasquirofano){
+    public function store(ConteoMaterialQuirofanoRequest $request, HojaEnfermeriaQuirofano $hojasenfermeriasquirofano){
         $validatedData = $request->validated();
 
         DB::beginTransaction();
