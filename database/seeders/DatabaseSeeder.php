@@ -36,6 +36,7 @@ class DatabaseSeeder extends Seeder
             CatalogoViaAdministracionSeeder::class,
             MetodoPagoSeeder::class,
             VentaSeeder::class,
+            CajaSeeder::class,
         ]);
 
     }

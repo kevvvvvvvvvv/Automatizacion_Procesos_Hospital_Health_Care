@@ -53,13 +53,12 @@ class FormularioNotaPostoperatorioController extends Controller implements HasMi
 
      public function show(NotaPostoperatoria $notaspostoperatoria)
     {
-        // Cargamos todas las relaciones necesarias para la vista
         $notaspostoperatoria->load([
             'formularioInstancia.estancia.paciente',
             'formularioInstancia.user.credenciales',
             'personalEmpleados.user',
             'transfusiones',
-            'solicitudPatologia' // Por si quieres mostrar los datos de la biopsia
+            'solicitudPatologia'
         ]);
 
         return Inertia::render('formularios/nota-postoperatorio/show', [

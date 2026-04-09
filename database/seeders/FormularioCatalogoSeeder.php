@@ -139,6 +139,11 @@ class FormularioCatalogoSeeder extends Seeder
             'nombre_tabla_fisica' => 'paquetes',
             'route_prefix' => 'paquetes',
         ]);
-        
+        FormularioCatalogo::create([
+            'id' => 20,
+            'nombre_formulario' => 'Enfermeria Recien Nacidos',
+            'nombre_tabla_fisica' => 'recien_nacidos',
+            'route_prefix' => 'reciennacido',
+        ]);
     }
 }

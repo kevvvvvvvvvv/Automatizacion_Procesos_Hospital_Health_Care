@@ -3,7 +3,7 @@
 use App\Http\Controllers\BackupsRestauration\BackupsController;
 use App\Http\Controllers\BackupsRestauration\RestaurationController;
 use App\Http\Controllers\Inventario\ProductoServicioController;
-
+use App\Http\Controllers\RecienNacidosController;
 
 use App\Http\Controllers\PacienteController;
 use App\Http\Controllers\EstanciaController;
@@ -54,8 +54,9 @@ use App\Http\Controllers\FormularioHojaRiesgoCaidaController;
 use App\Http\Controllers\HojaControlLiquidoController;
 use App\Http\Controllers\HojaEscalaValoracionController;
 
-
-
+use App\Http\Controllers\Caja\CajaController;
+use App\Http\Controllers\Caja\ContaduriaController;
+use App\Http\Controllers\Caja\TraspasoController;
 
 use App\Http\Controllers\PaqueteController;
 use App\Http\Controllers\LigaFutbolController;
@@ -67,6 +68,7 @@ use App\Http\Controllers\ReporteConcienciaController;
 use App\Http\Controllers\ReporteSignosController;
 use App\Http\Controllers\RecetaController;
 use App\Http\Controllers\ResumenMedicoController;
+
 
 
 use App\Http\Controllers\ReporteEstanciaController;
@@ -145,6 +147,9 @@ Route::resource('quirofanos', ReservacionQuirofanoController::class)->middleware
 Route::post('/reservaciones/{reservacione}/pagar',[ReservacionController::class,'pagar'])->middleware('auth');
 Route::resource('dietas',DietaController::class)->middleware('auth');
 Route::resource('mantenimiento', MantenimientoController::class)->middleware('auth');
+
+//Recien nacidos
+Route::resource('pacientes.estancias.reciennacido',RecienNacidosController::class)->shallow()-> middleware('auth');
 
 
 Route::resource('respaldo', BackupsController::class)->middleware('auth');
@@ -339,6 +344,9 @@ Route::get('/encuestapersonal/{encuestapersonal}/pdf', [EncuestaPersonalControll
     ->name('encuestapersonal.pdf')
     ->middleware('auth');
 
+Route::get('/reciennacido/{reciennacido}/pdf', [RecienNacidosController::class, 'generarPDF'])
+    ->name('reciennacido.pdf')
+    ->middleware('auth');
 // Farmacia
 Route::get('farmacia/solicitudes-medicamentos/{hojasenfermeria}', [FarmaciaController::class, 'show'])
     ->name('solicitudes-medicamentos.show')
@@ -350,6 +358,24 @@ Route::get('farmacia/solicitudes-medicamentos', [FarmaciaController::class, 'ind
 Route::patch('/medicamentos/{medicamento}/actualizar-estado', [HojaMedicamentoController::class, 'actualizarEstado'])
     ->name('medicamentos.actualizar-estado')
     ->middleware('auth');
+
+// Caja
+Route::middleware('auth:sanctum')->prefix('caja')->group(function () {
+    Route::get('/caja',[CajaController::class, 'index'])->name('caja.index');
+    Route::get('/turno-actual', [CajaController::class, 'turnoActual'])->name('caja-turno-actual');
+    Route::post('/abrir', [CajaController::class, 'abrirTurno'])->name('caja-abrir-turno');
+    Route::post('/movimiento', [CajaController::class, 'registrarMovimiento'])->name('caja-movimiento');
+    Route::post('/cerrar', [CajaController::class, 'cerrarTurno'])->name('caja-cerrar');
+    Route::post('/traspasos/solicitar', [TraspasoController::class, 'solicitar'])->name('traspasos.solicitar');
+    Route::post('/traspasos/{solicitud}/responder', [TraspasoController::class, 'responder'])->name('traspasos.responder');
+    Route::post('/traspasos/enviar-boveda', [TraspasoController::class, 'enviarABoveda'])->name('traspasos.enviarABoveda');
+});
+
+//Contador
+Route::get('/tesoreria/boveda', [ContaduriaController::class, 'index'])->name('contaduria.index')->middleware('auth');
+Route::post('/tesoreria/boveda/gasto', [ContaduriaController::class, 'registrarGasto'])->name('boveda.registrarGasto')->middleware('auth');
+Route::post('/sesiones/auditar/{sesion}',[ContaduriaController::class, 'auditarSesion'])->name('sesiones.auditar')->middleware('auth');
+Route::post('/tesoreria/boveda/traspaso',[ContaduriaController::class,'traspasoDirectoBovedaFondo'])->name('boveda.traspaso-directo')->middleware('auth');
 
 // Notificaciones
 Route::post('/notifications/mark-all-as-read', function () {
@@ -371,7 +397,7 @@ Route::get('/historial', [HistoryController::class, 'index'])->name('historiales
 Route::get ('/rerservacion/reserva', [ReservacionController::class, 'reserva'])->name('rerservaciones.reserva')->middleware('auth');
 
 
-//RESTAURACIÓN DE LA BASE DE DATOS
+//Restauración de la base de datos  
 Route::get('/bd/respaldo/restauracion/', [RestaurationController::class, 'showView'])
     ->name('bd.restauracion'); 
 

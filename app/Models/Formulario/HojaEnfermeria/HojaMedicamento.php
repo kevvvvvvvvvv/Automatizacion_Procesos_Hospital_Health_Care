@@ -4,7 +4,7 @@ namespace App\Models\Formulario\HojaEnfermeria;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-
+ 
 use App\Models\Inventario\ProductoServicio;
 
 /**
@@ -89,4 +89,9 @@ class HojaMedicamento extends Model
         return $this->hasMany(AplicacionMedicamento::class)
                     ->orderBy('fecha_aplicacion', 'asc');
     }
-}
+    public function recienNacido(): BelongsTo 
+    {
+        return $this->belongsTo(RecienNacido::class, 'hoja_enfermeria_id', 'id');
+    }
+    
+        }
