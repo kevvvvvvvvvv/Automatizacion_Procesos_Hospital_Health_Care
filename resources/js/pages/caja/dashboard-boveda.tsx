@@ -265,7 +265,11 @@ export default function DashboardBoveda({
                                                     <td className="px-6 py-4 text-gray-400">
                                                         {new Date(mov.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                                     </td>
-                                                    <td className="px-6 py-4 font-bold">{mov.sesion_caja?.caja?.nombre}</td>
+                                                    <td className="px-6 py-4 font-bold">
+                                                        <span className="inline-block px-3 py-1 rounded-full bg-gray-100 text-gray-700 text-sm">
+                                                            {mov.sesion_caja?.caja?.nombre}
+                                                        </span>
+                                                    </td>
                                                     <td className="px-6 py-4 text-xs text-gray-500">{mov.area || '-'}</td>
                                                     <td className="px-6 py-4">
                                                         <div className="font-medium">{mov.concepto}</div>

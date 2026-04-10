@@ -69,8 +69,20 @@ class ContaduriaController extends Controller
             ->where('estado', 'pendiente')
             ->latest()
             ->get();
+        
+        
+        $movimientosHoy = MovimientoCaja::with(['sesionCaja.caja', 'user','metodoPago'])
+/*             ->whereDate('created_at', Carbon::today())
+            ->latest() */
+            ->get();
 
-        $sesionUsuario = SesionCaja::where('user_id', Auth::id())
+        $ingresosHoy = $movimientosHoy->where('tipo', 'ingreso')->sum('monto');
+        $egresosHoy = $movimientosHoy->where('tipo', 'egreso')->sum('monto');
+        $boveda = Caja::where('tipo', 'boveda')->firstOrFail();
+
+        $cajaFondo = Caja::where('tipo', 'fondo')->firstOrFail();
+
+        $fondo = SesionCaja::where('caja_id', $cajaFondo->id)
             ->where('estado', 'abierta')
             ->with('movimientos.metodoPago')
             ->first();
@@ -97,7 +109,7 @@ class ContaduriaController extends Controller
             ],
             'boveda' => $sesionBoveda,
             'fondo' => $sesionFondo,
-            'sesion' => $sesionUsuario,
+            'sesion' => $turnoExistente,
             'caja' => $sesionOperativo,
             'allSesiones' => $allSesiones,
         ]);

@@ -125,9 +125,9 @@
     <style>
         /* Se mantienen los estilos del documento anterior para consistencia */
         @page { size: A4; margin: 5cm 1.2cm 1.5cm 1.2cm; }
-        body { font-family: Calibri, Arial, sans-serif; font-size: 10pt; line-height: 1.3; color: #333; }
-        h1 { text-align: center; font-size: 16pt; text-transform: uppercase; margin-bottom: 10px; }
-        h3 { border-bottom: 1px solid #ccc; font-size: 11pt; margin-top: 12px; color: #2c3e50; }
+        body { font-family: Calibri, Arial, sans-serif; font-size: 9pt; line-height: 1.3; color: #333; }
+        h1 { text-align: center; font-size: 14pt; text-transform: uppercase; margin-bottom: 10px; }
+        h3 { border-bottom: 1px solid #ccc; font-size: 9pt; margin-top: 12px; color: #2c3e50; }
         ul { margin-bottom: 8px; }
         li { margin-bottom: 3px; }
         .schedule { text-align: center; font-weight: bold; background: #f9f9f9; padding: 5px; margin-bottom: 15px; }
@@ -144,8 +144,7 @@
          <p>En <span class="important"> Hospitalidad Health Care</span> estamos comprometidos con su
             salud, y por eso constantemente nos encontramos mejorando nuestros servicios 
             para ofrecerle lo mejor. En la mayor de los casos, las visitas de amigos y familiares
-             son bienvenidas y contribuyen a la recuperación del paciente</p>
-        <p> Por favor revisen nuestros horarios y reglamentos internos</p>
+             son bienvenidas y contribuyen a la recuperación del paciente.<span class="important"> Por favor revisen nuestros horarios y reglamentos internos</span></p>
         <h3>Normas de Estancia y Visitas</h3>
         <div class="section-content">
             <ul>

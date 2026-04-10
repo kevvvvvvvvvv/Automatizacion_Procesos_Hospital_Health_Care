@@ -5,7 +5,8 @@ import {
     ProductoServicio, 
     HojaEnfermeria, 
     HojaSignosGraficas, 
-    CatalogoViaAdministracion 
+    CatalogoViaAdministracion,
+    RecienNacido
 } from '@/types';
 import { Head } from '@inertiajs/react';
 import MainLayout from '@/layouts/MainLayout';
@@ -18,10 +19,13 @@ import MedicamentosForm from '@/components/forms/medicamentos-form';
 import TerapiaIVForm from '@/components/terapia-iv-form';
 import CerrarHoja from '@/components/app-cerrrar-hoja';
 import reciennacido from '@/routes/reciennacido';
+import SomatometriaForm from '@/components/forms/somatometria-form';
+import IngresosEgresosForm from '@/components/forms/ingresosrn-form';
 
 interface CreateProps {
     paciente: Paciente;
     estancia: Estancia;
+    hoja: RecienNacido;
     hojaenfermeria: HojaEnfermeria; // Tu instancia de RecienNacido o Hoja RN
     medicamentos: ProductoServicio[];
     soluciones: ProductoServicio[];
@@ -46,10 +50,11 @@ type CreateComponent = React.FC<CreateProps> & {
 const Create: CreateComponent = ({ 
     paciente, 
     estancia, 
-    hojaenfermeria,
+    //hojaenfermeria,
     medicamentos, 
     soluciones, 
     vias_administracion,
+    hoja,
     dataParaGraficas 
 }) => {
 
@@ -59,27 +64,28 @@ const Create: CreateComponent = ({
         switch (activeSection) {
             case 'signos':
                 return <SignosVitalesForm 
-                            hoja={hojaenfermeria} 
+                            hoja={hoja} 
                         />;
             case 'medicamentos':
                 return <MedicamentosForm 
-                            hoja={hojaenfermeria}
+                            hoja={hoja}
                             medicamentos={medicamentos}
                             vias_administracion={vias_administracion}
                         />;
             case 'soluciones':
                 return <TerapiaIVForm
-                            hoja={hojaenfermeria}
+                            hoja={hoja}
                             soluciones={soluciones}
                             medicamentos={medicamentos}
                         />;
-            /*case 'ingresos_egresos':
-                return < ''
+            case 'ingresos_egresos':
+                return <IngresosEgresosForm
+                    hoja={hoja}
                         />;
             case 'somatometria':
-                return <SomatometriaRNForm 
-                            hoja={hojaenfermeria} 
-                        />;*/
+                return <SomatometriaForm 
+                            hoja={hoja} 
+                        />;
             default:
                 return null;
         }
@@ -102,14 +108,14 @@ const Create: CreateComponent = ({
                         <p className="text-sm text-gray-500">Registro clínico especializado para recién nacidos</p>
                     </div>
                     
-                    <CerrarHoja 
-                        hoja={hojaenfermeria} 
-                        title='hoja neonatal'
+                    {/*<CerrarHoja 
+                        hoja={reciennacido} 
+                        title='hoja de recien nacido'
                         routeConfig={{ 
                             name: 'reciennacido.update', // 1. Asegúrate que este sea el nombre de tu ruta
-                            params: { reciennacido: hojaenfermeria.id } // 2. El nombre de la llave debe coincidir con el parámetro de la ruta
+                            params: { reciennacido: reciennacido.id } // 2. El nombre de la llave debe coincidir con el parámetro de la ruta
                         }}
-                    />
+                    />*/}
                 </div>
 
                 {/* Navegación por áreas */}
