@@ -18,17 +18,19 @@ type Props = {
 };
 
 const CONSENTIMIENTOS = [
-  'Consentimiento 1: Hospitalización',
-  'Consentimiento 2: Procedimiento de círugia mayor',
+  'Consentimiento 1: Hospitalización',                                         
+  'Consentimiento 2: Procedimiento de círugia mayor',                          
   'Consentimiento 3: Procedimientos que requieren anestesia general o regional',
-  'Consentimiento 4: Salpingoclasia y vasectomía *',
-  'Consentimiento 5: Donación de órganos, tejidos y trasplantes ',
-  'Consentimiento 6: Investigación clínica en seres humanos',
-  'Consentimiento 7: Necropsia hospitalaria *',
-  'Consentimiento 8: Procedimientos diagnósticos y terapéuticos considerados por el médico como de alto riesgo *',
-  'Consentimiento 9: Cualquier procedimiento que entrañe mutilación *',
-  '10: Reanimación cardiopulmonar, intubación y maniobras de resucitación',
-  '11: Indicaciones para el ingreso hospitalario',
+  'Consentimiento 4: Salpingoclasia y vasectomía *',                            
+  'Consentimiento 5: Donación de órganos, tejidos y trasplantes ',              
+  'Consentimiento 6: Investigación clínica en seres humanos',                   
+  'Consentimiento 7: Necropsia hospitalaria *',                                 
+  'Consentimiento 8: Procedimientos diagnósticos y terapéuticos...',            
+  'Consentimiento 9: Cualquier procedimiento que entrañe mutilación *',         
+  'Consentimiento adicional: Transfusión sanguínea',                            
+  '10: Reanimación cardiopulmonar, intubación y maniobras de resucitación',     
+  '11: Indicaciones para el ingreso hospitalario',                              
+  'Consentimiento 12: Alta voluntaria',                                         
 ];
 
 const CreateConsentimiento: React.FC<Props> = ({ paciente, estancia }) => {
@@ -78,7 +80,7 @@ const CreateConsentimiento: React.FC<Props> = ({ paciente, estancia }) => {
 
               <div className="grid grid-cols-1 gap-3">
                 {CONSENTIMIENTOS.map((label, idx) => {
-                  const key = idx === CONSENTIMIENTOS.length - 1 ? '11' : String(idx);
+                  const key = String(idx);
                   const selected = (data.route_pdf ?? []).includes(key);
 
                   return (

@@ -12,7 +12,7 @@ use App\Services\CajaService;
 
 use App\Enums\TipoMovimientoCaja;
 use App\Enums\EstadoSesionCaja;
-
+use App\Http\Requests\Caja\Contaduria\IndexRequest;
 use App\Http\Requests\Caja\Contaduria\ContaduriaRequest;
 use App\Models\Caja\SolicitudTraspaso;
 use App\Models\Caja\Caja;
@@ -26,38 +26,45 @@ use Illuminate\Support\Facades\DB;
 
 class ContaduriaController extends Controller
 {
-    public function index()
+    public function index(IndexRequest $request)
     {
+        // 1. Manejo de Fecha (Paginación por día)
+        $fechaFiltro = $request->input('fecha', Carbon::today()->format('Y-m-d'));
+        $fechaCarbon = Carbon::parse($fechaFiltro);
 
-        $turno = SesionCaja::where('caja_id', 3)
-            ->where('estado', 'abierta')
-            ->first();
-
-        if ($turno && ($turno['user_id'] !== Auth::id())) {
-            return Redirect::back()->with('error', 'Ya existe un turno abierto para esta caja.'); 
+        // 2. Validación de turno único (Caja 3)
+        $turnoExistente = SesionCaja::where('caja_id', 3)->where('estado', 'abierta')->first();
+        if ($turnoExistente && ($turnoExistente->user_id !== Auth::id())) {
+            return Redirect::back()->with('error', 'Ya existe un turno abierto para esta caja por otro usuario.'); 
         }
-        // Cajas maestras
-        $boveda = Caja::where('tipo', 'boveda')->firstOrFail();
-        $fondo = Caja::where('tipo', 'fondo')->firstOrFail();
 
-        // Se busca sesion abiertas, si no se encuentra se crea
-        SesionCaja::firstOrCreate(
-            ['caja_id' => $boveda->id, 'estado' => 'abierta'],
-            [
-                'user_id' => Auth::id(),
-                'fecha_apertura' => now(),
-                'monto_inicial' => 50000,
-            ]
+        // 3. Cajas maestras
+        $cajasMaestras = Caja::whereIn('tipo', ['boveda', 'fondo', 'operativo'])->get();
+        $cBoveda = $cajasMaestras->where('tipo', 'boveda')->first();
+        $cFondo = $cajasMaestras->where('tipo', 'fondo')->first();
+        $cOperativo = $cajasMaestras->where('tipo', 'operativo')->first();
+
+        // 4. Auto-apertura de Sesiones Maestras (Bóveda y Fondo)
+        $sesionBoveda = SesionCaja::firstOrCreate(
+            ['caja_id' => $cBoveda->id, 'estado' => 'abierta'],
+            ['user_id' => Auth::id(), 'fecha_apertura' => now(), 'monto_inicial' => 50000]
         );
 
-        SesionCaja::firstOrCreate(
-            ['caja_id' => $fondo->id, 'estado' => 'abierta'],
-            [
-                'user_id' => Auth::id(),
-                'fecha_apertura' => now(),
-                'monto_inicial' => 10000,
-            ]
+        $sesionFondo = SesionCaja::firstOrCreate(
+            ['caja_id' => $cFondo->id, 'estado' => 'abierta'],
+            ['user_id' => Auth::id(), 'fecha_apertura' => now(), 'monto_inicial' => 10000]
         );
+
+        // 5. Movimientos del DÍA SELECCIONADO (Aquí está la "paginación")
+        $movimientosFiltro = MovimientoCaja::with(['sesionCaja.caja', 'user', 'metodoPago'])
+            ->whereDate('created_at', $fechaCarbon)
+            ->latest()
+            ->get();
+
+        $ingresos = $movimientosFiltro->where('tipo', 'ingreso')->sum('monto');
+        $egresos = $movimientosFiltro->where('tipo', 'egreso')->sum('monto');
+
+        // 6. Otras Consultas
         $solicitudes = SolicitudTraspaso::with(['cajaDestino', 'usuarioSolicita'])
             ->where('estado', 'pendiente')
             ->latest()
@@ -65,8 +72,8 @@ class ContaduriaController extends Controller
         
         
         $movimientosHoy = MovimientoCaja::with(['sesionCaja.caja', 'user','metodoPago'])
-            ->whereDate('created_at', Carbon::today())
-            ->latest()
+/*             ->whereDate('created_at', Carbon::today())
+            ->latest() */
             ->get();
 
         $ingresosHoy = $movimientosHoy->where('tipo', 'ingreso')->sum('monto');
@@ -77,38 +84,34 @@ class ContaduriaController extends Controller
 
         $fondo = SesionCaja::where('caja_id', $cajaFondo->id)
             ->where('estado', 'abierta')
-            ->first();
-        
-        $sesion = SesionCaja::where('user_id', Auth::id())
-            ->where('estado', EstadoSesionCaja::ABIERTA->value)
             ->with('movimientos.metodoPago')
             ->first();
 
-        $caja = Caja::where('tipo', 'operativo')->firstOrFail();
-
-        $caja = SesionCaja::where('caja_id', $caja->id)
+        $sesionOperativo = SesionCaja::where('caja_id', $cOperativo->id)
             ->where('estado', 'abierta')
             ->first();
 
-
+        // Sesiones para auditoría (últimos 3 días)
         $allSesiones = SesionCaja::with(['user', 'caja'])
             ->where('fecha_apertura', '>=', now()->subDays(3))
             ->orderBy('fecha_apertura', 'desc')
             ->get();
 
         return Inertia::render('caja/dashboard-boveda', [
-            'cajaId' => $boveda->id,
+            'fechaFiltro' => $fechaFiltro, 
+            'cajaId' => $cBoveda->id,
             'solicitudesPendientes' => $solicitudes,
-            'movimientosHoy' => $movimientosHoy,
+            'movimientosHoy' => $movimientosFiltro,
             'resumenHoy' => [
-                'ingresos' => $ingresosHoy,
-                'egresos' => $egresosHoy,
-                'balance' => $ingresosHoy - $egresosHoy
+                'ingresos' => $ingresos,
+                'egresos' => $egresos,
+                'balance' => $ingresos - $egresos
             ],
-            'fondo' => $fondo,
-            'sesion' => $sesion,
-            'caja' => $caja,
-            'allSesiones' =>$allSesiones,
+            'boveda' => $sesionBoveda,
+            'fondo' => $sesionFondo,
+            'sesion' => $turnoExistente,
+            'caja' => $sesionOperativo,
+            'allSesiones' => $allSesiones,
         ]);
     }
 

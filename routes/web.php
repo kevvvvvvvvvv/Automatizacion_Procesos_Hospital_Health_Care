@@ -70,6 +70,8 @@ use App\Http\Controllers\ReporteSignosController;
 use App\Http\Controllers\RecetaController;
 use App\Http\Controllers\ResumenMedicoController;
 
+use App\Http\Controllers\SomatometriaController;
+use App\Http\Controllers\IngresosEgresosRNController;
 
 
 use App\Http\Controllers\ReporteEstanciaController;
@@ -95,6 +97,10 @@ Route::middleware(['auth', 'verified'])->group(function (){
     })->name('dashboard-reporte');
 });
 
+Route::post('/hojas-control-liquidos/{id}', [IngresosEgresosRNController::class, 'store'])
+    ->name('hojas-control-liquidos.store');
+Route::post('/recien-nacido/{reciennacido}/somatometria', [SomatometriaController::class, 'store'])
+     ->name('somatometrias.store');
 //Reportes 
 // REPORTE DE TIPO DE ESTANCIA
 Route::get('/reportes/tipo-estancia', [ReporteEstanciaController::class, 'showReporteEstancia'])

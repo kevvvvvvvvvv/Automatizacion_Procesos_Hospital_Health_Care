@@ -1,12 +1,20 @@
+import { useState } from "react";
+import { Eye, EyeOff } from "lucide-react";
 
 interface SummaryCardProps {
     label: string;
     amount: string | number;
     theme?: 'default' | 'success' | 'danger' | 'highlight';
+    mostrarValor?: boolean
 }
 
 
-export const SummaryCard = ({ label, amount, theme = 'default' }: SummaryCardProps) => {
+export const SummaryCard = ({ 
+    label, 
+    amount, 
+    theme = 'default' ,
+    mostrarValor = true,
+}: SummaryCardProps) => {
     const themes = {
         default: "bg-white border-gray-100 text-gray-500 value-gray-800",
         success: "bg-white border-green-50 text-green-600 value-gray-800",
@@ -16,6 +24,7 @@ export const SummaryCard = ({ label, amount, theme = 'default' }: SummaryCardPro
 
     const currentTheme = themes[theme];
     const isHighlight = theme === 'highlight';
+    const [mostrarDinero, setMostrarDinero] = useState(mostrarValor); 
 
     const formatMoney = (amount: number | string | undefined) => {
         return Number(amount || 0).toLocaleString('es-MX', { minimumFractionDigits: 2 });
@@ -26,9 +35,25 @@ export const SummaryCard = ({ label, amount, theme = 'default' }: SummaryCardPro
             <p className={`text-sm ${isHighlight ? 'font-bold' : 'font-medium'} ${themes[theme].match(/text-[a-z]+-\d+/)?.[0]}`}>
                 {label}
             </p>
-            <p className={`${isHighlight ? 'text-3xl font-black' : 'text-2xl font-bold'} mt-1 ${themes[theme].match(/value-([a-z]+-\d+)/)?.[1] ? `text-${themes[theme].match(/value-([a-z]+-\d+)/)?.[1]}` : 'text-gray-800'}`}>
-                ${formatMoney(amount)}
-            </p>
+
+            <div className="flex items-center justify-between mt-1 gap-2">
+                <p className={`${isHighlight ? 'text-3xl font-black' : 'text-2xl font-bold'} ${themes[theme].match(/value-([a-z]+-\d+)/)?.[1] ? `text-${themes[theme].match(/value-([a-z]+-\d+)/)?.[1]}` : 'text-gray-800'}`}>
+                    {mostrarDinero ? `$${formatMoney(amount)}` : '••••••'}
+                </p>
+
+                <button
+                    onClick={() => setMostrarDinero(!mostrarDinero)}
+                    className={`transition-colors duration-200 p-1 rounded-md hover:bg-black/5 ${
+                        mostrarDinero 
+                            ? 'text-blue-600' 
+                            : 'text-gray-400' 
+                    }`}
+                >   {mostrarDinero ?
+                        (<Eye size={20} />) :
+                        (<EyeOff size={20}/>)
+                    }
+                </button>
+            </div>
         </div>
     );
 };

@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { MetodoPago, MovimientoCaja, SesionCaja } from '@/types'; 
+import { router } from '@inertiajs/react';
+import { route } from 'ziggy-js';
 
 import ModalCierreCaja from '@/components/caja/modal-cierre-caja';
 import ModalGasto from '@/components/caja/modal-gasto';
@@ -12,12 +14,16 @@ interface Props {
     sesion: SesionCaja; 
     fondo: SesionCaja;
     metodos_pago: MetodoPago[];
+    fecha_filtrada: string;
+    movimientos: MovimientoCaja[],
 }
 
 export const PanelCaja = ({ 
     sesion,
     fondo,
     metodos_pago,
+    fecha_filtrada, 
+    movimientos = [],
 }: Props) => {
     const [isGastoModalOpen, setIsGastoModalOpen] = useState(false);
     const [isCierreModalOpen, setIsCierreModalOpen] = useState(false);
@@ -28,6 +34,13 @@ export const PanelCaja = ({
         const num = Number(amount);
         return isNaN(num) ? '0.00' : num.toFixed(2);
     };
+
+    const handleFechaChange = (nuevaFecha: string) => {
+        router.get(route('caja.index'),
+            { fecha: nuevaFecha },
+            { preserveState: true, replace: true}
+        );
+    }
 
     return (
         <div className="p-6 max-w-7xl mx-auto space-y-6">
@@ -103,10 +116,46 @@ export const PanelCaja = ({
 
             <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
                 <div className="px-6 py-4 border-b border-gray-100 flex justify-between items-center">
-                    <h3 className="text-lg font-medium text-gray-800">Últimos movimientos en efectivo</h3>
+                    <h3 className="text-lg font-medium text-gray-800">Movimientos en efectivo</h3>
                 </div>
-                
-                {sesion.movimientos && sesion.movimientos.length > 0 ? (
+                <div>
+                    <button
+                        onClick={() => {
+                            const partes = fecha_filtrada.split('-');
+                            const d = new Date(+partes[0], +partes[1] - 1, +partes[2]);
+                            d.setDate(d.getDate() - 1);
+                            const nuevaFecha = d.getFullYear() + '-' + 
+                                String(d.getMonth() + 1).padStart(2, '0') + '-' + 
+                                String(d.getDate()).padStart(2, '0');
+                                
+                            handleFechaChange(nuevaFecha);
+                        }}
+                        className="p-2 hover:bg-gray-200 rounded"
+                    >◀</button>
+                    <input 
+                        type="date"
+                        value={fecha_filtrada}
+                        onChange={e=>handleFechaChange(e.target.value)}
+                        className="border-gray-300 rounded-lg text-sm font-bold text-blue-600" 
+                    />
+                    <button 
+                        onClick={() => {
+                            const partes = fecha_filtrada.split('-');
+                            const d = new Date(+partes[0], +partes[1] - 1, +partes[2]);
+                            
+                            d.setDate(d.getDate() + 1);
+                            
+                            const nuevaFecha = d.getFullYear() + '-' + 
+                                String(d.getMonth() + 1).padStart(2, '0') + '-' + 
+                                String(d.getDate()).padStart(2, '0');
+                                
+                            handleFechaChange(nuevaFecha);
+                        }}
+                        className="p-2 hover:bg-gray-200 rounded"
+                    >▶</button>
+                </div>
+
+                {movimientos && movimientos.length > 0 ? (
                     <div className="overflow-x-auto">
                         <table className="min-w-full divide-y divide-gray-200 text-left">
                             <thead className="bg-gray-50">
@@ -122,7 +171,7 @@ export const PanelCaja = ({
                                 </tr>
                             </thead>
                             <tbody className="bg-white divide-y divide-gray-200">
-                                {sesion.movimientos.map((mov: MovimientoCaja) => (
+                                {movimientos.map((mov: MovimientoCaja) => (
                                     <tr key={mov.id} className="hover:bg-gray-50 transition-colors">
                                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                             {new Date(mov.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}

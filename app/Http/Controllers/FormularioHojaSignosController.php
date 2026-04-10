@@ -12,11 +12,11 @@ use App\Models\Formulario\HojaEnfermeria\HojaSignos;
 
 class FormularioHojaSignosController extends Controller
 {
-    public function store(HojaSignosRequest $request,HojaEnfermeria $hojasenfermeria)
+    public function store(HojaSignosRequest $request,$id)
     {
         try{
             HojaSignos::create([
-                'hoja_enfermeria_id' => $hojasenfermeria->id,
+                'hoja_enfermeria_id' => $id,
                 'fecha_hora_registro' => now(),
                 ... $request->validated()
             ]);
