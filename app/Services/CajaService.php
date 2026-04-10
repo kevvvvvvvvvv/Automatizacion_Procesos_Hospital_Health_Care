@@ -10,7 +10,9 @@ use App\Models\Caja\Caja;
 use App\Models\User;
 
 use App\Enums\EstadoSesionCaja;
+use App\Enums\MetodoPago as EnumsMetodoPago;
 use App\Enums\TipoMovimientoCaja;
+use App\Models\Venta\MetodoPago;
 
 use Illuminate\Support\Facades\DB;
 use Exception;
@@ -81,7 +83,7 @@ class CajaService
         int $userId,
         ?string $descripcion = null,
         ?string $nombre_paciente=null,
-        ?int $metodoPagoId = null,
+        ?int $metodoPagoId = EnumsMetodoPago::PAGO_EFECTIVO,
         ?string $area = null,
     ): MovimientoCaja
     {
