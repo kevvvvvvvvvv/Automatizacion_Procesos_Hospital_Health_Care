@@ -1,18 +1,11 @@
-import type { ChangeEvent } from 'react';
 import React, { InputHTMLAttributes } from 'react';
 
-interface InputTextProps extends InputHTMLAttributes<HTMLInputElement>{
+interface InputTextProps extends InputHTMLAttributes<HTMLInputElement> {
   id: string;
   name: string;
   label: string;
   value: string;
-  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  placeholder?: string;
   error?: string | null;
-  type?: 'text' | 'email' | 'password' | 'date' | 'number' | 'time';
-  disabled?: boolean;
-  required?: boolean;
-  maxLength?: number;
 }
 
 const InputText = ({
@@ -20,36 +13,26 @@ const InputText = ({
   name,
   label,
   value,
-  onChange,
-  placeholder = '',
   error = null,
-  type = 'text',
-  disabled = false,
-  required = false,
-  maxLength,
+  className = "", 
+  ...props 
 }: InputTextProps) => {
   return (
     <div className="mb-4 w-full">
       <label
         htmlFor={id}
-        className={`
-            ${error ? 'border-red-500 focus:ring-red-500 focus:border-red-500' : 'border-gray-300'}
-            ${disabled ? 'bg-gray-200 cursor-not-allowed opacity-60' : ''}
-          `}
+        className={`block text-sm font-medium mb-1 ${
+          error ? 'text-red-500' : 'text-gray-700'
+        } ${props.disabled ? 'opacity-60 cursor-not-allowed' : ''}`}
       >
         {label}
       </label>
 
       <input
-        type={type}
         id={id}
         name={name}
         value={value}
-        onChange={onChange}
-        placeholder={placeholder}
-        disabled={disabled}
-        required={required}
-        maxLength={maxLength}
+        {...props} 
         className={`
           w-full px-3 py-2 rounded-md shadow-sm 
           border 
@@ -59,7 +42,8 @@ const InputText = ({
           focus:outline-none focus:ring-2 focus:ring-[#2a2b56] focus:border-[#2a2b56]
           transition
           ${error ? 'border-red-500 focus:ring-red-500 focus:border-red-500' : 'border-gray-600'}
-          ${disabled ? 'bg-gray-200 cursor-not-allowed opacity-60' : ''}
+          ${props.disabled ? 'bg-gray-200 cursor-not-allowed opacity-60' : ''}
+          ${className} 
         `}
       />
 

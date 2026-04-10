@@ -308,6 +308,7 @@ const ModalGasto = ({
                         value={data.monto}
                         onChange={e=>setData('monto',e.target.value)}
                         type='number'
+                        step="0.01"
                         error={errors.concepto}
                     />
 
