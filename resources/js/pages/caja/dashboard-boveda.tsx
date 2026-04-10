@@ -45,6 +45,7 @@ export default function DashboardBoveda({
     const [vistaActiva, setVistaActiva] = useState<'solicitudes' | 'diario' | 'sesiones'>('solicitudes');
     const [isEnviarDineroFondo, setIsEnviarDineroFondo] = useState(false);
     const [isGastoModalOpen, setIsGastoModalOpen] = useState(false);
+    const [mostrarDineroBoveda] = useState(false);
 
     const { url } = usePage();
 
@@ -127,7 +128,12 @@ export default function DashboardBoveda({
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 <SummaryCard label='Caja Operativa' amount={caja?.monto_esperado || 0} />
                 <SummaryCard label="Fondo Fijo" amount={fondo?.monto_esperado || 0} />
-                <SummaryCard label='Bóveda Principal' amount={sesion?.monto_esperado || 0} theme="success" />
+                <SummaryCard 
+                    label='Bóveda Principal' 
+                    amount={sesion?.monto_esperado || 0} 
+                    theme="success" 
+                    mostrarValor={mostrarDineroBoveda}
+                />
             </div>
 
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2">
