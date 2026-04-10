@@ -24,7 +24,7 @@ interface CreateProps {
     users: User[];
 }
 
-type SeccionHoja = 'insumos' | 'servicios_especiales' | 'pieza_patologica' | 'general' | 'personal' | 'informacion_general' | 'conteo_material_quirofano';
+type SeccionHoja = 'insumos' | 'servicios_especiales' | 'pieza_patologica' | 'general' | 'personal' | 'informacion_general' | 'conteo_material_quirofano' | 'isquemias';
 
 
 
@@ -39,7 +39,8 @@ const secciones: {id: SeccionHoja, label: string}[] = [
     { id: 'pieza_patologica', label: 'Envio de pieza patológica' },
     { id: 'personal', label: 'Personal' },
     { id: 'informacion_general', label:'Información general'},
-    { id: 'conteo_material_quirofano', label: 'Conteo de material en quirófano'}
+    { id: 'conteo_material_quirofano', label: 'Conteo de material en quirófano'},
+    { id: 'isquemias', label: 'Isquemias'},
 ];
 
 const CreateHojaEnfermeriaQuirofano:CreateComponent = ({

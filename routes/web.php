@@ -64,6 +64,7 @@ use App\Http\Controllers\Encuestas\EncuestaSatisfaccionController;
 use App\Http\Controllers\MantenimientoController;
 use App\Http\Controllers\EncuestaPersonalController;
 use App\Http\Controllers\Formulario\HojaEnfermeriaQuirofano\ConteoMaterialQuirofanoController;
+use App\Http\Controllers\Formulario\HojaEnfermeriaQuirofano\IsquemiaController;
 use App\Http\Controllers\ReporteInterconsultaController;
 use App\Http\Controllers\ReporteConcienciaController;
 use App\Http\Controllers\ReporteSignosController;
@@ -233,9 +234,10 @@ Route::delete('hojasinsumosbasicos/{hojasinsumosbasico}', [FormularioHojaInsumos
 
 Route::put('conteo-material-quirofano/{hojasenfermeriasquirofano}',[ConteoMaterialQuirofanoController::class, 'store'])->name('conteo-material-quirofano')->middleware('auth');
 
+Route::post('isquemias',[IsquemiaController::class, 'store'])->name('isquemias.store')->middleware('auth');
+
 
 Route::get('/pacientes/{paciente}/estancias/{estancia}/notas-urgencias/{notaUrgencia}',[NotaUrgenciaController::class, 'show'])->name('pacientes.estancias.notasurgencias.show')->middleware('auth');
-
 
 Route::post('hojassignos/{hojasenfermeria}',[FormularioHojaSignosController::class, 'store'])->name('hojassignos.store')->middleware('auth');
 Route::post('hojas-control-liquidos/{hojasenfermeria}',[HojaControlLiquidoController::class, 'store'])->name('hojas-control-liquidos.store')->middleware('auth');

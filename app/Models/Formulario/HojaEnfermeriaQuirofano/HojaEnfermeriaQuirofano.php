@@ -97,4 +97,9 @@ class HojaEnfermeriaQuirofano extends Model
     {
         return $this->hasMany(ConteoMaterialQuirofano::class);
     }
+
+    public function isquemias(): MorphMany
+    {
+        return $this->morphMany(Isquemia::class,'isquemiable');
+    }
 }
