@@ -83,7 +83,7 @@ class CajaService
         int $userId,
         ?string $descripcion = null,
         ?string $nombre_paciente=null,
-        ?int $metodoPagoId = EnumsMetodoPago::PAGO_EFECTIVO,
+        ?int $metodoPagoId = 1, //Metodo de pago efectivo 
         ?string $area = null,
     ): MovimientoCaja
     {
