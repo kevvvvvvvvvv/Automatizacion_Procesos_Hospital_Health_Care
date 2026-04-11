@@ -13,8 +13,6 @@ import ModalOpenButton from '@/components/ui/buttons/modal-open-button';
 import MainLayout from '@/layouts/MainLayout';
 import SesionesAudit from '@/components/caja/sesion-audit';
 import ModalEnviarBovedaAFondo from '@/components/caja/modal-enviar-boveda-a-fondo';
-import boveda from '@/routes/boveda';
-
 
 interface Props {
     solicitudesPendientes: SolicitudTraspaso[];

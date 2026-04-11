@@ -114,6 +114,8 @@ export const PanelCaja = ({
                                     <th className="px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Hora</th>
                                     <th className="px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Área</th>
                                     <th className="px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Concepto</th>
+                                    <th className="px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Descripción</th>
+                                    <th className="px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Nombre del paciente</th>
                                     <th className="px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Metodo pago</th>
                                     <th className="px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Tipo</th>
                                     <th className="px-6 py-3 text-xs font-medium text-gray-500 uppercase text-right tracking-wider">Monto</th>
@@ -131,6 +133,12 @@ export const PanelCaja = ({
                                         <td className="px-6 py-4 text-sm text-gray-900 font-medium">
                                             {mov.concepto}
                                         </td>
+                                        <td className="px-6 py-4 text-sm text-gray-900 font-medium">
+                                            {mov.descripcion}
+                                        </td>   
+                                        <td className="px-6 py-4 text-sm text-gray-900 font-medium">
+                                            {mov.nombre_paciente}
+                                        </td>                                        
                                         <td className="px-6 py-4 text-sm text-gray-900 font-medium">
                                             {mov.metodo_pago?.nombre ? mov.metodo_pago?.nombre : ''}
                                         </td>
