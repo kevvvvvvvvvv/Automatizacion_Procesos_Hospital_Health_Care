@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\Formulario\HojaEnfermeria;
+namespace App\Models\Formulario\HojaEnfermeria; 
  
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -40,8 +40,9 @@ class HojaTerapiaIV extends Model
     protected $table = 'hoja_terapias';
     
     protected $fillable = [
-        'id',
-        'hoja_enfermeria_id',
+        
+        'terapiable_id',
+        'terapiable_type',
         'solucion',
         'nombre_solucion',
         'cantidad',
@@ -49,6 +50,9 @@ class HojaTerapiaIV extends Model
         'flujo_ml_hora',
         'fecha_hora_inicio',
     ];
+    public function terapiable() { 
+        return $this->morphTo(); 
+    }
 
     public function detalleSoluciones():BelongsTo
     {

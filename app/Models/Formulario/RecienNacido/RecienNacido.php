@@ -42,25 +42,23 @@ class RecienNacido extends Model
     {
         return $this->belongsTo(FormularioInstancia::class, 'id');
     }
-    public function hojaSignos(): HasMany 
-    {
-        return $this->hasMany(HojaSignos::class, 'hoja_enfermeria_id', 'id');
+   public function hojamedicamentos() {
+        return $this->morphMany(HojaMedicamento::class, 'medicable');
     }
 
-    public function hojaMedicamentos(): HasMany 
-    {
-        return $this->hasMany(HojaMedicamento::class, 'hoja_enfermeria_id', 'id');
+    public function hojasTerapiaIV() {
+        return $this->morphMany(HojaTerapiaIV::class, 'terapiable');
     }
 
-    public function hojasTerapiasIV(): HasMany 
+    public function hojaSignos():MorphMany
     {
-        return $this->hasMany(HojaTerapiaIV::class, 'hoja_enfermeria_id', 'id');
+    return $this->morphMany(HojaSignos::class, 'registrable');
     }
     public function somatometrias(): HasMany 
     {
-        return $this->hasMany(Somatometria::class, 'id', 'id'); 
+        return $this->hasMany(Somatometria::class, 'hoja_enfermeria_id', 'id'); 
     }
-    public function Ingresos_Egresos_RN(): HasMany
+    public function ingresos_egresos(): HasMany
     {
         return $this->hasMany(Ingresos_Egresos_RN::class, 'hoja_enfermeria_id');
     }

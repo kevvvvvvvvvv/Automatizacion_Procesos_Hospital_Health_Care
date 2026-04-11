@@ -2,7 +2,7 @@ import { RecienNacido, ControlLiquidos } from '@/types';
 import React from 'react';
 import { route } from 'ziggy-js';
 import { useForm } from '@inertiajs/react';
-import { Pencil } from 'lucide-react'; 
+import { Key, Pencil } from 'lucide-react'; 
 import Swal from 'sweetalert2';
 
 import PrimaryButton from '../ui/primary-button'
@@ -68,6 +68,8 @@ const IngresosEgresosForm = ({ hoja }: Props) => {
     { header: 'Seno', key: 'seno_materno', render: (reg: any) => renderCelda(reg.seno_materno) },
     { header: 'Fórmula', key: 'formula', render: (reg: any) => renderCelda(reg.formula) },
     { header: 'Micción', key: 'miccion', render: (reg: any) => renderCelda(reg.miccion) },
+    { header: 'Evacuación', key: 'evacuacion', render: (reg:any) => renderCelda(reg.evacuacion)},
+    { header: 'Emesis', Key:'emesis', render:(reg:any) => renderCelda(reg.emesis)},
     { 
         header: 'Balance', 
         key: 'balance_total', // Cambia 'balance' por 'balance_total'
@@ -99,7 +101,7 @@ const IngresosEgresosForm = ({ hoja }: Props) => {
                     <div className="space-y-4 bg-blue-50/30 p-4 rounded-md border border-blue-100">
                         <h3 className="font-semibold text-blue-700 text-sm uppercase tracking-wider">Ingresos</h3>
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <InputText id='seno' name='seno' label="Seno Materno" value={data.seno_materno} onChange={e => setData('seno_materno', e.target.value)} error={errors.seno_materno} />
+                            <InputText id='seno_materno' name='seno_materno' label="Seno Materno" value={data.seno_materno} onChange={e => setData('seno_materno', e.target.value)} error={errors.seno_materno} />
                             <InputText id='formula' name='formula' label="Fórmula (ml)" type="number" value={data.formula} onChange={e => setData('formula', e.target.value)} error={errors.formula} />
                             
                             <InputText 
@@ -174,7 +176,7 @@ const IngresosEgresosForm = ({ hoja }: Props) => {
                 <h3 className="text-lg font-bold mb-4 text-gray-700">Historial de Controles</h3>
                 <DataTable 
                     columns={columnasIngresosEgresos} 
-                    data={hoja.hoja_ingresos_egresos_rn || []} 
+                    data={hoja.ingresos_egresos || []} 
                 />
             </div>
         </div>

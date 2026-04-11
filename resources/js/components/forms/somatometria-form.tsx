@@ -1,6 +1,6 @@
 import React from 'react';
 import { useForm } from '@inertiajs/react';
-import { HojaEnfermeria, RecienNacido, Somatometria } from '@/types'; 
+import { HojaEnfermeria, RecienNacido, Somatometrias } from '@/types'; 
 import { route } from 'ziggy-js';
 import { Pencil } from 'lucide-react';  
 import Swal from 'sweetalert2';
@@ -10,7 +10,7 @@ import PrimaryButton from '@/components/ui/primary-button';
 import { DataTable } from '../ui/data-table';
 
 interface Props {
-    hoja: HojaEnfermeria | RecienNacido;
+    hoja:  RecienNacido;
 }
 
 const SomatometriaForm: React.FC<Props> = ({ hoja }) => {
@@ -57,47 +57,51 @@ const SomatometriaForm: React.FC<Props> = ({ hoja }) => {
     const columnasSomatometria = [
         {
             header: 'Fecha/Hora',
-            key: 'fecha_hora_registro'
+            key: 'fecha_hora_registro',
+            render: (reg: Somatometrias) => {
+                const fecha = reg.created_at || reg.created_at;
+                return fecha ? new Date(fecha).toLocaleString() : '---';
+            }
         },
         {
             header: 'P. Cefálico',
             key: 'perimetro_cefalico',
-            render: (reg: Somatometria) => reg.perimetro_cefalico ? `${reg.perimetro_cefalico} cm` : '---'
+            render: (reg: Somatometrias) => reg.perimetro_cefalico ? `${reg.perimetro_cefalico} cm` : '---'
         },
         {
             header: 'P. Torácico',
             key: 'perimetro_toracico',
-            render: (reg: Somatometria) => reg.perimetro_toracico ? `${reg.perimetro_toracico} cm` : '---'
+            render: (reg: Somatometrias) => reg.perimetro_toracico ? `${reg.perimetro_toracico} cm` : '---'
         },
         {
             header: 'P. Abdominal',
             key: 'perimetro_abdominal',
-            render: (reg: Somatometria) => reg.perimetro_abdominal ? `${reg.perimetro_abdominal} cm` : '---'
+            render: (reg: Somatometrias) => reg.perimetro_abdominal ? `${reg.perimetro_abdominal} cm` : '---'
         },
         {
             header: 'Pie',
             key: 'pie',
-            render: (reg: Somatometria) => reg.pie ? `${reg.pie} cm` : '---'
+            render: (reg: Somatometrias) => reg.pie ? `${reg.pie} cm` : '---'
         },
         {
             header: 'Capurro',
             key: 'capurro',
-            render: (reg: Somatometria) => reg.capurro ? `${reg.capurro} sem` : '---'
+            render: (reg: Somatometrias) => reg.capurro ? `${reg.capurro} sem` : '---'
         },
         {
             header: 'APGAR',
             key: 'apgar',
-            render: (reg: Somatometria) => reg.apgar ? reg.apgar : '---'
+            render: (reg: Somatometrias) => reg.apgar ? reg.apgar : '---'
         },
         {
             header: 'Silverman',
             key: 'silverman',
-            render: (reg: Somatometria) => reg.silverman !== null ? reg.silverman : '---'
+            render: (reg: Somatometrias) => reg.silverman !== null ? reg.silverman : '---'
         },
         {
             header: 'Acción',
             key: 'accion',
-            render: (reg: Somatometria) => (
+            render: (reg: Somatometrias) => (
                 <button
                     onClick={() => console.log('Editar registro', reg.id)}
                     className='text-blue-600 hover:text-blue-900'>
@@ -207,7 +211,7 @@ const SomatometriaForm: React.FC<Props> = ({ hoja }) => {
                 <h3 className="font-semibold mb-4">Historial de Mediciones</h3>
                 <DataTable 
                     columns={columnasSomatometria} 
-                    data={hoja?.hoja_somatometria || []} 
+                    data={hoja?.somatometrias || []} 
                 />
             </div>
         </>
