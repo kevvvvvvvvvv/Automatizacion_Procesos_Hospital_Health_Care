@@ -90,7 +90,7 @@ const Create: CreateComponent = ({
                 return null;
         }
     };
-
+// Si usas props
     return (
         <> 
             <Head title="Hoja de Enfermería Neonatal" />
@@ -102,20 +102,26 @@ const Create: CreateComponent = ({
             />
 
             <div className="bg-white shadow-sm ring-1 ring-gray-900/5 sm:rounded-xl mt-6 p-6">
-                <div className="flex justify-between items-center mb-6 border-b pb-4">
+                
+
+                <CerrarHoja 
+                    // Cambiamos 'reciennacido' por 'hoja', que es donde vienen tus datos
+                    hoja={hoja} 
+                    title="Hoja de Recién Nacido"
+                    routeConfig={{ 
+                        name: 'reciennacido.update', 
+                        // Usamos hoja.id porque 'hoja' es la prop que recibe el componente
+                        params: { reciennacido: hoja?.id } 
+                    }}
+                />
+                    <div className="flex justify-between items-center mb-6 border-b pb-4">
+                    
                     <div>
                         <h1 className="text-xl font-bold text-gray-800">Hoja de Control Neonatal</h1>
                         <p className="text-sm text-gray-500">Registro clínico especializado para recién nacidos</p>
                     </div>
                     
-                    {/*<CerrarHoja 
-                        hoja={reciennacido} 
-                        title='hoja de recien nacido'
-                        routeConfig={{ 
-                            name: 'reciennacido.update', // 1. Asegúrate que este sea el nombre de tu ruta
-                            params: { reciennacido: reciennacido.id } // 2. El nombre de la llave debe coincidir con el parámetro de la ruta
-                        }}
-                    />*/}
+                    
                 </div>
 
                 {/* Navegación por áreas */}

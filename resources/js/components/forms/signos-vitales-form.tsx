@@ -14,7 +14,9 @@ interface Props {
 }
 
 const SignosVitalesForm: React.FC<Props> = ({ hoja }) => {
-
+    const registrableType = 'nombre_rn' in hoja 
+        ? 'App\\Models\\Formulario\\RecienNacido\\RecienNacido' 
+        : 'App\\Models\\Formulario\\HojaEnfermeria\\HojaEnfermeria';
     const { data, setData, post, processing, errors, reset } = useForm({
         fecha_hora_registro: new Date().toISOString().slice(0, 16), 
         tension_arterial_sistolica: '',
@@ -26,6 +28,7 @@ const SignosVitalesForm: React.FC<Props> = ({ hoja }) => {
         glucemia_capilar: '',
         peso: '',
         talla: '',
+        registrable_type: registrableType,
     });
 
     const handleSubmit = (e: React.FormEvent) => {
@@ -206,6 +209,7 @@ const SignosVitalesForm: React.FC<Props> = ({ hoja }) => {
                     />
                     
                 </div>
+                <input type="hidden" value={data.registrable_type} />
 
                 <div className="flex justify-end mt-6">
                     <PrimaryButton type="submit" disabled={processing}>
@@ -214,6 +218,7 @@ const SignosVitalesForm: React.FC<Props> = ({ hoja }) => {
                 </div>
             </form>
             <div className="mt-12">
+                {/* 5. Aseguramos que la relación se llame igual en ambos modelos */}
                 <DataTable columns={columnasSignos} data={hoja?.hoja_signos || []} />
             </div>
         </>

@@ -40,15 +40,15 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|HojaSignos whereTensionArterialDiastolica($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|HojaSignos whereTensionArterialSistolica($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|HojaSignos whereUpdatedAt($value)
- * @mixin \Eloquent
+ * @mixin \Eloq uent
  */
 class HojaSignos extends Model
 {
     protected $table = 'hoja_registros';
     
     protected $fillable = [
-        'id',
-        'hoja_enfermeria_id',
+        'registrable_id',   // Agregar
+        'registrable_type',
         'fecha_hora_registro',
         'tension_arterial_sistolica',
         'tension_arterial_diastolica',
@@ -60,6 +60,9 @@ class HojaSignos extends Model
         'talla',
         'peso',
     ];
+    public function registrable() {
+        return $this->morphTo();
+    }
 
     public function hojaEnfermeria():BelongsTo
     {   

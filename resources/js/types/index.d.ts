@@ -481,7 +481,8 @@ export interface HojaInsumosBasicos {
 
 export interface HojaTerapiaIV {
     id: number;
-    hoja_enfermeria_id: number;
+    terapiable_id: number;   // Cambiado para ser polimórfico
+    terapiable_type: string;
     solucion: ProductoServicio;
     nombre_solucion: string;
     flujo_ml_hora: number;
@@ -1276,13 +1277,13 @@ export interface RecienNacido{
     updated_at: string; 
 
     formulario_instancia: FormularioInstancia;
-    hojas_terapia_i_v: HojaTerapiaIV[]; 
+    hojas_terapia_i_v: Hoja_TerapiaIV[]; 
     hoja_medicamentos: HojaMedicamento[];
     hoja_signos: HojaSignos[];
-    hoja_somatometria: Somatometria[];
-    hoja_ingresos_egresos_rn: Ingresos_Egresos_RN[];
+    somatometrias: Somatometrias[];
+    ingresos_egresos: Ingresos_Egresos_RN[];
 }
-export interface Somatometria{
+export interface Somatometrias{
     id: number;
     perimetro_toracico: number;
     perimetro_cefalico: number;

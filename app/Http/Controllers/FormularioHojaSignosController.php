@@ -12,20 +12,22 @@ use App\Models\Formulario\HojaEnfermeria\HojaSignos;
 
 class FormularioHojaSignosController extends Controller
 {
-    public function store(HojaSignosRequest $request,$id)
-    {
-        try{
-            HojaSignos::create([
-                'hoja_enfermeria_id' => $id,
-                'fecha_hora_registro' => now(),
-                ... $request->validated()
-            ]);
+public function store(HojaSignosRequest $request, $id)
+{
+    try {
+        $modelType = $request->input('registrable_type', 'App\Models\Formulario\HojaEnfermeria\HojaEnfermeria');
 
-            return Redirect::back()->with('success', 'Signos guardados exitosamente.');
-        }catch(\Exception $e){
-            Log::error('Error al guardar los signos: ' .$e->getMessage());
-            return Redirect::back()->with('error','Error al guardar los signos.');
-        }
+        HojaSignos::create([
+            'registrable_id'   => $id,
+            'registrable_type' => $modelType, // <-- Ahora es DINÁMICO
+            'fecha_hora_registro' => now(),
+            ...$request->validated()
+        ]);
 
+        return Redirect::back()->with('success', 'Signos guardados exitosamente.');
+    } catch (\Exception $e) {
+        Log::error('Error al guardar los signos: ' . $e->getMessage());
+        return Redirect::back()->with('error', 'Error al guardar los signos.');
     }
+}
 }

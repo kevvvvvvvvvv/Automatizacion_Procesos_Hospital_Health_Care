@@ -49,52 +49,66 @@ class RecienNacidosController extends Controller
     }
 
     public function store(Request $request, Paciente $paciente, Estancia $estancia)
-    {
-        $request->validate([
-            'area'      => 'required|string',
-            'nombre_rn' => 'required|string|max:255',
-            'sexo'      => 'required|string',
-            'fecha_rn'  => 'required|date',
-            'hora_rn'   => 'required',
-            'peso'      => 'required|numeric',
-            'talla'     => 'required|integer',
-            'estado'    => 'required|string',
-            'observaciones' => 'nullable|string',
+{
+    $validated = $request->validate([
+        'area'             => 'required|string',
+        'nombre_rn'        => 'required|string|max:255',
+        'sexo'             => 'required|string',
+        'fecha_rn'         => 'required|date',
+        'hora_rn'          => 'required',
+        'peso'             => 'required|numeric',
+        'talla'            => 'required|integer',
+        'estado'           => 'required|string',
+        'observaciones'    => 'nullable|string',
+        'habitus_exterior' => 'nullable', // JSON o string
+    ]);
+
+    DB::beginTransaction();
+    try {
+        // 1. Crear la instancia del formulario
+        $instancia = FormularioInstancia::create([
+            'fecha_hora' => now(),
+            'estancia_id' => $estancia->id,
+            'formulario_catalogo_id' => FormularioCatalogo::ID_ENFERMERIA_RN,
+            'user_id' => Auth::id(),
         ]);
 
-        DB::beginTransaction();
-        try {
-            $instancia = FormularioInstancia::create([
-                'fecha_hora' => now(),
-                'estancia_id' => $estancia->id,
-                'formulario_catalogo_id' => FormularioCatalogo::ID_ENFERMERIA_RN, // Asegúrate de tener este ID
-                'user_id' => Auth::id(),
-            ]);
+        // 2. Crear el registro del Recién Nacido vinculado a la instancia
+        $hoja = RecienNacido::create([
+            'id'               => $instancia->id, // ID Compartido (One-to-One)
+            'area'             => $validated['area'],
+            'nombre_rn'        => $validated['nombre_rn'],
+            'sexo'             => $validated['sexo'],
+            'fecha_rn'         => $validated['fecha_rn'],
+            'hora_rn'          => $validated['hora_rn'],
+            'peso'             => $validated['peso'],
+            'talla'            => $validated['talla'],
+            'estado'           => $validated['estado'],
+            'observaciones'    => $validated['observaciones'],
+            'habitus_exterior' => $validated['habitus_exterior'] ?? null,
+        ]);
 
-            $hoja = RecienNacido::create([
-                'id'        => $instancia->id, // ID Compartido
-                'area'      => $request->area,
-                'nombre_rn' => $request->nombre_rn,
-                'sexo'      => $request->sexo,
-                'fecha_rn'  => $request->fecha_rn,
-                'hora_rn'   => $request->hora_rn,
-                'peso'      => $request->peso,
-                'talla'     => $request->talla,
-                'estado'    => $request->estado,
-                'observaciones' => $request->observaciones,
-                'habitus_exterior' => $request->habitus_exterior, // Si envías JSON desde el front
-            ]);
+        // OPCIONAL: Si quisieras registrar el peso/talla inicial 
+        // automáticamente en la tabla de signos vitales (hoja_registros):
+        /*
+        $hoja->hoja_signos()->create([
+            'fecha_hora_registro' => now(),
+            'peso' => $validated['peso'],
+            'talla' => $validated['talla'],
+        ]);
+        */
 
-            DB::commit();
+        DB::commit();
 
-            return Redirect::route('reciennacido.edit', $hoja->id)
-                ->with('success', 'Hoja de recién nacido iniciada correctamente.');
+        return Redirect::route('reciennacido.edit', $hoja->id)
+            ->with('success', 'Hoja de recién nacido iniciada correctamente.');
 
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return Redirect::back()->with('error', 'Error al guardar: ' . $e->getMessage());
-        }
+    } catch (\Exception $e) {
+        DB::rollBack();
+        Log::error("Error al crear RN: " . $e->getMessage());
+        return Redirect::back()->with('error', 'Error al guardar: ' . $e->getMessage());
     }
+}
     public function edit(RecienNacido $reciennacido){
        // if($reciennacido->estado == 'Cerrado') return redirect()->back()->with('error','La hoja de enfermeria de recien nacido se ha cerrado.');    
        
@@ -114,6 +128,7 @@ class RecienNacidosController extends Controller
         $nota = $this->obtenerListaTratamiento($estancia);
        // dd($medicamentos->toArray());
         return Inertia::render('formularios/recien-nacido/edit',[
+            'reciennacido' => $reciennacido,
             'paciente' => $paciente,
             'estancia' => $estancia,
             'hoja' => $reciennacido, 
@@ -156,17 +171,36 @@ class RecienNacidosController extends Controller
             'formularioInstancia.user.credenciales',
             'formularioInstancia.user.colaborador_responsable.credenciales',
             'formularioInstancia.estancia.paciente', 
-            'hojasTerapiasIV.detalleSoluciones',
-            'hojasTerapiasIV.medicamentos',
-            'hojaMedicamentos.productoServicio',
-            'hojaMedicamentos.aplicaciones',
+            'hojaSignos',
+            'hojasTerapiaIV.detalleSoluciones',
+            'hojasTerapiaIV.medicamentos',
+            'hojamedicamentos.productoServicio',
+            'hojamedicamentos.aplicaciones',
             'somatometrias',
-            'Ingresos_Egresos_RN',
+            'ingresos_egresos',
 
         );
-
-
         return $reciennacido;
-        
     }
+   public function update(Request $request, RecienNacido $reciennacido)
+{
+    $validated = $request->validate([
+        'estado' => 'nullable|string',
+        'observaciones' => 'nullable|string',
+    ]);
+
+    if ($reciennacido->estado === 'Cerrado' && $request->estado !== 'Abierto') {
+        return Redirect::back()->with('error', 'Esta hoja ya está cerrada y no puede ser modificada.');
+    }
+
+    $reciennacido->update($validated);
+    
+    if ($request->estado === 'Cerrado') {
+        $message = '¡Hoja de enfermería del recién nacido cerrada exitosamente!';
+        return Redirect::route('estancias.show', $reciennacido->formularioInstancia->estancia_id)
+                         ->with('success', $message);
+    }
+
+    return Redirect::back()->with('success', 'Hoja de enfermería actualizada.');
+}
 }

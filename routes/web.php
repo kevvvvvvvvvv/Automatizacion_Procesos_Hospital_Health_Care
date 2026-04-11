@@ -98,7 +98,7 @@ Route::middleware(['auth', 'verified'])->group(function (){
 });
 
 Route::post('/hojas-control-liquidos/{id}', [IngresosEgresosRNController::class, 'store'])
-    ->name('hojas-control-liquidos.store');
+    ->name('hojas-control-liquidos-rn.store');
 Route::post('/recien-nacido/{reciennacido}/somatometria', [SomatometriaController::class, 'store'])
      ->name('somatometrias.store');
 //Reportes 
@@ -193,8 +193,6 @@ Route::post('/checklist/toggle', [ChecklistController::class, 'toggle'])->name('
 
 Route::post('/pacientes/{paciente}/estancias/{estancia}/consentimientos', [ConsentimientoController::class, 'store'])->name('consentimientos.store')->middleware('auth');
 
-Route::post('hojasterapiasiv/{hojasenfermeria}',[FormularioHojaTerapiaIVController::class,'store'])->name('hojasterapiasiv.store')->middleware('auth');
-Route::patch('hojasterapiasiv/{hojasenfermeria}/{hojasterapiasiv}',[FormularioHojaTerapiaIVController::class,'update'])->name('hojasterapiasiv.update')->middleware('auth');
 
 Route::get('solicitudes-dietas',[FormularioHojaDietaController::class,'index'])->name('solicitudes-dietas.index')->middleware('auth');
 Route::post('solicitudes-dietas/{hojasenfermeria}',[FormularioHojaDietaController::class,'store'])->name('hojasenfermerias.solicitudes-dietas.store')->middleware('auth');
@@ -210,11 +208,11 @@ Route::prefix('pacientes/{paciente}/estancias/{estancia}')->group(function () {
     Route::get('notasegresos/{notaEgreso}', [NotaPreAnestesicaController::class, 'show'])->name('pacientes.estancias.notasegresos.show');
 }) ->middleware('auth');
 
-Route::post('hojasterapiasiv/{hojasenfermeria}',[FormularioHojaTerapiaIVController::class,'store'])->name('hojasterapiasiv.store')->middleware('auth');
-Route::patch('hojasterapiasiv/{hojasenfermeria}/{hojasterapiasiv}',[FormularioHojaTerapiaIVController::class,'update'])->name('hojasterapiasiv.update')->middleware('auth');
+Route::post('hojasterapiasiv/',[FormularioHojaTerapiaIVController::class,'store'])->name('hojasterapiasiv.store')->middleware('auth');
+Route::patch('hojasterapiasiv/{hojasterapiasiv}',[FormularioHojaTerapiaIVController::class,'update'])->name('hojasterapiasiv.update')->middleware('auth');
 
-Route::post('hojasmedicamentos/{hojasenfermeria}',[FormularioHojaMedicamentoController::class, 'store'])->name('hojasmedicamentos.store')->middleware('auth');
-Route::patch('hojasmedicamentos/{hojasenfermeria}/{hojasmedicamento}',[FormularioHojaMedicamentoController::class, 'update'])->name('hojasmedicamentos.update')->middleware('auth');
+Route::post('hojasmedicamentos/',[FormularioHojaMedicamentoController::class, 'store'])->name('hojasmedicamentos.store')->middleware('auth');
+Route::patch('hojasmedicamentos/{hojasmedicamento}',[FormularioHojaMedicamentoController::class, 'update'])->name('hojasmedicamentos.update')->middleware('auth');
 
 Route::post('hojas-oxigenos', [FormularioHojaOxigenoController::class, 'store'])->name('hojasoxigenos.store')->middleware('auth');
 Route::patch('hojas-oxigenos/{hojasoxigeno}', [FormularioHojaOxigenoController::class, 'update'])->name('hojasoxigenos.update')->middleware('auth');
