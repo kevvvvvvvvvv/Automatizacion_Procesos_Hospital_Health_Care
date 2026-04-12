@@ -106,7 +106,7 @@ class ReservacionQuirofano extends Model
         return $this->belongsTo(User::class,'tratante');
     }
 
-    public function medicoOperacion(): BelongsTo
+    public function medicoOperacionRel(): BelongsTo
     {
         return $this->belongsTo(User::class,'medico_operacion');
     } 

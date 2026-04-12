@@ -52,7 +52,7 @@ const ShowQuirofano = ({ quirofano, user, horarios }: Props) => {
                   <div className="bg-indigo-50 p-2 rounded-lg mr-4 shrink-0"><Briefcase className="text-indigo-600" size={20} /></div>
                   <div className="min-w-0 flex-1">
                     <p className="text-[11px] text-gray-400 uppercase font-bold">Cirujano</p>
-                    <p className="text-sm font-semibold text-gray-900 truncate">{quirofano.medico_operacion.nombre_completo}</p>
+                    <p className="text-sm font-semibold text-gray-900 truncate">{quirofano.medico_operacion_rel?.nombre_completo}</p>
                   </div>
                 </div>
 

@@ -1101,7 +1101,7 @@ export interface ReservacionQuirofano {
     user?: User;
     habitacion?: Habitacion;
     medico_tratante?: User; 
-    medico_operacion?: User; 
+    medico_operacion_rel?: User; 
 }
 
 export interface Cargo {
