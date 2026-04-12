@@ -14,6 +14,7 @@ import EnvioPiezaHojaEnfermeria from '@/components/forms/envio-pieza-hoja-enferm
 import CerrarHoja from '@/components/app-cerrrar-hoja';
 import InformacionGeneralCirugia from '@/components/forms/hoja-enfermeria-quirofano/informacion-general-cirugia';
 import MaterialQuirofano from '@/components/forms/hoja-enfermeria-quirofano/conteo-material-quirofano';
+import IsquemiaFormContainer from '@/components/formularios/hoja-enfermeria-quirofano/isquemia/isquemias-fields';
 
 
 interface CreateProps {
@@ -114,6 +115,12 @@ const CreateHojaEnfermeriaQuirofano:CreateComponent = ({
             case 'informacion_general':
                 return <InformacionGeneralCirugia
 
+                        />
+            case 'isquemias':
+                return <IsquemiaFormContainer
+                            isquemiable_id={hoja.id}
+                            isquemiable_type={hoja.tipo_modelo}
+                            hoja={hoja}
                         />
             default:
                 return null;

@@ -15,9 +15,9 @@ return new class extends Migration
             $table->id();
             $table->morphs('isquemiable');
             $table->string('sitio_anatomico');
-            $table->dateTime('hora_inicio');
-            $table->dateTime('hora_termino');
-            $table->text('observaciones');
+            $table->dateTime('hora_inicio')->nullable();
+            $table->dateTime('hora_termino')->nullable();
+            $table->text('observaciones')->nullable();
             $table->timestamps();
         });
     }

@@ -18,6 +18,11 @@ class Isquemia extends Model
         'observaciones',
     ];
 
+    protected $casts = [
+        'hora_inicio' => 'datetime:Y-m-d\TH:i:sP',
+        'hora_termino' => 'datetime:Y-m-d\TH:i:sP',
+    ];
+
     public function isquemiable(): MorphTo
     {
         return $this->morphTo();

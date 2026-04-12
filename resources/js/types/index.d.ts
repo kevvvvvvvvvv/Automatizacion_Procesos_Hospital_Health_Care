@@ -482,6 +482,9 @@ export interface HojaEnfermeriaQuirofano {
     oxigeno_activo: HojaOxigeno[];
 
     conteo_material_quirofano: ConteoMaterialQuirofano[];
+    isquemias: Isquemia[]; 
+
+    tipo_modelo: string;
 }
 
 export interface HojaInsumosBasicos {
@@ -1534,4 +1537,17 @@ export interface ConteoMaterialQuirofano {
     cantidad_inicial: number;
     cantidad_agregada: numnber;
     cantidad_final:number;
+}
+
+export interface Isquemia {
+    id: number;
+    isquemiable_type: string;
+    isquemiable_id: number;
+    sitio_anatomico: string;
+    hora_inicio: string,
+    hora_termino: string;
+    observaciones: string;
+
+    created_at: string;
+    updated_at: string;
 }

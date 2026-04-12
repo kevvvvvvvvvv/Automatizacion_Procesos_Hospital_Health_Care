@@ -26,7 +26,7 @@ class IsquemiaStoreRequest extends FormRequest
             'isquemiable_type' => 'required',
             'sitio_anatomico' => 'required',
             'hora_inicio' => 'nullable',
-            'observaciones' => 'nullable | text',
+            'observaciones' => 'nullable | string',
         ];
     }
 

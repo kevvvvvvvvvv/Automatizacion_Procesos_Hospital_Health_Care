@@ -95,6 +95,7 @@ class HojaEnfemeriaQuirofanoController extends Controller implements HasMiddlewa
             'hojaOxigenos.userFin',
             'personalEmpleados',
             'conteoMaterialQuirofano',
+            'isquemias',
         );
 
         $users = User::all();
