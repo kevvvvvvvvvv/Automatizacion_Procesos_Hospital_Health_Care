@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { MetodoPago, MovimientoCaja, SesionCaja } from '@/types'; 
 import { router } from '@inertiajs/react';
 import { route } from 'ziggy-js';
+import { formatCurrency } from '@/utils/formatter-money';
 
 import ModalCierreCaja from '@/components/caja/modal-cierre-caja';
 import ModalGasto from '@/components/caja/modal-gasto';
@@ -29,11 +30,6 @@ export const PanelCaja = ({
     const [isCierreModalOpen, setIsCierreModalOpen] = useState(false);
     const [isSolicitudModalOpen, setIsSolicitudModalOpen] = useState(false);
     const [isEnviarDineroBovedaOpen, setIsEnviarDineroBovedaOpen] = useState(false);
-
-    const formatMoney = (amount: number | string | undefined) => {
-        const num = Number(amount);
-        return isNaN(num) ? '0.00' : num.toFixed(2);
-    };
 
     const handleFechaChange = (nuevaFecha: string) => {
         router.get(route('caja.index'),
@@ -201,7 +197,7 @@ export const PanelCaja = ({
                                         <td className={`px-6 py-4 whitespace-nowrap text-sm text-right font-bold ${
                                             mov.tipo === 'ingreso' ? 'text-green-600' : 'text-red-600'
                                         }`}>
-                                            {mov.tipo === 'ingreso' ? '+' : '-'}${formatMoney(mov.monto)}
+                                            {mov.tipo === 'ingreso' ? '+' : '-'}{formatCurrency(mov.monto)}
                                         </td>
                                     </tr>
                                 ))}

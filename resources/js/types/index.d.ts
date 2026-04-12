@@ -1097,6 +1097,11 @@ export interface ReservacionQuirofano {
 
     created_at: string;
     updated_at: string;
+
+    user?: User;
+    habitacion?: Habitacion;
+    medico_tratante?: User; 
+    medico_operacion?: User; 
 }
 
 export interface Cargo {
@@ -1408,4 +1413,5 @@ export interface SolicitudTraspaso {
     usuario_solicita: User;
     usuario_aprueba: User;
 }
+
 
