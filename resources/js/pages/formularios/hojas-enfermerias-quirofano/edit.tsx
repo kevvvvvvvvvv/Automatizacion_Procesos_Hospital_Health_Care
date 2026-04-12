@@ -1,11 +1,10 @@
-import { Estancia, HojaEnfermeriaQuirofano, Paciente, ProductoServicio, User } from '@/types';
+import { Estancia, HojaEnfermeriaQuirofano, Paciente, ProductoServicio, User, CatalogoViaAdministracion } from '@/types';
 import React, { useState } from 'react';
 import { Head } from '@inertiajs/react';
 import { MORPH_MAP } from '@/types/model';
 
 import PacienteCard from '@/components/paciente-card';
 import MainLayout from '@/layouts/MainLayout';
-
 import InsumosBasicosForm from '@/components/forms/insumos-basicos-form';
 import GeneralesForm from  '@/components/forms/generales-form';
 import PersonalQuirurgicoForm from '@/components/forms/personal-quirurgico-form';
@@ -16,6 +15,7 @@ import InformacionGeneralCirugia from '@/components/forms/hoja-enfermeria-quirof
 import MaterialQuirofano from '@/components/forms/hoja-enfermeria-quirofano/conteo-material-quirofano';
 import IsquemiaFormContainer from '@/components/formularios/hoja-enfermeria-quirofano/isquemia/isquemias-fields';
 import SignosVitalesForm from '@/components/forms/signos-vitales-form';
+import MedicamentosForm from '@/components/forms/medicamentos-form';
 
 
 interface CreateProps {
@@ -23,10 +23,24 @@ interface CreateProps {
     estancia: Estancia;
     hoja: HojaEnfermeriaQuirofano,
     insumos: ProductoServicio[];
+
+    medicamentos: ProductoServicio[];
+    vias_administracion: CatalogoViaAdministracion[];
+
     users: User[];
 }
 
-type SeccionHoja = 'insumos' | 'servicios_especiales' | 'pieza_patologica' | 'general' | 'personal' | 'informacion_general' | 'conteo_material_quirofano' | 'isquemias' | 'signos_vitales';
+type SeccionHoja = 
+    'insumos' | 
+    'servicios_especiales' | 
+    'pieza_patologica' | 
+    'general' | 
+    'personal' | 
+    'informacion_general' | 
+    'conteo_material_quirofano' | 
+    'isquemias' | 
+    'signos_vitales' | 
+    'ministracion_medicamentos';
 
 
 
@@ -43,7 +57,9 @@ const secciones: {id: SeccionHoja, label: string}[] = [
     { id: 'informacion_general', label:'Información general'},
     { id: 'conteo_material_quirofano', label: 'Conteo de material en quirófano'},
     { id: 'isquemias', label: 'Isquemias'},
-    { id: 'signos_vitales', label: 'Signos'}
+    { id: 'signos_vitales', label: 'Tomar signos'},
+    { id: 'ministracion_medicamentos', label: 'Ministracion de medicamentos'},
+
 ];
 
 const CreateHojaEnfermeriaQuirofano:CreateComponent = ({
@@ -52,6 +68,8 @@ const CreateHojaEnfermeriaQuirofano:CreateComponent = ({
     hoja, 
     insumos, 
     users,
+    medicamentos,
+    vias_administracion,
 }) => {
     const [activeSection, setActiveSection] = useState<SeccionHoja>('general');
 
@@ -127,6 +145,11 @@ const CreateHojaEnfermeriaQuirofano:CreateComponent = ({
             case 'signos_vitales':
                 return <SignosVitalesForm
                             hoja={hoja}
+                        />
+            case 'ministracion_medicamentos':
+                return <MedicamentosForm
+                            medicamentos={medicamentos}
+                            vias_administracion={vias_administracion}
                         />
             default:
                 return null;

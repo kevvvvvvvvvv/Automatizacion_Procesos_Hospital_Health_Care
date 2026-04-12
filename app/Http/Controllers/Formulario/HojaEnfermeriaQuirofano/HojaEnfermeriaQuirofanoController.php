@@ -21,6 +21,7 @@ use App\Models\Estancia;
 use App\Models\Formulario\FormularioCatalogo;
 use App\Models\Formulario\FormularioInstancia;
 use App\Models\Formulario\HojaEnfermeriaQuirofano\HojaEnfermeriaQuirofano;
+use App\Models\Inventario\CatalogoViaAdministracion;
 use App\Models\Inventario\ProductoServicio;
 use App\Models\User;
 use App\Services\PdfGeneratorService;
@@ -102,13 +103,17 @@ class HojaEnfermeriaQuirofanoController extends Controller  implements HasMiddle
 
         $users = User::all();
         $insumos = ProductoServicio::where('tipo','INSUMOS')->get();
+        $medicamentos = ProductoServicio::where('subtipo','MEDICAMENTOS')->get();
+        $vias_administacion = CatalogoViaAdministracion::all();
 
         return Inertia::render('formularios/hojas-enfermerias-quirofano/edit',[
             'paciente' => $hojasenfermeriasquirofano->formularioInstancia->estancia->paciente,
             'estancia' => $hojasenfermeriasquirofano->formularioInstancia->estancia,
             'hoja' => $hojasenfermeriasquirofano,
             'insumos' => $insumos,
-            'users' => $users
+            'users' => $users,
+            'medicamentos' => $medicamentos,    
+            'vias_administracion' => $vias_administacion,
         ]);
     }
 

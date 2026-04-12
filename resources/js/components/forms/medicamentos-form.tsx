@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useForm, router } from '@inertiajs/react';
-import { HojaEnfermeria, ProductoServicio, HojaMedicamento, CatalogoViaAdministracion, RecienNacido } from '@/types';
+import { HojaEnfermeria, ProductoServicio, HojaMedicamento, CatalogoViaAdministracion, RecienNacido, HojaEnfermeriaQuirofano } from '@/types';
 import { route } from 'ziggy-js';
 import { optionsUnidadMedida, optionsUnidadTiempo } from '@/constant/const';
 
@@ -8,7 +8,6 @@ import InputText from '@/components/ui/input-text';
 import SelectInput from '@/components/ui/input-select'; 
 import PrimaryButton from '@/components/ui/primary-button';
 import Swal from 'sweetalert2';                     
-import { Transform } from 'stream';
 
 interface MedicamentoAgregado {
     id: string;
@@ -26,7 +25,7 @@ interface MedicamentoAgregado {
 }
 
 interface Props {
-    hoja?: HojaEnfermeria | RecienNacido;
+    hoja?: HojaEnfermeria | RecienNacido | HojaEnfermeriaQuirofano;
     medicamentos: ProductoServicio[]; 
     vias_administracion: CatalogoViaAdministracion[];
 }
@@ -113,7 +112,6 @@ const MedicamentosForm: React.FC<Props> = ({
     
     const handleDateUpdate = (medicamentoId: number, newDate: string) => {
         router.patch(route('hojasmedicamentos.update', { 
-            // Eliminamos hojasenfermeria: hoja?.id porque ya no existe en la ruta
             hojasmedicamento: medicamentoId 
         }), {
             fecha_hora_inicio: newDate 
@@ -174,16 +172,11 @@ const MedicamentosForm: React.FC<Props> = ({
     const handleSubmitList = (e: React.FormEvent) => {
     e.preventDefault();
 
-    const isRecienNacido = 'nombre_rn' in (hoja || {});
-    const medicable_type = isRecienNacido 
-        ? 'App\\Models\\Formulario\\RecienNacido\\RecienNacido' 
-        : 'App\\Models\\Formulario\\HojaEnfermeria\\HojaEnfermeria';
-
     // Transformamos los datos antes de enviar
     transform((data) => ({
         ...data,
         medicable_id: hoja?.id,
-        medicable_type: medicable_type,
+        medicable_type: hoja?.tipo_modelo,
     }));
 
     post(route('hojasmedicamentos.store'), {
