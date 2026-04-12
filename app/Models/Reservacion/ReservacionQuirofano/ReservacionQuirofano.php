@@ -100,4 +100,14 @@ class ReservacionQuirofano extends Model
     { 
         return $this->belongsTo(Habitacion::class); 
     }
+
+    public function medicoTratante(): BelongsTo
+    {
+        return $this->belongsTo(User::class,'tratante');
+    }
+
+    public function medicoOperacion(): BelongsTo
+    {
+        return $this->belongsTo(User::class,'medico_operacion');
+    } 
 }

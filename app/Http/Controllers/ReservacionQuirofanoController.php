@@ -131,7 +131,8 @@ public function store(ReservacionQuirofanoRequest $request)
 
 public function show(ReservacionQuirofano $quirofano)
 {
-    $quirofano->load(['user', 'habitacion']);
+    $quirofano->load(['user', 'habitacion','medicoTratante','medicoOperacion']);
+    //dd($quirofano->toArray());
 
     return Inertia::render('reservacion_quirofano/show', [
         'quirofano' => $quirofano, 

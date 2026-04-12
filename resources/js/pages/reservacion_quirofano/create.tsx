@@ -1,10 +1,12 @@
 import React from "react";
 import { Head, useForm, usePage, router } from "@inertiajs/react"; 
+import { route } from "ziggy-js";
+import { Paciente, Estancia, ReservacionQuirofano } from "@/types";
+
 import MainLayout from "@/layouts/MainLayout";
 import FormLayout from "@/components/form-layout";
 import PrimaryButton from "@/components/ui/primary-button";
-import { route } from "ziggy-js";
-import { Paciente, Estancia, ReservacionQuirofano } from "@/types";
+import SelectInput from "@/components/ui/input-select";
 
 interface Props {
     quirofanos?: ReservacionQuirofano;
@@ -32,6 +34,10 @@ const CreateReservacion: React.FC<Props> = ({
     medicos = [],
 }) => {
     const esExterno = !estancia?.id;
+
+    const medicosOptions = medicos.map((med)=>(
+        {value: med.id, label: med.nombre_completo}
+    ))
     
     // Obtenemos los errores directamente de la página (Inertia los inyecta aquí)
     const { errors: serverErrors } = usePage().props as any;
@@ -59,7 +65,7 @@ const CreateReservacion: React.FC<Props> = ({
         patologico: { activa: false, detalle: "" },
     });
 
-    const { data, setData, processing } = form;
+    const { data, setData, processing, errors } = form;
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -191,27 +197,21 @@ const CreateReservacion: React.FC<Props> = ({
                         />
                         {getError('paciente') && <div className="text-red-500 text-xs mb-3">{getError('paciente_nombre')}</div>}
 
-                        <label className="font-bold text-sm">Médico Tratante</label>
-                        <select 
-                            className={`w-full border rounded p-2 ${getError('tratante') ? 'border-red-500' : 'mb-3'}`} 
-                            value={data.tratante} 
-                            onChange={e => setData("tratante", e.target.value)}
-                        >
-                            <option value="">Seleccione...</option>
-                            {medicos.map(m => <option key={m.id} value={m.nombre_completo}>{m.nombre_completo}</option>)}
-                        </select>
-                        {getError('tratante') && <div className="text-red-500 text-xs mb-3">{getError('tratante')}</div>}
+                        <SelectInput
+                            label='Médico tratante'
+                            options={medicosOptions}
+                            value={data.tratante}
+                            onChange={e => setData("tratante",e)}
+                            error={errors.tratante}
+                        />
 
-                        <label className="font-bold text-sm">Cirujano</label>
-                        <select 
-                            className={`w-full border rounded p-2 ${getError('medico_operacion') ? 'border-red-500' : 'mb-3'}`} 
-                            value={data.medico_operacion} 
-                            onChange={e => setData("medico_operacion", e.target.value)}
-                        >
-                            <option value="">Seleccione...</option>
-                            {medicos.map(m => <option key={m.id} value={m.nombre_completo}>{m.nombre_completo}</option>)}
-                        </select>
-                        {getError('medico_operacion') && <div className="text-red-500 text-xs mb-3">{getError('medico_operacion')}</div>}
+                        <SelectInput
+                            label='Cirujano'
+                            options={medicosOptions}
+                            value={data.medico_operacion}
+                            onChange={e => setData('medico_operacion', e)}
+                            error={errors.medico_operacion}
+                        />
 
                         <label className="font-bold text-sm">Tiempo estimado</label>
                         <input 
