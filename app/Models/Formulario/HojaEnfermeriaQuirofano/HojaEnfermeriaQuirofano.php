@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 
 use App\Models\Formulario\PersonalEmpleado;
 use App\Models\Formulario\FormularioInstancia;
+use App\Models\Formulario\HojaEnfermeria\HojaSignos;
 use App\Models\Formulario\HojaOxigeno;
 
 /**
@@ -65,7 +66,12 @@ class HojaEnfermeriaQuirofano extends Model
         'hora_inicio_paciente',
         'hora_fin_cirugia',
         'hora_fin_anestesia',
-        'hora_fin_paciente'
+        'hora_fin_paciente',
+
+        'nota_enfermeria',
+        'posicion_paciente',
+        'procedimiento_quirurgico',
+        'placa_cauterio'
     ];
 
     protected $casts = [
@@ -112,5 +118,10 @@ class HojaEnfermeriaQuirofano extends Model
     public function isquemias(): MorphMany
     {
         return $this->morphMany(Isquemia::class,'isquemiable');
+    }
+
+    public function hojaSignos():MorphMany
+    {
+        return $this->morphMany(HojaSignos::class, 'registrable');
     }
 }

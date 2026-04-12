@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Formulario\HojaEnfermeriaQuirofano;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\HojaEnfermeriaQuirofanoRequest;
 use App\Http\Resources\UserResource;
 use Illuminate\Http\Request;
@@ -26,7 +27,7 @@ use App\Services\PdfGeneratorService;
 use App\Services\VentaService;
 use App\Models\Venta\Venta;
 
-class HojaEnfemeriaQuirofanoController extends Controller implements HasMiddleware
+class HojaEnfermeriaQuirofanoController extends Controller  implements HasMiddleware
 {
     use AuthorizesRequests;
     protected $pdfGenerator;
@@ -96,6 +97,7 @@ class HojaEnfemeriaQuirofanoController extends Controller implements HasMiddlewa
             'personalEmpleados',
             'conteoMaterialQuirofano',
             'isquemias',
+            'hojaSignos',
         );
 
         $users = User::all();
@@ -208,5 +210,4 @@ class HojaEnfemeriaQuirofanoController extends Controller implements HasMiddlewa
             return Redirect::back()->with('error','Error en el cálculo de las ventas.');
         }
     }
-
 }

@@ -15,6 +15,7 @@ import CerrarHoja from '@/components/app-cerrrar-hoja';
 import InformacionGeneralCirugia from '@/components/forms/hoja-enfermeria-quirofano/informacion-general-cirugia';
 import MaterialQuirofano from '@/components/forms/hoja-enfermeria-quirofano/conteo-material-quirofano';
 import IsquemiaFormContainer from '@/components/formularios/hoja-enfermeria-quirofano/isquemia/isquemias-fields';
+import SignosVitalesForm from '@/components/forms/signos-vitales-form';
 
 
 interface CreateProps {
@@ -25,7 +26,7 @@ interface CreateProps {
     users: User[];
 }
 
-type SeccionHoja = 'insumos' | 'servicios_especiales' | 'pieza_patologica' | 'general' | 'personal' | 'informacion_general' | 'conteo_material_quirofano' | 'isquemias';
+type SeccionHoja = 'insumos' | 'servicios_especiales' | 'pieza_patologica' | 'general' | 'personal' | 'informacion_general' | 'conteo_material_quirofano' | 'isquemias' | 'signos_vitales';
 
 
 
@@ -42,6 +43,7 @@ const secciones: {id: SeccionHoja, label: string}[] = [
     { id: 'informacion_general', label:'Información general'},
     { id: 'conteo_material_quirofano', label: 'Conteo de material en quirófano'},
     { id: 'isquemias', label: 'Isquemias'},
+    { id: 'signos_vitales', label: 'Signos'}
 ];
 
 const CreateHojaEnfermeriaQuirofano:CreateComponent = ({
@@ -114,12 +116,16 @@ const CreateHojaEnfermeriaQuirofano:CreateComponent = ({
                         />
             case 'informacion_general':
                 return <InformacionGeneralCirugia
-
+                            hoja={hoja}
                         />
             case 'isquemias':
                 return <IsquemiaFormContainer
                             isquemiable_id={hoja.id}
                             isquemiable_type={hoja.tipo_modelo}
+                            hoja={hoja}
+                        />
+            case 'signos_vitales':
+                return <SignosVitalesForm
                             hoja={hoja}
                         />
             default:

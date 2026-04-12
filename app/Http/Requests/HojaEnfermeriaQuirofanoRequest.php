@@ -49,6 +49,11 @@ class HojaEnfermeriaQuirofanoRequest extends FormRequest
             'servicios_especiales.grapas_extras' => ['nullable', 'boolean'],
             'servicios_especiales.bolsa_endo' => ['nullable', 'boolean'],
             'servicios_especiales.arco_c' => ['nullable', 'boolean'],
+
+            'nota_enfermeria' => ['nullable'],
+            'posicion_paciente' => ['nullable'],
+            'procedimiento_quirurgico' => ['nullable'],
+            'placa_cauterio' => ['nullable'],
         ];
     }
 }

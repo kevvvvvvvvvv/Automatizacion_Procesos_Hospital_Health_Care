@@ -1,6 +1,6 @@
 import React from 'react';
 import { useForm } from '@inertiajs/react';
-import { HojaEnfermeria, HojaSignos, RecienNacido } from '@/types'; 
+import { HojaEnfermeria, HojaEnfermeriaQuirofano, HojaSignos, RecienNacido } from '@/types'; 
 import { route } from 'ziggy-js';
 import { Pencil } from 'lucide-react'; 
 import Swal from 'sweetalert2';
@@ -10,13 +10,12 @@ import PrimaryButton from '@/components/ui/primary-button';
 import { DataTable } from '../ui/data-table';
 
 interface Props {
-    hoja: HojaEnfermeria | RecienNacido;
+    hoja: HojaEnfermeria | RecienNacido | HojaEnfermeriaQuirofano;
 }
 
-const SignosVitalesForm: React.FC<Props> = ({ hoja }) => {
-    const registrableType = 'nombre_rn' in hoja 
-        ? 'App\\Models\\Formulario\\RecienNacido\\RecienNacido' 
-        : 'App\\Models\\Formulario\\HojaEnfermeria\\HojaEnfermeria';
+const SignosVitalesForm: React.FC<Props> = ({ 
+    hoja
+}) => {
     const { data, setData, post, processing, errors, reset } = useForm({
         fecha_hora_registro: new Date().toISOString().slice(0, 16), 
         tension_arterial_sistolica: '',
@@ -28,7 +27,7 @@ const SignosVitalesForm: React.FC<Props> = ({ hoja }) => {
         glucemia_capilar: '',
         peso: '',
         talla: '',
-        registrable_type: registrableType,
+        registrable_type: hoja.tipo_modelo,
     });
 
     const handleSubmit = (e: React.FormEvent) => {
@@ -218,7 +217,6 @@ const SignosVitalesForm: React.FC<Props> = ({ hoja }) => {
                 </div>
             </form>
             <div className="mt-12">
-                {/* 5. Aseguramos que la relación se llame igual en ambos modelos */}
                 <DataTable columns={columnasSignos} data={hoja?.hoja_signos || []} />
             </div>
         </>

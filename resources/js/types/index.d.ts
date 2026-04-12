@@ -404,6 +404,8 @@ export interface HojaEnfermeria {
 
     hoja_somatometria: Somatometria[];
     hoja_ingresos_egresos_rn: Ingresosrn_egresos[];
+
+    tipo_modelo: string;
 }
 
 export interface HojaRiesgoCaida {
@@ -475,12 +477,16 @@ export interface HojaEnfermeriaQuirofano {
         }
     }
 
+    posicion_paciente: string;
+    procedimiento_quirurgico: string;
+    placa_cauterio: string;
+    nota_enfermeria: string;
+
+    hoja_signos: HojaSignos[];
     hoja_insumos_basicos: HojaInsumosBasicos[];
     personal_empleados: PersonalEmpleado[];
     hoja_oxigenos: HojaOxigeno[] | null;
-
     oxigeno_activo: HojaOxigeno[];
-
     conteo_material_quirofano: ConteoMaterialQuirofano[];
     isquemias: Isquemia[]; 
 
@@ -773,6 +779,8 @@ export interface SolicitudDieta {
 
     dieta: Dieta;
     user_supervisa?: User; 
+
+
 }
 
 export interface Dieta {
@@ -1304,6 +1312,8 @@ export interface RecienNacido{
     hoja_signos: HojaSignos[];
     somatometrias: Somatometrias[];
     ingresos_egresos: Ingresos_Egresos_RN[];
+
+    tipo_modelo: string;
 }
 export interface Somatometrias{
     id: number;

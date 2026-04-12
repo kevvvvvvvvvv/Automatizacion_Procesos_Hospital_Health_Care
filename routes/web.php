@@ -32,7 +32,7 @@ use App\Http\Controllers\AplicacionMedicamentoController;
 
 use App\Http\Controllers\FormularioHojaInsumosBasicosController;
 use App\Http\Controllers\FormularioNotaPostoperatorioController;
-use App\Http\Controllers\HojaEnfemeriaQuirofanoController;
+use App\Http\Controllers\Formulario\HojaEnfermeriaQuirofano\HojaEnfermeriaQuirofanoController;
 use App\Http\Controllers\SolicitudEstudioController;
 use App\Http\Controllers\SolicitudEstudioPatologiaController;
 use App\Http\Controllers\PreoperatoriaController;
@@ -180,8 +180,8 @@ Route::resource('pacientes.estancias.notaspostoperatorias', FormularioNotaPostop
 Route::resource('pacientes.estancias.notasegresos', NotasEgresoController::class)->shallow()->middleware('auth');
 Route::resource('pacientes.estancias.notasevoluciones', NotaEvolucionController::class)->shallow()->middleware('auth');
 Route::resource('pacientes.estancias.notaspreanestesicas', NotaPreAnestesicaController::class)->shallow()->middleware('auth');
-Route::resource('pacientes.estancias.hojasenfermeriasquirofanos',HojaEnfemeriaQuirofanoController::class)->shallow()->middleware('auth');
-Route::put('/hojasenfermeriasquirofanos/{hojasenfermeriaquirofanos}/cerrraHoja',[HojaEnfemeriaQuirofanoController::class, 'cerrarHoja'])->name('hojasenfermeriasquirofanos.cerrarHoja')->middleware('auth');
+Route::resource('pacientes.estancias.hojasenfermeriasquirofanos',HojaEnfermeriaQuirofanoController::class)->shallow()->middleware('auth');
+Route::put('/hojasenfermeriasquirofanos/{hojasenfermeriaquirofanos}/cerrraHoja',[HojaEnfermeriaQuirofanoController::class, 'cerrarHoja'])->name('hojasenfermeriasquirofanos.cerrarHoja')->middleware('auth');
 
 Route::resource('paciente.estancias.resumenmedico', ResumenMedicoController::class)->shallow()->middleware('auth');
 Route::resource('pacientes.estancias.consentimientos', ConsentimientoController::class)->shallow()->middleware('auth');
@@ -333,7 +333,7 @@ Route::get('/notasevoluciones/{notasevolucione}/pdf', [NotaEvolucionController::
     ->name('notasevoluciones.pdf')
     ->middleware('auth');
 
-Route::get('/hojasenfermeriasquirofanos/{hojasenfermeriasquirofano}/pdf', [HojaEnfemeriaQuirofanoController::class, 'generarPDF'])
+Route::get('/hojasenfermeriasquirofanos/{hojasenfermeriasquirofano}/pdf', [HojaEnfermeriaQuirofanoController::class, 'generarPDF'])
     ->name('hojasenfermeriasquirofanos.pdf')
     ->middleware('auth');
 
