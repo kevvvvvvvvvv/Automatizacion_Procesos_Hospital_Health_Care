@@ -248,7 +248,7 @@ class FormularioHojaEnfermeriaController extends Controller implements HasMiddle
         ];
 
         $dataParaGraficas = HojaSignos::select($columnasGraficas)
-            ->where('hoja_enfermeria_id', $hojasenfermeria->id)
+            ->where('id', $hojasenfermeria->id)
             ->orderBy('fecha_hora_registro', 'asc')
             ->get();
 

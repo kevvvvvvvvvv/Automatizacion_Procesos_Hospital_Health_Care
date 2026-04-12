@@ -85,19 +85,19 @@ class HojaEnfermeria extends Model
         return $this->belongsTo(FormularioInstancia::class, 'id', 'id');
     }
 
-    public function hojaMedicamentos(): HasMany
-    {
-        return $this->hasMany(HojaMedicamento::class);
+    public function hojaMedicamentos(): MorphMany
+{
+    return $this->morphMany(HojaMedicamento::class, 'medicable');
     }
 
-    public function hojasTerapiaIV(): HasMany
+    public function hojasTerapiaIV(): MorphMany
     {
-        return $this->hasMany(HojaTerapiaIV::class);
+    return $this->morphMany(HojaTerapiaIV::class, 'terapiable');
     }
 
-    public function hojaSignos():HasMany
+    public function hojaSignos():MorphMany
     {
-        return $this->hasMany(HojaSignos::class);
+    return $this->morphMany(HojaSignos::class, 'registrable');
     }
 
     public function hojaControlLiquidos(): HasMany

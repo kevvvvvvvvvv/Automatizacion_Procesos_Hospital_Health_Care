@@ -22,74 +22,78 @@ use Carbon\Carbon;
 
 class FormularioHojaMedicamentoController extends Controller
 {
-    public function store(HojaMedicamentoRequest $request, HojaEnfermeria $hojasenfermeria, VentaService $ventaService)
-    {
-        $validatedData = $request->validated();
-        
-        try {
-            $hojasenfermeria->load('formularioInstancia.estancia.paciente');
-            $medicamentosParaNotificacion = collect();
+   public function store(HojaMedicamentoRequest $request, VentaService $ventaService)
+{
+    $validatedData = $request->validated();
+    
+    $modelType = $request->input('medicable_type'); 
+    $modelId = $request->input('medicable_id');
 
-            foreach ($validatedData['medicamentos_agregados'] as $med) {
-                
-                $productoId = $med['id'] ?? null; 
-                $nombreSnapshot = $med['nombre_medicamento']; 
-                $producto = null;
-                $tieneStock = false;
+    if (!$modelType || !class_exists($modelType)) {
+        return redirect()->back()->with('error', 'El tipo de formulario no es válido.');
+    }
 
-                if ($productoId) {
-                    $producto = ProductoServicio::find($productoId);
-                    
-                    if ($producto) {
-                        $tieneStock = ($producto->cantidad >= 1) && ($producto->tipo !== 'SERVICIO');
-                    }
-                } else {
-                    $tieneStock = false; 
+    try {
+        $parent = $modelType::findOrFail($modelId);
+        $medicamentosParaNotificacion = collect();
+
+        foreach ($validatedData['medicamentos_agregados'] as $med) {
+            $productoId = $med['id'] ?? null; 
+            $nombreSnapshot = $med['nombre_medicamento']; 
+            $producto = null;
+            $tieneStock = false;
+
+            if ($productoId) {
+                $producto = ProductoServicio::find($productoId);
+                if ($producto) {
+                    $tieneStock = ($producto->cantidad >= 1) && ($producto->tipo !== 'SERVICIO');
                 }
-
-                $nuevoMedicamento = $hojasenfermeria->hojaMedicamentos()->create([
-                    'producto_servicio_id' => $productoId, 
-                    'nombre_medicamento'   => $nombreSnapshot, 
-                    'dosis'                => $med['dosis'],
-                    'gramaje'              => $med['gramaje'],
-                    'via_administracion'   => $med['via_id'],
-                    'fecha_hora_solicitud' => now(),
-                    'duracion_tratamiento' => $med['duracion'], 
-                    'unidad'               => $med['unidad'], 
-                    'estado'               => 'solicitado', 
-                ]);
-
-                if ($nuevoMedicamento->producto_servicio_id) {
-                    $nuevoMedicamento->load('productoServicio');
-                }
-
-                $medicamentosParaNotificacion->push([
-                    'medicamento' => $nuevoMedicamento, 
-                    'tiene_stock' => $tieneStock,
-                    'es_manual'   => is_null($productoId) 
-                ]);
             }
 
-            $paciente = $hojasenfermeria->formularioInstancia->estancia->paciente;
-            $paciente->append('nombre_completo'); 
+            $nuevoMedicamento = $parent->hojaMedicamentos()->create([
+                'producto_servicio_id' => $productoId, 
+                'nombre_medicamento'   => $nombreSnapshot, 
+                'dosis'                => $med['dosis'],
+                'gramaje'              => $med['gramaje'],
+                'via_administracion'   => $med['via_id'],
+                'fecha_hora_solicitud' => now(),
+                'duracion_tratamiento' => $med['duracion'], 
+                'unidad'               => $med['unidad'], 
+                'estado'               => 'solicitado', 
+            ]);
 
-            $usuariosFarmacia = User::role('farmacia')->get(); 
-            
-            Notification::send($usuariosFarmacia, 
-                    new NuevaSolicitudMedicamentos(
-                        $medicamentosParaNotificacion, 
-                        $paciente,
-                        $hojasenfermeria->id
-                    )
-                );     
-            
-            return Redirect::back()->with('success', 'Solicitud de medicamentos enviada.');                                                           
-        
-        } catch(\Exception $e) {
-            \Log::error('Error al guardar solicitud: ' . $e->getMessage());
-            return redirect()->back()->with('error', 'Error al guardar. ');
+            if ($nuevoMedicamento->producto_servicio_id) {
+                $nuevoMedicamento->load('productoServicio');
+            }
+
+            $medicamentosParaNotificacion->push([
+                'medicamento' => $nuevoMedicamento, 
+                'tiene_stock' => $tieneStock,
+                'es_manual'   => is_null($productoId) 
+            ]);
         }
+
+        $instancia = $parent->formularioInstancia;
+        $paciente = $instancia->estancia->paciente;
+        $paciente->append('nombre_completo'); 
+
+        $usuariosFarmacia = User::role('farmacia')->get(); 
+        
+        Notification::send($usuariosFarmacia, 
+            new NuevaSolicitudMedicamentos(
+                $medicamentosParaNotificacion, 
+                $paciente,
+                $parent->id 
+            )
+        );     
+        
+        return Redirect::back()->with('success', 'Solicitud de medicamentos enviada.');                                                                      
+    
+    } catch(\Exception $e) {
+        \Log::error('Error al guardar solicitud: ' . $e->getMessage());
+         return redirect()->back()->with('error', 'Error: ' . $e->getMessage());
     }
+}
 
     public function update(Request $request, HojaEnfermeria $hojasenfermeria, HojaMedicamento $hojasmedicamento, VentaService $ventaService)
     {
@@ -106,9 +110,9 @@ class FormularioHojaMedicamentoController extends Controller
                                 ->format('Y-m-d H:i:s'); 
 
                 
-                $hojasmedicamento->load('hojaEnfermeria.formularioInstancia.estancia');
-                $estanciaId = $hojasmedicamento->hojaEnfermeria->formularioInstancia->estancia->id;
-
+                $hojasmedicamento->load('medicable.formularioInstancia.estancia');
+                $estanciaId = $hojasmedicamento->medicable->formularioInstancia->estancia->id;
+                
                 $itemParaVenta = [
                     'id'       => $hojasmedicamento->producto_servicio_id ?? null,
                     'cantidad' => 1,

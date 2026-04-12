@@ -1,12 +1,13 @@
 import React from "react";
 import { Head } from "@inertiajs/react";
 import MainLayout from "@/layouts/MainLayout";
-import { Calendar, User, Activity, Stethoscope, Briefcase, ClipboardList } from "lucide-react";
+import { Activity, Stethoscope, Briefcase, ClipboardList } from "lucide-react";
+import { ReservacionQuirofano, User } from "@/types";
 
 // Estructura de Props
 interface Props {
-  quirofano: any; // La reservación principal
-  user: any;      // Usuario que reservó
+  quirofano: ReservacionQuirofano;
+  user: User;      
   horarios: any[]; // Bloques horarios asociados
 }
 
@@ -43,7 +44,7 @@ const ShowQuirofano = ({ quirofano, user, horarios }: Props) => {
                   <div className="bg-blue-50 p-2 rounded-lg mr-4 shrink-0"><Stethoscope className="text-blue-600" size={20} /></div>
                   <div className="min-w-0 flex-1">
                     <p className="text-[11px] text-gray-400 uppercase font-bold">Médico Tratante</p>
-                    <p className="text-sm font-semibold text-gray-900 truncate">{quirofano.tratante}</p>
+                    <p className="text-sm font-semibold text-gray-900 truncate">{quirofano.medico_tratante?.nombre_completo}</p>
                   </div>
                 </div>
 
@@ -51,7 +52,7 @@ const ShowQuirofano = ({ quirofano, user, horarios }: Props) => {
                   <div className="bg-indigo-50 p-2 rounded-lg mr-4 shrink-0"><Briefcase className="text-indigo-600" size={20} /></div>
                   <div className="min-w-0 flex-1">
                     <p className="text-[11px] text-gray-400 uppercase font-bold">Cirujano</p>
-                    <p className="text-sm font-semibold text-gray-900 truncate">{quirofano.medico_operacion}</p>
+                    <p className="text-sm font-semibold text-gray-900 truncate">{quirofano.medico_operacion_rel?.nombre_completo}</p>
                   </div>
                 </div>
 

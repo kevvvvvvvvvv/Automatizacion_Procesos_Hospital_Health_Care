@@ -8,6 +8,7 @@ import InputText from '@/components/ui/input-text';
 import SelectInput from '@/components/ui/input-select'; 
 import PrimaryButton from '@/components/ui/primary-button';
 import Swal from 'sweetalert2';                     
+import { Transform } from 'stream';
 
 interface MedicamentoAgregado {
     id: string;
@@ -106,13 +107,13 @@ const MedicamentosForm: React.FC<Props> = ({
         }
     },[localData.unidad, setLocalData]);
 
-    const { data, setData, post, processing, errors, reset, wasSuccessful } = useForm({
+    const { data, setData, post, transform, processing, errors, reset, wasSuccessful } = useForm({
         medicamentos_agregados: [] as MedicamentoAgregado[],
     });
     
     const handleDateUpdate = (medicamentoId: number, newDate: string) => {
         router.patch(route('hojasmedicamentos.update', { 
-            hojasenfermeria: hoja?.id, 
+            // Eliminamos hojasenfermeria: hoja?.id porque ya no existe en la ruta
             hojasmedicamento: medicamentoId 
         }), {
             fecha_hora_inicio: newDate 
@@ -120,7 +121,6 @@ const MedicamentosForm: React.FC<Props> = ({
             preserveScroll: true,
         });
     };
-
     const handleAddToList = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault(); 
         if ((!localData.medicamento_id && !localData.nombre_medicamento)|| !localData.dosis || !localData.unidad || !localData.gramaje || !localData.unidad || !localData.duracion_tratamiento) {
@@ -172,12 +172,28 @@ const MedicamentosForm: React.FC<Props> = ({
     }
 
     const handleSubmitList = (e: React.FormEvent) => {
-        e.preventDefault();
-        post(route('hojasmedicamentos.store', { hojasenfermeria: hoja?.id }), {
-            preserveScroll: true,
-            onSuccess: () => reset(), 
-        });
-    }
+    e.preventDefault();
+
+    const isRecienNacido = 'nombre_rn' in (hoja || {});
+    const medicable_type = isRecienNacido 
+        ? 'App\\Models\\Formulario\\RecienNacido\\RecienNacido' 
+        : 'App\\Models\\Formulario\\HojaEnfermeria\\HojaEnfermeria';
+
+    // Transformamos los datos antes de enviar
+    transform((data) => ({
+        ...data,
+        medicable_id: hoja?.id,
+        medicable_type: medicable_type,
+    }));
+
+    post(route('hojasmedicamentos.store'), {
+        preserveScroll: true,
+        onSuccess: () => {
+            reset();
+            Swal.fire('Guardado', 'Los medicamentos se registraron correctamente', 'success');
+        },
+    });
+}
 
     const handleStoreAplicacion = (medicamentoId: number) => {
 

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
+import { formatCurrency } from "@/utils/formatter-money";
 
 interface SummaryCardProps {
     label: string;
@@ -26,10 +27,6 @@ export const SummaryCard = ({
     const isHighlight = theme === 'highlight';
     const [mostrarDinero, setMostrarDinero] = useState(mostrarValor); 
 
-    const formatMoney = (amount: number | string | undefined) => {
-        return Number(amount || 0).toLocaleString('es-MX', { minimumFractionDigits: 2 });
-    };
-
     return (
         <div className={`p-5 rounded-xl shadow-sm border ${currentTheme.split(' ')[0]} ${currentTheme.split(' ')[1]} ${isHighlight ? currentTheme.split(' ')[2] + ' ' + currentTheme.split(' ')[3] + ' ' + currentTheme.split(' ')[4] : ''}`}>
             <p className={`text-sm ${isHighlight ? 'font-bold' : 'font-medium'} ${themes[theme].match(/text-[a-z]+-\d+/)?.[0]}`}>
@@ -38,7 +35,7 @@ export const SummaryCard = ({
 
             <div className="flex items-center justify-between mt-1 gap-2">
                 <p className={`${isHighlight ? 'text-3xl font-black' : 'text-2xl font-bold'} ${themes[theme].match(/value-([a-z]+-\d+)/)?.[1] ? `text-${themes[theme].match(/value-([a-z]+-\d+)/)?.[1]}` : 'text-gray-800'}`}>
-                    {mostrarDinero ? `$${formatMoney(amount)}` : '••••••'}
+                    {mostrarDinero ? `${formatCurrency(amount)}` : '••••••'}
                 </p>
 
                 <button

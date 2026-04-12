@@ -217,7 +217,7 @@ const Show = ({ estancia, historiaclinica }: ShowEstanciaProps) => {
                                                 </Link>
                                             )}
                                         </Menu.Item>
-                                       {/* <Menu.Item> 
+                                       <Menu.Item> 
                                             {({ active }) => (
                                                 <Link
                                                     href={route('pacientes.estancias.reciennacido.create', { paciente: paciente.id, estancia: estancia.id })}

@@ -50,20 +50,17 @@ const TerapiaIVForm: React.FC<Props> = ({
 }) => {
 
     const handleDateUpdate = (terapiaId: number, newDate: string) => {
-        if (!newDate) {
-            console.warn("La fecha está vacía, no se guardará.");
-            return;
-        }
+    if (!newDate) return;
 
-        router.patch(route('hojasterapiasiv.update', { 
-            hojasenfermeria: hoja.id, 
-            hojasterapiasiv: terapiaId 
-        }), {
-            fecha_hora_inicio: newDate 
-        }, {
-            preserveScroll: true,
-        });
-    };
+    router.patch(route('hojasterapiasiv.update', { 
+        hojasterapiasiv: terapiaId 
+    }), {
+        fecha_hora_inicio: newDate 
+    }, {
+        preserveScroll: true,
+        onSuccess: () => Swal.fire('Éxito', 'Inicio de terapia registrado', 'success')
+    });
+};
 
     const solucionesOptions = soluciones.map(s =>({
         label: s.nombre_prestacion,
@@ -86,7 +83,7 @@ const TerapiaIVForm: React.FC<Props> = ({
 
     });
 
-    const { data, setData, post, processing, errors, reset, wasSuccessful } = useForm({
+    const { data, setData, post, processing, errors, reset, wasSuccessful, transform } = useForm({
         terapias_agregadas: [] as TerapiaAgregada[],
     });
 
@@ -174,26 +171,41 @@ const TerapiaIVForm: React.FC<Props> = ({
     }
 
     const handleSubmitList = (e: React.FormEvent) => {
-        e.preventDefault();
-        post(route('hojasterapiasiv.store', { hojasenfermeria: hoja.id }), {
-            preserveScroll: true,
-            onSuccess: () => {
-                reset(); 
-            }
-        });
-    }
+    e.preventDefault();
+
+    if (data.terapias_agregadas.length === 0) return;
+
+    const isRecienNacido = 'nombre_rn' in hoja;
+
+    // CORRECTO: Usamos la función transform del hook que está en el top-level
+    transform((oldData) => ({
+        ...oldData,
+        terapiable_id: hoja.id,
+        terapiable_type: isRecienNacido 
+            ? 'App\\Models\\Formulario\\RecienNacido\\RecienNacido' 
+            : 'App\\Models\\Formulario\\HojaEnfermeria\\HojaEnfermeria',
+    }));
+
+    // El post usará los datos transformados automáticamente
+   post(route('hojasterapiasiv.store', { hojaenfermeria: hoja.id }), {
+    preserveScroll: true,
+    onSuccess: () => {
+        reset();
+        Swal.fire('Guardado', 'Terapias registradas con éxito', 'success');
+    },
+});
+};
 
     const handleRemoveSavedTerapia = (terapiaId: string) => {
-        if (confirm('¿Seguro que deseas eliminar esta terapia (ya guardada)?')) {
-            router.delete(route('hojastetapiasiv.destroy', { 
-                hojaenfermeria: hoja?.id,
-                terapiaiv: terapiaId 
-            }), {
-                preserveScroll: true,
-            });
-        }
+    if (confirm('¿Seguro que deseas eliminar esta terapia (ya guardada)?')) {
+        router.delete(route('hojasterapiasiv.destroy', { // <-- Corregido aquí
+            hojaenfermeria: hoja?.id,
+            terapiaiv: terapiaId 
+        }), {
+            preserveScroll: true,
+        });
     }
-
+}   
     //console.log(errors);
 
     return (

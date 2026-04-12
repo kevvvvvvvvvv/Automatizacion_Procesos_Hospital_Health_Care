@@ -17,7 +17,7 @@ class IngresosEgresosRNController extends Controller
     {
         // 1. Validar los datos
         $validated = $request->validate([
-            'seno'              => 'nullable|string',
+            'seno_materno'      => 'nullable|string',
             'formula'           => 'nullable|numeric',
             'otros_ingresos'    => 'nullable|string',
             'cantidad_ingresos' => 'required_with:otros_ingresos|nullable|numeric',
@@ -30,16 +30,14 @@ class IngresosEgresosRNController extends Controller
         //dd($validated);
         $neonato = RecienNacido::findOrFail($id);
 
-        // 3. Calcular Balance Total
 
-        $totalIngresos = (float)($request->formula ?? 0) + (float)($request->cantidad_ingresos ?? 0);
-        $totalEgresos  = (float)($request->emesis ?? 0) + (float)($request->cantidad_egresos ?? 0);
+        $totalIngresos = (float)($request->seno_materno ?? 0) + (float)($request->formula ?? 0) + (float)($request->cantidad_ingresos ?? 0);
+        $totalEgresos  = (float)($request->miccion ?? 0) + (float)($request->evacuacion ?? 0) + (float)($request->emesis ?? 0) + (float)($request->cantidad_egresos ?? 0);
         
         $balanceTotal = $totalIngresos - $totalEgresos;
-           // dd($balanceTotal);
 
-       $neonato->Ingresos_Egresos_RN()->create([
-            'seno_materno'      => $request->seno, // Cambiado para que coincida con la migración
+       $neonato->ingresos_egresos()->create([
+            'seno_materno'      => $request->seno_materno, // Cambiado para que coincida con la migración
             'formula'           => $request->formula,
             'otros_ingresos'    => $request->otros_ingresos,
             'cantidad_ingresos' => $request->cantidad_ingresos,
@@ -50,9 +48,8 @@ class IngresosEgresosRNController extends Controller
             'cantidad_egresos'  => $request->cantidad_egresos,
             'balance_total'     => $balanceTotal,
         ]);
-                  //  dd($neonato);
+          //dd($neonato->Ingresos_Egresos_RN->toArray());
 
-        // 5. Redireccionar con mensaje de éxito
         return Redirect::back()->with('success', 'Control de líquidos registrado correctamente.');
     }
 

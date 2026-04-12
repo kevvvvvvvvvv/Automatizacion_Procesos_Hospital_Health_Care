@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Models\Formulario\HojaEnfermeria;
-
+ 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
  
@@ -56,8 +56,9 @@ class HojaMedicamento extends Model
     protected $table = 'hoja_medicamentos';
 
     protected $fillable = [
-        'id',
-        'hoja_enfermeria_id',
+        
+        'medicable_id',   
+        'medicable_type',
         'producto_servicio_id',
         'dosis',
         'gramaje',
@@ -73,6 +74,10 @@ class HojaMedicamento extends Model
 
         'nombre_medicamento'
     ];
+    public function medicable()
+{
+    return $this->morphTo();
+}
 
     public function productoServicio():BelongsTo
     {   
