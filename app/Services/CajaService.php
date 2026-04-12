@@ -10,7 +10,9 @@ use App\Models\Caja\Caja;
 use App\Models\User;
 
 use App\Enums\EstadoSesionCaja;
+use App\Enums\MetodoPago as EnumsMetodoPago;
 use App\Enums\TipoMovimientoCaja;
+use App\Models\Venta\MetodoPago;
 
 use Illuminate\Support\Facades\DB;
 use Exception;
@@ -81,7 +83,7 @@ class CajaService
         int $userId,
         ?string $descripcion = null,
         ?string $nombre_paciente=null,
-        ?int $metodoPagoId = null,
+        ?int $metodoPagoId = 1, //Metodo de pago efectivo 
         ?string $area = null,
     ): MovimientoCaja
     {
@@ -104,11 +106,16 @@ class CajaService
                 'metodo_pago_id' => $metodoPagoId,
                 'user_id' => $userId,
             ]);
-
-            if ($tipo === TipoMovimientoCaja::INGRESO) {
-                $sesion->increment('total_ingresos_efectivo', $monto);
-            } else {
-                $sesion->increment('total_egresos_efectivo', $monto);
+            
+            if($metodoPagoId == 1){
+                if ($tipo === TipoMovimientoCaja::INGRESO) {
+                    //Solo afectar si el metodo de pago es efectivo
+                    
+                        $sesion->increment('total_ingresos_efectivo', $monto);
+                } else {
+                    
+                    $sesion->increment('total_egresos_efectivo', $monto);
+                }
             }
 
             broadcast(new NuevoMovimientoCaja($sesion->caja_id));

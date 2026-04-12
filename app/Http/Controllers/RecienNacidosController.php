@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Paciente;
 use App\Models\Estancia;
-use App\Models\RecienNacido;
+use App\Models\Formulario\RecienNacido\RecienNacido;
 use App\Models\Formulario\FormularioInstancia;
 use App\Models\Formulario\FormularioCatalogo;
 use Illuminate\Http\Request;
@@ -71,7 +71,7 @@ class RecienNacidosController extends Controller
                 'user_id' => Auth::id(),
             ]);
 
-            RecienNacido::create([
+            $hoja = RecienNacido::create([
                 'id'        => $instancia->id, // ID Compartido
                 'area'      => $request->area,
                 'nombre_rn' => $request->nombre_rn,
@@ -87,7 +87,7 @@ class RecienNacidosController extends Controller
 
             DB::commit();
 
-            return Redirect::route('estancias.show', $estancia->id)
+            return Redirect::route('reciennacido.edit', $hoja->id)
                 ->with('success', 'Hoja de recién nacido iniciada correctamente.');
 
         } catch (\Exception $e) {
@@ -96,10 +96,13 @@ class RecienNacidosController extends Controller
         }
     }
     public function edit(RecienNacido $reciennacido){
-        if($reciennacido->estado == 'Cerrado') return redirect()->back()->with('error','La hoja de enfermeria de recien nacido se ha cerrado.');    
+       // if($reciennacido->estado == 'Cerrado') return redirect()->back()->with('error','La hoja de enfermeria de recien nacido se ha cerrado.');    
        
         $reciennacido = $this->getRelaciones($reciennacido);
-       dd($reciennacido);
+        $reciennacido->hoja_medicamentos = $reciennacido->hojaMedicamentos;
+        $reciennacido->hoja_signos = $reciennacido->hojaSignos;
+        $reciennacido->hoja_terapias = $reciennacido->hojasTerapiasIV;
+       //dd($reciennacido);
         $estancia = $reciennacido->formularioInstancia->estancia;
         $paciente = $reciennacido->formularioInstancia->estancia->paciente;
 
@@ -109,11 +112,11 @@ class RecienNacidosController extends Controller
         $medicos = User::all();
         $usuarios = User::all();
         $nota = $this->obtenerListaTratamiento($estancia);
-    
-        return Inertia::render('formularios/hojas-enfermerias/edit',[
+       // dd($medicamentos->toArray());
+        return Inertia::render('formularios/recien-nacido/edit',[
             'paciente' => $paciente,
             'estancia' => $estancia,
-            'reciennacido' => $reciennacido, 
+            'hoja' => $reciennacido, 
             'medicamentos' => $medicamentos,
             'soluciones' => $soluciones,
             'medicos' => $medicos,
@@ -157,6 +160,8 @@ class RecienNacidosController extends Controller
             'hojasTerapiasIV.medicamentos',
             'hojaMedicamentos.productoServicio',
             'hojaMedicamentos.aplicaciones',
+            'somatometrias',
+            'Ingresos_Egresos_RN',
 
         );
 

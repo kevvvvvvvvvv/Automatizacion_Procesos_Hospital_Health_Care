@@ -99,9 +99,7 @@ export const conceptosPorArea = {
     },
     CIRUGIA: {
         ingresos: [
-        { value: 'efectivo', label: 'Efectivo' },
-        { value: 'tarjeta', label: 'Tarjeta' },
-        { value: 'transferencia', label: 'Transferencia' }
+        { value: 'corta_estancia', label: 'Corta estancia' },
         ],
         egresos: [
         { value: 'cirujano', label: 'Cirujano' },
@@ -129,8 +127,6 @@ export const conceptosPorArea = {
     },
     PRESTAMO: {
         ingresos: [
-        { value: 'conta', label: 'Conta' },
-        { value: 'fondo', label: 'Fondo' },
         { value: 'josue', label: 'Josué' }
         ],
         egresos: [
@@ -312,6 +308,7 @@ const ModalGasto = ({
                         value={data.monto}
                         onChange={e=>setData('monto',e.target.value)}
                         type='number'
+                        step="0.01"
                         error={errors.concepto}
                     />
 

@@ -1,7 +1,7 @@
 import React from 'react';
 import { AperturaCaja } from './apertura-caja';
 import { PanelCaja } from './panel-caja';
-import { SesionCaja, Caja, MetodoPago } from '@/types';
+import { SesionCaja, Caja, MetodoPago, MovimientoCaja } from '@/types';
 import { Head } from '@inertiajs/react';
 
 import MainLayout from '@/layouts/MainLayout';
@@ -10,7 +10,9 @@ interface Props {
     sesionActiva: SesionCaja;
     cajas: Caja[];
     fondo: SesionCaja;
-    metodos_pago: MetodoPago []
+    metodos_pago: MetodoPago [];
+    fecha_filtrada: string;
+    movimientos: MovimientoCaja[];
 }
 
 const Index = ({ 
@@ -18,6 +20,8 @@ const Index = ({
     cajas, 
     fondo,
     metodos_pago = [],
+    fecha_filtrada,
+    movimientos
 }: Props) => {
 
     const renderContent = () => {
@@ -28,9 +32,11 @@ const Index = ({
         }
 
         return <PanelCaja 
+                    fecha_filtrada={fecha_filtrada}
                     sesion={sesionActiva} 
                     metodos_pago={metodos_pago}
                     fondo={fondo}
+                    movimientos={movimientos}
                 />;
     };
 

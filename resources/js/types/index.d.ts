@@ -401,6 +401,9 @@ export interface HojaEnfermeria {
     oxigeno_activo: HojaOxigeno[];
     hoja_escala_valoraciones: HojaEscalaValoracion [];
     hoja_habitus_exterior: HojaHabitusExterior[];
+
+    hoja_somatometria: Somatometria[];
+    hoja_ingresos_egresos_rn: Ingresosrn_egresos[];
 }
 
 export interface HojaRiesgoCaida {
@@ -1262,6 +1265,56 @@ export interface Paquete{
     glucemia: number,
     peso: number,
     talla: number,
+}
+export interface RecienNacido{
+    id: number;
+    area: string;
+    nombre_rn: string;
+    fecha_rn: Date;
+    hora_rn: time;
+    sexo:string;
+    peso: number;
+    talla: number;
+    estado: string;
+    observaciones: string;
+    created_at: string;
+    updated_at: string; 
+
+    formulario_instancia: FormularioInstancia;
+    hojas_terapia_i_v: HojaTerapiaIV[]; 
+    hoja_medicamentos: HojaMedicamento[];
+    hoja_signos: HojaSignos[];
+    hoja_somatometria: Somatometria[];
+    hoja_ingresos_egresos_rn: Ingresos_Egresos_RN[];
+}
+export interface Somatometria{
+    id: number;
+    perimetro_toracico: number;
+    perimetro_cefalico: number;
+    perimetro_abdominal:number;
+    pie: number;
+    segmento_inferior: number;
+    capurro: string;
+    apgar: string;
+    silverman: number;
+    created_at: string;
+    updated_at: string; 
+}   
+export interface Ingresos_Egresos_RN{
+    id:  number;
+    seno_materno: number;
+    formula: number;
+    otros_ingresos: string;
+    cantidad_ingresos: number;
+    miccion: number;
+    evacuacion: number;
+    emesis: number;
+    otros_egresos: string;
+    cantidad_egresos: number;
+    balance_total: number;
+    created_at: string;
+    updated_at: string; 
+
 }
 
 export interface Caja {

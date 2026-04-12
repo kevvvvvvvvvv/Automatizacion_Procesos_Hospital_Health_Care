@@ -1,6 +1,6 @@
 import React, { useState } from 'react'; // Importar useState
 import { useForm, router } from '@inertiajs/react';
-import { HojaEnfermeria, ProductoServicio } from '@/types';
+import { HojaEnfermeria, ProductoServicio, RecienNacido } from '@/types';
 import { route } from 'ziggy-js';
 import { optionsUnidadMedida } from '@/constant/const';
 import Swal from 'sweetalert2';
@@ -30,7 +30,7 @@ interface TerapiaAgregada {
 }
 
 interface Props {
-    hoja: HojaEnfermeria;
+    hoja: HojaEnfermeria | RecienNacido;
     soluciones: ProductoServicio[];
     medicamentos: ProductoServicio[];
 }
@@ -186,7 +186,7 @@ const TerapiaIVForm: React.FC<Props> = ({
     const handleRemoveSavedTerapia = (terapiaId: string) => {
         if (confirm('¿Seguro que deseas eliminar esta terapia (ya guardada)?')) {
             router.delete(route('hojastetapiasiv.destroy', { 
-                hojaenfermeria: hoja.id,
+                hojaenfermeria: hoja?.id,
                 terapiaiv: terapiaId 
             }), {
                 preserveScroll: true,
@@ -194,7 +194,7 @@ const TerapiaIVForm: React.FC<Props> = ({
         }
     }
 
-    console.log(errors);
+    //console.log(errors);
 
     return (
         <div>
@@ -415,14 +415,14 @@ const TerapiaIVForm: React.FC<Props> = ({
                             </tr>
                         </thead>
                         <tbody className="bg-white divide-y divide-gray-200">
-                            {hoja.hojas_terapia_i_v?.length === 0 ? (
+                            {hoja?.hojas_terapia_i_v?.length === 0 ? (
                                 <tr>
                                     <td colSpan={4} className="px-4 py-4 text-sm text-gray-500 text-center">
                                         No hay terapias registradas.
                                     </td>
                                 </tr>
                             ) : (
-                            hoja.hojas_terapia_i_v?.map((terapia) => (
+                            hoja?.hojas_terapia_i_v?.map((terapia) => (
                                 <tr key={terapia.id}>
                                     <td className="px-4 py-4 text-sm text-gray-900">
                                         {terapia.detalle_soluciones?.nombre_prestacion || '...'}
