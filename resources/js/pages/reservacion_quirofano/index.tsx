@@ -1,6 +1,5 @@
 import React, { useState, useMemo } from "react";
 import { Head, router, Link } from "@inertiajs/react";
-import MainLayout from "@/layouts/MainLayout";
 import { route } from "ziggy-js";
 import {
     useReactTable,
@@ -12,12 +11,12 @@ import {
     flexRender,
     SortingState,
 } from "@tanstack/react-table";
-import AddButton from "@/components/ui/add-button";
 import { Pencil, Eye } from "lucide-react";
+import { usePermission } from "@/hooks/use-permission";
 
-/* =========================
-   TIPOS CORREGIDOS (Coinciden con el Controller)
-========================= */
+import MainLayout from "@/layouts/MainLayout";
+import AddButton from "@/components/ui/add-button";
+
 type ReservacionQuirofano = {
     id: number;
     fecha: string;
@@ -36,6 +35,8 @@ interface Props {
 }
 
 const Index = ({ reservaciones }: Props) => {
+
+    const { can } = usePermission()
     
     const [globalFilter, setGlobalFilter] = useState("");
     const [sorting, setSorting] = useState<SortingState>([]);
@@ -57,7 +58,7 @@ const Index = ({ reservaciones }: Props) => {
                 // El formato es "YYYY-MM-DD HH:MM:SS", cortamos para ver HH:MM
                 try {
                     return horarios[0].split(" ")[1].substring(0, 5) + " hrs";
-                } catch (e) {
+                } catch ( e ) {
                     return "—";
                 }
             },
@@ -91,18 +92,22 @@ const Index = ({ reservaciones }: Props) => {
             header: "Acciones",
             cell: ({ row }) => (
                 <div className="flex gap-2" onClick={(e) => e.stopPropagation()}>
-                    <Link
-                        href={route("quirofanos.show", row.original.id)}
-                        className="p-2 text-gray-600 hover:bg-gray-100 rounded-full transition"
-                    >
-                        <Eye size={18} />
-                    </Link>
+                    
+                        <Link
+                            href={route("quirofanos.show", row.original.id)}
+                            className="p-2 text-gray-600 hover:bg-gray-100 rounded-full transition"
+                        >
+                            <Eye size={18} />
+                        </Link>
+                    
+                    {can('editar reservaciones quirofanos') && (
                     <Link
                         href={route("quirofanos.edit", row.original.id)}
                         className="p-2 text-blue-600 hover:bg-blue-100 rounded-full transition"
                     >
                         <Pencil size={18} />
                     </Link>
+                    )}
                 </div>
             ),
         },
@@ -126,18 +131,16 @@ const Index = ({ reservaciones }: Props) => {
             
             <div className="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
                 <h1 className="text-2xl font-bold text-gray-800">
-                    Control de Quirófanos
+                    Control de quirófanos
                 </h1>
-
-                {/* IMPORTANTE: El create de tu controller pide paciente y estancia. 
-                    Si es una reservación general, podrías necesitar una ruta distinta 
-                    o pasar parámetros nulos si tu route lo permite */}
-                <AddButton 
-                    href={route("quirofanos.create")} // Sin pasar parámetros
-                    className="bg-green-600 text-white px-4 py-2 rounded shadow"
-                >
-                    Programar Cirugía Externa
-                </AddButton>
+                {can('crear reservaciones quirofanos') && (
+                    <AddButton 
+                        href={route("quirofanos.create")} 
+                        className="bg-green-600 text-white px-4 py-2 rounded shadow"
+                    >
+                        Programar cirugía
+                    </AddButton>    
+                )}
             </div>
 
             <div className="mb-4">

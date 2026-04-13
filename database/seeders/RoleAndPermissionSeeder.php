@@ -69,6 +69,9 @@ class RoleAndPermissionSeeder extends Seeder
 
             'caja' => ['consultar'],
             'contaduria' => ['consultar'],
+
+            'reservaciones quirofanos' => ['consultar', 'crear', 'eliminar', 'editar'],
+            'reservaciones consultorios' => ['consultar', 'crear', 'eliminar', 'editar'],
         ];  
 
         foreach ($permissions as $module => $actions) {
@@ -110,6 +113,10 @@ class RoleAndPermissionSeeder extends Seeder
             'consultar hojas frontales',
 
             'consultar habitaciones',
+
+            'consultar reservaciones quirofanos',
+
+            'consultar reservaciones consultorios',
         ]);
         
         $roleEnfermera->syncPermissions([
@@ -135,7 +142,9 @@ class RoleAndPermissionSeeder extends Seeder
 
             'crear consentimientos',
 
-            'crear colaboradores'
+            'crear colaboradores',
+
+            'consultar reservaciones quirofanos',
         ]);
 
         $roleCaja->syncPermissions([
@@ -160,6 +169,8 @@ class RoleAndPermissionSeeder extends Seeder
             'consultar habitaciones',
 
             'consultar caja',
+
+            'consultar reservaciones quirofanos',
         ]);
 
         $roleMedicoEspecialista->syncPermissions([
@@ -199,6 +210,10 @@ class RoleAndPermissionSeeder extends Seeder
 
             'crear reservaciones',
             'consultar reservaciones',
+
+            'consultar reservaciones quirofanos',
+
+            'consultar reservaciones consultorios'
         ]);
         
         $roleMedico->syncPermissions([
@@ -234,6 +249,10 @@ class RoleAndPermissionSeeder extends Seeder
 
             'crear reservaciones',
             'consultar reservaciones',
+
+            'consultar reservaciones quirofanos',
+
+            'consultar reservaciones consultorios'
         ]);
 
         $roleFarmacia->syncPermissions([
@@ -241,6 +260,8 @@ class RoleAndPermissionSeeder extends Seeder
             'editar peticion medicamentos',
 
             'consultar habitaciones',
+
+            'consultar reservaciones quirofanos',
         ]);
 
         $roleCocina->syncPermissions([
@@ -275,6 +296,8 @@ class RoleAndPermissionSeeder extends Seeder
             'eliminar solicitudes estudios',
 
             'consultar habitaciones',
+
+            'consultar reservaciones quirofanos',
         ]);
 
         $roleTecnicoLaboratorio->syncPermissions([
@@ -323,7 +346,10 @@ class RoleAndPermissionSeeder extends Seeder
             'crear consentimientos',
 
             'crear colaboradores',
+
+            'consultar reservaciones quirofanos',
         ]);
+
         $roleContador->syncPermissions([
             'consultar pacientes',
             'consultar estancias',
@@ -346,6 +372,10 @@ class RoleAndPermissionSeeder extends Seeder
             'consultar habitaciones',
 
             'consultar contaduria',
+
+            'consultar reservaciones quirofanos',
+
+            'consultar reservaciones consultorios'
         ]);
 
     }

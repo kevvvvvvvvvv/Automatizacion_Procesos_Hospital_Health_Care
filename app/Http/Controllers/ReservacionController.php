@@ -16,9 +16,25 @@ use App\Models\Reservacion\ReservacionConsultorio\Reservacion;
 use App\Models\Habitacion\Habitacion;
 use App\Models\Reservacion\ReservacionConsultorio\ReservacionHorario;
 
-class ReservacionController extends Controller
-{
+use App\Services\PdfGeneratorService;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 
+class ReservacionController extends Controller 
+{
+/*     use AuthorizesRequests;
+
+    public static function middleware(): array
+    {
+        $permission = \Spatie\Permission\Middleware\PermissionMiddleware::class;
+        return [
+            new Middleware($permission . ':consultar quirofanos', only: ['index', 'show', 'generarPDF']),
+            new Middleware($permission . ':crear quirofanos', only: ['create', 'store']),
+            new Middleware($permission . ':eliminar quirofanos', only: ['destroy']),
+        ];
+    }
+ */
     public function index()
     {
         $query = Reservacion::with([
