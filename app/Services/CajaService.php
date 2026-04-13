@@ -85,6 +85,7 @@ class CajaService
         ?string $nombre_paciente=null,
         ?int $metodoPagoId = 1, //Metodo de pago efectivo 
         ?string $area = null,
+        bool $factura = false,
     ): MovimientoCaja
     {
         $estadoActual = $sesion->estado instanceof EstadoSesionCaja 
@@ -95,7 +96,7 @@ class CajaService
             throw new \Exception("No se pueden registrar movimientos en una caja cerrada.");
         }
 
-        return DB::transaction(function () use ($sesion, $tipo, $monto, $area, $concepto, $metodoPagoId ,$userId, $descripcion, $nombre_paciente) {
+        return DB::transaction(function () use ($sesion, $tipo, $monto, $area, $concepto, $metodoPagoId ,$userId, $descripcion, $nombre_paciente, $factura) {
             $movimiento = $sesion->movimientos()->create([
                 'tipo' => $tipo,
                 'monto' => $monto,
@@ -105,13 +106,14 @@ class CajaService
                 'nombre_paciente' =>$nombre_paciente,
                 'metodo_pago_id' => $metodoPagoId,
                 'user_id' => $userId,
+                'factura' => $factura
             ]);
             
             if($metodoPagoId == 1){
                 if ($tipo === TipoMovimientoCaja::INGRESO) {
                     //Solo afectar si el metodo de pago es efectivo
                     
-                        $sesion->increment('total_ingresos_efectivo', $monto);
+                    $sesion->increment('total_ingresos_efectivo', $monto);
                 } else {
                     
                     $sesion->increment('total_egresos_efectivo', $monto);
@@ -410,7 +412,8 @@ class CajaService
                 descripcion: $datos['descripcion'],
                 nombre_paciente: $datos['nombre_paciente'],
                 area: $datos['area'] ?? null,
-                metodoPagoId: $datos['metodo_pago_id'] ?? null
+                metodoPagoId: $datos['metodo_pago_id'] ?? null,
+                factura: $datos['factura'],
             );
         });
     }

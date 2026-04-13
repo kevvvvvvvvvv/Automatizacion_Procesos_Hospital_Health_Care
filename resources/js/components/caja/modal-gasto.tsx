@@ -1,11 +1,12 @@
 import React from 'react';
 import { useForm } from '@inertiajs/react';
 import { route } from 'ziggy-js';
+import { MetodoPago, SesionCaja } from '@/types';
+import Swal from 'sweetalert2';
 
 import SelectInput from '@/components/ui/input-select';
 import TextInput from '@/components/ui/input-text';
-import { MetodoPago, SesionCaja } from '@/types';
-import Swal from 'sweetalert2';
+import BooleanInput from '../ui/input-boolean';
 
 interface Props {
     onClose: () => void;
@@ -185,6 +186,7 @@ const ModalGasto = ({
         origen: 'operativo',
         metodo_pago_id: '',
         nombre_paciente:'',
+        factura: false,
     });
 
     const optionsMetodoPago = metodos_pagos.map((met) => (
@@ -312,6 +314,12 @@ const ModalGasto = ({
                         error={errors.concepto}
                     />
 
+                    <BooleanInput
+                        label='Requiere factura'
+                        value={data.factura}
+                        onChange={e => setData('factura', e)}
+                        error={errors.factura}
+                    />
 
                     <div className="mt-6 flex justify-end space-x-3">
                         <button 

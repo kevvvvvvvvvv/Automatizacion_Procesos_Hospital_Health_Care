@@ -162,6 +162,7 @@ export const PanelCaja = ({
                                     <th className="px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Descripción</th>
                                     <th className="px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Nombre del paciente</th>
                                     <th className="px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Metodo pago</th>
+                                    <th className="px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Factura</th>
                                     <th className="px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Tipo</th>
                                     <th className="px-6 py-3 text-xs font-medium text-gray-500 uppercase text-right tracking-wider">Monto</th>
                                 </tr>
@@ -186,6 +187,17 @@ export const PanelCaja = ({
                                         </td>                                        
                                         <td className="px-6 py-4 text-sm text-gray-900 font-medium">
                                             {mov.metodo_pago?.nombre ? mov.metodo_pago?.nombre : ''}
+                                        </td>
+                                        <td className="px-6 py-4 text-sm font-medium">
+                                            <span 
+                                                className={`block w-full text-center px-3 py-1 rounded-full uppercase ${
+                                                    mov.factura 
+                                                        ? 'bg-green-100 text-green-800' 
+                                                        : 'bg-red-100 text-red-800'
+                                                }`}
+                                            >
+                                                {mov.factura ? 'Sí' : 'No'}
+                                            </span>
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap text-sm">
                                             <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
