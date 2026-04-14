@@ -1,7 +1,7 @@
 import { InputHTMLAttributes } from 'react';
 import CurrencyInput from 'react-currency-input-field';
 
-interface MoneyInputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'value' | 'onChange' | 'defaultValue'> {
+interface MoneyInputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'value' | 'onChange' | 'defaultValue' | 'step'> {
     label?: string; 
     id: string;
     name: string;
@@ -42,6 +42,9 @@ export default function MoneyInput({
                 placeholder={placeholder}
                 decimalsLimit={2}
                 prefix="$ "
+                allowDecimals={true}
+                decimalSeparator="."
+                groupSeparator=","
                 value={value ?? ''}
                 onValueChange={(val) => onValueChange(val)}
                 {...props}
