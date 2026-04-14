@@ -72,18 +72,21 @@ export const PanelCaja = ({
                     label="Ingresos (+)" 
                     amount={(sesion.total_ingresos_efectivo)} 
                     theme="success" 
+                    mostrarValor={false}
                 />
                 
                 <SummaryCard 
                     label="Egresos (-)" 
                     amount={(sesion.total_egresos_efectivo)} 
                     theme="danger" 
+                    mostrarValor={false}
                 />
                 
                 <SummaryCard 
                     label="Efectivo esperado" 
                     amount={(sesion.monto_esperado)} 
                     theme="highlight" 
+                    mostrarValor={false}
                 />
             </div>
 
