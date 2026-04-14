@@ -2,10 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { useForm } from '@inertiajs/react';
 import { route } from 'ziggy-js';
 import Swal from 'sweetalert2';
-
-import TextInput from '../ui/input-text';
-import PrimaryButton from '../ui/primary-button';
 import { SesionCaja } from '@/types';
+
+import PrimaryButton from '../ui/primary-button';
+import MoneyInput from '../ui/input-money';
 
 interface Props {
     onClose: () => void;
@@ -88,27 +88,21 @@ const ModalCierreCaja = ({
                 <p>Dinero para el siguiente turno: ${formatMoney(montoRestante)}</p>
 
                 <form onSubmit={handleSubmit} className="py-8">
-                    <TextInput
+                    <MoneyInput
                         id=''
                         name=''
-                        type='number'
                         label='Monto disponible'
                         value={data.monto_declarado}
-                        onChange={e=>{
-                            setData('monto_declarado',e.target.value);
-                        }}
+                        onValueChange={(e) => setData('monto_declarado',e ?? '')}
                         error={errors.monto_declarado}
                     />
 
-                    <TextInput
+                    <MoneyInput
                         id=''
                         name=''
                         label='Monto a enviar a contaduría'
                         value={data.monto_enviado_contaduria}
-                        type='number'
-                        onChange={e=>{
-                            setData('monto_enviado_contaduria',e.target.value);
-                        }}
+                        onValueChange={e => setData('monto_enviado_contaduria', e ?? '')}
                         error={errors.monto_enviado_contaduria}
                     />
 

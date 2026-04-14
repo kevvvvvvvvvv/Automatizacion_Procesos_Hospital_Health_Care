@@ -2,8 +2,11 @@ import { SesionCaja } from '@/types';
 import React, { useState } from 'react';
 import { useForm } from '@inertiajs/react';
 import { route } from 'ziggy-js';
+import { formatCurrency } from '@/utils/formatter-money';
 
-import TextInput from '@/components/ui/input-text'; 
+import TextAreaInput from '../ui/input-text-area';
+import PrimaryButton from '../ui/primary-button';
+import MoneyInput from '../ui/input-money';
 
 interface Props {
     sesiones: SesionCaja[];
@@ -58,18 +61,18 @@ const SesionesAudit = ({ sesiones }: Props) => {
                                         <p className="text-xs text-gray-500">{s.caja?.nombre} • {new Date(s.fecha_apertura).toLocaleDateString()}</p>
                                     </td>
                                     
-                                    <td className="px-6 py-4 text-right text-sm font-mono text-gray-600">
-                                        ${Number(s.monto_esperado).toFixed(2)}
+                                    <td className="px-6 py-4 text-right text-sm text-gray-600">
+                                        {formatCurrency(Number(s.monto_esperado))}
                                     </td>
 
-                                    <td className="px-6 py-4 text-right text-sm font-mono font-bold text-gray-900">
-                                        {s.estado === 'cerrada' ? `$${Number(s.monto_declarado).toFixed(2)}` : 'Abierta...'}
+                                    <td className="px-6 py-4 text-right text-sm font-bold text-gray-900">
+                                        {s.estado === 'cerrada' ? `${formatCurrency(Number(s.monto_declarado))}` : 'Abierta...'}
                                     </td>
 
                                     <td className="px-6 py-4 text-right">
                                         {s.estado === 'cerrada' && (
                                             <span className={`text-sm font-bold ${diferencia === 0 ? 'text-green-600' : 'text-red-600'}`}>
-                                                {diferencia === 0 ? '✓' : `$${diferencia.toFixed(2)}`}
+                                                {diferencia === 0 ? '✓' : `${formatCurrency(diferencia)}`}
                                             </span>
                                         )}
                                     </td>
@@ -116,40 +119,30 @@ const SesionesAudit = ({ sesiones }: Props) => {
                             <div className="bg-amber-50 p-3 rounded-lg border border-amber-100 text-sm mb-4">
                                 <div className="flex justify-between text-amber-800">
                                     <span>Monto Esperado:</span>
-                                    <span className="font-mono font-bold">${Number(sesionSeleccionada.monto_esperado).toFixed(2)}</span>
+                                    <span className="font-bold">{formatCurrency(Number(sesionSeleccionada.monto_esperado))}</span>
                                 </div>
                                 <div className="flex justify-between text-amber-800">
                                     <span>Monto Declarado:</span>
-                                    <span className="font-mono font-bold">${Number(sesionSeleccionada.monto_declarado).toFixed(2)}</span>
+                                    <span className="font-bold">{formatCurrency(Number(sesionSeleccionada.monto_declarado))}</span>
                                 </div>
                             </div>
-
-                            <TextInput
+                            <MoneyInput
                                 id=''
                                 name=''
-                                label="Monto de Ajuste (Recuperado)"
-                                type="number"
+                                label="Monto de ajuste (recuperado)"
                                 value={data.monto_ajuste}
-                                onChange={e => setData('monto_ajuste', e.target.value)}
+                                onValueChange={e => setData('monto_ajuste', e ?? '')}
                                 error={errors.monto_ajuste}
-                                placeholder="0.00"
                             />
 
-                            <div>
-                                <label className="block text-xs font-bold text-gray-500 uppercase mb-1">
-                                    Observación de Auditoría
-                                </label>
-                                <textarea
-                                    className="w-full rounded-lg border-gray-300 text-sm focus:ring-blue-500 focus:border-blue-500"
-                                    rows={3}
-                                    placeholder="Explica la razón de la discrepancia..."
-                                    value={data.observacion_auditoria}
-                                    onChange={e => setData('observacion_auditoria', e.target.value)}
-                                />
-                                {errors.observacion_auditoria && (
-                                    <p className="text-xs text-red-600 mt-1">{errors.observacion_auditoria}</p>
-                                )}
-                            </div>
+                            <TextAreaInput
+                                label = 'Observación de auditoria'
+                                rows={3}
+                                placeholder="Explica la razón de la discrepancia..."
+                                value={data.observacion_auditoria}
+                                onChange={e => setData('observacion_auditoria', e.target.value)}
+                                error={errors.observacion_auditoria}
+                            />
 
                             <div className="flex justify-end space-x-3 pt-4">
                                 <button
@@ -159,13 +152,12 @@ const SesionesAudit = ({ sesiones }: Props) => {
                                 >
                                     Cancelar
                                 </button>
-                                <button
-                                    type="submit"
+                                <PrimaryButton
+                                    type='submit'
                                     disabled={processing}
-                                    className="bg-blue-600 text-white px-6 py-2 rounded-lg font-bold hover:bg-blue-700 disabled:opacity-50 transition-colors"
                                 >
-                                    {processing ? 'Guardando...' : 'Finalizar Auditoría'}
-                                </button>
+                                    {processing ? 'Guardando...' : 'Guardar'}
+                                </PrimaryButton>
                             </div>
                         </form>
                     </div>

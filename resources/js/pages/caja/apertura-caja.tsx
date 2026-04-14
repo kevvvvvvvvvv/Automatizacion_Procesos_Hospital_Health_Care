@@ -4,8 +4,8 @@ import { route } from 'ziggy-js';
 import { Caja } from '@/types';
 
 import SelectInput from '@/components/ui/input-select';
-import TextInput from '@/components/ui/input-text';
 import PrimaryButton from '@/components/ui/primary-button';
+import MoneyInput from '@/components/ui/input-money';
 
 interface Props {
     cajas: Caja[];    
@@ -42,14 +42,13 @@ export const AperturaCaja = ({
                         onChange={e=>setData('caja_id',e)}
                         error={errors.caja_id}
                     />
-                    
-                    <TextInput
+
+                    <MoneyInput
                         label='Monto inicial'
                         id='monto_inicial'
                         name='monto_inicial'
                         value={data.monto_inicial}
-                        onChange={e=>setData('monto_inicial',e.target.value)}
-                        type='number'
+                        onValueChange={e=>setData('monto_inicial',e ?? '')}
                         error={errors.monto_inicial}
                     />
 

@@ -7,6 +7,7 @@ import Swal from 'sweetalert2';
 import SelectInput from '@/components/ui/input-select';
 import TextInput from '@/components/ui/input-text';
 import BooleanInput from '../ui/input-boolean';
+import MoneyInput from '../ui/input-money';
 
 interface Props {
     onClose: () => void;
@@ -303,15 +304,14 @@ const ModalGasto = ({
                         error={errors.nombre_paciente}
                     />
 
-                    <TextInput
-                        id=''
-                        name=''
-                        label='Monto'
+                    <MoneyInput
+                        id="monto"
+                        name="monto"
+                        label="Monto"
                         value={data.monto}
-                        onChange={e=>setData('monto',e.target.value)}
-                        type='number'
-                        step="0.01"
-                        error={errors.concepto}
+                        onValueChange={(value) => setData('monto', value ?? '')}
+                        error={errors.monto}
+                        
                     />
 
                     <BooleanInput

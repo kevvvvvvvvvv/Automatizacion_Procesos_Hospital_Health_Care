@@ -2,10 +2,11 @@ import React from 'react';
 import { useForm } from '@inertiajs/react';
 import { SesionCaja } from '@/types'; 
 import { route } from 'ziggy-js';
+import Swal from 'sweetalert2';
 
 import TextInput from '../ui/input-text';
 import PrimaryButton from '../ui/primary-button';
-import Swal from 'sweetalert2';
+import MoneyInput from '../ui/input-money';
 
 interface Props {
     sesionActiva: SesionCaja;
@@ -64,12 +65,12 @@ const ModalEnviarCajaAConta = ({ sesionActiva, onClose }: Props) => {
                         error={errors.concepto}
                     />
 
-                    <TextInput
+                    <MoneyInput
                         id='monto'
                         name='monto'
                         label='Total de dinero a enviar'
                         value={data.monto}
-                        onChange={e => setData('monto', e.target.value)}
+                        onValueChange={e => setData('monto', e ?? '')}
                         error={errors.monto}
                     />
 
