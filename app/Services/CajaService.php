@@ -160,7 +160,6 @@ class CajaService
                 $sesion->desglosesEfectivo()->createMany($desgloseFisico);
             }
             
-            
             $diferencia = $montoDeclarado - $sesion->monto_esperado;
 
             $sesion->update([
