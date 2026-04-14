@@ -4,6 +4,7 @@ namespace App\Models\Reservacion\ReservacionQuirofano;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use App\Enums\EstadoReservacion;
 
 use App\Models\User;
 use App\Models\Habitacion\Habitacion;
@@ -82,14 +83,16 @@ class ReservacionQuirofano extends Model
         'esterilizar_detalle',
         'rayosx_detalle',
         'patologico_detalle',
-        'laparoscopia_detalle'
+        'laparoscopia_detalle',
+
+        'estado',
     ];
 
     protected $casts = [
         'horarios' => 'array',
-        'fecha' => 'date'
+        'fecha' => 'date',
+        'estado' => EstadoReservacion::class,
     ];
-
 
     public function user(): BelongsTo 
     { 
