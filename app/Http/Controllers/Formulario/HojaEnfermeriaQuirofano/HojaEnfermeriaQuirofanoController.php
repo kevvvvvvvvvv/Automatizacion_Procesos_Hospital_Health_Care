@@ -100,11 +100,14 @@ class HojaEnfermeriaQuirofanoController extends Controller  implements HasMiddle
             'isquemias',
             'hojaSignos',
             'hojaMedicamentos.aplicaciones',
+            'hojasTerapiaIV.medicamentos',
+            'hojasTerapiaIV.detalleSoluciones',
         );
 
         $users = User::all();
         $insumos = ProductoServicio::where('tipo','INSUMOS')->get();
         $medicamentos = ProductoServicio::where('subtipo','MEDICAMENTOS')->get();
+        $soluciones = ProductoServicio::where('nombre_prestacion','like','%SOLUCION%')->get();
         $vias_administacion = CatalogoViaAdministracion::all();
 
         return Inertia::render('formularios/hojas-enfermerias-quirofano/edit',[
@@ -113,7 +116,8 @@ class HojaEnfermeriaQuirofanoController extends Controller  implements HasMiddle
             'hoja' => $hojasenfermeriasquirofano,
             'insumos' => $insumos,
             'users' => $users,
-            'medicamentos' => $medicamentos,    
+            'medicamentos' => $medicamentos, 
+            'soluciones' => $soluciones,   
             'vias_administracion' => $vias_administacion,
         ]);
     }

@@ -16,6 +16,7 @@ import MaterialQuirofano from '@/components/forms/hoja-enfermeria-quirofano/cont
 import IsquemiaFormContainer from '@/components/formularios/hoja-enfermeria-quirofano/isquemia/isquemias-fields';
 import SignosVitalesForm from '@/components/forms/signos-vitales-form';
 import MedicamentosForm from '@/components/forms/medicamentos-form';
+import TerapiaIVForm from '@/components/terapia-iv-form';
 
 
 interface CreateProps {
@@ -26,6 +27,7 @@ interface CreateProps {
 
     medicamentos: ProductoServicio[];
     vias_administracion: CatalogoViaAdministracion[];
+    soluciones: ProductoServicio[];
 
     users: User[];
 }
@@ -40,7 +42,9 @@ type SeccionHoja =
     'conteo_material_quirofano' | 
     'isquemias' | 
     'signos_vitales' | 
-    'ministracion_medicamentos';
+    'ministracion_medicamentos' |
+    'terapia_i_v' |
+    'egresos';
 
 
 
@@ -59,6 +63,8 @@ const secciones: {id: SeccionHoja, label: string}[] = [
     { id: 'isquemias', label: 'Isquemias'},
     { id: 'signos_vitales', label: 'Tomar signos'},
     { id: 'ministracion_medicamentos', label: 'Ministracion de medicamentos'},
+    { id: 'terapia_i_v', label: 'Terapia intravenosa'},
+    { id: 'egresos', label: 'Egresos'},
 
 ];
 
@@ -68,8 +74,9 @@ const CreateHojaEnfermeriaQuirofano:CreateComponent = ({
     hoja, 
     insumos, 
     users,
-    medicamentos,
+    medicamentos = [],
     vias_administracion,
+    soluciones = [],
 }) => {
     const [activeSection, setActiveSection] = useState<SeccionHoja>('general');
 
@@ -151,6 +158,12 @@ const CreateHojaEnfermeriaQuirofano:CreateComponent = ({
                             hoja={hoja}
                             medicamentos={medicamentos}
                             vias_administracion={vias_administracion}
+                        />
+            case 'terapia_i_v':
+                return <TerapiaIVForm
+                            hoja={hoja}
+                            soluciones={soluciones}
+                            medicamentos={medicamentos}
                         />
             default:
                 return null;

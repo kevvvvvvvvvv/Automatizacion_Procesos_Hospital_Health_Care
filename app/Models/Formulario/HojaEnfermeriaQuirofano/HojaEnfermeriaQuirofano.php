@@ -12,6 +12,7 @@ use App\Models\Formulario\PersonalEmpleado;
 use App\Models\Formulario\FormularioInstancia;
 use App\Models\Formulario\HojaEnfermeria\HojaMedicamento;
 use App\Models\Formulario\HojaEnfermeria\HojaSignos;
+use App\Models\Formulario\HojaEnfermeria\HojaTerapiaIV;
 use App\Models\Formulario\HojaOxigeno;
 
 /**
@@ -129,5 +130,10 @@ class HojaEnfermeriaQuirofano extends Model
     public function hojaMedicamentos(): MorphMany
     {
         return $this->morphMany(HojaMedicamento::class, 'medicable');
+    }
+
+    public function hojasTerapiaIV(): MorphMany
+    {
+        return $this->morphMany(HojaTerapiaIV::class,'terapiable');
     }
 }
