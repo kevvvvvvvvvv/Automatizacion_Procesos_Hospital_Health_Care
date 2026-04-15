@@ -51,8 +51,7 @@ const SesionesAudit = ({ sesiones }: Props) => {
                     </thead>
                     <tbody className="divide-y divide-gray-100">
                         {sesiones.map((s) => {
-                            const diferencia = Number(s.monto_declarado) - Number(s.monto_esperado);
-                            const tieneError = s.estado === 'cerrada' && diferencia !== 0;
+                            const tieneError = s.estado === 'cerrada' && s.sobrante_faltante !== 0;
 
                             return (
                                 <tr key={s.id} className={`${s.auditada ? 'bg-gray-50/50' : ''} hover:bg-gray-50 transition-colors`}>
@@ -71,8 +70,8 @@ const SesionesAudit = ({ sesiones }: Props) => {
 
                                     <td className="px-6 py-4 text-right">
                                         {s.estado === 'cerrada' && (
-                                            <span className={`text-sm font-bold ${diferencia === 0 ? 'text-green-600' : 'text-red-600'}`}>
-                                                {diferencia === 0 ? '✓' : `${formatCurrency(diferencia)}`}
+                                            <span className={`text-sm font-bold ${s.sobrante_faltante === 0 ? 'text-green-600' : 'text-red-600'}`}>
+                                                {s.sobrante_faltante === 0 ? '✓' : `${formatCurrency(Number(s.sobrante_faltante))}`}
                                             </span>
                                         )}
                                     </td>

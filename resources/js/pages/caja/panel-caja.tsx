@@ -3,6 +3,7 @@ import { MetodoPago, MovimientoCaja, SesionCaja } from '@/types';
 import { router } from '@inertiajs/react';
 import { route } from 'ziggy-js';
 import { formatCurrency } from '@/utils/formatter-money';
+import * as XLSX from 'xlsx';
 
 import ModalCierreCaja from '@/components/caja/modal-cierre-caja';
 import ModalGasto from '@/components/caja/modal-gasto';
@@ -37,6 +38,38 @@ export const PanelCaja = ({
             { preserveState: true, replace: true}
         );
     }
+
+    const exportarExcel = () => {
+        const datosExcel = movimientos.map((mov: MovimientoCaja) => ({
+            'Hora': new Date(mov.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+            'Área': mov.area || '',
+            'Concepto': mov.concepto,
+            'Descripción': mov.descripcion || '',
+            'Nombre del paciente': mov.nombre_paciente || '',
+            'Método pago': mov.metodo_pago?.nombre || '',
+            'Factura': mov.factura ? 'SÍ' : 'NO',
+            'Tipo': mov.tipo.toUpperCase(),
+            'Monto': mov.tipo === 'ingreso' ? Number(mov.monto) : -Number(mov.monto)
+        }));
+
+        const worksheet = XLSX.utils.json_to_sheet(datosExcel);
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, "Movimientos de Caja");
+
+        const wscols = [
+            { wch: 10 }, 
+            { wch: 15 }, 
+            { wch: 25 }, 
+            { wch: 30 }, 
+            { wch: 25 }, 
+            { wch: 15 }, 
+            { wch: 10 }, 
+            { wch: 10 }, 
+            { wch: 12 }, 
+        ];
+        worksheet['!cols'] = wscols;
+        XLSX.writeFile(workbook, `Reporte_Movimientos_${new Date().toISOString().split('T')[0]}.xlsx`);
+    };
 
     return (
         <div className="p-6 max-w-7xl mx-auto space-y-6">
@@ -155,6 +188,7 @@ export const PanelCaja = ({
                 </div>
 
                 {movimientos && movimientos.length > 0 ? (
+                    <>
                     <div className="overflow-x-auto">
                         <table className="min-w-full divide-y divide-gray-200 text-left">
                             <thead className="bg-gray-50">
@@ -219,6 +253,18 @@ export const PanelCaja = ({
                             </tbody>
                         </table>
                     </div>
+                    <div className="flex justify-end mb-4">
+                        <button
+                            onClick={exportarExcel}
+                            className="flex items-center px-4 py-2 bg-green-600 hover:bg-green-700 text-white text-sm font-bold rounded-lg transition-colors shadow-sm"
+                        >
+                            <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            </svg>
+                            Exportar a Excel
+                        </button>
+                    </div>
+                    </>
                 ) : (
                     <div className="p-8 text-center bg-gray-50">
                         <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">

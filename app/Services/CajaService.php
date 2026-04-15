@@ -145,33 +145,20 @@ class CajaService
     /**
      * Realiza el corte y cierra la sesión.
      */
-    public function cerrarTurno(SesionCaja $sesion, float $montoDeclarado, float $montoEnviadoContaduria,array $desgloseFisico = []): SesionCaja
+    public function cerrarTurno(SesionCaja $sesion, float $montoDeclarado, float $montoEnviadoContaduria, array $desgloseFisico = []): SesionCaja
     {
-        $estadoActual = $sesion->estado instanceof EstadoSesionCaja 
-            ? $sesion->estado->value 
-            : $sesion->estado;
-
         if ($sesion->estado !== 'abierta') {
             throw new Exception("La caja ya se encuentra cerrada.");
         }
 
         return DB::transaction(function () use ($sesion, $montoDeclarado, $desgloseFisico, $montoEnviadoContaduria) {
+            $diferenciaFinal = $montoDeclarado - $sesion->monto_esperado;
+
             if (!empty($desgloseFisico)) {
                 $sesion->desglosesEfectivo()->createMany($desgloseFisico);
             }
-            
-            $diferencia = $montoDeclarado - $sesion->monto_esperado;
 
-            $sesion->update([
-                'fecha_cierre' => now(),
-                'monto_enviado_contaduria' => $montoEnviadoContaduria,
-                'monto_declarado' => $montoDeclarado,
-                'sobrante_faltante' => $diferencia,
-            ]);
-
-            $diferencia = $sesion->monto_declarado - $sesion->monto_esperado;
-
-            // Cierre de caja y realizar el movimiento
+            // 4. Movimiento de SALIDA de la caja actual (Cajero)
             $this->registrarMovimiento(
                 $sesion,
                 TipoMovimientoCaja::EGRESO,
@@ -180,31 +167,36 @@ class CajaService
                 Auth::id(),
             );
 
+            // 5. Movimiento de ENTRADA a la Bóveda (Contador)
             $sesionBoveda = SesionCaja::whereHas('caja', function($query) {
                     $query->where('tipo', 'boveda'); 
                 })
                 ->where('estado', 'abierta')
                 ->first();
 
-            if ($sesionBoveda) {
-                $this->registrarMovimiento(
-                    $sesionBoveda,
-                    TipoMovimientoCaja::INGRESO,
-                    $montoEnviadoContaduria,
-                    "Recepción de efectivo: {$sesion->caja->nombre} - Cajero: {$sesion->user?->nombre_completo}",
-                    Auth::id(),
-                );
-
-            } else {
-                throw new Exception("No hay una sesión de Bóveda abierta para recibir el dinero.");
+            if (!$sesionBoveda) {
+                throw new Exception("Error: La Bóveda de Contaduría debe estar abierta para recibir el dinero.");
             }
+
+            $this->registrarMovimiento(
+                $sesionBoveda,
+                TipoMovimientoCaja::INGRESO,
+                $montoEnviadoContaduria,
+                "Recepción: {$sesion->caja->nombre} - Cajero: {$sesion->user?->nombre_completo}",
+                Auth::id(),
+            );
 
             $sesion->update([
                 'estado' => EstadoSesionCaja::CERRADA,
+                'fecha_cierre' => now(),
+                'monto_enviado_contaduria' => $montoEnviadoContaduria,
+                'monto_declarado' => $montoDeclarado,
+                'sobrante_faltante' => $diferenciaFinal,
+                'auditada' => $diferenciaFinal == 0 ? 1 : 0, 
             ]);
-
-            if ($diferencia != 0) {
-                $this->notificarDiscrepanciaAContador($sesion, $diferencia);
+            
+            if ($diferenciaFinal != 0) {
+                $this->notificarDiscrepanciaAContador($sesion, $diferenciaFinal);
             }
 
             return $sesion;
