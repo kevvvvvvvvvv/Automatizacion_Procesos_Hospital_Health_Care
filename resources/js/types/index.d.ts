@@ -1395,6 +1395,7 @@ export interface MovimientoCaja {
     concepto: string;
     comprobante: string | null;
     descripcion: string | null;
+    factura: boolean;
     nombre_paciente:string | null;
 
     user_id: number;

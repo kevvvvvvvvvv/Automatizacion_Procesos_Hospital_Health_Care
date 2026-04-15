@@ -161,7 +161,7 @@ export default function DashboardBoveda({
 
                 {/* VISTA: SOLICITUDES */}
                 {vistaActiva === 'solicitudes' && (
-                    <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+                    <div className="bg-white rounded-2xl shadow-sm border border-gray-200 ">
                         <div className="bg-gray-50 px-6 py-4 border-b border-gray-200 font-bold text-gray-800">
                             Solicitudes de efectivo pendientes ({solicitudesPendientes.length})
                         </div>
@@ -202,9 +202,9 @@ export default function DashboardBoveda({
                 {vistaActiva === 'diario' && (
                     <div className="space-y-6">
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            <SummaryCard label='Ingresos' amount={resumenHoy.ingresos} theme='success' />
-                            <SummaryCard label='Egresos' amount={resumenHoy.egresos} theme='danger' />
-                            <SummaryCard label='Neto' amount={resumenHoy.balance} />
+                            <SummaryCard label='Ingresos' amount={resumenHoy.ingresos} theme='success' mostrarValor={false}/>
+                            <SummaryCard label='Egresos' amount={resumenHoy.egresos} theme='danger' mostrarValor={false}/>
+                            <SummaryCard label='Neto' amount={resumenHoy.balance} mostrarValor={false}/>
                         </div>
 
                         <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">

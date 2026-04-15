@@ -1,11 +1,12 @@
 import React from 'react';
 import { useForm } from '@inertiajs/react';
 import { route } from 'ziggy-js'
+import Swal from 'sweetalert2';
+import { SesionCaja } from '@/types';
 
 import TextInput from '@/components/ui/input-text';
 import PrimaryButton from '../ui/primary-button';
-import Swal from 'sweetalert2';
-import { SesionCaja } from '@/types';
+import MoneyInput from '../ui/input-money';
 
 interface Props {
     sesionBovedo: SesionCaja;
@@ -61,13 +62,12 @@ export const ModalGastoBoveda = ({
                         error={errors.concepto}
                     />
 
-                    <TextInput
+                    <MoneyInput
                         id=''
                         name=''
                         label='Monto'
                         value={data.monto}
-                        onChange={e=>setData('monto',e.target.value)}
-                        type='number'
+                        onValueChange={e=>setData('monto',e ?? '')}
                         error={errors.monto}
                     />
 

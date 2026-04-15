@@ -31,6 +31,7 @@ class RegistrarMovimientoRequest extends FormRequest
             'area' => 'required|string',
             'origen' => 'required|string',
             'descripcion' => 'string|nullable',
+            'factura' => 'nullable|boolean',
             'nombre_paciente' => 'nullable|string',
         ];
     }

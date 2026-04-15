@@ -61,6 +61,7 @@
         "lucide-react": "^0.475.0",
         "react": "^19.0.0",
         "react-chartjs-2": "^5.3.1",
+        "react-currency-input-field": "^4.0.5",
         "react-datepicker": "^8.8.0",
         "react-dom": "^19.0.0",
         "react-hot-toast": "^2.6.0",
@@ -74,6 +75,7 @@
         "tailwindcss-animate": "^1.0.7",
         "typescript": "^5.7.2",
         "vite": "^7.0.4",
+        "xlsx": "^0.18.5",
         "ziggy-js": "^2.6.0"
     },
     "optionalDependencies": {

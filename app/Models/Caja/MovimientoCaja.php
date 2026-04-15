@@ -19,6 +19,9 @@ class MovimientoCaja extends Model
         'concepto',
         'comprobante',
         'descripcion',
+
+        'factura',
+
         'nombre_paciente',
         'metodo_pago_id',
     ];

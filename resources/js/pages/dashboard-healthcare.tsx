@@ -95,10 +95,10 @@ export default function Dashboard() {
                     />)}
                 </div>
                 <div>
-                    {can('consultar reservaciones') && (
+                    {(can('consultar reservaciones quirofanos') || can('consultar reservaciones consultorios')) && (
                     <CardButton
                         icon={MdCalendarMonth}
-                        text="Reservar"
+                        text="Reservaciones"
                         onClick={() => router.visit(route('rerservaciones.reserva'))}
                     />
                     )}

@@ -1,11 +1,13 @@
 import React from 'react';
 import { useForm } from '@inertiajs/react';
 import { route } from 'ziggy-js';
+import { MetodoPago, SesionCaja } from '@/types';
+import Swal from 'sweetalert2';
 
 import SelectInput from '@/components/ui/input-select';
 import TextInput from '@/components/ui/input-text';
-import { MetodoPago, SesionCaja } from '@/types';
-import Swal from 'sweetalert2';
+import BooleanInput from '../ui/input-boolean';
+import MoneyInput from '../ui/input-money';
 
 interface Props {
     onClose: () => void;
@@ -185,6 +187,7 @@ const ModalGasto = ({
         origen: 'operativo',
         metodo_pago_id: '',
         nombre_paciente:'',
+        factura: false,
     });
 
     const optionsMetodoPago = metodos_pagos.map((met) => (
@@ -301,17 +304,22 @@ const ModalGasto = ({
                         error={errors.nombre_paciente}
                     />
 
-                    <TextInput
-                        id=''
-                        name=''
-                        label='Monto'
+                    <MoneyInput
+                        id="monto"
+                        name="monto"
+                        label="Monto"
                         value={data.monto}
-                        onChange={e=>setData('monto',e.target.value)}
-                        type='number'
-                        step="0.01"
-                        error={errors.concepto}
+                        onValueChange={(value) => setData('monto', value ?? '')}
+                        error={errors.monto}
+                        
                     />
 
+                    <BooleanInput
+                        label='Requiere factura'
+                        value={data.factura}
+                        onChange={e => setData('factura', e)}
+                        error={errors.factura}
+                    />
 
                     <div className="mt-6 flex justify-end space-x-3">
                         <button 
