@@ -99,6 +99,7 @@ class HojaEnfermeriaQuirofanoController extends Controller  implements HasMiddle
             'conteoMaterialQuirofano',
             'isquemias',
             'hojaSignos',
+            'hojaMedicamentos.aplicaciones',
         );
 
         $users = User::all();

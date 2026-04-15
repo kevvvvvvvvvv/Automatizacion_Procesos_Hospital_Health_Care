@@ -489,6 +489,7 @@ export interface HojaEnfermeriaQuirofano {
     oxigeno_activo: HojaOxigeno[];
     conteo_material_quirofano: ConteoMaterialQuirofano[];
     isquemias: Isquemia[]; 
+    hoja_medicamentos: HojaMedicamento[];
 
     tipo_modelo: string;
 }

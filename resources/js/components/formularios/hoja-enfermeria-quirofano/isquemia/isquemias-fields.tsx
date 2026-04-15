@@ -73,7 +73,7 @@ const IsquemiaFields = ({
                                     cancelButtonText: 'Cancelar'
                                 }).then((result) => {
                                     if (result.isConfirmed) {
-                                        router.post(route('isquemias.horaInicio', { id: reg.id }), {}, {
+                                        router.post(route('isquemias.horaInicio', { isquemia: reg.id }), {}, {
                                             preserveScroll: true 
                                         });
                                     }
@@ -103,34 +103,43 @@ const IsquemiaFields = ({
             key: 'hora_termino',
             render: (reg: Isquemia) => (
                 <span>
-                    {reg.hora_termino ? (
-                        <span>
-                            {formatDate(reg.hora_termino)}
-                        </span>
-                    ):(
-                        <PrimaryButton
-                            onClick={() => {
-                                Swal.fire({
-                                    title: '¿Finalizar isquemia?',
-                                    text: "Se registrará la hora actual como fin del proceso.",
-                                    icon: 'warning',
-                                    showCancelButton: true,
-                                    confirmButtonColor: '#3085d6',
-                                    cancelButtonColor: '#d33',
-                                    confirmButtonText: 'Sí, finalizar',
-                                    cancelButtonText: 'Cancelar'
-                                }).then((result) => {
-                                    if (result.isConfirmed) {
-                                        router.post(route('isquemias.horaFin', { id: reg.id }), {}, {
-                                            preserveScroll: true 
-                                        });
-                                    }
-                                });
-                            }}
-                        >
-                            Finalizar
-                        </PrimaryButton>
-                    )}
+                    {reg.hora_inicio ? (
+                        reg.hora_termino ? (
+                            <span>
+                                {formatDate(reg.hora_termino)}
+                            </span>
+                        ):(
+                            <PrimaryButton
+                                onClick={() => {
+                                    Swal.fire({
+                                        title: '¿Finalizar isquemia?',
+                                        text: "Se registrará la hora actual como fin del proceso.",
+                                        icon: 'warning',
+                                        showCancelButton: true,
+                                        confirmButtonColor: '#3085d6',
+                                        cancelButtonColor: '#d33',
+                                        confirmButtonText: 'Sí, finalizar',
+                                        cancelButtonText: 'Cancelar'
+                                    }).then((result) => {
+                                        if (result.isConfirmed) {
+                                            router.post(route('isquemias.horaFin', { id: reg.id }), {}, {
+                                                preserveScroll: true 
+                                            });
+                                        }
+                                    });
+                                }}
+                            >
+                                Finalizar
+                            </PrimaryButton>
+                        )
+
+                        ):(
+                            <span> 
+                                Registra la hora de incio
+                            </span>
+                        )
+
+                    }
                 </span>
             )
         },

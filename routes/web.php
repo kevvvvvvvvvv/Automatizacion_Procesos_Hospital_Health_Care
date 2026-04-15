@@ -233,8 +233,8 @@ Route::delete('hojasinsumosbasicos/{hojasinsumosbasico}', [FormularioHojaInsumos
 Route::put('conteo-material-quirofano/{hojasenfermeriasquirofano}',[ConteoMaterialQuirofanoController::class, 'store'])->name('conteo-material-quirofano')->middleware('auth');
 
 Route::post('isquemias',[IsquemiaController::class, 'store'])->name('isquemias.store')->middleware('auth');
-Route::post('isquemias/{isquemia}',[IsquemiaController::class, 'registrarHoraInicio'])->name('isquemias.horaInicio')->middleware('auth');
-Route::post('isquemias/{isquemia}',[IsquemiaController::class, 'registrarHoraFin'])->name('isquemias.horaFin')->middleware('auth');
+Route::post('isquemias/{isquemia}/inicio',[IsquemiaController::class, 'registrarHoraInicio'])->name('isquemias.horaInicio')->middleware('auth');
+Route::post('isquemias/{isquemia}/fin',[IsquemiaController::class, 'registrarHoraFin'])->name('isquemias.horaFin')->middleware('auth');
 
 Route::get('/pacientes/{paciente}/estancias/{estancia}/notas-urgencias/{notaUrgencia}',[NotaUrgenciaController::class, 'show'])->name('pacientes.estancias.notasurgencias.show')->middleware('auth');
 

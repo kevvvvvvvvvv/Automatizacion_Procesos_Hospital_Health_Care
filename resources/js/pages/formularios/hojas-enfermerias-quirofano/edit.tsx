@@ -148,6 +148,7 @@ const CreateHojaEnfermeriaQuirofano:CreateComponent = ({
                         />
             case 'ministracion_medicamentos':
                 return <MedicamentosForm
+                            hoja={hoja}
                             medicamentos={medicamentos}
                             vias_administracion={vias_administracion}
                         />

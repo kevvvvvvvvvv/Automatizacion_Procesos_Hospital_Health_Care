@@ -3,11 +3,12 @@ import { useForm, router } from '@inertiajs/react';
 import { HojaEnfermeria, ProductoServicio, HojaMedicamento, CatalogoViaAdministracion, RecienNacido, HojaEnfermeriaQuirofano } from '@/types';
 import { route } from 'ziggy-js';
 import { optionsUnidadMedida, optionsUnidadTiempo } from '@/constant/const';
+import Swal from 'sweetalert2'; 
 
 import InputText from '@/components/ui/input-text';
 import SelectInput from '@/components/ui/input-select'; 
 import PrimaryButton from '@/components/ui/primary-button';
-import Swal from 'sweetalert2';                     
+                    
 
 interface MedicamentoAgregado {
     id: string;
@@ -172,11 +173,17 @@ const MedicamentosForm: React.FC<Props> = ({
     const handleSubmitList = (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Transformamos los datos antes de enviar
+console.log("Hoja Data:", hoja?.id, hoja?.tipo_modelo);
+
+    if (!hoja?.id || !hoja?.tipo_modelo) {
+        Swal.fire('Error', 'No se detectó la información de la hoja base.', 'error');
+        return;
+    }
+
     transform((data) => ({
         ...data,
-        medicable_id: hoja?.id,
-        medicable_type: hoja?.tipo_modelo,
+        medicable_id: hoja.id,
+        medicable_type: hoja.tipo_modelo,
     }));
 
     post(route('hojasmedicamentos.store'), {
@@ -236,6 +243,7 @@ const MedicamentosForm: React.FC<Props> = ({
         return viasOptions; 
     };
 
+    console.log('Errores: ', errors);
 
     return (
         <div>

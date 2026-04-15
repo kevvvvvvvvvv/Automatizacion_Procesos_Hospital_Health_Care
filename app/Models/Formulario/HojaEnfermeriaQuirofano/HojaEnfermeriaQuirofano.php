@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 
 use App\Models\Formulario\PersonalEmpleado;
 use App\Models\Formulario\FormularioInstancia;
+use App\Models\Formulario\HojaEnfermeria\HojaMedicamento;
 use App\Models\Formulario\HojaEnfermeria\HojaSignos;
 use App\Models\Formulario\HojaOxigeno;
 
@@ -123,5 +124,10 @@ class HojaEnfermeriaQuirofano extends Model
     public function hojaSignos():MorphMany
     {
         return $this->morphMany(HojaSignos::class, 'registrable');
+    }
+
+    public function hojaMedicamentos(): MorphMany
+    {
+        return $this->morphMany(HojaMedicamento::class, 'medicable');
     }
 }
