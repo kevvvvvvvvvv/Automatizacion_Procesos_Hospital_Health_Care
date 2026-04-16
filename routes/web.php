@@ -65,6 +65,7 @@ use App\Http\Controllers\MantenimientoController;
 use App\Http\Controllers\EncuestaPersonalController;
 use App\Http\Controllers\Formulario\HojaEnfemeria\EgresoLiquidoController;
 use App\Http\Controllers\Formulario\HojaEnfermeriaQuirofano\ConteoMaterialQuirofanoController;
+use App\Http\Controllers\Formulario\HojaEnfermeriaQuirofano\HojaRelevoController;
 use App\Http\Controllers\Formulario\HojaEnfermeriaQuirofano\IsquemiaController;
 use App\Http\Controllers\ReporteInterconsultaController;
 use App\Http\Controllers\ReporteConcienciaController;
@@ -236,6 +237,8 @@ Route::put('conteo-material-quirofano/{hojasenfermeriasquirofano}',[ConteoMateri
 Route::post('isquemias',[IsquemiaController::class, 'store'])->name('isquemias.store')->middleware('auth');
 Route::post('isquemias/{isquemia}/inicio',[IsquemiaController::class, 'registrarHoraInicio'])->name('isquemias.horaInicio')->middleware('auth');
 Route::post('isquemias/{isquemia}/fin',[IsquemiaController::class, 'registrarHoraFin'])->name('isquemias.horaFin')->middleware('auth');
+
+Route::post('relevar-turno/{hoja}',[HojaRelevoController::class, 'store'])->name('relevarTurno.store')->middleware('auth');
 
 Route::get('/pacientes/{paciente}/estancias/{estancia}/notas-urgencias/{notaUrgencia}',[NotaUrgenciaController::class, 'show'])->name('pacientes.estancias.notasurgencias.show')->middleware('auth');
 

@@ -13,6 +13,16 @@ return new class extends Migration
     {
         Schema::create('hoja_relevos', function (Blueprint $table) {
             $table->id();
+
+            $table->foreignId('hoja_enfermeria_quirofano_id')
+                ->constrained();
+            $table->foreignId('user_id')
+                ->constrained()
+                ->comment('Enfermera que entra en el siguiente turno.');
+            $table->dateTime('hora_entrada');
+            $table->dateTime('hora_salida')->nullable();
+            $table->text('observaciones_entrega')->nullable();
+        
             $table->timestamps();
         });
     }
