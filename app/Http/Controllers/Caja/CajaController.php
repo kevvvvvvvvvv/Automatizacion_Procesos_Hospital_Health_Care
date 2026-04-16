@@ -43,6 +43,7 @@ class CajaController extends Controller
             ->first();
 
         $movimientos = MovimientoCaja::where('user_id', Auth::id())
+            ->with('metodoPago')
             ->whereDate('created_at',$fechaCarbon)
             ->latest()
             ->get();
