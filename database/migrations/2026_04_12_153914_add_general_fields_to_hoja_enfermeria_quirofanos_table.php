@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('posicion_paciente')->nullable();
             $table->text('procedimiento_quirurgico')->nullable();
             $table->string('placa_cauterio')->nullable();
+            $table->string('medio_oxigeno')->nullable();
         });
     }
 
@@ -29,6 +30,7 @@ return new class extends Migration
             $table->dropColumn('posicion_paciente');
             $table->dropColumn('procedimiento_quirurgico');
             $table->dropColumn('placa_cauterio');
+            $table->dropColumn('medio_oxigeno');
         });
     }
 };

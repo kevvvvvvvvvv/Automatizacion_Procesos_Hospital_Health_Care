@@ -54,6 +54,7 @@ class HojaEnfermeriaQuirofanoRequest extends FormRequest
             'posicion_paciente' => ['nullable'],
             'procedimiento_quirurgico' => ['nullable'],
             'placa_cauterio' => ['nullable'],
+            'medio_oxigeno' => ['nullable'],
         ];
     }
 }

@@ -73,7 +73,8 @@ class HojaEnfermeriaQuirofano extends Model
         'nota_enfermeria',
         'posicion_paciente',
         'procedimiento_quirurgico',
-        'placa_cauterio'
+        'placa_cauterio',
+        'medio_oxigeno',
     ];
 
     protected $casts = [

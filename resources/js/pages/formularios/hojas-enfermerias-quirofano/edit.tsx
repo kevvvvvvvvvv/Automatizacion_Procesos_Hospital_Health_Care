@@ -44,7 +44,7 @@ type SeccionHoja =
     'signos_vitales' | 
     'ministracion_medicamentos' |
     'terapia_i_v' |
-    'egresos';
+    'egresos' ;
 
 
 

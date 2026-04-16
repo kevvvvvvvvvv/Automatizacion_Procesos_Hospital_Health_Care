@@ -447,6 +447,7 @@ export interface HojaEnfermeriaQuirofano {
     hora_fin_paciente: string;
 
     estado: string;
+    medio_oxigeno: string; 
 
     formulario_instancia: FormularioInstancia;
 
