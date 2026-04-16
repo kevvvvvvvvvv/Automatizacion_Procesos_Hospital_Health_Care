@@ -29,7 +29,8 @@ class ReservacionQuirofanoController extends Controller
             new Middleware($permission . ':consultar reservaciones quirofanos', only: ['index', 'show', 'generarPDF']),
             new Middleware($permission . ':crear reservaciones quirofanos', only: ['create', 'store']),
             new Middleware($permission . ':eliminar reservaciones quirofanos', only: ['destroy']),
-        ];
+            new Middleware($permission . ':crear reservaciones quirofanos', only: ['create', 'store', 'edit', 'update']),
+            ];
     }
 
     public function index()
@@ -145,7 +146,69 @@ class ReservacionQuirofanoController extends Controller
             ]);
         }
     }
+    public function edit(ReservacionQuirofano $quirofano)
+    {
+        return Inertia::render('reservacion_quirofano/edit', [
+            'quirofano' => $quirofano,
+            'medicos' => User::select('id', 'nombre', 'apellido_paterno', 'apellido_materno')
+                ->get()
+                ->map(fn ($u) => [
+                    'id' => $u->id,
+                    'nombre_completo' => "{$u->nombre} {$u->apellido_paterno} {$u->apellido_materno}"
+                ]),
+            'limitesDinamicos' => Habitacion::where('tipo', 'Quirofano')
+                ->selectRaw('ubicacion, COUNT(*) as total')
+                ->groupBy('ubicacion')
+                ->pluck('total', 'ubicacion')
+                ->toArray(),
+        ]);
+    }
 
+    public function update(ReservacionQuirofanoRequest $request, ReservacionQuirofano $quirofano)
+    {
+        $data = $request->validated();
+        $LOCALIZACION = 'Plan de Ayutla';
+
+        try {
+            $quirofanos = Habitacion::where('tipo', 'Quirofano')
+                ->where('ubicacion', $LOCALIZACION)
+                ->pluck('id');
+            
+            $habitacionAsignada = null;
+
+            foreach ($quirofanos as $quirofanoId) {
+                $ocupado = ReservacionQuirofano::where('habitacion_id', $quirofanoId)
+                    ->where('id', '!=', $quirofano->id) 
+                    ->where('fecha', $data['fecha'])
+                    ->where(function ($query) use ($data) {
+                        foreach ($data['horarios'] as $hora) {
+                            $query->orWhereJsonContains('horarios', $hora);
+                        }
+                    })->exists();
+
+                if (!$ocupado) {
+                    $habitacionAsignada = $quirofanoId;
+                    break;
+                }
+            }
+
+            if (!$habitacionAsignada) {
+                return back()->withErrors(['horarios' => 'No hay quirófanos disponibles para este nuevo horario.']);
+            }
+            $quirofano->fill($data);
+            $quirofano->habitacion_id = $habitacionAsignada;
+            $quirofano->localizacion = $LOCALIZACION;
+
+            $quirofano->save();
+
+            return redirect()->route('quirofanos.index')->with('success', 'Reservación actualizada correctamente.');
+
+        } catch (\Exception $e) {
+            return back()->withErrors([
+                'error' => 'Error al actualizar: ' . $e->getMessage()
+            ]);
+        }
+    }
 
     public function show(ReservacionQuirofano $quirofano)
     {
