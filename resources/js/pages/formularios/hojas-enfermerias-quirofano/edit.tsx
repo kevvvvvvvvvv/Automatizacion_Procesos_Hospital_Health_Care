@@ -17,7 +17,7 @@ import IsquemiaFormContainer from '@/components/formularios/hoja-enfermeria-quir
 import SignosVitalesForm from '@/components/forms/signos-vitales-form';
 import MedicamentosForm from '@/components/forms/medicamentos-form';
 import TerapiaIVForm from '@/components/terapia-iv-form';
-
+import EgresoLiquidoForm from '@/components/forms/hoja-enfermeria.tsx/egreso-liquido-form';
 
 interface CreateProps {
     paciente: Paciente;
@@ -66,6 +66,12 @@ const secciones: {id: SeccionHoja, label: string}[] = [
     { id: 'terapia_i_v', label: 'Terapia intravenosa'},
     { id: 'egresos', label: 'Egresos'},
 
+];
+
+const tiposQuirofano = [
+    { value: 'diuresis', label: 'Diuresis' },
+    { value: 'sangrado', label: 'Sangrado' },
+    { value: 'otros', label: 'Otros'},
 ];
 
 const CreateHojaEnfermeriaQuirofano:CreateComponent = ({
@@ -164,6 +170,11 @@ const CreateHojaEnfermeriaQuirofano:CreateComponent = ({
                             hoja={hoja}
                             soluciones={soluciones}
                             medicamentos={medicamentos}
+                        />
+            case 'egresos':
+                return <EgresoLiquidoForm
+                            hoja={hoja}
+                            tiposDisponibles={tiposQuirofano}
                         />
             default:
                 return null;

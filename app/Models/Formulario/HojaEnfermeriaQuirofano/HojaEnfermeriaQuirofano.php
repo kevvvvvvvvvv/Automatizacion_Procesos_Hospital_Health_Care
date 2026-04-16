@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 
 use App\Models\Formulario\PersonalEmpleado;
 use App\Models\Formulario\FormularioInstancia;
+use App\Models\Formulario\HojaEnfermeria\EgresoLiquido;
 use App\Models\Formulario\HojaEnfermeria\HojaMedicamento;
 use App\Models\Formulario\HojaEnfermeria\HojaSignos;
 use App\Models\Formulario\HojaEnfermeria\HojaTerapiaIV;
@@ -136,5 +137,10 @@ class HojaEnfermeriaQuirofano extends Model
     public function hojasTerapiaIV(): MorphMany
     {
         return $this->morphMany(HojaTerapiaIV::class,'terapiable');
+    }
+
+    public function egresoLiquidos(): MorphMany
+    {
+        return $this->morphMany(EgresoLiquido::class,'liquidable');
     }
 }

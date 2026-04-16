@@ -63,6 +63,7 @@ use App\Http\Controllers\LigaFutbolController;
 use App\Http\Controllers\Encuestas\EncuestaSatisfaccionController;
 use App\Http\Controllers\MantenimientoController;
 use App\Http\Controllers\EncuestaPersonalController;
+use App\Http\Controllers\Formulario\HojaEnfemeria\EgresoLiquidoController;
 use App\Http\Controllers\Formulario\HojaEnfermeriaQuirofano\ConteoMaterialQuirofanoController;
 use App\Http\Controllers\Formulario\HojaEnfermeriaQuirofano\IsquemiaController;
 use App\Http\Controllers\ReporteInterconsultaController;
@@ -76,12 +77,12 @@ use App\Http\Controllers\IngresosEgresosRNController;
 
 
 use App\Http\Controllers\ReporteEstanciaController;
-use App\Models\HojaContolLiquido;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;
 
 use App\Http\Controllers\NotificacionController;
+
 Route::get('/', function () {
     return Inertia::render('auth/login');
 })->name('home');
@@ -221,7 +222,7 @@ Route::post('hojas-riesgo-caidas/{hojasenfermeria}',[FormularioHojaRiesgoCaidaCo
 
 Route::post('hojas-habitus-exterior/{hojasenfermeria}', [FormularioHojaHabitusExteriorController::class,'store'])->name('hojas-habitus-exterior.store')->middleware('auth');
 
-
+Route::resource('egresos-liquidos',EgresoLiquidoController::class)->middleware('auth');
 
 
 Route::post('/notificaciones/marcar-leidas', [NotificacionController::class, 'markAllAsRead'])->name('notificaciones.read')->middleware('auth');

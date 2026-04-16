@@ -492,6 +492,7 @@ export interface HojaEnfermeriaQuirofano {
     isquemias: Isquemia[]; 
     hoja_medicamentos: HojaMedicamento[];
     hojas_terapia_i_v: HojaTerapiaIV[];
+    egreso_liquidos: EgresoLiquido[];
 
     tipo_modelo: string;
 }
@@ -1564,4 +1565,13 @@ export interface Isquemia {
 
     created_at: string;
     updated_at: string;
+}
+
+export interface EgresoLiquido {
+    id: number;
+    tipo: string;
+    cantidad: number;
+    descripcion: string;
+
+    created_at: string;
 }
