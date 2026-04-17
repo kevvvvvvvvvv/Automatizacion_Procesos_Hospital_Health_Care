@@ -31,14 +31,13 @@ const horariosLista = generarHorarios();
 const EditReservacion: React.FC<Props> = ({
     paciente,
     estancia,
-    quirofano, // Este es el objeto que trae los datos de la DB
+    quirofano, 
     medicos = [],
 }) => {
     //const esExterno = !quirofano.estancia_id;
     const medicosOptions = medicos.map((med) => ({ value: med.id, label: med.nombre_completo }));
     const { errors: serverErrors } = usePage().props as any;
 
-    // --- INICIALIZACIÓN DEL FORMULARIO CON DATOS EXISTENTES ---
     const form = useForm({
         paciente: quirofano.paciente || "",
         paciente_id: quirofano.paciente || null,
@@ -50,7 +49,7 @@ const EditReservacion: React.FC<Props> = ({
         fecha: quirofano.fecha || new Date().toISOString().split("T")[0],
         horarios: Array.isArray(quirofano.horarios) 
         ? quirofano.horarios.map(h => h.length === 5 ? `${quirofano.fecha} ${h}:00` : h) 
-        : [] as string[], // Aquí se cargan los bloques azules
+        : [] as string[], 
         comentarios: quirofano.comentarios || "",
         
         laparoscopia: { 
