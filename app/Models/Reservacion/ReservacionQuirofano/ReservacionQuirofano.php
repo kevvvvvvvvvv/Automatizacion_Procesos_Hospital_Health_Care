@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Models\Reservacion\ReservacionQuirofano;
-
+ 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -86,9 +86,9 @@ class ReservacionQuirofano extends Model
     ];
 
     protected $casts = [
-        'horarios' => 'array',
-        'fecha' => 'date'
-    ];
+    'horarios' => 'array',
+    'fecha' => 'date:Y-m-d',
+];
 
 
     public function user(): BelongsTo 
