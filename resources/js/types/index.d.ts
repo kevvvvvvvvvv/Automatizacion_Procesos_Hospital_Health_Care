@@ -404,6 +404,8 @@ export interface HojaEnfermeria {
 
     hoja_somatometria: Somatometria[];
     hoja_ingresos_egresos_rn: Ingresosrn_egresos[];
+
+    tipo_modelo: string;
 }
 
 export interface HojaRiesgoCaida {
@@ -445,6 +447,7 @@ export interface HojaEnfermeriaQuirofano {
     hora_fin_paciente: string;
 
     estado: string;
+    medio_oxigeno: string; 
 
     formulario_instancia: FormularioInstancia;
 
@@ -458,16 +461,40 @@ export interface HojaEnfermeriaQuirofano {
     };
 
     anestesia: {
-        anestesia_general: boolean;
-        anestesia_local: boolean;
-        bloqueo: boolean;
+        general: boolean,
+        local: boolean,
+        sedacion: boolean;
+
+        regional: {
+            neuroaxial: {
+                bsa: boolean,
+                epidural: boolean,
+                mixto: boolean,
+            },
+            periferico: {
+                plexo_braquial: boolean,
+                otros: boolean,
+            }
+        }
     }
 
+    posicion_paciente: string;
+    procedimiento_quirurgico: string;
+    placa_cauterio: string;
+    nota_enfermeria: string;
+
+    hoja_signos: HojaSignos[];
     hoja_insumos_basicos: HojaInsumosBasicos[];
     personal_empleados: PersonalEmpleado[];
     hoja_oxigenos: HojaOxigeno[] | null;
-
     oxigeno_activo: HojaOxigeno[];
+    conteo_material_quirofano: ConteoMaterialQuirofano[];
+    isquemias: Isquemia[]; 
+    hoja_medicamentos: HojaMedicamento[];
+    hojas_terapia_i_v: HojaTerapiaIV[];
+    egreso_liquidos: EgresoLiquido[];
+
+    tipo_modelo: string;
 }
 
 export interface HojaInsumosBasicos {
@@ -756,6 +783,8 @@ export interface SolicitudDieta {
 
     dieta: Dieta;
     user_supervisa?: User; 
+
+
 }
 
 export interface Dieta {
@@ -1287,6 +1316,8 @@ export interface RecienNacido{
     hoja_signos: HojaSignos[];
     somatometrias: Somatometrias[];
     ingresos_egresos: Ingresos_Egresos_RN[];
+
+    tipo_modelo: string;
 }
 export interface Somatometrias{
     id: number;
@@ -1416,3 +1447,131 @@ export interface SolicitudTraspaso {
 }
 
 
+
+export interface Caja {
+  id: number;
+  nombre: string;
+  activa: boolean;
+  tipo: string;
+  created_at: string;
+  updated_at?: string;
+}
+
+export interface SesionCaja {
+    id: number;
+    caja_id: number;
+    user_id: number;
+    fecha_apertura: string;
+    fecha_cierre: string | null;
+    monto_inicial: number;
+    estado: EstadoSesion;
+    
+    total_ingresos_efectivo: number;
+    total_egresos_efectivo: number;
+    total_otros_metodos: number;
+    
+    monto_declarado: number | null;
+    sobrante_faltante: number | null;
+    monto_esperado: number;
+    
+    created_at: string;
+    updated_at?: string;
+
+    auditada: boolean;
+    monto_ajuste: number;
+    observacion_auditoria: string;
+    
+    auditor
+
+    caja?: Caja;
+    user?: User;
+    movimientos: MovimientoCaja[];
+
+}
+
+export interface MovimientoCaja {
+    id: number;
+    sesion_caja_id: number;
+    tipo: TipoMovimiento;
+    monto: number;
+    area: string;
+    concepto: string;
+    comprobante: string | null;
+    descripcion: string | null;
+    nombre_paciente:string | null;
+
+    user_id: number;
+
+    created_at: string;
+    updated_at?: string;
+
+    sesion_caja: SesionCaja;
+    metodo_pago: MetodoPago;
+
+    user: User;
+}
+
+
+export interface DesgloseEfectivo {
+    id: number;
+    sesion_caja_id: number;
+    denominacion: number;
+    cantidad: number;
+    total: number;
+    created_at: string;
+    updated_at?: string;
+}
+
+
+export interface SolicitudTraspaso {
+    id: number;
+    caja_origen_id: number;
+    caja_destino_id: number;
+    monto_solicitado: number; 
+    monto_aprobado: number | null; 
+    
+    estado: 'pendiente' | 'aprobada' | 'rechazada';
+    concepto: string;
+    user_solicita_id: number;
+    user_aprueba_id: number | null;
+
+    created_at: string;
+    updated_at: string;
+
+    caja_origen: Caja;
+    caja_destino: Caja;
+    usuario_solicita: User;
+    usuario_aprueba: User;
+}
+
+
+export interface ConteoMaterialQuirofano {
+    id?: number;
+    hoja_enfermeria_quirofano_id?: number;
+    tipo_material: string;
+    cantidad_inicial: number;
+    cantidad_agregada: numnber;
+    cantidad_final:number;
+}
+
+export interface Isquemia {
+    id: number;
+    isquemiable_type: string;
+    isquemiable_id: number;
+    sitio_anatomico: string;
+    hora_inicio: string,
+    hora_termino: string;
+    observaciones: string;
+
+    created_at: string;
+    updated_at: string;
+}
+
+export interface EgresoLiquido {
+    id: number;
+    tipo: string;
+    cantidad: number;
+    descripcion: string;
+
+    created_at: string;
+}

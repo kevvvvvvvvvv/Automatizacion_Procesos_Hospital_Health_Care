@@ -8,11 +8,14 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Casts\Attribute;
+
 use App\Models\Formulario\HojaEnfermeria\HojaTerapiaIV;
-use App\Models\Formulario\HojaEnfermeria\HojaSignos;      // Haz lo mismo con estos
+use App\Models\Formulario\HojaEnfermeria\HojaSignos;     
 use App\Models\Formulario\HojaEnfermeria\HojaMedicamento;
 use App\Models\Formulario\RecienNacido\Somatometria;
 use App\Models\Formulario\RecienNacido\Ingresos_Egresos_RN;
+
 
 class RecienNacido extends Model
 {
@@ -37,6 +40,16 @@ class RecienNacido extends Model
         'fecha_rn' => 'date',
     ];
 
+    protected $appends = [
+        'tipo_modelo'
+    ];
+
+    public function tipoModelo(): Attribute
+    {
+        return Attribute::make(
+            get: fn() => get_class($this),
+        );
+    }
 
     public function formularioInstancia(): BelongsTo
     {

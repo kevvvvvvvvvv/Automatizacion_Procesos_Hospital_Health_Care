@@ -1,6 +1,6 @@
 import React, { useState } from 'react'; // Importar useState
 import { useForm, router } from '@inertiajs/react';
-import { HojaEnfermeria, ProductoServicio, RecienNacido } from '@/types';
+import { HojaEnfermeria, HojaEnfermeriaQuirofano, ProductoServicio, RecienNacido } from '@/types';
 import { route } from 'ziggy-js';
 import { optionsUnidadMedida } from '@/constant/const';
 import Swal from 'sweetalert2';
@@ -30,7 +30,7 @@ interface TerapiaAgregada {
 }
 
 interface Props {
-    hoja: HojaEnfermeria | RecienNacido;
+    hoja: HojaEnfermeria | RecienNacido | HojaEnfermeriaQuirofano;
     soluciones: ProductoServicio[];
     medicamentos: ProductoServicio[];
 }
@@ -175,15 +175,10 @@ const TerapiaIVForm: React.FC<Props> = ({
 
     if (data.terapias_agregadas.length === 0) return;
 
-    const isRecienNacido = 'nombre_rn' in hoja;
-
-    // CORRECTO: Usamos la función transform del hook que está en el top-level
     transform((oldData) => ({
         ...oldData,
         terapiable_id: hoja.id,
-        terapiable_type: isRecienNacido 
-            ? 'App\\Models\\Formulario\\RecienNacido\\RecienNacido' 
-            : 'App\\Models\\Formulario\\HojaEnfermeria\\HojaEnfermeria',
+        terapiable_type: hoja.tipo_modelo,
     }));
 
     // El post usará los datos transformados automáticamente

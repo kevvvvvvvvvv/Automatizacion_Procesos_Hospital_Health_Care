@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 use App\Models\Inventario\ProductoServicio;
 use App\Models\Formulario\HojaEnfermeria\HojaTerapiaIVMedicamento;
+use App\Models\Formulario\RecienNacido\RecienNacido;
 
 /**
  * @property int $id
@@ -68,6 +69,7 @@ class HojaTerapiaIV extends Model
     {
         return $this->hasMany(HojaTerapiaIVMedicamento::class,'hoja_terapia_id');
     }
+    
     public function recienNacido(): BelongsTo 
     {
         return $this->belongsTo(RecienNacido::class, 'hoja_enfermeria_id', 'id');

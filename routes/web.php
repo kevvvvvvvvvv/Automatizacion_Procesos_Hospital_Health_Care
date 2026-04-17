@@ -32,7 +32,7 @@ use App\Http\Controllers\AplicacionMedicamentoController;
 
 use App\Http\Controllers\FormularioHojaInsumosBasicosController;
 use App\Http\Controllers\FormularioNotaPostoperatorioController;
-use App\Http\Controllers\HojaEnfemeriaQuirofanoController;
+use App\Http\Controllers\Formulario\HojaEnfermeriaQuirofano\HojaEnfermeriaQuirofanoController;
 use App\Http\Controllers\SolicitudEstudioController;
 use App\Http\Controllers\SolicitudEstudioPatologiaController;
 use App\Http\Controllers\PreoperatoriaController;
@@ -63,6 +63,10 @@ use App\Http\Controllers\LigaFutbolController;
 use App\Http\Controllers\Encuestas\EncuestaSatisfaccionController;
 use App\Http\Controllers\MantenimientoController;
 use App\Http\Controllers\EncuestaPersonalController;
+use App\Http\Controllers\Formulario\HojaEnfemeria\EgresoLiquidoController;
+use App\Http\Controllers\Formulario\HojaEnfermeriaQuirofano\ConteoMaterialQuirofanoController;
+use App\Http\Controllers\Formulario\HojaEnfermeriaQuirofano\HojaRelevoController;
+use App\Http\Controllers\Formulario\HojaEnfermeriaQuirofano\IsquemiaController;
 use App\Http\Controllers\ReporteInterconsultaController;
 use App\Http\Controllers\ReporteConcienciaController;
 use App\Http\Controllers\ReporteSignosController;
@@ -74,7 +78,6 @@ use App\Http\Controllers\IngresosEgresosRNController;
 
 
 use App\Http\Controllers\ReporteEstanciaController;
-use App\Models\HojaContolLiquido;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;
@@ -179,15 +182,14 @@ Route::resource('pacientes.estancias.notaspostoperatorias', FormularioNotaPostop
 Route::resource('pacientes.estancias.notasegresos', NotasEgresoController::class)->shallow()->middleware('auth');
 Route::resource('pacientes.estancias.notasevoluciones', NotaEvolucionController::class)->shallow()->middleware('auth');
 Route::resource('pacientes.estancias.notaspreanestesicas', NotaPreAnestesicaController::class)->shallow()->middleware('auth');
-Route::resource('pacientes.estancias.hojasenfermeriasquirofanos',HojaEnfemeriaQuirofanoController::class)->shallow()->middleware('auth');
-Route::put('/hojasenfermeriasquirofanos/{hojasenfermeriaquirofanos}/cerrraHoja',[HojaEnfemeriaQuirofanoController::class, 'cerrarHoja'])->name('hojasenfermeriasquirofanos.cerrarHoja')->middleware('auth');
+Route::resource('pacientes.estancias.hojasenfermeriasquirofanos',HojaEnfermeriaQuirofanoController::class)->shallow()->middleware('auth');
+Route::put('/hojasenfermeriasquirofanos/{hojasenfermeriaquirofanos}/cerrraHoja',[HojaEnfermeriaQuirofanoController::class, 'cerrarHoja'])->name('hojasenfermeriasquirofanos.cerrarHoja')->middleware('auth');
 
 Route::resource('paciente.estancias.resumenmedico', ResumenMedicoController::class)->shallow()->middleware('auth');
 Route::resource('pacientes.estancias.consentimientos', ConsentimientoController::class)->shallow()->middleware('auth');
 Route::resource('estancias.encuesta-satisfaccions', EncuestaSatisfaccionController::class)->shallow()->middleware('auth');
 Route::resource('notificaciones', NotificacionController::class)->shallow()->middleware('auth');
 Route::resource('estancias.encuestapersonal', EncuestaPersonalController::class)->shallow()->middleware('auth');
-
 
 Route::post('/checklist/toggle', [ChecklistController::class, 'toggle'])->name('checklist.toggle')->middleware('auth');
 
@@ -221,17 +223,24 @@ Route::post('hojas-riesgo-caidas/{hojasenfermeria}',[FormularioHojaRiesgoCaidaCo
 
 Route::post('hojas-habitus-exterior/{hojasenfermeria}', [FormularioHojaHabitusExteriorController::class,'store'])->name('hojas-habitus-exterior.store')->middleware('auth');
 
+Route::resource('egresos-liquidos',EgresoLiquidoController::class)->middleware('auth');
 
 
-
-Route::post('/notificaciones/marcar-leidas', [NotificacionController::class, 'markAllAsRead'])->name('notificaciones.read');
+Route::post('/notificaciones/marcar-leidas', [NotificacionController::class, 'markAllAsRead'])->name('notificaciones.read')->middleware('auth');
 //Rutas Hoja de enfermeria en quirofano
 Route::post('hojasinsumosbasicos/{hojasenfermeriasquirofano}', [FormularioHojaInsumosBasicosController::class, 'store'])->name('hojasinsumosbasicos.store')->middleware('auth');
 Route::patch('hojasinsumosbasicos/{hojasinsumosbasico}', [FormularioHojaInsumosBasicosController::class, 'update'])->name('hojasinsumosbasicos.update')->middleware('auth');
 Route::delete('hojasinsumosbasicos/{hojasinsumosbasico}', [FormularioHojaInsumosBasicosController::class, 'delete'])->name('hojasinsumosbasicos.destroy')->middleware('auth');
 
-Route::get('/pacientes/{paciente}/estancias/{estancia}/notas-urgencias/{notaUrgencia}',[NotaUrgenciaController::class, 'show'])->name('pacientes.estancias.notasurgencias.show')->middleware('auth');
+Route::put('conteo-material-quirofano/{hojasenfermeriasquirofano}',[ConteoMaterialQuirofanoController::class, 'store'])->name('conteo-material-quirofano')->middleware('auth');
 
+Route::post('isquemias',[IsquemiaController::class, 'store'])->name('isquemias.store')->middleware('auth');
+Route::post('isquemias/{isquemia}/inicio',[IsquemiaController::class, 'registrarHoraInicio'])->name('isquemias.horaInicio')->middleware('auth');
+Route::post('isquemias/{isquemia}/fin',[IsquemiaController::class, 'registrarHoraFin'])->name('isquemias.horaFin')->middleware('auth');
+
+Route::post('relevar-turno/{hoja}',[HojaRelevoController::class, 'store'])->name('relevarTurno.store')->middleware('auth');
+
+Route::get('/pacientes/{paciente}/estancias/{estancia}/notas-urgencias/{notaUrgencia}',[NotaUrgenciaController::class, 'show'])->name('pacientes.estancias.notasurgencias.show')->middleware('auth');
 
 Route::post('hojassignos/{hojasenfermeria}',[FormularioHojaSignosController::class, 'store'])->name('hojassignos.store')->middleware('auth');
 Route::post('hojas-control-liquidos/{hojasenfermeria}',[HojaControlLiquidoController::class, 'store'])->name('hojas-control-liquidos.store')->middleware('auth');
@@ -328,7 +337,7 @@ Route::get('/notasevoluciones/{notasevolucione}/pdf', [NotaEvolucionController::
     ->name('notasevoluciones.pdf')
     ->middleware('auth');
 
-Route::get('/hojasenfermeriasquirofanos/{hojasenfermeriasquirofano}/pdf', [HojaEnfemeriaQuirofanoController::class, 'generarPDF'])
+Route::get('/hojasenfermeriasquirofanos/{hojasenfermeriasquirofano}/pdf', [HojaEnfermeriaQuirofanoController::class, 'generarPDF'])
     ->name('hojasenfermeriasquirofanos.pdf')
     ->middleware('auth');
 
@@ -351,6 +360,7 @@ Route::get('/encuestapersonal/{encuestapersonal}/pdf', [EncuestaPersonalControll
 Route::get('/reciennacido/{reciennacido}/pdf', [RecienNacidosController::class, 'generarPDF'])
     ->name('reciennacido.pdf')
     ->middleware('auth');
+
 // Farmacia
 Route::get('farmacia/solicitudes-medicamentos/{hojasenfermeria}', [FarmaciaController::class, 'show'])
     ->name('solicitudes-medicamentos.show')
@@ -403,13 +413,16 @@ Route::get ('/rerservacion/reserva', [ReservacionController::class, 'reserva'])-
 
 //Restauración de la base de datos  
 Route::get('/bd/respaldo/restauracion/', [RestaurationController::class, 'showView'])
-    ->name('bd.restauracion'); 
+    ->name('bd.restauracion')
+    ->middleware('auth'); 
 
 Route::get('/bd/respaldo/restauracion', [RestaurationController::class, 'showView'])
-    ->name('bd.restauracion'); 
+    ->name('bd.restauracion')
+    ->middleware('auth'); 
 
 Route::post('/bd/respaldo/restauracion', [RestaurationController::class, 'restore'])
-    ->name('bd.restauracion.store');
+    ->name('bd.restauracion.store')
+    ->middleware('auth');
 
 require __DIR__.'/settings.php';
 require __DIR__.'/auth.php';

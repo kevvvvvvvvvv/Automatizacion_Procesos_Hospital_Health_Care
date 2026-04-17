@@ -15,6 +15,7 @@ import {
 import AddButton from '@/components/ui/add-button';
 import { Habitacion } from '@/types';
 import { Eye, Pencil, Notebook } from 'lucide-react';
+import { usePermission } from '@/hooks/use-permission';
 
 type IndexProps = {
   habitaciones: Habitacion[];
@@ -23,6 +24,8 @@ type IndexProps = {
 const Index = ({ habitaciones }: IndexProps) => {
   const [globalFilter, setGlobalFilter] = useState('');
   const [sorting, setSorting] = useState<SortingState>([]);
+
+  const { can } = usePermission();
 
   const columns = useMemo<ColumnDef<Habitacion>[]>(
     () => [
@@ -72,24 +75,29 @@ const Index = ({ habitaciones }: IndexProps) => {
         header: 'Acciones',
         cell: ({ row }) => (
           <div className="flex space-x-2">
-            <Link
-              href={route('habitaciones.edit', row.original.id)}
-              className=" text-blue-500 hover:bg-blue-100 hover:text-blue-700 transition"
-              title="Editar habitación"
-              onClick={(e) => {
-                e.stopPropagation();
-              }}
-            >
-              <Pencil size={18} />
+            {can('editar habitaciones') && (
+              <Link
+                href={route('habitaciones.edit', row.original.id)}
+                className=" text-blue-500 hover:bg-blue-100 hover:text-blue-700 transition"
+                title="Editar habitación"
+                onClick={(e) => {
+                  e.stopPropagation();
+                }}
+              >
+                <Pencil size={18} />
 
-            </Link>
-            <Link 
-            href={route('habitaciones.show', row.original.id)}
-            className=''
-            title='Ver detalles'
-            onClick={(e)=>{ e.stopPropagation();}}>
-              <Eye size={18}/>
-            </Link>
+              </Link>
+            )}
+            {can('consultar habitaciones') && (
+              <Link 
+              href={route('habitaciones.show', row.original.id)}
+              className=''
+              title='Ver detalles'
+              onClick={(e)=>{ e.stopPropagation();}}>
+                <Eye size={18}/>
+              </Link>
+            )}
+
             <Link
               href={(route('habitaciones.show', row.original.id))}
               className='text-orange-700 hover:text-orange-900 transition'

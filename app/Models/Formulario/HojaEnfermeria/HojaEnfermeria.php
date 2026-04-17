@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 
 use App\Models\Formulario\FormularioInstancia;
 use App\Models\Formulario\HojaOxigeno;
@@ -75,10 +76,18 @@ class HojaEnfermeria extends Model
     ];
 
     protected $appends = [
-        'oxigeno_activo'
+        'oxigeno_activo',
+        'tipo_modelo',
     ];
 
     public $incrementing = false;
+
+    public function tipoModelo(): Attribute
+    {
+        return Attribute::make(
+            get: fn ()=>(get_class($this)),
+        );
+    }
 
     public function formularioInstancia(): BelongsTo
     {

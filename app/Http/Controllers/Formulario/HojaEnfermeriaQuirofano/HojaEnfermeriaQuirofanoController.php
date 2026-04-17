@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Formulario\HojaEnfermeriaQuirofano;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\HojaEnfermeriaQuirofanoRequest;
 use App\Http\Resources\UserResource;
 use Illuminate\Http\Request;
@@ -20,13 +21,14 @@ use App\Models\Estancia;
 use App\Models\Formulario\FormularioCatalogo;
 use App\Models\Formulario\FormularioInstancia;
 use App\Models\Formulario\HojaEnfermeriaQuirofano\HojaEnfermeriaQuirofano;
+use App\Models\Inventario\CatalogoViaAdministracion;
 use App\Models\Inventario\ProductoServicio;
 use App\Models\User;
 use App\Services\PdfGeneratorService;
 use App\Services\VentaService;
 use App\Models\Venta\Venta;
 
-class HojaEnfemeriaQuirofanoController extends Controller implements HasMiddleware
+class HojaEnfermeriaQuirofanoController extends Controller  implements HasMiddleware
 {
     use AuthorizesRequests;
     protected $pdfGenerator;
@@ -93,18 +95,31 @@ class HojaEnfemeriaQuirofanoController extends Controller implements HasMiddlewa
             'hojaInsumosBasicos.productoServicio',
             'hojaOxigenos.userInicio',
             'hojaOxigenos.userFin',
-            'personalEmpleados'
+            'personalEmpleados',
+            'conteoMaterialQuirofano',
+            'isquemias',
+            'hojaSignos',
+            'hojaMedicamentos.aplicaciones',
+            'hojasTerapiaIV.medicamentos',
+            'hojasTerapiaIV.detalleSoluciones',
+            'egresoLiquidos',
         );
 
         $users = User::all();
         $insumos = ProductoServicio::where('tipo','INSUMOS')->get();
+        $medicamentos = ProductoServicio::where('subtipo','MEDICAMENTOS')->get();
+        $soluciones = ProductoServicio::where('nombre_prestacion','like','%SOLUCION%')->get();
+        $vias_administacion = CatalogoViaAdministracion::all();
 
         return Inertia::render('formularios/hojas-enfermerias-quirofano/edit',[
             'paciente' => $hojasenfermeriasquirofano->formularioInstancia->estancia->paciente,
             'estancia' => $hojasenfermeriasquirofano->formularioInstancia->estancia,
             'hoja' => $hojasenfermeriasquirofano,
             'insumos' => $insumos,
-            'users' => $users
+            'users' => $users,
+            'medicamentos' => $medicamentos, 
+            'soluciones' => $soluciones,   
+            'vias_administracion' => $vias_administacion,
         ]);
     }
 
@@ -115,7 +130,7 @@ class HojaEnfemeriaQuirofanoController extends Controller implements HasMiddlewa
             $hojasenfermeriasquirofano->update([
                 ...$validatedData
             ]);
-
+            
             return Redirect::route('hojasenfermeriasquirofanos.edit', $hojasenfermeriasquirofano->id)->with('success','Se ha actualizado la hoja de enfermería en quirófano.');
         }catch(\Exception $e){
             Log::error('Error al actualizar la hoja de enfermería en quirófano: ' . $e->getMessage());
@@ -206,5 +221,4 @@ class HojaEnfemeriaQuirofanoController extends Controller implements HasMiddlewa
             return Redirect::back()->with('error','Error en el cálculo de las ventas.');
         }
     }
-
 }
