@@ -18,13 +18,11 @@ interface Props {
 
 const generarHorarios = () => {
     const horarios: string[] = [];
-    
     for (let h = 0; h < 24; h++) {
         const horaFormateada = String(h).padStart(2, "0");
-        horarios.push(`${horaFormateada}:00`);
-        horarios.push(`${horaFormateada}:30`);
+        horarios.push(`${horaFormateada}:00 - ${horaFormateada}:29`);
+        horarios.push(`${horaFormateada}:30 - ${horaFormateada}:59`);
     }
-    
     return horarios;
 };
 
@@ -234,35 +232,38 @@ const CreateReservacion: React.FC<Props> = ({
                         {renderCondicional("¿Solicita Patología?", "patologico")}
                     </div>
 
-                    <div className="border rounded p-4">
-                        <label className="font-bold text-sm">Fecha</label>
-                        <input
-                            type="date"
-                            className={`w-full border rounded p-2 ${getError('fecha') ? 'border-red-500' : 'mb-4'}`}
-                            value={data.fecha}
-                            onChange={e => {
-                                setData("fecha", e.target.value);
-                                setData("horarios", []);
-                            }}
-                        />
-                        {getError('fecha') && <div className="text-red-500 text-xs mb-3">{getError('fecha')}</div>}
-
-                        <div className="grid grid-cols-3 gap-2">
+                   <div className="border rounded-lg p-5 bg-white shadow-sm h-fit">
+                        <label className="font-bold text-sm block mb-2">Selección de Horario</label>
+                        <input type="date" className="w-full border rounded p-2 mb-4" value={data.fecha} onChange={e => setData("fecha", e.target.value)} />
+                        
+                        <div className="grid grid-cols-3 sm:grid-cols-4 gap-5">
                             {horariosLista.map(h => {
-                                const full = `${data.fecha} ${h}:00`;
+                                const horaConSegundo = `${h}:00`;
+                                const full = `${data.fecha} ${horaConSegundo}`;
+                                const isSelected = data.horarios.some(item => 
+                                    item === full || 
+                                    item === horaConSegundo || 
+                                    item.includes(` ${horaConSegundo}`)
+                                );
                                 return (
                                     <button
                                         key={h}
                                         type="button"
                                         onClick={() => toggleHorario(h)}
-                                        className={`p-2 text-xs rounded ${data.horarios.includes(full) ? "bg-indigo-600 text-white" : "border"}`}
+                                        className={`p-2 text-xs font-medium rounded-md transition-all ${
+                                            isSelected 
+                                            ? "bg-indigo-600 text-white shadow-md scale-105 ring-2 ring-indigo-300" 
+                                            : "border border-gray-200 text-gray-600 hover:bg-gray-50"
+                                        }`}
                                     > {h} </button>
                                 );
                             })}
                         </div>
-                        {getError('horarios') && <div className="text-red-500 text-xs mt-2">{getError('horarios')}</div>}
-
-                        <textarea className="w-full border rounded p-2 mt-4" placeholder="Comentarios adicionales" value={data.comentarios} onChange={e => setData("comentarios", e.target.value)} />
+                        
+                        <div className="mt-6">
+                            <label className="text-sm font-medium">Comentarios adicionales</label>
+                            <textarea className="w-full border rounded p-2 mt-1 h-24" placeholder="..." value={data.comentarios} onChange={e => setData("comentarios", e.target.value)} />
+                        </div>
                     </div>
                 </div>
             </FormLayout>

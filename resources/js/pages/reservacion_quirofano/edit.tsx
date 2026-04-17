@@ -9,7 +9,7 @@ import PrimaryButton from "@/components/ui/primary-button";
 import SelectInput from "@/components/ui/input-select";
 
 interface Props {
-    quirofano: ReservacionQuirofano; // Cambiado a singular para que coincida con el Controller
+    quirofano: ReservacionQuirofano; 
     paciente?: Paciente | null;
     estancia?: Estancia | null;
     limitesDinamicos: Record<string, number>;
@@ -20,8 +20,8 @@ const generarHorarios = () => {
     const horarios: string[] = [];
     for (let h = 0; h < 24; h++) {
         const horaFormateada = String(h).padStart(2, "0");
-        horarios.push(`${horaFormateada}:00`);
-        horarios.push(`${horaFormateada}:30`);
+        horarios.push(`${horaFormateada}:00 - ${horaFormateada}:29`);
+        horarios.push(`${horaFormateada}:30 - ${horaFormateada}:59`);
     }
     return horarios;
 };
@@ -48,7 +48,9 @@ const EditReservacion: React.FC<Props> = ({
         tiempo_estimado: quirofano.tiempo_estimado || "",
         medico_operacion: quirofano.medico_operacion || "",
         fecha: quirofano.fecha || new Date().toISOString().split("T")[0],
-        horarios: quirofano.horarios || [] as string[], // Aquí se cargan los bloques azules
+        horarios: Array.isArray(quirofano.horarios) 
+        ? quirofano.horarios.map(h => h.length === 5 ? `${quirofano.fecha} ${h}:00` : h) 
+        : [] as string[], // Aquí se cargan los bloques azules
         comentarios: quirofano.comentarios || "",
         
         laparoscopia: { 
@@ -84,22 +86,23 @@ const EditReservacion: React.FC<Props> = ({
     const { data, setData, processing } = form;
 
     const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
+    e.preventDefault();
 
-        const payload = {
-            ...data,
-            instrumentista: data.instrumentista.activa ? data.instrumentista.detalle : null,
-            anestesiologo: data.anestesiologo.activa ? data.anestesiologo.detalle : null,
-            insumos_medicamentos: data.insumos_med.activa ? data.insumos_med.detalle : null,
-            esterilizar_detalle: data.esterilizar.activa ? data.esterilizar.detalle : null,
-            rayosx_detalle: data.rayosx.activa ? data.rayosx.equipos.join(", ") : null,
-            patologico_detalle: data.patologico.activa ? data.patologico.detalle : null,
-            laparoscopia_detalle: data.laparoscopia.activa ? data.laparoscopia.detalle : null,
-        };
-
-        // Cambiamos router.post por router.put para actualización
-        router.put(route("quirofanos.update", quirofano.id), payload);
+    // Creamos el objeto con los nombres exactos que espera la base de datos
+    const payload = {
+        ...data,
+        instrumentista: data.instrumentista.activa ? data.instrumentista.detalle : null,
+        anestesiologo: data.anestesiologo.activa ? data.anestesiologo.detalle : null,
+        insumos_medicamentos: data.insumos_med.activa ? data.insumos_med.detalle : null, // Nombre corregido
+        esterilizar_detalle: data.esterilizar.activa ? data.esterilizar.detalle : null,
+        rayosx_detalle: data.rayosx.activa ? data.rayosx.equipos.join(", ") : null,
+        patologico_detalle: data.patologico.activa ? data.patologico.detalle : null,
+        laparoscopia_detalle: data.laparoscopia.activa ? data.laparoscopia.detalle : null,
     };
+
+    // CRITICAL: Enviamos 'payload', no 'data'
+    router.put(route("quirofanos.update", quirofano.id), payload);
+};
 
     const toggleHorario = (hora: string) => {
         const full = `${data.fecha} ${hora}:00`;
@@ -164,7 +167,11 @@ const EditReservacion: React.FC<Props> = ({
                     </PrimaryButton>
                 }
             >
-                {/* ... (Sección de errores idéntica) */    }
+                {/*{serverErrors && Object.keys(serverErrors).length > 0 && (
+                    <div className="bg-red-100 border border-red-400 text-red-700 p-3 rounded mb-4">
+                        <b>Error:</b> Por favor llene todos los campos obligatorios marcados en rojo.
+                    </div>
+                )} */}
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     <div className="space-y-4">
@@ -177,10 +184,32 @@ const EditReservacion: React.FC<Props> = ({
                                 </div>
                                 <div>
                                     <label className="text-sm font-medium">Paciente</label>
-                                    <input className="w-full border rounded p-2 bg-gray-100" value={data.paciente} readOnly />
+                                    <input 
+                                        type="text"
+                                        className={`w-full border rounded p-2 transition-colors ${
+                                            data.estancia_id 
+                                                ? 'bg-gray-100 text-gray-500 cursor-not-allowed'
+                                                : 'bg-white text-gray-900 border-gray-300'      
+                                        } ${getError('paciente') ? 'border-red-500' : ''}`} 
+                                        value={data.paciente} 
+                                        onChange={e => setData("paciente", e.target.value)} 
+                                        placeholder="Nombre del paciente"
+                                        readOnly={!!data.estancia_id} 
+                                    />
+                                    {getError('paciente') && (
+                                        <span className="text-red-500 text-xs">{getError('paciente')}</span>
+                                    )}
                                 </div>
                                 <SelectInput label='Médico tratante' options={medicosOptions} value={data.tratante} onChange={e => setData("tratante", e)} error={form.errors.tratante} />
                                 <SelectInput label='Cirujano' options={medicosOptions} value={data.medico_operacion} onChange={e => setData('medico_operacion', e)} error={form.errors.medico_operacion} />
+                                 <label className="font-bold text-sm">Tiempo estimado</label>
+                        <input 
+                            className={`w-full border rounded p-2 ${getError('tiempo_estimado') ? 'border-red-500' : 'mb-4'}`} 
+                            value={data.tiempo_estimado} 
+                            onChange={e => setData("tiempo_estimado", e.target.value)} 
+                        />
+                        {getError('tiempo_estimado') && <div className="text-red-500 text-xs mb-4">{getError('tiempo_estimado')}</div>}
+
                             </div>
                         </section>
 
@@ -202,10 +231,15 @@ const EditReservacion: React.FC<Props> = ({
                         <label className="font-bold text-sm block mb-2">Selección de Horario</label>
                         <input type="date" className="w-full border rounded p-2 mb-4" value={data.fecha} onChange={e => setData("fecha", e.target.value)} />
                         
-                        <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
+                        <div className="grid grid-cols-3 sm:grid-cols-4 gap-5">
                             {horariosLista.map(h => {
-                                const full = `${data.fecha} ${h}:00`;
-                                const isSelected = data.horarios.includes(full);
+                                const horaConSegundo = `${h}:00`;
+                                const full = `${data.fecha} ${horaConSegundo}`;
+                                const isSelected = data.horarios.some(item => 
+                                    item === full || 
+                                    item === horaConSegundo || 
+                                    item.includes(` ${horaConSegundo}`)
+                                );
                                 return (
                                     <button
                                         key={h}
