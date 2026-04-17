@@ -198,9 +198,11 @@ const CreateHojaEnfermeriaQuirofano:CreateComponent = ({
                         params: {hojasenfermeriaquirofanos: hoja.id}
                     }}
                 />
+                {/** 
                 <button>
                     Relevar
                 </button>
+                */}
                 <NavigationTabs/>
                 {renderActiveSection()}
             </div>

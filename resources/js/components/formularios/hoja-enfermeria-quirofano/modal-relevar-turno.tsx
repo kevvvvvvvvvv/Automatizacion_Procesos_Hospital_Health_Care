@@ -1,15 +1,14 @@
 import React from 'react';
 import { useForm } from '@inertiajs/react';
 import { route } from 'ziggy-js';
-import { HojaEnfermeriaQuirofano, MetodoPago, SesionCaja, User } from '@/types';
-import Swal from 'sweetalert2';
+import { HojaEnfermeriaQuirofano, User } from '@/types';
 
 import SelectInput from '@/components/ui/input-select';
 import TextInput from '@/components/ui/input-text';
-import BooleanInput from '../ui/input-boolean';
-import MoneyInput from '../ui/input-money';
+import PrimaryButton from '@/components/ui/primary-button';
 
 interface Props {
+    onClose: () => void;
     enfermeras: User[];
     hoja: HojaEnfermeriaQuirofano;
 }
@@ -18,6 +17,7 @@ interface Props {
 
 
 const ModalRelevarTurno = ({ 
+    onClose,
     enfermeras =[],
     hoja
 }: Props) => {
@@ -33,7 +33,9 @@ const ModalRelevarTurno = ({
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        post('relevar-turno',{hoja: hoja.id});
+        post(route('relevar-turno',{hoja: hoja.id}),{
+            onSuccess: onClose,
+        });
     }
 
     return (
@@ -64,7 +66,14 @@ const ModalRelevarTurno = ({
                     onChange={e => setData('observaciones_entrega',e.target.value)}
                     error={errors.observaciones_entrega}
                 />
-                Prim
+                <div className='flex justify-end'>
+                    <PrimaryButton
+                        disabled={processing}
+                        type='submit'
+                    >
+                        {processing ? 'Guardando...' : 'Guardar'}
+                    </PrimaryButton>
+                </div>
             </div>
         </div>
     );
