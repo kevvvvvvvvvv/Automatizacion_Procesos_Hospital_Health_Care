@@ -50,16 +50,47 @@ const Index = ({ reservaciones }: Props) => {
             cell: ({ row }) => new Date(row.original.fecha).toLocaleDateString("es-MX"),
         },
         {
-            id: "horario_inicio",
-            header: "Inicio",
+            id: "horario_completo",
+            header: "Horario y Duración",
             cell: ({ row }) => {
                 const horarios = row.original.horarios;
                 if (!horarios || horarios.length === 0) return "—";
-                // El formato es "YYYY-MM-DD HH:MM:SS", cortamos para ver HH:MM
+
                 try {
-                    return horarios[0].split(" ")[1].substring(0, 5) + " hrs";
-                } catch ( e ) {
-                    return "—";
+                    const sorted = [...horarios].sort();
+                    const inicioRaw = sorted[0].split(" ")[1]; 
+                    const inicio = inicioRaw.substring(0, 5);
+                    const ultimoBloque = sorted[sorted.length - 1].split(" ")[1];
+                    const [horas, minutos] = ultimoBloque.split(":").map(Number);                
+                    let finHoras = horas;
+                    let finMinutos = minutos + 30;
+
+                    if (finMinutos === 60) {
+                        finHoras += 1;
+                        finMinutos = 0;
+                    }
+                    
+                    const fin = `${String(finHoras).padStart(2, '0')}:${String(finMinutos).padStart(2, '0')}`;
+
+                    const duracionMinutos = horarios.length * 30;
+                    const horasDuracion = Math.floor(duracionMinutos / 60);
+                    const minsDuracion = duracionMinutos % 60;
+                    const duracionTexto = horasDuracion > 0 
+                        ? `${horasDuracion}h ${minsDuracion > 0 ? minsDuracion + 'm' : ''}`
+                        : `${minsDuracion} min`;
+
+                    return (
+                        <div className="flex flex-col">
+                            <span className="font-bold text-indigo-700">
+                                {inicio} - {fin}
+                            </span>
+                            <span className="text-[10px] text-gray-400 font-medium italic">
+                                Estiamdo: {duracionTexto}
+                            </span>
+                        </div>
+                    );
+                } catch (e) {
+                    return "Error formato";
                 }
             },
         },

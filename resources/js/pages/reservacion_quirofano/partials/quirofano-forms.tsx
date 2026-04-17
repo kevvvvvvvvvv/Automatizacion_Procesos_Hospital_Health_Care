@@ -16,9 +16,13 @@ interface Props {
 
 const generarHorarios = () => {
     const horarios: string[] = [];
+    
     for (let h = 0; h < 24; h++) {
-        horarios.push(`${String(h).padStart(2, "0")}:00`);
+        const horaFormateada = String(h).padStart(2, "0");
+        horarios.push(`${horaFormateada}:00`);
+        horarios.push(`${horaFormateada}:30`);
     }
+    
     return horarios;
 };
 
