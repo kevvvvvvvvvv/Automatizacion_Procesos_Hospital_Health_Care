@@ -3,8 +3,8 @@ import { useForm } from '@inertiajs/react';
 import Swal from 'sweetalert2';
 import { SesionCaja } from '@/types/index';
 import { route } from 'ziggy-js';
-import { formatCurrency } from '@/utils/formatter-money';
 
+import { SummaryCard } from '../ui/money/summary-card';
 import TextInput from '@/components/ui/input-text';
 import PrimaryButton from '../ui/primary-button';
 import MoneyInput from '../ui/input-money';
@@ -60,10 +60,11 @@ const ModalEnviarBovedaAFondo = ({
             <div className="w-full max-w-md bg-white rounded-xl shadow-2xl p-6 border-t-4 border-blue-600">
                 <h3 className="text-xl font-bold text-gray-800 mb-4">Traspaso directo a fondo</h3>
                 
-                <div className="bg-blue-50 p-4 rounded-lg mb-6 border border-blue-100">
-                    <p className="text-xs text-blue-600 font-bold uppercase mb-1">Disponible en Bóveda</p>
-                    <p className="text-2xl font-bold text-blue-900">{formatCurrency(Number(boveda.monto_esperado).toFixed(2))}</p>
-                </div>
+                <SummaryCard
+                    label='Monto disponible en boveda'
+                    amount={boveda.monto_esperado}
+                    mostrarValor={false}
+                />
 
                 <form onSubmit={handleSubmit} className="space-y-4">
 
