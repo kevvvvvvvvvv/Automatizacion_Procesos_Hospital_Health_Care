@@ -21,11 +21,13 @@ type ReservacionQuirofano = {
     id: number;
     fecha: string;
     localizacion: string;
+    medico_operacion: string;
     paciente_nombre: string;
     instrumentista: string;
     anestesiologo: string;
     horarios: string[]; 
     user_nombre: string;
+    comentarios: string;
     habitacion_nombre: string;
     estancia_id: number;
 };
@@ -79,13 +81,30 @@ const Index = ({ reservaciones }: Props) => {
             ),
         },
         {
-            accessorKey: "user_nombre",
-            header: "Solicitante",
+            accessorKey: "medico_operacion",
+            header: "Cirujano",
             cell: ({ row }) => (
-                <span className="font-medium text-gray-700 uppercase text-xs">
-                    {row.original.user_nombre}
-                </span>
+                <div className="flex flex-col">
+                    <span className="text-xs font-bold text-gray-700 uppercase">
+                        {row.original.medico_operacion}
+                    </span>
+                    
+                </div>
             ),
+        },
+        {
+            accessorKey: "comentarios",
+            header: "Observaciones",
+            cell: ({ row }) => {
+                const obs = row.original.comentarios;
+                if (!obs) return <span className="text-gray-400 italic">Sin notas</span>;
+                
+                return (
+                    <div className="max-w-[200px] truncate text-xs" title={obs}>
+                        {obs}
+                    </div>
+                );
+            }
         },
         {
             id: "acciones",
