@@ -132,7 +132,6 @@ class ReservacionQuirofanoController extends Controller
             $reservacion->horarios         = $request->horarios;
             $reservacion->comentarios      = $request->comentarios;
 
-            // --- REVISA SI ESTOS NOMBRES EXISTEN EN TU MIGRACIÓN ---
             $reservacion->instrumentista        = $request->instrumentista;
             $reservacion->anestesiologo         = $request->anestesiologo;
             $reservacion->insumos_medicamentos  = $request->insumos_medicamentos;
@@ -153,8 +152,10 @@ class ReservacionQuirofanoController extends Controller
     }
     public function edit(ReservacionQuirofano $quirofano)
     {
+        //dd($quirofano->toArray());
         return Inertia::render('reservacion_quirofano/edit', [
             'quirofano' => $quirofano,
+            
             'medicos' => User::select('id', 'nombre', 'apellido_paterno', 'apellido_materno')
                 ->get()
                 ->map(fn ($u) => [
@@ -201,6 +202,15 @@ class ReservacionQuirofanoController extends Controller
                 return back()->withErrors(['horarios' => 'No hay quirófanos disponibles para este nuevo horario.']);
             }
             $quirofano->fill($data);
+            $quirofano->comentarios = $request->comentarios;
+            $quirofano->instrumentista = $request->instrumentista;
+            $quirofano->anestesiologo = $request->anestesiologo;
+            $quirofano->insumos_medicamentos = $request->insumos_medicamentos;
+            $quirofano->esterilizar_detalle = $request->esterilizar_detalle;
+            $quirofano->rayosx_detalle = $request->rayosx_detalle;
+            $quirofano->patologico_detalle = $request->patologico_detalle;
+            $quirofano->laparoscopia_detalle = $request->laparoscopia_detalle;
+
             $quirofano->habitacion_id = $habitacionAsignada;
             $quirofano->localizacion = $LOCALIZACION;
 
