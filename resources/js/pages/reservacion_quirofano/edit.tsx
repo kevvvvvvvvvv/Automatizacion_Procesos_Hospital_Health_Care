@@ -12,6 +12,7 @@ interface Props {
     quirofano: ReservacionQuirofano; 
     paciente?: Paciente | null;
     estancia?: Estancia | null;
+    horariosOcupados: string[];
     limitesDinamicos: Record<string, number>;
     medicos: Array<{ id: number; nombre_completo: string }>;
 }
@@ -31,6 +32,7 @@ const horariosLista = generarHorarios();
 const EditReservacion: React.FC<Props> = ({
     paciente,
     estancia,
+    horariosOcupados = [],
     quirofano, 
     medicos = [],
 }) => {
@@ -235,21 +237,29 @@ const EditReservacion: React.FC<Props> = ({
                                 const horaConSegundo = `${h}:00`;
                                 const full = `${data.fecha} ${horaConSegundo}`;
                                 const isSelected = data.horarios.some(item => 
-                                    item === full || 
-                                    item === horaConSegundo || 
-                                    item.includes(` ${horaConSegundo}`)
+                                    item === full || item.includes(` ${horaConSegundo}`)
+                                );
+                                const isOccupiedByOther = horariosOcupados.some(item => 
+                                    item === full || item.includes(` ${horaConSegundo}`)
                                 );
                                 return (
-                                    <button
+                                   <button
                                         key={h}
                                         type="button"
+                                        // Deshabilitar si está ocupado por otro
+                                        disabled={isOccupiedByOther}
                                         onClick={() => toggleHorario(h)}
                                         className={`p-2 text-xs font-medium rounded-md transition-all ${
-                                            isSelected 
+                                            isOccupiedByOther
+                                            ? "bg-red-100 text-red-400 border-red-200 cursor-not-allowed opacity-60" // Estilo bloqueado
+                                            : isSelected 
                                             ? "bg-indigo-600 text-white shadow-md scale-105 ring-2 ring-indigo-300" 
                                             : "border border-gray-200 text-gray-600 hover:bg-gray-50"
                                         }`}
-                                    > {h} </button>
+                                    > 
+                                        {h}
+                                        {isOccupiedByOther && <span className="block text-[8px]">Ocupado</span>}
+                                    </button>
                                 );
                             })}
                         </div>

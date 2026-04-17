@@ -12,6 +12,7 @@ interface Props {
     quirofanos?: ReservacionQuirofano;
     paciente?: Paciente | null;
     estancia?: Estancia | null;
+    horariosOcupados: string[];
     limitesDinamicos: Record<string, number>;
     medicos: Array<{ id: number; nombre_completo: string }>;
 }
@@ -34,6 +35,7 @@ const CreateReservacion: React.FC<Props> = ({
     paciente,
     estancia,
     quirofanos,
+    horariosOcupados = [],
     limitesDinamicos,
     medicos = [],
 }) => {
@@ -70,7 +72,19 @@ const CreateReservacion: React.FC<Props> = ({
     });
 
     const { data, setData, processing, errors } = form;
-
+    const handleFechaChange = (nuevaFecha: string) => {
+        setData("fecha", nuevaFecha);
+        // Esto hace que Inertia vuelva a llamar a la función 'create' del controlador
+        // pero mandando la nueva fecha para obtener los horariosOcupados actualizados.
+        router.get(route("quirofanos.create"), { 
+            fecha: nuevaFecha,
+            paciente: paciente?.id,
+            estancia: estancia?.id 
+        }, {
+            preserveState: true, // Importante para no borrar lo que ya escribió en otros inputs
+            replace: true
+        });
+    };
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
 
@@ -236,31 +250,47 @@ const CreateReservacion: React.FC<Props> = ({
 
                    <div className="border rounded-lg p-5 bg-white shadow-sm h-fit">
                         <label className="font-bold text-sm block mb-2">Selección de Horario</label>
-                        <input type="date" className="w-full border rounded p-2 mb-4" value={data.fecha} onChange={e => setData("fecha", e.target.value)} />
-                        
+                        <input 
+                            type="date" 
+                            className="w-full border rounded p-2 mb-4" 
+                            value={data.fecha} 
+                            onChange={e => handleFechaChange(e.target.value)} // <--- Cambiado aquí
+                        />
                         <div className="grid grid-cols-3 sm:grid-cols-4 gap-5">
-                            {horariosLista.map(h => {
-                                const horaConSegundo = `${h}:00`;
-                                const full = `${data.fecha} ${horaConSegundo}`;
-                                const isSelected = data.horarios.some(item => 
-                                    item === full || 
-                                    item === horaConSegundo || 
-                                    item.includes(` ${horaConSegundo}`)
-                                );
-                                return (
-                                    <button
-                                        key={h}
-                                        type="button"
-                                        onClick={() => toggleHorario(h)}
-                                        className={`p-2 text-xs font-medium rounded-md transition-all ${
-                                            isSelected 
-                                            ? "bg-indigo-600 text-white shadow-md scale-105 ring-2 ring-indigo-300" 
-                                            : "border border-gray-200 text-gray-600 hover:bg-gray-50"
-                                        }`}
-                                    > {h} </button>
-                                );
-                            })}
-                        </div>
+                {horariosLista.map(h => {
+                    const horaConSegundo = `${h}:00`;
+                    const full = `${data.fecha} ${horaConSegundo}`;
+                    
+                    // Verificamos si nosotros seleccionamos este cuadro
+                    const isSelected = data.horarios.some(item => 
+                        item === full || item.includes(` ${horaConSegundo}`)
+                    );
+
+                    // Verificamos si YA está ocupado en la base de datos
+                    const isOccupied = horariosOcupados.some(item => 
+                        item === full || item.includes(` ${horaConSegundo}`)
+                    );
+
+                    return (
+                        <button
+                            key={h}
+                            type="button"
+                            disabled={isOccupied} // BLOQUEAR CLIC
+                            onClick={() => toggleHorario(h)}
+                            className={`p-2 text-xs font-medium rounded-md transition-all ${
+                                isOccupied
+                                ? "bg-red-100 text-red-400 border-red-200 cursor-not-allowed opacity-60" 
+                                : isSelected 
+                                ? "bg-indigo-600 text-white shadow-md scale-105 ring-2 ring-indigo-300" 
+                                : "border border-gray-200 text-gray-600 hover:bg-gray-50"
+                            }`}
+                        > 
+                            {h} 
+                            {isOccupied && <span className="block text-[8px] font-bold">OCUPADO</span>}
+                        </button>
+                    );
+                })}
+            </div>
                         
                         <div className="mt-6">
                             <label className="text-sm font-medium">Comentarios adicionales</label>

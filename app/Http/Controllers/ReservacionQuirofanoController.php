@@ -152,10 +152,17 @@ class ReservacionQuirofanoController extends Controller
     }
     public function edit(ReservacionQuirofano $quirofano)
     {
+        $horariosOcupados = ReservacionQuirofano::where('fecha', $quirofano->fecha)
+        ->where('id', '!=', $quirofano->id) // No bloquearse a sí mismo
+        ->get()
+        ->pluck('horarios')
+        ->flatten()
+        ->toArray();
+        dd($horariosOcupados);
         //dd($quirofano->toArray());
         return Inertia::render('reservacion_quirofano/edit', [
             'quirofano' => $quirofano,
-            
+            'horariosOcupados' => $horariosOcupados,
             'medicos' => User::select('id', 'nombre', 'apellido_paterno', 'apellido_materno')
                 ->get()
                 ->map(fn ($u) => [
