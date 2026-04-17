@@ -90,20 +90,7 @@ class HojaEnfermeriaQuirofanoController extends Controller  implements HasMiddle
 
     public function edit(HojaEnfermeriaQuirofano $hojasenfermeriasquirofano)
     {
-        $hojasenfermeriasquirofano->load(
-            'formularioInstancia.estancia.paciente',
-            'hojaInsumosBasicos.productoServicio',
-            'hojaOxigenos.userInicio',
-            'hojaOxigenos.userFin',
-            'personalEmpleados',
-            'conteoMaterialQuirofano',
-            'isquemias',
-            'hojaSignos',
-            'hojaMedicamentos.aplicaciones',
-            'hojasTerapiaIV.medicamentos',
-            'hojasTerapiaIV.detalleSoluciones',
-            'egresoLiquidos',
-        );
+        $hojasenfermeriasquirofano = $this->getRelaciones($hojasenfermeriasquirofano);
 
         $users = User::all();
         $insumos = ProductoServicio::where('tipo','INSUMOS')->get();
@@ -141,14 +128,7 @@ class HojaEnfermeriaQuirofanoController extends Controller  implements HasMiddle
 
     public function generarPDF(HojaEnfermeriaQuirofano $hojasenfermeriasquirofano)
     {
-        $hojasenfermeriasquirofano->load(
-            'formularioInstancia.estancia.paciente',
-            'hojaInsumosBasicos.productoServicio',
-            'hojaOxigenos.userInicio',
-            'hojaOxigenos.userFin',
-            'personalEmpleados',
-            'hojaInsumosBasicos.productoServicio',
-        );
+        $hojasenfermeriasquirofano = $this->getRelaciones($hojasenfermeriasquirofano);
 
         $headerData = [
             'historiaclinica' => $hojasenfermeriasquirofano,
@@ -189,6 +169,26 @@ class HojaEnfermeriaQuirofanoController extends Controller  implements HasMiddle
             $hojasenfermeriaquirofanos->load('formularioInstancia');
             return redirect()->route('estancias.show',[$hojasenfermeriaquirofanos->formularioInstancia->estancia_id])->with('success','Se ha cerrado la hoja de enfermería en quirófano.');
         }
+    }
+
+    private function getRelaciones (HojaEnfermeriaQuirofano $hoja): HojaEnfermeriaQuirofano
+    {
+        $hoja->load(
+            'formularioInstancia.estancia.paciente',
+            'hojaInsumosBasicos.productoServicio',
+            'hojaOxigenos.userInicio',
+            'hojaOxigenos.userFin',
+            'personalEmpleados',
+            'conteoMaterialQuirofano',
+            'isquemias',
+            'hojaSignos',
+            'hojaMedicamentos.aplicaciones',
+            'hojasTerapiaIV.medicamentos',
+            'hojasTerapiaIV.detalleSoluciones',
+            'egresoLiquidos',
+        );
+
+        return $hoja;
     }
 
     private function calcularVentas(HojaEnfermeriaQuirofano $hoja, VentaService $service){
