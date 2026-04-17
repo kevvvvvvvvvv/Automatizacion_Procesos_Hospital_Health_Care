@@ -37,7 +37,8 @@ class ReservacionQuirofanoController extends Controller
     {
         $reservaciones = ReservacionQuirofano::with([
                 'user:id,nombre,apellido_paterno',
-                'habitacion:id,identificador'
+                'habitacion:id,identificador',
+                'medicoOperacionRel:id,nombre,apellido_paterno'
             ])
             ->orderBy('fecha', 'desc')
             ->get()
@@ -49,6 +50,10 @@ class ReservacionQuirofanoController extends Controller
                 'instrumentista' => $res->instrumentista,
                 'anestesiologo' => $res->anestesiologo,
                 'horarios' => $res->horarios,
+                'comentarios' => $res->comentarios,
+                'medico_operacion' => $res->medicoOperacionRel 
+                ? "{$res->medicoOperacionRel->nombre} {$res->medicoOperacionRel->apellido_paterno}" 
+                : 'No asignado',
                 'user_nombre' => $res->user?->nombre ?? 'N/A',
                 'habitacion_nombre' => $res->habitacion?->identificador ?? 'N/A',
                 'estancia_id' => $res->estancia_id,

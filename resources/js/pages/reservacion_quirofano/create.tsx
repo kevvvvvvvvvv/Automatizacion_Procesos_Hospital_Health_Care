@@ -18,11 +18,18 @@ interface Props {
 
 const generarHorarios = () => {
     const horarios: string[] = [];
+    
     for (let h = 0; h < 24; h++) {
         const horaFormateada = String(h).padStart(2, "0");
+<<<<<<< HEAD
+        horarios.push(`${horaFormateada}:00`);
+        horarios.push(`${horaFormateada}:30`);
+=======
         horarios.push(`${horaFormateada}:00 - ${horaFormateada}:29`);
         horarios.push(`${horaFormateada}:30 - ${horaFormateada}:59`);
+>>>>>>> 1b6da7a97d5c8a10a78b1098fb24c27e5ceb880b
     }
+    
     return horarios;
 };
 
