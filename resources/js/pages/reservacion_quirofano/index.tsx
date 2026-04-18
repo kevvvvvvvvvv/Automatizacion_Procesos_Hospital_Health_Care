@@ -191,12 +191,24 @@ const Index = ({ reservaciones }: Props) => {
                                         <p className="text-xs text-gray-400 line-clamp-1 italic italic">"{row.original.comentarios}"</p>
                                     )}
                                 </div>
-                                <div className="flex justify-end gap-2 border-t pt-4">
-                                    <Link href={route("quirofanos.show", row.original.id)} className="flex-1 text-center py-2 text-sm font-semibold text-gray-600 bg-gray-50 rounded-lg">Ver</Link>
-                                    {can('editar reservaciones quirofanos') && (
-                                        <Link href={route("quirofanos.edit", row.original.id)} className="flex-1 text-center py-2 text-sm font-semibold text-blue-600 bg-blue-50 rounded-lg">Editar</Link>
-                                    )}
-                                </div>
+                                <div className="flex gap-2" onClick={(e) => e.stopPropagation()}>
+                    
+                        <Link
+                            href={route("quirofanos.show", row.original.id)}
+                            className="p-2 text-gray-600 hover:bg-gray-100 rounded-full transition"
+                        >
+                            <Eye size={18} />
+                        </Link>
+                    
+                    {can('editar reservaciones quirofanos') && (
+                    <Link
+                        href={route("quirofanos.edit", row.original.id)}
+                        className="p-2 text-blue-600 hover:bg-blue-100 rounded-full transition"
+                    >
+                        <Pencil size={18} />
+                    </Link>
+                    )}
+                </div>
                             </div>
                         );
                     })
