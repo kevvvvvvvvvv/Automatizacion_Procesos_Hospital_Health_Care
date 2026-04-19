@@ -163,21 +163,13 @@ class ReservacionQuirofanoController extends Controller
     public function edit(ReservacionQuirofano $quirofano)
     {
         $horariosOcupados = ReservacionQuirofano::where('fecha', $quirofano->fecha)
-<<<<<<< HEAD
-        ->where('id', '!=', $quirofano->id) // No bloquearse a sí mismo
-=======
         ->where('status', '!=', 'cancelada')
         ->where('id', '!=', $quirofano->id) 
->>>>>>> 913257f763310e5aa5abe0d4c313772a0ec63265
         ->get()
         ->pluck('horarios')
         ->flatten()
         ->toArray();
-<<<<<<< HEAD
-        dd($horariosOcupados);
-=======
         //  dd($horariosOcupados);
->>>>>>> 913257f763310e5aa5abe0d4c313772a0ec63265
         //dd($quirofano->toArray());
         return Inertia::render('reservacion_quirofano/edit', [
             'quirofano' => $quirofano,
