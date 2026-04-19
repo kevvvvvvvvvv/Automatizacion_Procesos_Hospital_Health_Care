@@ -18,9 +18,10 @@ public function rules(): array
         'procedimiento' => ['required'],
         'tiempo_estimado' => ['required'],
         'medico_operacion' => ['required'],
-        
+        'status' => 'required|in:pendiente,completada,cancelada',
+        'motivo_cancelacion' => 'required_if:status,cancelada|nullable|string|min:10',
         'fecha' => ['required'],
-        'horarios' => ['required', 'array'],
+        'horarios' => ['required_unless:status,cancelada', 'array'],
     ];
 }
 

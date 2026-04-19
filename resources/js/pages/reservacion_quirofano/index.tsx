@@ -30,6 +30,7 @@ type ReservacionQuirofano = {
     comentarios: string;
     habitacion_nombre: string;
     estancia_id: number;
+    status: 'pendiente' | 'completada' | 'cancelada';
 };
 
 interface Props {
@@ -42,7 +43,11 @@ const Index = ({ reservaciones }: Props) => {
     const [sorting, setSorting] = useState<SortingState>([]);
 
     const data = useMemo(() => reservaciones ?? [], [reservaciones]);
-
+    const statusStyles = {
+    pendiente: "bg-amber-100 text-amber-700 border-amber-200",
+    completada: "bg-emerald-100 text-emerald-700 border-emerald-200",
+    cancelada: "bg-rose-100 text-rose-700 border-rose-200",
+    };
     // Lógica de formateo de horario extraída para reusabilidad
     const formatHorario = (horarios: string[]) => {
         if (!horarios || horarios.length === 0) return { rago: "—", duracion: "" };
@@ -52,7 +57,7 @@ const Index = ({ reservaciones }: Props) => {
             const ultimoBloque = sorted[sorted.length - 1].split(" ")[1];
             const [horas, minutos] = ultimoBloque.split(":").map(Number);
             let finHoras = horas;
-            let finMinutos = minutos + 30;
+            let finMinutos = minutos + 29;
             if (finMinutos === 60) { finHoras += 1; finMinutos = 0; }
             const fin = `${String(finHoras).padStart(2, '0')}:${String(finMinutos).padStart(2, '0')}`;
             
@@ -93,6 +98,18 @@ const Index = ({ reservaciones }: Props) => {
             accessorKey: "paciente_nombre",
             header: "Paciente",
             cell: ({ row }) => <span className="font-semibold text-gray-700">{row.original.paciente_nombre}</span>
+        }, 
+        {
+            accessorKey: "status",
+            header: "Estado",
+            cell: ({ row }) => {
+                const status = row.original.status || 'pendiente';
+                return (
+                    <span className={`px-2.5 py-0.5 rounded-full text-[11px] font-bold border uppercase tracking-wider ${statusStyles[status]}`}>
+                        {status}
+                    </span>
+                );
+            }
         },
         {
             accessorKey: "medico_operacion",
@@ -169,17 +186,23 @@ const Index = ({ reservaciones }: Props) => {
                 {table.getRowModel().rows.length > 0 ? (
                     table.getRowModel().rows.map((row) => {
                         const { rango, duracion } = formatHorario(row.original.horarios);
+                        const status = row.original.status || 'pendiente';
                         return (
                             <div 
                                 key={row.id} 
                                 onClick={() => router.get(route("quirofanos.show", row.original.id))}
-                                className="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm active:scale-[0.98] transition-transform"
+                                className={`bg-white p-5 rounded-2xl border-l-4 shadow-sm active:scale-[0.98] transition-transform ${
+                                    status === 'cancelada' ? 'border-l-rose-500' : 
+                                    status === 'completada' ? 'border-l-emerald-500' : 'border-l-indigo-500'
+                                }`}
                             >
                                 <div className="flex justify-between items-start mb-3">
                                     <div className="flex items-center gap-2 bg-indigo-50 text-indigo-700 px-3 py-1 rounded-full text-xs font-bold">
                                         <Clock size={14} /> {rango}
                                     </div>
-                                    <span className="text-xs text-gray-400 font-medium">{new Date(row.original.fecha).toLocaleDateString()}</span>
+                                    <span className={`text-[10px] font-black uppercase tracking-widest px-1 ${status === 'cancelada' ? 'text-rose-600' : status === 'completada' ? 'text-emerald-600' : 'text-amber-600'}`}>
+                                            ● {status}
+                                    </span>
                                 </div>
                                 <h3 className="font-bold text-gray-800 text-lg mb-1">{row.original.paciente_nombre}</h3>
                                 <div className="space-y-2 mb-4">
