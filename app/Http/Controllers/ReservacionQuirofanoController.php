@@ -46,6 +46,7 @@ class ReservacionQuirofanoController extends Controller
                 'id' => $res->id,
                 'fecha' => $res->fecha,
                 'localizacion' => $res->localizacion,
+                'status' => $res->status,
                 'paciente_nombre' => $res->paciente ?? 'N/A', 
                 'instrumentista' => $res->instrumentista,
                 'anestesiologo' => $res->anestesiologo,
@@ -69,10 +70,19 @@ class ReservacionQuirofanoController extends Controller
         $paciente = Paciente::find($request->paciente);
         $estancia = Estancia::find($request->estancia);
         $pacienteData = $paciente ?: ($estancia?->paciente);
+        $fechaSeleccionada = $request->fecha ?? now()->toDateString(); 
+
+        $horariosOcupados = ReservacionQuirofano::where('fecha', $fechaSeleccionada)
+        ->where('status', '!=', 'cancelada')
+        ->get()
+        ->pluck('horarios')
+        ->flatten()
+        ->toArray();
 
         return Inertia::render('reservacion_quirofano/create', [
             'paciente' => $pacienteData,
             'estancia' => $estancia,
+            'horariosOcupados' => $horariosOcupados,
             'medicos' => User::select('id', 'nombre', 'apellido_paterno', 'apellido_materno')
                 ->get()
                 ->map(fn ($u) => [
@@ -131,7 +141,7 @@ class ReservacionQuirofanoController extends Controller
             $reservacion->fecha            = $request->fecha;
             $reservacion->horarios         = $request->horarios;
             $reservacion->comentarios      = $request->comentarios;
-
+            $reservacion->status        = $request->status ?? 'pendiente';
             $reservacion->instrumentista        = $request->instrumentista;
             $reservacion->anestesiologo         = $request->anestesiologo;
             $reservacion->insumos_medicamentos  = $request->insumos_medicamentos;
@@ -152,10 +162,18 @@ class ReservacionQuirofanoController extends Controller
     }
     public function edit(ReservacionQuirofano $quirofano)
     {
+        $horariosOcupados = ReservacionQuirofano::where('fecha', $quirofano->fecha)
+        ->where('status', '!=', 'cancelada')
+        ->where('id', '!=', $quirofano->id) 
+        ->get()
+        ->pluck('horarios')
+        ->flatten()
+        ->toArray();
+        //  dd($horariosOcupados);
         //dd($quirofano->toArray());
         return Inertia::render('reservacion_quirofano/edit', [
             'quirofano' => $quirofano,
-            
+            'horariosOcupados' => $horariosOcupados,
             'medicos' => User::select('id', 'nombre', 'apellido_paterno', 'apellido_materno')
                 ->get()
                 ->map(fn ($u) => [
@@ -202,6 +220,10 @@ class ReservacionQuirofanoController extends Controller
                 return back()->withErrors(['horarios' => 'No hay quirófanos disponibles para este nuevo horario.']);
             }
             $quirofano->fill($data);
+            $quirofano->status = $request->status;
+            $quirofano->motivo_cancelacion = ($request->status === 'cancelada') 
+                ? $request->motivo_cancelacion 
+                : null;
             $quirofano->comentarios = $request->comentarios;
             $quirofano->instrumentista = $request->instrumentista;
             $quirofano->anestesiologo = $request->anestesiologo;
@@ -236,4 +258,5 @@ class ReservacionQuirofanoController extends Controller
             'horarios'  => $quirofano->horarios ?? [],
         ]);
     }
+    
 };

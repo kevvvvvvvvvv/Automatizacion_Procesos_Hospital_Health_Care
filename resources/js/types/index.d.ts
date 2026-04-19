@@ -1109,7 +1109,9 @@ export interface ReservacionQuirofano {
     procedimiento: string;
     tiempo_estimado: string;
     medico_operacion: string;
-
+    status: string;
+    motivo_cancelacion: string;
+    
     // Detalles de servicios
     laparoscopia_detalle: string | null; 
     instrumentista: string | null;
