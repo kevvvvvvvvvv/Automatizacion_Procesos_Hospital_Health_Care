@@ -178,6 +178,8 @@ class HojaEnfermeriaQuirofanoController extends Controller  implements HasMiddle
             'hojaInsumosBasicos.productoServicio',
             'hojaOxigenos.userInicio',
             'hojaOxigenos.userFin',
+            'oxigenoActivo.userInicio',
+            'oxigenoActivo.userFin',
             'personalEmpleados',
             'conteoMaterialQuirofano',
             'isquemias',
@@ -187,6 +189,7 @@ class HojaEnfermeriaQuirofanoController extends Controller  implements HasMiddle
             'hojasTerapiaIV.detalleSoluciones',
             'egresoLiquidos',
         );
+
 
         return $hoja;
     }

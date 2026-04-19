@@ -181,21 +181,61 @@
     </table>
 
     <div class="clearfix">
-        <div style="width: 48%; float: left; margin-right: 2%;">
-            <h3>Tipo de anestesia</h3>
-            <div>
-                @foreach(($notaData['anestesia'] ?? []) as $key => $valor)
-                    <div style="margin-bottom: 3px;">
-                        <span class="check-box {{ $valor ? 'checked' : '' }}"></span>
-                        {{ ucfirst(str_replace('_', ' ', $key)) }}
+        <div style="width: 100%; overflow: hidden;">
+            <h3>Tipo de Anestesia</h3>
+
+            @php
+                $anestesia = $notaData['anestesia'] ?? [];
+            @endphp
+
+            <div style="width: 100%; margin-bottom: 10px;">
+                <div style="float: left; width: 33%;">
+                    <span class="check-box {{ ($anestesia['general'] ?? false) ? 'checked' : '' }}"></span>
+                    General
+                </div>
+                <div style="float: left; width: 33%;">
+                    <span class="check-box {{ ($anestesia['local'] ?? false) ? 'checked' : '' }}"></span>
+                    Local
+                </div>
+                <div style="float: left; width: 33%;">
+                    <span class="check-box {{ ($anestesia['sedacion'] ?? false) ? 'checked' : '' }}"></span>
+                    Sedación (MAC)
+                </div>
+            </div>
+
+            <div style="clear: both; margin-top: 15px; border: 1px solid #eee; padding: 10px;">
+                <h4 style="margin-top: 0;">Anestesia Regional (Bloqueos)</h4>
+                
+                <div style="width: 48%; float: left;">
+                    <p style="font-size: 10px; font-weight: bold; color: #666; text-transform: uppercase;">Neuroaxial (Central)</p>
+                    <div style="margin-bottom: 5px;">
+                        <span class="check-box {{ ($anestesia['regional']['neuroaxial']['bsa'] ?? false) ? 'checked' : '' }}"></span>
+                        BSA (Subaracnoideo)
                     </div>
-                @endforeach
-                @if(empty($notaData['servicios_especiales']))
-                    <p><em>No hay anestesias registradas.</em></p>
-                @endif
+                    <div style="margin-bottom: 5px;">
+                        <span class="check-box {{ ($anestesia['regional']['neuroaxial']['epidural'] ?? false) ? 'checked' : '' }}"></span>
+                        Epidural
+                    </div>
+                    <div style="margin-bottom: 5px;">
+                        <span class="check-box {{ ($anestesia['regional']['neuroaxial']['mixto'] ?? false) ? 'checked' : '' }}"></span>
+                        Bloqueo Mixto (CSE)
+                    </div>
+                </div>
+
+                <div style="width: 48%; float: right;">
+                    <p style="font-size: 10px; font-weight: bold; color: #666; text-transform: uppercase;">Periférico</p>
+                    <div style="margin-bottom: 5px;">
+                        <span class="check-box {{ ($anestesia['regional']['periferico']['plexo_braquial'] ?? false) ? 'checked' : '' }}"></span>
+                        Plexo Braquial
+                    </div>
+                    <div style="margin-bottom: 5px;">
+                        <span class="check-box {{ ($anestesia['regional']['periferico']['otros'] ?? false) ? 'checked' : '' }}"></span>
+                        Otros (Femoral, ciático, etc.)
+                    </div>
+                </div>
+                <div style="clear: both;"></div>
             </div>
         </div>
-
         <div style="width: 48%; float: left;">
             <h3>Servicios especiales</h3>
             <div>
@@ -397,7 +437,8 @@
             @endif
         </tbody>
     </table>
-    <h3>3. Ministración de medicamentos</h3>
+
+    <h3>Ministración de medicamentos</h3>
     <table>
         <thead>
             <tr>
@@ -436,6 +477,140 @@
                                 @endforeach
                             @endif
                         </td> 
+                    </tr>
+                @endforeach
+            @endif
+        </tbody>
+    </table>
+
+    <h3>Terapia intravenosa</h3>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 70%">Solución</th>
+                <th style="width: 10%">Cantidad (ml)</th>
+                <th style="width: 10%">Duración</th>
+                <th style="width: 10%">Flujo (ml/hora)</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if ($notaData->hojasTerapiaIV->isEmpty())
+                <tr>
+                    <td colspan="4" class="empty-cell">
+                        No se han registrado terapias intravenosas.
+                    </td>
+                </tr>
+            @else
+                @foreach ($notaData->hojasTerapiaIV as $terapia)
+                    <tr>
+                        <td>
+                            {{$terapia->nombre_solucion}}
+                            @if ($terapia->medicamentos && $terapia->medicamentos->isNotEmpty())
+                                @foreach ($terapia->medicamentos as $medicamento)
+                                    <div class='text-gray-400'>
+                                        {{ $medicamento->nombre_medicamento }} | {{$medicamento->dosis }} {{ $medicamento->unidad_medida }}
+                                    </div>
+                                @endforeach
+                            @endif
+                        </td>
+                        <td>{{$terapia->cantidad}}</td>
+                        <td>{{$terapia->duracion}}</td>
+                        <td>{{$terapia->flujo_ml_hora}}</td>
+                    </tr>
+                @endforeach
+
+            @endif
+
+        </tbody>
+    </table>
+
+
+    <h3>Egresos</h3>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 40%">Fecha/Hora</th>
+                <th style="width: 20%">Tipo de egreso</th>
+                <th style="width: 20%">Cantidad (ml)</th>
+                <th style="width: 30%">Descripción</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if ($notaData->egresoLiquidos->isEmpty())
+                <tr>
+                    <td colspan="4" class="empty-cell">
+                        No se han registrado terapias intravenosas.
+                    </td>
+                </tr>
+            @else
+                @foreach ($notaData->egresoLiquidos as $egreso)
+                    <tr>
+                        <td>{{$egreso->created_at}}</td>
+                        <td>{{$egreso->tipo}}</td>
+                        <td>{{$egreso->cantidad}}</td>
+                        <td>{{$egreso->duracion}}</td>
+                    </tr>
+                @endforeach
+            @endif
+
+        </tbody>
+    </table>
+
+    <h3>Administración de oxígeno</h3>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 10%;">Flujo (L/min)</th>
+                <th style="width: 15%;">Inicio</th>
+                <th style="width: 15%;">Fin</th>
+                <th style="width: 10%;">Total</th>
+                <th style="width: 25%;">Personal que inició</th>
+                <th style="width: 25%;">Personal que finalizó</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if ($notaData->hojaOxigenos->isEmpty())
+                <tr>
+                    {{-- IMPORTANTE: Cambié el colspan a 6 porque ahora son 6 columnas --}}
+                    <td colspan="6" class="empty-cell">No se ha registrado administración de oxígeno.</td>
+                </tr>
+            @else
+                @foreach ($notaData->hojaOxigenos as $oxigeno)
+                    <tr>   
+                        {{-- 1. Flujo --}}
+                        <td style="text-align: center;">{{ $oxigeno->litros_minuto }}</td>
+
+                        {{-- 2. Hora Inicio --}}
+                        <td style="font-size: 0.9em;">{{ $oxigeno->hora_inicio }}</td>
+
+                        {{-- 3. Hora Fin --}}
+                        @if (!$oxigeno->hora_fin)
+                            <td class="empty-data" style="font-style: italic; color: #666; font-size: 0.9em;">
+                                En curso
+                            </td>
+                        @else
+                            <td style="font-size: 0.9em;">{{ $oxigeno->hora_fin }}</td>
+                        @endif
+
+                        {{-- 4. Total Consumido (Nuevo) --}}
+                        <td style="text-align: center; font-weight: bold;">
+                            {{ $oxigeno->total_consumido ?? 0 }} L
+                        </td>
+
+                        {{-- 5. Personal Inicio (Nuevo) --}}
+                        {{-- Accedemos a las propiedades del objeto userInicio --}}
+                        <td style="font-size: 0.85em;">
+                            {{ $oxigeno->userInicio->nombre ?? '' }} {{ $oxigeno->userInicio->apellido_paterno ?? '' }}
+                        </td>
+
+                        {{-- 6. Personal Fin (Nuevo) --}}
+                        <td style="font-size: 0.85em;">
+                            @if ($oxigeno->userFin)
+                                {{ $oxigeno->userFin->nombre }} {{ $oxigeno->userFin->apellido_paterno }}
+                            @else
+                                <span style="color: #aaa;">-</span>
+                            @endif
+                        </td>
                     </tr>
                 @endforeach
             @endif
