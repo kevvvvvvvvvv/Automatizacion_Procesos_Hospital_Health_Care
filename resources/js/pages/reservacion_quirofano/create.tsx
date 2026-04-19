@@ -282,7 +282,7 @@ const toggleHorario = (horaSeleccionada: string) => {
                             type="date" 
                             className="w-full border rounded p-2 mb-4" 
                             value={data.fecha} 
-                            onChange={e => handleFechaChange(e.target.value)} // <--- Cambiado aquí
+                            onChange={e => handleFechaChange(e.target.value)} 
                         />
                         <div className="grid grid-cols-3 sm:grid-cols-4 gap-5">
                         {horariosLista.map(h => {
@@ -290,7 +290,6 @@ const toggleHorario = (horaSeleccionada: string) => {
                             const full = `${data.fecha} ${horaConSegundo}`;
                             
                             const isSelected = data.horarios.includes(full);
-                            // Verificar si este bloque ya está en la lista de ocupados
                             const isOccupied = horariosOcupados.includes(full);
 
                             return (
@@ -303,8 +302,8 @@ const toggleHorario = (horaSeleccionada: string) => {
                                         isOccupied
                                             ? "bg-red-50 text-red-400 border border-red-200 cursor-not-allowed opacity-60" // Estilo para Ocupado
                                             : isSelected 
-                                                ? "bg-indigo-600 text-white shadow-md scale-105 ring-2 ring-indigo-300" // Seleccionado
-                                                : "border border-gray-200 text-gray-600 hover:bg-gray-50" // Disponible
+                                                ? "bg-indigo-600 text-white shadow-md scale-105 ring-2 ring-indigo-300" 
+                                                : "border border-gray-200 text-gray-600 hover:bg-gray-50" 
                                     }`}
                                 > 
                                     {h}
