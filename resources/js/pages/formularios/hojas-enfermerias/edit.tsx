@@ -34,7 +34,6 @@ interface CreateProps {
     solicitudesAnteriores: SolicitudEstudio[];
     medicos: User[];
     usuarios: User[];
-
     nota: notasEvoluciones | NotaPostoperatoria | null;
     checklistInicial:ChecklistItemData[];
 
@@ -75,14 +74,13 @@ const Create: CreateComponent = ({
     dataParaGraficas, 
     catalogoEstudios, 
     solicitudesAnteriores, 
-    medicos,          
+    medicos,         
     nota,
     checklistInicial,
     categoria_dietas,
     sondas_cateters,
     vias_administracion,
 }) => {
-
     const [activeSection, setActiveSection] = useState<SeccionHoja>('signos');
 
     const NavigationTabs = () => (
@@ -101,8 +99,7 @@ const Create: CreateComponent = ({
             activeTab={activeSection}
             onTabChange={setActiveSection}
         />
-
-        </>
+        </>        
     );
 
     const renderActiveSection = () => {

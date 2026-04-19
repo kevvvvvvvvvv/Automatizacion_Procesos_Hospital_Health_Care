@@ -624,7 +624,7 @@
 
         <div class="signature-section">
             <div class="signature-line"></div>
-            <p style="font-size: 9pt; color: #555;">Nombre completo, cédula profesional y firma del médico</p>
+            <p style="font-size: 9pt; color: #555;">Nombre completo, cédula profesional y firma del personal</p>
             
             <p>
                 {{ $firmante->nombre_completo }} 

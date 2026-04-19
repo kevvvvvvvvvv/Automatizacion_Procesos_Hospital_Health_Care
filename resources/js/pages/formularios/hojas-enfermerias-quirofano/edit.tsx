@@ -18,6 +18,8 @@ import SignosVitalesForm from '@/components/forms/signos-vitales-form';
 import MedicamentosForm from '@/components/forms/medicamentos-form';
 import TerapiaIVForm from '@/components/terapia-iv-form';
 import EgresoLiquidoForm from '@/components/forms/hoja-enfermeria.tsx/egreso-liquido-form';
+import ModalRelevarTurno from '@/components/formularios/hoja-enfermeria-quirofano/modal-relevar-turno';
+import ModalOpenButton from '@/components/ui/buttons/modal-open-button';
 
 interface CreateProps {
     paciente: Paciente;
@@ -85,6 +87,7 @@ const CreateHojaEnfermeriaQuirofano:CreateComponent = ({
     soluciones = [],
 }) => {
     const [activeSection, setActiveSection] = useState<SeccionHoja>('general');
+    const [relevar, setRelevar] = useState(false);
 
     const NavigationTabs = () => (
         <nav className="mb-6">
@@ -198,14 +201,19 @@ const CreateHojaEnfermeriaQuirofano:CreateComponent = ({
                         params: {hojasenfermeriaquirofanos: hoja.id}
                     }}
                 />
-                {/** 
-                <button>
+                
+                <ModalOpenButton
+                    onClick={()=> setRelevar(true)}
+                    variant='neutral'
+                >
                     Relevar
-                </button>
-                */}
+                </ModalOpenButton>
+
                 <NavigationTabs/>
                 {renderActiveSection()}
             </div>
+
+            {relevar && <ModalRelevarTurno onClose={()=>setRelevar(false)} enfermeras={users} hoja={hoja}/>}
         </>
 
     )
