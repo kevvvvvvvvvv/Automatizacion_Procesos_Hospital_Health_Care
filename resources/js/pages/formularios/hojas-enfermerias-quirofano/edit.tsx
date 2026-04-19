@@ -1,30 +1,50 @@
-import { Estancia, HojaEnfermeriaQuirofano, Paciente, ProductoServicio, User } from '@/types';
+import { Estancia, HojaEnfermeriaQuirofano, Paciente, ProductoServicio, User, CatalogoViaAdministracion } from '@/types';
 import React, { useState } from 'react';
 import { Head } from '@inertiajs/react';
 import { MORPH_MAP } from '@/types/model';
 
 import PacienteCard from '@/components/paciente-card';
 import MainLayout from '@/layouts/MainLayout';
-
 import InsumosBasicosForm from '@/components/forms/insumos-basicos-form';
 import GeneralesForm from  '@/components/forms/generales-form';
 import PersonalQuirurgicoForm from '@/components/forms/personal-quirurgico-form';
 import EquipoLaparoscopiaForm from '@/components/forms/equipo-laparoscopia-form';
 import EnvioPiezaHojaEnfermeria from '@/components/forms/envio-pieza-hoja-enfermeria-form';
 import CerrarHoja from '@/components/app-cerrrar-hoja';
-
-
-
+import InformacionGeneralCirugia from '@/components/forms/hoja-enfermeria-quirofano/informacion-general-cirugia';
+import MaterialQuirofano from '@/components/forms/hoja-enfermeria-quirofano/conteo-material-quirofano';
+import IsquemiaFormContainer from '@/components/formularios/hoja-enfermeria-quirofano/isquemia/isquemias-fields';
+import SignosVitalesForm from '@/components/forms/signos-vitales-form';
+import MedicamentosForm from '@/components/forms/medicamentos-form';
+import TerapiaIVForm from '@/components/terapia-iv-form';
+import EgresoLiquidoForm from '@/components/forms/hoja-enfermeria.tsx/egreso-liquido-form';
 
 interface CreateProps {
     paciente: Paciente;
     estancia: Estancia;
     hoja: HojaEnfermeriaQuirofano,
     insumos: ProductoServicio[];
+
+    medicamentos: ProductoServicio[];
+    vias_administracion: CatalogoViaAdministracion[];
+    soluciones: ProductoServicio[];
+
     users: User[];
 }
 
-type SeccionHoja = 'insumos' | 'servicios_especiales' | 'pieza_patologica' | 'general' | 'personal';
+type SeccionHoja = 
+    'insumos' | 
+    'servicios_especiales' | 
+    'pieza_patologica' | 
+    'general' | 
+    'personal' | 
+    'informacion_general' | 
+    'conteo_material_quirofano' | 
+    'isquemias' | 
+    'signos_vitales' | 
+    'ministracion_medicamentos' |
+    'terapia_i_v' |
+    'egresos' ;
 
 
 
@@ -37,10 +57,33 @@ const secciones: {id: SeccionHoja, label: string}[] = [
     { id: 'insumos', label : 'Insumos' },
     { id: 'servicios_especiales', label: 'Servicios especiales' },
     { id: 'pieza_patologica', label: 'Envio de pieza patológica' },
-    { id: 'personal', label: 'Personal' }
+    { id: 'personal', label: 'Personal' },
+    { id: 'informacion_general', label:'Información general'},
+    { id: 'conteo_material_quirofano', label: 'Conteo de material en quirófano'},
+    { id: 'isquemias', label: 'Isquemias'},
+    { id: 'signos_vitales', label: 'Tomar signos'},
+    { id: 'ministracion_medicamentos', label: 'Ministracion de medicamentos'},
+    { id: 'terapia_i_v', label: 'Terapia intravenosa'},
+    { id: 'egresos', label: 'Egresos'},
+
 ];
 
-const CreateHojaEnfermeriaQuirofano:CreateComponent = ({paciente, estancia, hoja, insumos, users}) => {
+const tiposQuirofano = [
+    { value: 'diuresis', label: 'Diuresis' },
+    { value: 'sangrado', label: 'Sangrado' },
+    { value: 'otros', label: 'Otros'},
+];
+
+const CreateHojaEnfermeriaQuirofano:CreateComponent = ({
+    paciente, 
+    estancia, 
+    hoja, 
+    insumos, 
+    users,
+    medicamentos = [],
+    vias_administracion,
+    soluciones = [],
+}) => {
     const [activeSection, setActiveSection] = useState<SeccionHoja>('general');
 
     const NavigationTabs = () => (
@@ -79,6 +122,11 @@ const CreateHojaEnfermeriaQuirofano:CreateComponent = ({paciente, estancia, hoja
                             hoja={hoja}
                             materiales={insumos}
                         />
+            case 'conteo_material_quirofano':
+                return <MaterialQuirofano
+                            hoja={hoja}
+                        />
+
             case 'pieza_patologica':
                 return <EnvioPiezaHojaEnfermeria
                             medicos={users}
@@ -97,7 +145,37 @@ const CreateHojaEnfermeriaQuirofano:CreateComponent = ({paciente, estancia, hoja
                             users={users}
                             personalEmpleados={hoja.personal_empleados}
                         />
-
+            case 'informacion_general':
+                return <InformacionGeneralCirugia
+                            hoja={hoja}
+                        />
+            case 'isquemias':
+                return <IsquemiaFormContainer
+                            isquemiable_id={hoja.id}
+                            isquemiable_type={hoja.tipo_modelo}
+                            hoja={hoja}
+                        />
+            case 'signos_vitales':
+                return <SignosVitalesForm
+                            hoja={hoja}
+                        />
+            case 'ministracion_medicamentos':
+                return <MedicamentosForm
+                            hoja={hoja}
+                            medicamentos={medicamentos}
+                            vias_administracion={vias_administracion}
+                        />
+            case 'terapia_i_v':
+                return <TerapiaIVForm
+                            hoja={hoja}
+                            soluciones={soluciones}
+                            medicamentos={medicamentos}
+                        />
+            case 'egresos':
+                return <EgresoLiquidoForm
+                            hoja={hoja}
+                            tiposDisponibles={tiposQuirofano}
+                        />
             default:
                 return null;
         }
@@ -120,6 +198,11 @@ const CreateHojaEnfermeriaQuirofano:CreateComponent = ({paciente, estancia, hoja
                         params: {hojasenfermeriaquirofanos: hoja.id}
                     }}
                 />
+                {/** 
+                <button>
+                    Relevar
+                </button>
+                */}
                 <NavigationTabs/>
                 {renderActiveSection()}
             </div>

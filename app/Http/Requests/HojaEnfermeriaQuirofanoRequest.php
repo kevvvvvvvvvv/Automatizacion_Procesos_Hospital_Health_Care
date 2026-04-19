@@ -30,9 +30,17 @@ class HojaEnfermeriaQuirofanoRequest extends FormRequest
             'hora_fin_paciente' => 'nullable',
 
             'anestesia' => ['nullable', 'array'],
-            'anestesia.anestesia_general' => ['nullable', 'boolean'],
-            'anestesia.anestesia_local' => ['nullable', 'boolean'],
-            'anestesia.bloqueo' => ['nullable', 'boolean'],
+            'anestesia.general' => ['nullable', 'boolean'],
+            'anestesia.local' => ['nullable', 'boolean'],
+            'anestesia.sedacion' => ['nullable', 'boolean'],
+            'anestesia.regional' => ['nullable', 'array'],
+            'anestesia.regional.neuroaxial' => ['nullable', 'array'],
+            'anestesia.regional.neuroaxial.bsa' => ['nullable', 'boolean'],
+            'anestesia.regional.neuroaxial.epidural' => ['nullable', 'boolean'],
+            'anestesia.regional.neuroaxial.mixto' => ['nullable', 'boolean'],
+            'anestesia.regional.periferico' => ['nullable', 'array'],
+            'anestesia.regional.periferico.plexo_braquial' => ['nullable', 'boolean'],
+            'anestesia.regional.periferico.otros' => ['nullable', 'boolean'],
 
             'servicios_especiales' => ['nullable', 'array'],
             'servicios_especiales.torre' => ['nullable', 'boolean'],
@@ -41,6 +49,12 @@ class HojaEnfermeriaQuirofanoRequest extends FormRequest
             'servicios_especiales.grapas_extras' => ['nullable', 'boolean'],
             'servicios_especiales.bolsa_endo' => ['nullable', 'boolean'],
             'servicios_especiales.arco_c' => ['nullable', 'boolean'],
+
+            'nota_enfermeria' => ['nullable'],
+            'posicion_paciente' => ['nullable'],
+            'procedimiento_quirurgico' => ['nullable'],
+            'placa_cauterio' => ['nullable'],
+            'medio_oxigeno' => ['nullable'],
         ];
     }
 }

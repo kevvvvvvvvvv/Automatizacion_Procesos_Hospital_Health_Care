@@ -47,7 +47,7 @@ class HojaSignos extends Model
     protected $table = 'hoja_registros';
     
     protected $fillable = [
-        'registrable_id',   // Agregar
+        'registrable_id',  
         'registrable_type',
         'fecha_hora_registro',
         'tension_arterial_sistolica',
@@ -60,6 +60,7 @@ class HojaSignos extends Model
         'talla',
         'peso',
     ];
+
     public function registrable() {
         return $this->morphTo();
     }
@@ -68,8 +69,5 @@ class HojaSignos extends Model
     {   
         return $this->belongsTo(HojaEnfermeria::class,'hoja_enfermeria_id','id');
     }
-    public function recienNacido(): BelongsTo 
-    {
-        return $this->belongsTo(RecienNacido::class, 'hoja_enfermeria_id', 'id');
-    }
+
 }

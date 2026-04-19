@@ -196,18 +196,6 @@
 
                         <p></p>
                         <p style="font-size: 9pt; color: #555;">Nombre y Firma del Médico</p>
-
-                        @if($medico->credenciales->isNotEmpty())
-                            <div style="font-size: 10pt; margin-top: 10px;">
-                                @foreach($medico->credenciales as $credencial)
-                                    <p>
-                                        <strong>Título:</strong> {{ $credencial->titulo }}
-                                        |
-                                        <strong>Cédula:</strong> {{ $credencial->cedula_profesional }}
-                                    </p>
-                                @endforeach
-                            </div>
-                        @endif
                     @else
                         <div class="signature-line"></div>
                         <p style="font-size: 9pt; color: #555;">Nombre y firma del medico</p>

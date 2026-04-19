@@ -293,6 +293,155 @@
         </tbody>
     </table>
 
+    <h3>Conteo de material en quirofano</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Fecha/hora</th>
+                <th>Tipo de material</th>
+                <th>Cantidad inicial</th>
+                <th>Cantidad agregada</th>
+                <th>Cantidad final</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if ($notaData['conteoMaterialQuirofano']->isEmpty())
+                <tr>
+                    <td colspan="3" class='empty-cell'>No se han registrado insumos utilizados.</td>
+                </tr>
+            @else
+                @foreach ($notaData['conteoMaterialQuirofano'] as $material)
+                    <tr>
+                        <td>{{$material->created_at}}</td>
+                        <td>{{$material->tipo_material_leible}}</td>
+                        <td>{{$material->cantidad_inicial}}</td>
+                        <td>{{$material->cantidad_agregada}}</td>
+                        <td>{{$material->cantidad_final}}</td>
+                    </tr>
+                @endforeach
+            @endif
+        </tbody>
+    </table>
+
+    <h3>Isquemias</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Fecha/hora</th>
+                <th>Sitio anatómico</th>
+                <th>Hora de inicio</th>
+                <th>Hora de termino</th>
+                <th>Observaciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if ($notaData['isquemias']->isEmpty())
+                <tr>
+                    <td colspan="3" class='empty-cell'>No se han registrado insumos utilizados.</td>
+                </tr>
+            @else
+                @foreach ($notaData['isquemias'] as $isquemia)
+                    <tr>
+                        <td>{{$isquemia->created_at}}</td>
+                        <td>{{$isquemia->sitio_anatomico}}</td>
+                        <td>{{$isquemia->hora_inicio}}</td>
+                        <td>{{$isquemia->hora_termino}}</td>
+                        <td>{{$isquemia->observaciones}}</td>
+                    </tr>
+                @endforeach
+            @endif
+        </tbody>
+    </table>
+
+    <h3>Signos vitales</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Fecha/Hora</th>
+                <th title="Tensión Arterial">Tensión arterial</th>
+                <th title="Frecuencia Cardíaca">Frecuencia cardiaca</th>
+                <th title="Frecuencia Respiratoria">Frecuencia respiratoria</th>
+                <th title="Temperatura">Temperatura</th>
+                <th title="Saturación de Oxígeno">Saturación de oxígeno</th>
+                <th title="Glucemia Capilar">Glucemia capilar</th>
+                <th>Peso</th>
+                <th>Talla</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if ($notaData['hojaSignos']->isEmpty())
+                <tr>
+                    <td colspan="9" class='empty-cell'>No se han registrado signos vitales.</td>
+                </tr>
+            @else
+                @foreach ($notaData['hojaSignos'] as $signo)
+                    <tr>
+                        <td>{{ $signo->fecha_hora_registro }}</td>
+                        
+                        <td>
+                            {{ $signo->tension_arterial_sistolica && $signo->tension_arterial_diastolica 
+                                ? $signo->tension_arterial_sistolica . '/' . $signo->tension_arterial_diastolica 
+                                : '' }}
+                        </td>
+
+                        <td>{{ $signo->frecuencia_cardiaca }}</td>
+                        <td>{{ $signo->frecuencia_respiratoria }}</td>
+                        
+                        <td>{{ $signo->temperatura ? $signo->temperatura . ' °C' : '' }}</td>
+                        <td>{{ $signo->saturacion_oxigeno ? $signo->saturacion_oxigeno . ' %' : '' }}</td>
+                        <td>{{ $signo->glucemia_capilar ? $signo->glucemia_capilar . ' mg/dl' : '' }}</td>
+                        <td>{{ $signo->peso ? $signo->peso . ' kg' : '' }}</td>
+                        <td>{{ $signo->talla ? $signo->talla . ' cm' : '' }}</td>
+                    </tr>
+                @endforeach
+            @endif
+        </tbody>
+    </table>
+    <h3>3. Ministración de medicamentos</h3>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 25%;">Medicamento</th>
+                <th style="width: 10%;">Dosis</th>
+                <th style="width: 10%;">Gramaje</th>
+                <th style="width: 15%;">Vía administración</th>
+                <th style="width: 10%;">Duración</th>
+                <th style="width: 10%;">Unidad</th>
+                <th style="width: 20%;">Fecha/Hora Aplicación</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if ($notaData->hojaMedicamentos->isEmpty())
+                <tr>
+                    <td colspan="7" class="empty-cell">
+                        No se han registrado medicamentos administrados.
+                    </td>
+                </tr>
+            @else
+                @foreach ($notaData->hojaMedicamentos as $medicamento)
+                    <tr>
+                        <td><strong>{{ $medicamento->nombre_medicamento }}</strong></td>
+                        <td>{{ $medicamento->dosis }}</td>
+                        <td>{{ $medicamento->gramaje }}</td>
+                        <td>{{ $medicamento->via_administracion }}</td>
+                        <td>{{ $medicamento->duracion_tratamiento }}</td>
+                        <td>{{ $medicamento->unidad }}</td>
+                        <td>
+                            <span class="fecha-item">{{ $medicamento->fecha_hora_inicio }}</span>
+                            @if (!$medicamento->aplicaciones->isEmpty())
+                                @foreach ($medicamento->aplicaciones as $aplicacion)
+                                    <span class="fecha-item" style="color: #666;">
+                                        {{ $aplicacion->fecha_aplicacion }}
+                                    </span>
+                                @endforeach
+                            @endif
+                        </td> 
+                    </tr>
+                @endforeach
+            @endif
+        </tbody>
+    </table>
+
     @if(isset($medico))
         @php
             $firmante = $medico->colaborador_responsable ?? $medico;

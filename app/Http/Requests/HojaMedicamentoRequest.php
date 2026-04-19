@@ -22,6 +22,8 @@ class HojaMedicamentoRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'medicable_id' => 'required',
+            'medicable_type' => 'required',
             'medicamentos_agregados' => 'required|array|min:1',
             'medicamentos_agregados.*.id' => 'nullable|exists:producto_servicios,id', 
             'medicamentos_agregados.*.nombre_medicamento' => 'required_without:medicamentos_agregados.*.id|nullable|string|max:255',

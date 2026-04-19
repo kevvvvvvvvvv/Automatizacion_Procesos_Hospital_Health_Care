@@ -442,8 +442,11 @@ const Show = ({ estancia, historiaclinica }: ShowEstanciaProps) => {
                                     formulario.user_id === auth.user.id || 
                                     hasRole('administrador') || 
                                 (
-                                    formulario.catalogo.id === 15 && 
+                                    formulario.catalogo.id === 15 && //Hoja de solicitud de estudios
                                     auth.user.roles?.some(rol => ['técnico de laboratorio', 'químico', 'radiólogo'].includes(rol))
+                                ) || (
+                                    formulario.catalogo.id == 14 &&
+                                    hasRole('enfermera(o) quirofano')
                                 )) && (
                                     <Link
                                         href={route(`${formulario.catalogo.route_prefix}.edit`, formulario.id)}

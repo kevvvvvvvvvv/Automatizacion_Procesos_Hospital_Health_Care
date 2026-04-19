@@ -14,6 +14,7 @@ interface Props {
     estancia?: Estancia | null;
     horariosOcupados: string[];
     limitesDinamicos: Record<string, number>;
+    horariosOcupados: string[];
     medicos: Array<{ id: number; nombre_completo: string }>;
 }
 
@@ -35,7 +36,11 @@ const CreateReservacion: React.FC<Props> = ({
     paciente,
     estancia,
     quirofanos,
+<<<<<<< HEAD
     horariosOcupados = [],
+=======
+    horariosOcupados,
+>>>>>>> 913257f763310e5aa5abe0d4c313772a0ec63265
     limitesDinamicos,
     medicos = [],
 }) => {
@@ -58,7 +63,8 @@ const CreateReservacion: React.FC<Props> = ({
         tratante: "",
         tiempo_estimado: "",
         medico_operacion: "",
-        localizacion: "",
+        localizacion: "",status: 'pendiente',
+        motivo_cancelacion: '',
         fecha: new Date().toISOString().split("T")[0],
         horarios: [] as string[],
         comentarios: "",
@@ -72,6 +78,7 @@ const CreateReservacion: React.FC<Props> = ({
     });
 
     const { data, setData, processing, errors } = form;
+<<<<<<< HEAD
     const handleFechaChange = (nuevaFecha: string) => {
         setData("fecha", nuevaFecha);
         // Esto hace que Inertia vuelva a llamar a la función 'create' del controlador
@@ -85,6 +92,15 @@ const CreateReservacion: React.FC<Props> = ({
             replace: true
         });
     };
+=======
+    // Funcion para transformar el tiempo entimaso 
+    const calcularCantidadBloques = (tiempo: string): number => {
+        const num = parseFloat(tiempo);
+        if (isNaN(num) || num <= 0) return 1;
+        return Math.ceil(num * 2); 
+    };
+    // Mandar a llamar el controlador
+>>>>>>> 913257f763310e5aa5abe0d4c313772a0ec63265
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
 
@@ -101,6 +117,8 @@ const CreateReservacion: React.FC<Props> = ({
             tratante: data.tratante,
             tiempo_estimado: data.tiempo_estimado,
             medico_operacion: data.medico_operacion,
+            status: data.status, 
+            motivo_cancelacion: data.motivo_cancelacion,
             fecha: data.fecha,
             horarios: data.horarios,
             comentarios: data.comentarios,
@@ -119,16 +137,45 @@ const CreateReservacion: React.FC<Props> = ({
             onError: (err) => console.error("Errores específicos:", err),
         });
     };
+const toggleHorario = (horaSeleccionada: string) => {
+    const bloquesNecesarios = calcularCantidadBloques(data.tiempo_estimado);
+    const indiceInicio = horariosLista.findIndex(h => h === horaSeleccionada);
 
-    const toggleHorario = (hora: string) => {
-        const full = `${data.fecha} ${hora}:00`;
-        setData(
-            "horarios",
-            data.horarios.includes(full)
-                ? data.horarios.filter(h => h !== full)
-                : [...data.horarios, full]
-        );
-    };
+    if (indiceInicio === -1) return;
+
+    const nuevosBloques: string[] = [];
+    let rachoOcupadoEncontrado = false;
+
+    for (let i = 0; i < bloquesNecesarios; i++) {
+        const indexActual = indiceInicio + i;
+        if (horariosLista[indexActual]) {
+            const h = horariosLista[indexActual];
+            const fullStr = `${data.fecha} ${h}:00`;
+            
+            // VALIDACIÓN: Si uno de los bloques del rango está ocupado, cancelamos la selección
+            if (horariosOcupados.includes(fullStr)) {
+                rachoOcupadoEncontrado = true;
+                break;
+            }
+            nuevosBloques.push(fullStr);
+        }
+    }
+
+    if (rachoOcupadoEncontrado) {
+        alert("El rango seleccionado interfiere con una cirugía ya programada.");
+        return;
+    }
+
+    const primerBloque = `${data.fecha} ${horaSeleccionada}:00`;
+    const yaEstaSeleccionado = data.horarios.includes(primerBloque);
+
+    if (yaEstaSeleccionado) {
+        setData("horarios", data.horarios.filter(h => !nuevosBloques.includes(h)));
+    } else {
+        const setUnico = new Set([...data.horarios, ...nuevosBloques]);
+        setData("horarios", Array.from(setUnico));
+    }
+};
 
     // Función auxiliar para leer errores de serverErrors o del form
     const getError = (key: string) => serverErrors?.[key] || form.errors[key];
@@ -231,8 +278,9 @@ const CreateReservacion: React.FC<Props> = ({
                             error={errors.medico_operacion}
                         />
 
-                        <label className="font-bold text-sm">Tiempo estimado</label>
+                       <label className="font-bold text-sm">Tiempo estimado (en horas 1 o 1.5)</label>
                         <input 
+                            placeholder="Ej: 1.5 para 90 min"
                             className={`w-full border rounded p-2 ${getError('tiempo_estimado') ? 'border-red-500' : 'mb-4'}`} 
                             value={data.tiempo_estimado} 
                             onChange={e => setData("tiempo_estimado", e.target.value)} 
@@ -247,6 +295,7 @@ const CreateReservacion: React.FC<Props> = ({
                         {renderCondicional("¿Solicita Esterilización?", "esterilizar")}
                         {renderCondicional("¿Solicita Patología?", "patologico")}
                     </div>
+                    
 
                    <div className="border rounded-lg p-5 bg-white shadow-sm h-fit">
                         <label className="font-bold text-sm block mb-2">Selección de Horario</label>
@@ -257,6 +306,7 @@ const CreateReservacion: React.FC<Props> = ({
                             onChange={e => handleFechaChange(e.target.value)} // <--- Cambiado aquí
                         />
                         <div className="grid grid-cols-3 sm:grid-cols-4 gap-5">
+<<<<<<< HEAD
                 {horariosLista.map(h => {
                     const horaConSegundo = `${h}:00`;
                     const full = `${data.fecha} ${horaConSegundo}`;
@@ -291,6 +341,67 @@ const CreateReservacion: React.FC<Props> = ({
                     );
                 })}
             </div>
+=======
+                        {horariosLista.map(h => {
+                            const horaConSegundo = `${h}:00`;
+                            const full = `${data.fecha} ${horaConSegundo}`;
+                            
+                            const isSelected = data.horarios.includes(full);
+                            // Verificar si este bloque ya está en la lista de ocupados
+                            const isOccupied = horariosOcupados.includes(full);
+
+                            return (
+                                <button
+                                    key={h}
+                                    type="button"
+                                    disabled={isOccupied} // Bloqueamos el click
+                                    onClick={() => toggleHorario(h)}
+                                    className={`p-2 text-xs font-medium rounded-md transition-all ${
+                                        isOccupied
+                                            ? "bg-red-50 text-red-400 border border-red-200 cursor-not-allowed opacity-60" // Estilo para Ocupado
+                                            : isSelected 
+                                                ? "bg-indigo-600 text-white shadow-md scale-105 ring-2 ring-indigo-300" // Seleccionado
+                                                : "border border-gray-200 text-gray-600 hover:bg-gray-50" // Disponible
+                                    }`}
+                                > 
+                                    {h}
+                                    {isOccupied && <span className="block text-[8px] uppercase font-bold">Ocupado</span>}
+                                </button>
+                            );
+                        })}
+                    </div>
+                    <div className="mt-6 p-4 border rounded-lg bg-gray-50 space-y-4">
+                            <div>
+                        <div className="flex flex-col gap-4">
+                        <label className="font-bold">Estado de la Cirugía</label>
+                        <select 
+                            value={data.status}
+                            onChange={(e) => setData('status', e.target.value)}
+                            className="border rounded p-2"
+                        >
+                            <option value="pendiente">Pendiente</option>
+                            <option value="completada">Completada</option>
+                            <option value="cancelada">Cancelada</option>
+                        </select>
+
+                        {/* Renderizado condicional: El campo solo existe en el DOM si el estado es cancelada */}
+                        {data.status === 'cancelada' && (
+                            <div className="mt-2 transition-all duration-300">
+                                <label className="text-red-600 font-semibold">Motivo de Cancelación</label>
+                                <textarea
+                                    value={data.motivo_cancelacion}
+                                    onChange={(e) => setData('motivo_cancelacion', e.target.value)}
+                                    className="w-full border-red-300 rounded p-2 focus:ring-red-500"
+                                    placeholder="Explique brevemente por qué se canceló..."
+                                    required={data.status === 'cancelada'} // HTML5 validation
+                                />
+                                {errors.motivo_cancelacion && <span className="text-red-500 text-xs">{errors.motivo_cancelacion}</span>}
+                            </div>
+                        )}
+                    </div>
+                    </div>
+                    </div>
+>>>>>>> 913257f763310e5aa5abe0d4c313772a0ec63265
                         
                         <div className="mt-6">
                             <label className="text-sm font-medium">Comentarios adicionales</label>

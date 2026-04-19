@@ -162,7 +162,6 @@ class EstanciaController extends Controller
             ->pluck('historiaclinica')
             ->filter() 
             ->first(); 
-        //dd($historiaClinica->toArray());
 
         return Inertia::render('estancias/show', [
             'estancia' => $estancia,

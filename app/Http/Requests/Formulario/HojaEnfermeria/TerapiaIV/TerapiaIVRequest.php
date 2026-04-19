@@ -22,6 +22,9 @@ class TerapiaIVRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'terapiable_id' => 'required',
+            'terapiable_type' => 'required',
+
             'terapias_agregadas' => 'required|array|min:1',
             
             //Solución

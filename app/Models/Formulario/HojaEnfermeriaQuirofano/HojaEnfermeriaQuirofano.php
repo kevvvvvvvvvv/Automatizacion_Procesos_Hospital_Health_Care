@@ -6,11 +6,15 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 
 use App\Models\Formulario\PersonalEmpleado;
 use App\Models\Formulario\FormularioInstancia;
+use App\Models\Formulario\HojaEnfermeria\EgresoLiquido;
+use App\Models\Formulario\HojaEnfermeria\HojaMedicamento;
+use App\Models\Formulario\HojaEnfermeria\HojaSignos;
+use App\Models\Formulario\HojaEnfermeria\HojaTerapiaIV;
 use App\Models\Formulario\HojaOxigeno;
-
 
 /**
  * @property int $id
@@ -65,13 +69,30 @@ class HojaEnfermeriaQuirofano extends Model
         'hora_inicio_paciente',
         'hora_fin_cirugia',
         'hora_fin_anestesia',
-        'hora_fin_paciente'
+        'hora_fin_paciente',
+
+        'nota_enfermeria',
+        'posicion_paciente',
+        'procedimiento_quirurgico',
+        'placa_cauterio',
+        'medio_oxigeno',
     ];
 
     protected $casts = [
         'anestesia' => 'array',
         'servicios_especiales' => 'array'
     ];
+
+    protected $appends = [
+        'tipo_modelo',
+    ];
+
+    public function tipoModelo(): Attribute
+    {
+        return Attribute::make(
+            get: fn ()=> get_class($this),
+        );
+    }
 
     public function formularioInstancia(): BelongsTo
     {
@@ -91,5 +112,35 @@ class HojaEnfermeriaQuirofano extends Model
     public function hojaOxigenos(): MorphMany
     {
         return $this->morphMany(HojaOxigeno::class, 'itemable');
+    }
+
+    public function conteoMaterialQuirofano(): HasMany
+    {
+        return $this->hasMany(ConteoMaterialQuirofano::class);
+    }
+
+    public function isquemias(): MorphMany
+    {
+        return $this->morphMany(Isquemia::class,'isquemiable');
+    }
+
+    public function hojaSignos():MorphMany
+    {
+        return $this->morphMany(HojaSignos::class, 'registrable');
+    }
+
+    public function hojaMedicamentos(): MorphMany
+    {
+        return $this->morphMany(HojaMedicamento::class, 'medicable');
+    }
+
+    public function hojasTerapiaIV(): MorphMany
+    {
+        return $this->morphMany(HojaTerapiaIV::class,'terapiable');
+    }
+
+    public function egresoLiquidos(): MorphMany
+    {
+        return $this->morphMany(EgresoLiquido::class,'liquidable');
     }
 }
