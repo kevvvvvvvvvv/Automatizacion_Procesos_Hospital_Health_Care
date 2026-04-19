@@ -278,8 +278,12 @@ const toggleHorario = (horaSeleccionada: string) => {
 
                    <div className="border rounded-lg p-5 bg-white shadow-sm h-fit">
                         <label className="font-bold text-sm block mb-2">Selección de Horario</label>
-                        <input type="date" className="w-full border rounded p-2 mb-4" value={data.fecha} onChange={e => setData("fecha", e.target.value)} />
-                        
+                        <input 
+                            type="date" 
+                            className="w-full border rounded p-2 mb-4" 
+                            value={data.fecha} 
+                            onChange={e => handleFechaChange(e.target.value)} // <--- Cambiado aquí
+                        />
                         <div className="grid grid-cols-3 sm:grid-cols-4 gap-5">
                         {horariosLista.map(h => {
                             const horaConSegundo = `${h}:00`;
