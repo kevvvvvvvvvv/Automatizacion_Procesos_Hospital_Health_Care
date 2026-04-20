@@ -261,6 +261,8 @@ export default function DashboardBoveda({
                                                 <th className="px-6 py-3">Caja</th>
                                                 <th className="px-6 py-3">Área</th>
                                                 <th className="px-6 py-3">Concepto</th>
+                                                <th className="px-6 py-3">Descripción</th>
+                                                <th className="px-6 py-3">Factura</th>
                                                 <th className="px-6 py-3">Paciente / Ref</th>
                                                 <th className="px-6 py-3 text-right">Monto</th>
                                             </tr>
@@ -281,8 +283,16 @@ export default function DashboardBoveda({
                                                         <div className="font-medium">{mov.concepto}</div>
                                                         <div className="text-[10px] text-gray-400 uppercase">{mov.metodo_pago?.nombre}</div>
                                                     </td>
+                                                    <td className="px-6 py-4 font-bold">
+                                                        {mov.descripcion}
+                                                    </td>
+                                                    <td className={`px-6 py-4 ${mov.factura ? 'text-green-600' : 'text-red-600'}`}>
+                                                        <span className={`inline-block px-3 py-1 rounded-full bg-gray-100 ${mov.factura ? 'text-green-600 bg-green-100' : 'text-red-600 bg-red-100'} text-sm`}>
+                                                        {mov.factura ? 'Sí' : 'No'}
+                                                        </span>
+                                                    </td>
                                                     <td className="px-6 py-4">{mov.nombre_paciente || '-'}</td>
-                                                    <td className={`px-6 py-4 text-right font-bold ${mov.tipo === 'ingreso' ? 'text-green-600' : 'text-red-600'}`}>
+                                                    <td className={`px-6 p  y-4 text-right font-bold ${mov.tipo === 'ingreso' ? 'text-green-600' : 'text-red-600'}`}>
                                                         {mov.tipo === 'ingreso' ? '+' : '-'}${formatMoney(mov.monto)}
                                                     </td>
                                                 </tr>
