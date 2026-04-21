@@ -28,10 +28,12 @@ use App\Services\PdfGeneratorService;
 use App\Services\VentaService;
 use App\Models\Venta\Venta;
 
+use App\Http\Controllers\Formulario\HojaEnfermeriaQuirofano\HojaRelevoController;
+
 class HojaEnfermeriaQuirofanoController extends Controller  implements HasMiddleware
 {
     use AuthorizesRequests;
-    protected $pdfGenerator;
+    protected $pdfGenerator, $hoja_relevo;
 
     public static function middleware(): array
     {
@@ -43,9 +45,10 @@ class HojaEnfermeriaQuirofanoController extends Controller  implements HasMiddle
         ];
     }
 
-    public function __construct(PdfGeneratorService $pdfGenerator)
+    public function __construct(PdfGeneratorService $pdfGenerator, HojaRelevoController $hoja_relevo)
     {
         $this->pdfGenerator = $pdfGenerator; 
+        $this->hoja_relevo = $hoja_relevo;
     }
 
     public function show()
@@ -160,6 +163,7 @@ class HojaEnfermeriaQuirofanoController extends Controller  implements HasMiddle
             ]);
 
             $this->calcularVentas($hojasenfermeriaquirofanos, $service);
+            $this->hoja_relevo->marcarHoraSalida($hojasenfermeriaquirofanos);
 
             DB::commit();
             return redirect()->route('estancias.show');
@@ -178,6 +182,8 @@ class HojaEnfermeriaQuirofanoController extends Controller  implements HasMiddle
             'hojaInsumosBasicos.productoServicio',
             'hojaOxigenos.userInicio',
             'hojaOxigenos.userFin',
+            'oxigenoActivo.userInicio',
+            'oxigenoActivo.userFin',
             'personalEmpleados',
             'conteoMaterialQuirofano',
             'isquemias',
@@ -187,6 +193,7 @@ class HojaEnfermeriaQuirofanoController extends Controller  implements HasMiddle
             'hojasTerapiaIV.detalleSoluciones',
             'egresoLiquidos',
         );
+
 
         return $hoja;
     }

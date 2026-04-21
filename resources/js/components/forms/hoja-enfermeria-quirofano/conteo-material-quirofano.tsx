@@ -53,10 +53,10 @@ const MaterialQuirofano = ({ hoja }: Props) => {
         setData('conteo_materiales', nuevosMateriales);
     };
 
-    const handleRemoveRow = (index: number) => {
+/*     const handleRemoveRow = (index: number) => {
         const nuevosMateriales = data.conteo_materiales.filter((_, i) => i !== index);
         setData('conteo_materiales', nuevosMateriales);
-    };
+    }; */
 
     return (
         <div className="border shadow-sm rounded-lg p-6 mb-4 bg-white flex flex-col gap-4">
@@ -79,7 +79,7 @@ const MaterialQuirofano = ({ hoja }: Props) => {
                     No hay materiales registrados. Haga clic en "Agregar insumo" para comenzar.
                 </div>
             ) : (
-                <div className="">
+                <div className="overflow-x-auto border rounded-xl">
                     <table className="w-full text-sm text-left">
                         <thead className="text-xs text-gray-600 uppercase bg-gray-50 border-b">
                             <tr>
@@ -148,7 +148,7 @@ const MaterialQuirofano = ({ hoja }: Props) => {
                                                 {tieneFaltante && <span className="absolute right-2 top-2 text-red-500" title="La cuenta no cuadra">!</span>}
                                             </div>
                                         </td>
-                                        <td className="px-4 py-2 text-center">
+         {/*                                <td className="px-4 py-2 text-center">
                                             <button
                                                 type="button"
                                                 onClick={() => handleRemoveRow(index)}
@@ -156,7 +156,7 @@ const MaterialQuirofano = ({ hoja }: Props) => {
                                             >
                                                 ✕
                                             </button>
-                                        </td>
+                                        </td> */}
                                     </tr>
                                 );
                             })}

@@ -103,7 +103,7 @@ const EquipoLaparoscopiaForm = ({ hoja }: Props) => {
             <div className='border shadow-sm rounded-lg p-6'>
                 <ServiciosEspecialesForm
                     modelo={hoja}
-                    tipo='App\Models\HojaEnfermeriaQuirofano'
+                    tipo={hoja.tipo_modelo}
                 />
             </div>
         </>

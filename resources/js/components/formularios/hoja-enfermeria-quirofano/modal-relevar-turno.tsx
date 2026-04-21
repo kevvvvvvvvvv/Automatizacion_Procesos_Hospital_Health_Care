@@ -13,9 +13,6 @@ interface Props {
     hoja: HojaEnfermeriaQuirofano;
 }
 
-
-
-
 const ModalRelevarTurno = ({ 
     onClose,
     enfermeras =[],
@@ -33,9 +30,9 @@ const ModalRelevarTurno = ({
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        post(route('relevar-turno',{hoja: hoja.id}),{
+        post(route('relevarTurno.store',{hoja: hoja.id}),{
             onSuccess: onClose,
-        });
+        })
     }
 
     return (
@@ -49,31 +46,32 @@ const ModalRelevarTurno = ({
 
                 <h3 className="mb-5 text-xl font-bold text-gray-800">Registrar movimiento</h3>
 
-                <form onSubmit={handleSubmit} className="space-y-4"></form>
+                <form onSubmit={handleSubmit} className="space-y-4">
                 
-                <SelectInput
-                    label = 'Enfermera(o) que relevará'
-                    options={enfermerasOptions}
-                    onChange={e => setData('user_id',e)}
-                    value={data.user_id}
-                />
+                    <SelectInput
+                        label = 'Enfermera(o) que relevará'
+                        options={enfermerasOptions}
+                        onChange={e => setData('user_id',e)}
+                        value={data.user_id}
+                    />
 
-                <TextInput
-                    id=''
-                    name=''
-                    label='Observaciones'
-                    value={data.observaciones_entrega}
-                    onChange={e => setData('observaciones_entrega',e.target.value)}
-                    error={errors.observaciones_entrega}
-                />
-                <div className='flex justify-end'>
-                    <PrimaryButton
-                        disabled={processing}
-                        type='submit'
-                    >
-                        {processing ? 'Guardando...' : 'Guardar'}
-                    </PrimaryButton>
-                </div>
+                    <TextInput
+                        id=''
+                        name=''
+                        label='Observaciones'
+                        value={data.observaciones_entrega}
+                        onChange={e => setData('observaciones_entrega',e.target.value)}
+                        error={errors.observaciones_entrega}
+                    />
+                    <div className='flex justify-end'>
+                        <PrimaryButton
+                            disabled={processing}
+                            type='submit'
+                        >
+                            {processing ? 'Guardando...' : 'Guardar'}
+                        </PrimaryButton>
+                    </div>
+                </form>
             </div>
         </div>
     );

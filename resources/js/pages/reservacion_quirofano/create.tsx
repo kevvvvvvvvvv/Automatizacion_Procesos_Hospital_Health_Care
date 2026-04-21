@@ -293,7 +293,6 @@ const toggleHorario = (horaSeleccionada: string) => {
                             const full = `${data.fecha} ${horaConSegundo}`;
                             
                             const isSelected = data.horarios.includes(full);
-                            // Verificar si este bloque ya está en la lista de ocupados
                             const isOccupied = horariosOcupados.includes(full);
 
                             return (
@@ -306,8 +305,8 @@ const toggleHorario = (horaSeleccionada: string) => {
                                         isOccupied
                                             ? "bg-red-50 text-red-400 border border-red-200 cursor-not-allowed opacity-60" // Estilo para Ocupado
                                             : isSelected 
-                                                ? "bg-indigo-600 text-white shadow-md scale-105 ring-2 ring-indigo-300" // Seleccionado
-                                                : "border border-gray-200 text-gray-600 hover:bg-gray-50" // Disponible
+                                                ? "bg-indigo-600 text-white shadow-md scale-105 ring-2 ring-indigo-300" 
+                                                : "border border-gray-200 text-gray-600 hover:bg-gray-50" 
                                     }`}
                                 > 
                                     {h}

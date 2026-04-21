@@ -22,7 +22,7 @@ class ConteoMaterialQuirofanoRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'conteo_materiales' => ['required', 'array', 'min:1'],
+            'conteo_materiales' => ['required', 'array', 'min:0'],
             
             'conteo_materiales.*.tipo_material' => ['required', 'string', 'max:255'],
             
@@ -57,16 +57,12 @@ class ConteoMaterialQuirofanoRequest extends FormRequest
         ];
     }
 
-    /**
-     * Mensajes personalizados de error (Opcional, pero muy útil para el frontend).
-     */
     public function messages(): array
     {
         return [
-            'conteo_materiales.required' => 'Debe registrar al menos un material.',
-            'conteo_materiales.*.tipo_material.required' => 'El tipo de material es obligatorio.',
-            'conteo_materiales.*.cantidad_inicial.integer' => 'La cantidad inicial debe ser un número.',
-            'conteo_materiales.*.cantidad_final.min' => 'La cantidad final no puede ser negativa.',
+            'required' => 'El campo :attribute es requerido.',
+            'integer' => 'El campo :attribute debe ser un número.',
+            'min' => 'El campo :attribute debe ser mayor.',
         ];
     }
 }
