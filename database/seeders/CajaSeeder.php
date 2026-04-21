@@ -34,5 +34,12 @@ class CajaSeeder extends Seeder
             'nombre' => 'Boveda',
             'tipo' => 'boveda'
         ]);
+
+        Caja::create([
+            'activa' => true,
+            'id' => 4,
+            'nombre' => 'Fondo de líderes de tiendas',
+            'tipo' => 'fondo'
+        ]);
     }
 }

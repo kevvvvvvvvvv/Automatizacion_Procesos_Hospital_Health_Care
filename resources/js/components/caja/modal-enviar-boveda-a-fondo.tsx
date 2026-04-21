@@ -8,25 +8,28 @@ import { SummaryCard } from '../ui/money/summary-card';
 import TextInput from '@/components/ui/input-text';
 import PrimaryButton from '../ui/primary-button';
 import MoneyInput from '../ui/input-money';
+import SelectInput from '../ui/input-select';
 
 
 interface Props {
     onClose: () => void;
     boveda: SesionCaja;
-    fondo: SesionCaja;
+    fondos: SesionCaja[];
 }
 
 const ModalEnviarBovedaAFondo = ({ 
     onClose, 
     boveda, 
-    fondo 
+    fondos = [],
 }: Props) => {
     const { data, setData, post, processing, errors } = useForm({
         monto_envio: '',
         observacion: '',
         sesion_origen_id: boveda.id,
-        sesion_destino_id: fondo.id,
+        sesion_destino_id: '',
     });
+
+
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -55,6 +58,10 @@ const ModalEnviarBovedaAFondo = ({
         });
     };
 
+    const fondosOptions = fondos.map( fondo => (
+        { value: fondo.id, label: fondo.caja?.nombre ?? 'Sin nombre' }
+    ))
+
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
             <div className="w-full max-w-md bg-white rounded-xl shadow-2xl p-6 border-t-4 border-blue-600">
@@ -75,6 +82,13 @@ const ModalEnviarBovedaAFondo = ({
                         value={data.monto_envio}
                         onValueChange={e => setData('monto_envio', e ?? '')}
                         error={errors.monto_envio}
+                    />
+
+                    <SelectInput
+                        label='Fondo a depositar'
+                        value={data.sesion_destino_id}
+                        onChange={ e => setData('sesion_destino_id', e)}
+                        options={fondosOptions}
                     />
 
                     <TextInput

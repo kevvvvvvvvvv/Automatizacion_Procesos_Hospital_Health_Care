@@ -50,10 +50,11 @@ class ContaduriaController extends Controller
             ['user_id' => Auth::id(), 'fecha_apertura' => now(), 'monto_inicial' => 50000]
         );
 
-        $sesionFondo = SesionCaja::firstOrCreate(
-            ['caja_id' => $cFondo->id, 'estado' => 'abierta'],
-            ['user_id' => Auth::id(), 'fecha_apertura' => now(), 'monto_inicial' => 10000]
-        );
+        $sesionesFondo = SesionCaja::with('caja') 
+            ->whereHas('caja', function ($query) {
+                $query->where('tipo', 'fondo');
+            })
+            ->get();
 
         // 5. Movimientos del DÍA SELECCIONADO (Aquí está la "paginación")
         $movimientosFiltro = MovimientoCaja::with(['sesionCaja.caja', 'user', 'metodoPago'])
@@ -95,7 +96,7 @@ class ContaduriaController extends Controller
         $allSesiones = SesionCaja::with(['user', 'caja'])
             ->where('fecha_apertura', '>=', now()->subDays(3))
             ->orderBy('fecha_apertura', 'desc')
-            ->get();
+            ->get();;
 
         return Inertia::render('caja/dashboard-boveda', [
             'fechaFiltro' => $fechaFiltro, 
@@ -108,7 +109,7 @@ class ContaduriaController extends Controller
                 'balance' => $ingresos - $egresos
             ],
             'boveda' => $sesionBoveda,
-            'fondo' => $sesionFondo,
+            'fondos' => $sesionesFondo,
             'sesion' => $turnoExistente,
             'caja' => $sesionOperativo,
             'allSesiones' => $allSesiones,

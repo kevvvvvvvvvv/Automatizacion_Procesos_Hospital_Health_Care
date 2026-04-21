@@ -171,6 +171,13 @@ export default function Dashboard() {
                     />
                    )} 
                 </div>
+                <div>
+                    <CardButton
+                        icon={FaCashRegister}
+                        text="Fondo líderes de tienda"
+                        onClick={() => router.visit(route('contaduria.index'))}
+                    />
+                </div>
                 
                 <div>
                     {can('Reportes') && (
