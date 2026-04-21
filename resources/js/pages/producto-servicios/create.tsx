@@ -201,7 +201,7 @@ const ProductoServicioForm = ({ productoServicio, medicamentos, insumos, viasCat
     >
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <SelectInput
-          label="Nombre capítulo"
+          label="Nombre capítulo dso"
           options={optionsTipo}
           placeholder="Seleccione un capítulo"
           value={data.tipo}

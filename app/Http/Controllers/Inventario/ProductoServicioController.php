@@ -44,7 +44,7 @@ class ProductoServicioController extends Controller
         ]);
     }
 
-    // ... (cabecera del controlador igual)
+
 
  public function store(ProductoServicioRequest $request)
 {
@@ -102,18 +102,31 @@ class ProductoServicioController extends Controller
             $productoServicio->update($request->validated());
 
             if ($productoServicio->subtipo === 'MEDICAMENTOS') {
-                $medicamento = $productoServicio->medicamento()->updateOrCreate(
-                    ['id' => $productoServicio->id],
-                    [
-                        'excipiente_activo_gramaje' => $request->excipiente_activo_gramaje,
-                        'volumen_total' => $request->volumen_total,
-                        'nombre_comercial' => $request->nombre_comercial,
-                        'gramaje' => $request->gramaje,
-                        'fraccion' => $request->fraccion ? 1 : 0,
-                    ]
-                );
-                $medicamento->vias()->sync($request->via_administracion ?? []);
-            } 
+            
+            // CORRECCIÓN 1: Manejar el string "False" o "True" que viene del request
+            $fraccion = filter_var($request->fraccion, FILTER_VALIDATE_BOOLEAN);
+
+            $medicamento = $productoServicio->medicamento()->updateOrCreate(
+                ['id' => $productoServicio->id],
+                [
+                    'excipiente_activo_gramaje' => $request->excipiente_activo_gramaje,
+                    'volumen_total'             => $request->volumen_total,
+                    'nombre_comercial'          => $request->nombre_comercial,
+                    'gramaje'                   => $request->gramaje,
+                    'fraccion'                  => $fraccion ? 1 : 0,
+                ]
+            );
+
+            // CORRECCIÓN 2: El dd() dice "via_administracion", no "viasAdministracion"
+            // Y verificamos si el método en el modelo es 'vias' o 'viasAdministracion'
+            $viasIds = $request->via_administracion ?? [];
+            
+            if (method_exists($medicamento, 'vias')) {
+                $medicamento->vias()->sync($viasIds);
+            } elseif (method_exists($medicamento, 'viasAdministracion')) {
+                $medicamento->viasAdministracion()->sync($viasIds);
+            }
+        }
             elseif ($productoServicio->subtipo === 'ESTUDIOS') {
                 // CORRECCIÓN: Usar $productoServicio y updateOrCreate
                 $productoServicio->estudio()->updateOrCreate(
@@ -145,14 +158,19 @@ class ProductoServicioController extends Controller
 
     public function edit(ProductoServicio $productoServicio) 
     {
-        $productoServicio->load(['medicamento.vias', 'insumo']);
+        $productoServicio->load(['medicamento.viasAdministracion', 'insumo']);
+        $viasSeleccionadas = [];
+        
+        if ($productoServicio->medicamento && $productoServicio->medicamento->vias) {
+            $viasSeleccionadas = $productoServicio->medicamento->vias->pluck('id')->toArray();
+        }
 
         return Inertia::render('producto-servicios/create', [
             'productoServicio'  => $productoServicio,
-            'medicamentos'      => $productoServicio->medicamento,
-            'insumos'           => $productoServicio->insumo,
-            'viasCatalogo'      => CatalogoViaAdministracion::all(),
-            'viasSeleccionadas' => $productoServicio->medicamento?->vias->pluck('id')->toArray() ?? []
+            'medicamentos'      => $productoServicio->medicamento, // Esto puede ser null
+            'insumos'           => $productoServicio->insumo,      // Esto puede ser null
+            'viasCatalogo'      => \App\Models\Inventario\CatalogoViaAdministracion::all(),
+            'viasSeleccionadas' => $viasSeleccionadas
         ]);
     }
 
