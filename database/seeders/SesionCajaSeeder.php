@@ -18,6 +18,7 @@ class SesionCajaSeeder extends Seeder
 
         $bovedaId = Caja::where('tipo', 'boveda')->first()?->id;
         $fondoId = Caja::where('tipo', 'fondo')->first()?->id;
+        $operativaId = Caja::where('tipo','operativo')->first()?->id;
 
         SesionCaja::firstOrCreate(
         [
@@ -37,6 +38,17 @@ class SesionCajaSeeder extends Seeder
         ],
         [
             'user_id' => 33,
+            'fecha_apertura' => now(),
+            'monto_inicial' => 10000,
+        ]);
+
+        SesionCaja::firstOrCreate(
+        [
+            'estado' => 'abierta',
+            'caja_id' => $operativaId,
+        ],
+        [
+            'user_id' => 12,
             'fecha_apertura' => now(),
             'monto_inicial' => 10000,
         ]);

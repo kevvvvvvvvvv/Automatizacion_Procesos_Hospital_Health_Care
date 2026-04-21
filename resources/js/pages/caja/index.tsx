@@ -13,6 +13,7 @@ interface Props {
     metodos_pago: MetodoPago [];
     fecha_filtrada: string;
     movimientos: MovimientoCaja[];
+    ruta: string;
 }
 
 const Index = ({ 
@@ -21,7 +22,8 @@ const Index = ({
     fondo,
     metodos_pago = [],
     fecha_filtrada,
-    movimientos
+    movimientos,
+    ruta,
 }: Props) => {
 
     const renderContent = () => {
@@ -37,6 +39,7 @@ const Index = ({
                     metodos_pago={metodos_pago}
                     fondo={fondo}
                     movimientos={movimientos}
+                    ruta={ruta}
                 />;
     };
 

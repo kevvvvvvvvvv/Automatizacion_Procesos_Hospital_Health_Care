@@ -17,7 +17,8 @@ interface Props {
     fondo: SesionCaja;
     metodos_pago: MetodoPago[];
     fecha_filtrada: string;
-    movimientos: MovimientoCaja[],
+    movimientos: MovimientoCaja[];
+    ruta: string;
 }
 
 export const PanelCaja = ({ 
@@ -26,6 +27,7 @@ export const PanelCaja = ({
     metodos_pago,
     fecha_filtrada, 
     movimientos = [],
+    ruta,
 }: Props) => {
     const [isGastoModalOpen, setIsGastoModalOpen] = useState(false);
     const [isCierreModalOpen, setIsCierreModalOpen] = useState(false);
@@ -33,7 +35,8 @@ export const PanelCaja = ({
     const [isEnviarDineroBovedaOpen, setIsEnviarDineroBovedaOpen] = useState(false);
 
     const handleFechaChange = (nuevaFecha: string) => {
-        router.get(route('caja.index'),
+
+        router.get(route(ruta),
             { fecha: nuevaFecha },
             { preserveState: true, replace: true}
         );
@@ -94,10 +97,12 @@ export const PanelCaja = ({
                     amount={(sesion.monto_inicial)} 
 
                 />
-                <SummaryCard 
-                    label="Fondo disponible" 
-                    amount={(fondo?.monto_esperado)} 
-                />
+                {fondo && (
+                    <SummaryCard 
+                        label="Fondo disponible" 
+                        amount={(fondo?.monto_esperado)} 
+                    />
+                )}
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -131,12 +136,14 @@ export const PanelCaja = ({
                     Registrar ingreso / egreso 
                 </ActionButton>
                 
-                <ActionButton 
-                    onClick={() => setIsSolicitudModalOpen(true)} 
-                    className="bg-yellow-50 border border-yellow-200 text-yellow-800 hover:bg-yellow-100 font-bold"
-                >
-                    Retirar efectivo de fondo
-                </ActionButton>
+                {fondo && (
+                    <ActionButton 
+                        onClick={() => setIsSolicitudModalOpen(true)} 
+                        className="bg-yellow-50 border border-yellow-200 text-yellow-800 hover:bg-yellow-100 font-bold"
+                    >
+                        Retirar efectivo de fondo
+                    </ActionButton>
+                )}
 
                 <ActionButton 
                     onClick={() => setIsEnviarDineroBovedaOpen(true)} 

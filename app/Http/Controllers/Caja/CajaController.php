@@ -69,6 +69,7 @@ class CajaController extends Controller
             'fondo' => $fondo,
             'metodos_pago' => $metodosPago,
             'fecha_filtrada' =>$fechaCarbon->format('Y-m-d'),
+            'ruta' => 'caja.index',
         ]);
     }
 
@@ -162,11 +163,11 @@ class CajaController extends Controller
     /**
      * 
      */
-    public function abrirFondo(Request $request){
+    public function abrirFondo(IndexRequest $request){
         $fechaFiltrada = $request->input('fecha', Carbon::today()->format('Y-m-d'));
         $fechaCarbon = Carbon::parse($fechaFiltrada);
 
-        $fondos = Caja::with('sesionesCaja')
+        $fondos = Caja::with('sesionesCaja.movimientos.metodoPago')
             ->where('tipo','fondo')
             ->get();
 
@@ -175,15 +176,23 @@ class CajaController extends Controller
             ->with('movimientos.metodoPago')
             ->first();
 
+        $movimientos = MovimientoCaja::where('user_id', Auth::id())
+            ->with('metodoPago')
+            ->whereDate('created_at',$fechaCarbon)
+            ->latest()
+            ->get();
+
         $metodosPago = MetodoPago::all();
             
         $sesionData = $sesion ? new SesionCajaResource($sesion) : null;
 
         return Inertia::render('caja/index',[
+            'movimientos' => $movimientos,
             'sesionActiva' => $sesionData,
             'cajas' => $fondos,
-            'metodo_pago' => $metodosPago,
-            'fech_filtrada' => $fechaFiltrada,  
+            'metodos_pago' => $metodosPago,
+            'fecha_filtrada' => $fechaCarbon->format('Y-m-d'),
+            'ruta' => 'abrir-fondo'
         ]); 
     }
 }

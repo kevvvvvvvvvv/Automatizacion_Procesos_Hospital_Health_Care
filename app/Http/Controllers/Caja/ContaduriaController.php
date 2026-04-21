@@ -54,6 +54,7 @@ class ContaduriaController extends Controller
             ->whereHas('caja', function ($query) {
                 $query->where('tipo', 'fondo');
             })
+            ->where('estado',EstadoSesionCaja::ABIERTA->value)
             ->get();
 
         // 5. Movimientos del DÍA SELECCIONADO (Aquí está la "paginación")
