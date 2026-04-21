@@ -136,13 +136,12 @@ const Show = ({ estancia, historiaclinica }: ShowEstanciaProps) => {
                                         Añadir encuesta de satisfacción
                                     </Link>*/}
                                    
-                {/*<Link
-               {/* <Link
+                <Link
                     href={route('pacientes.estancias.paquetes.create', { paciente: paciente.id, estancia: estancia.id })}
                     className="group flex rounded-md items-center w-full px-2 py-2 text-sm bg-blue-500 text-white hover:bg-blue-600"
                 >
                     Añadir paquete
-                </Link>*/}
+                </Link>
                 <Menu as="div" className="relative inline-block text-left">
                     <Menu.Button className="inline-flex items-center justify-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700 transition">
                         <Plus size={16} className="mr-2"/>
