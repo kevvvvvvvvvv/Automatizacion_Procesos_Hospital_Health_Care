@@ -110,16 +110,13 @@ class CajaService
             ]);
             
             if($metodoPagoId == 1){
+                
                 if ($tipo === TipoMovimientoCaja::INGRESO) {
-                    //Solo afectar si el metodo de pago es efectivo
-                    
                     $sesion->increment('total_ingresos_efectivo', $monto);
                 } else {
-                    
                     $sesion->increment('total_egresos_efectivo', $monto);
                 }
             }
-
             broadcast(new NuevoMovimientoCaja($sesion->caja_id));
 
             return $movimiento;

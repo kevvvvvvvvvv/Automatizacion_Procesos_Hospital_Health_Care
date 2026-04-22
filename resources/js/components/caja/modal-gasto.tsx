@@ -211,13 +211,15 @@ const ModalGasto = ({
             return;
         }
 
-        if(data.tipo === 'egreso' && (Number(data.monto) > fondo.monto_esperado) && data.origen===('fondo')){
-            Swal.fire(
-                'Advertencia',
-                'Vas a enviar más dinero del disponible desde fondo',
-                'warning',
-            )
-            return;
+        if(fondo){
+            if(data.tipo === 'egreso' && (Number(data.monto) > fondo.monto_esperado) && data.origen===('fondo')){
+                Swal.fire(
+                    'Advertencia',
+                    'Vas a enviar más dinero del disponible desde fondo',
+                    'warning',
+                )
+                return;
+            }
         }
         post(route('caja-movimiento'), {
             preserveScroll: true,
@@ -286,14 +288,15 @@ const ModalGasto = ({
                         onChange={e=>setData('descripcion',e.target.value)}
                         error={errors.descripcion}
                     />
-
-                    <SelectInput
-                        label='Apartado que realiza el envio'
-                        options={tiposCajas}
-                        value={data.origen}
-                        onChange={e=>setData('origen',e)}
-                        error={errors.origen}
-                    />
+                    {fondo && (
+                        <SelectInput
+                            label='Apartado que realiza el envio'
+                            options={tiposCajas}
+                            value={data.origen}
+                            onChange={e=>setData('origen',e)}
+                            error={errors.origen}
+                        />
+                    )}
 
                     <TextInput
                         id=''

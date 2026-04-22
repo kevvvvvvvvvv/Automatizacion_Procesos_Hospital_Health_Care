@@ -1352,12 +1352,15 @@ export interface Ingresos_Egresos_RN{
 }
 
 export interface Caja {
-  id: number;
-  nombre: string;
-  activa: boolean;
-  tipo: string;
-  created_at: string;
-  updated_at?: string;
+    id: number;
+    nombre: string;
+    activa: boolean;
+    tipo: string;
+
+    sesiones_caja: SesionCaja[]
+
+    created_at: string;
+    updated_at?: string;
 }
 
 export interface SesionCaja {

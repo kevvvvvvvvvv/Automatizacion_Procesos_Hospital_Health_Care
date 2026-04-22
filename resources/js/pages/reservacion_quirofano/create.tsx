@@ -284,7 +284,7 @@ const toggleHorario = (horaSeleccionada: string) => {
                             value={data.fecha} 
                             onChange={e => {
                                 setData("fecha", e.target.value);
-                                setData("horarios", []); // Es vital limpiar horarios al cambiar de día
+                                setData("horarios", []); 
                             }}
                         />
                         <div className="grid grid-cols-3 sm:grid-cols-4 gap-5">

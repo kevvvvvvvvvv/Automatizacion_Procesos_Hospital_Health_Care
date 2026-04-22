@@ -20,16 +20,7 @@
         
         .footer-legal { border: 1px solid #eee; padding: 10px; text-align: justify; font-size:10px;  }
         .signature-line { border-top: 1px solid #000; width: 200px; margin-top: 35px; text-align: center; font-weight: bold; }
-       /* .signature-line {
-    border-top: 1px solid #000;
-    width: 50%;
-    margin-top: 35px; /* Ahora ocupa todo el ancho de su celda 
-    text-align: center;
-    font-weight: bold;
-    text-transform: uppercase;
-    font-size: 9px;
-    padding-top: 5px;
-}*/
+
         .text-red { color: #dc2626; font-weight: bold; text-align: center; }
         .text-black { olor: #000; font-weight: bold; text-align: center; }
         .header-logo {float: left; width: 150px; margin-bottom: 10px;}

@@ -377,6 +377,7 @@ Route::patch('/medicamentos/{medicamento}/actualizar-estado', [HojaMedicamentoCo
 Route::middleware('auth:sanctum')->prefix('caja')->group(function () {
     Route::get('/caja',[CajaController::class, 'index'])->name('caja.index');
     Route::get('/turno-actual', [CajaController::class, 'turnoActual'])->name('caja-turno-actual');
+    Route::get('/abrir-fondo', [CajaController::class, 'abrirFondo'])->name('abrir-fondo');
     Route::post('/abrir', [CajaController::class, 'abrirTurno'])->name('caja-abrir-turno');
     Route::post('/movimiento', [CajaController::class, 'registrarMovimiento'])->name('caja-movimiento');
     Route::post('/cerrar', [CajaController::class, 'cerrarTurno'])->name('caja-cerrar');

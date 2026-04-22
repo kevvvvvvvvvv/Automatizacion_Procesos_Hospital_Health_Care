@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
 import { usePage, router } from '@inertiajs/react';
-import { MovimientoCaja, SesionCaja, SolicitudTraspaso } from '@/types';
+import { MovimientoCaja, SesionCaja, SolicitudTraspaso, Caja } from '@/types';
 import { route } from 'ziggy-js';
 
 import { ModalGastoBoveda } from '@/components/caja/modal-gasto-boveda';
@@ -21,7 +21,7 @@ interface Props {
         balance: number;
     };
     cajaId: number;
-    fondo: SesionCaja;
+    fondos: SesionCaja[];
     sesion: SesionCaja;
     caja: SesionCaja;
     allSesiones: SesionCaja[];
@@ -33,7 +33,7 @@ export default function DashboardBoveda({
     solicitudesPendientes = [],
     movimientosHoy = [],
     resumenHoy,
-    fondo,
+    fondos,
     sesion,
     caja,
     allSesiones,
@@ -127,13 +127,22 @@ export default function DashboardBoveda({
             {/* Resumen de Saldos Actuales */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 <SummaryCard label='Caja Operativa' amount={caja?.monto_esperado || 0} />
-                <SummaryCard label="Fondo Fijo" amount={fondo?.monto_esperado || 0} />
+                
                 <SummaryCard 
                     label='Bóveda Principal' 
                     amount={sesion?.monto_esperado || 0} 
                     theme="success" 
                     mostrarValor={mostrarDineroBoveda}
                 />
+            </div>
+            <div className='grid grid-cols-1 md:grid-cols-4 gap-4'>
+                {fondos.map((fondo) => (
+                    <SummaryCard
+                        label={fondo.caja?.nombre ?? 'Nombre'}
+                        amount={fondo.monto_esperado}    
+                        theme='danger'   
+                    />
+                ))}
             </div>
 
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2">
@@ -311,7 +320,7 @@ export default function DashboardBoveda({
             </div>
 
             {/* Modales */}
-            {isEnviarDineroFondo && <ModalEnviarBovedaAFondo onClose={() => setIsEnviarDineroFondo(false)} boveda={sesion} fondo={fondo}/>}
+            {isEnviarDineroFondo && <ModalEnviarBovedaAFondo onClose={() => setIsEnviarDineroFondo(false)} boveda={sesion} fondos={fondos}/>}
             {isGastoModalOpen && <ModalGastoBoveda onClose={() => setIsGastoModalOpen(false)} sesionBovedo={sesion}/>}
         </MainLayout>
     );

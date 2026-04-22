@@ -69,6 +69,7 @@ class CajaController extends Controller
             'fondo' => $fondo,
             'metodos_pago' => $metodosPago,
             'fecha_filtrada' =>$fechaCarbon->format('Y-m-d'),
+            'ruta' => 'caja.index',
         ]);
     }
 
@@ -157,5 +158,41 @@ class CajaController extends Controller
             \Log::error('Error al cerrar el turno: ' . $e->getMessage());
             return Redirect::back()->with('error','Error al cerrar el turno.');
         }
+    }
+
+    /**
+     * 
+     */
+    public function abrirFondo(IndexRequest $request){
+        $fechaFiltrada = $request->input('fecha', Carbon::today()->format('Y-m-d'));
+        $fechaCarbon = Carbon::parse($fechaFiltrada);
+
+        $fondos = Caja::with('sesionesCaja.movimientos.metodoPago')
+            ->where('tipo','fondo')
+            ->get();
+
+        $sesion = SesionCaja::where('user_id', Auth::id())
+            ->where('estado', EstadoSesionCaja::ABIERTA->value)
+            ->with('movimientos.metodoPago')
+            ->first();
+
+        $movimientos = MovimientoCaja::where('user_id', Auth::id())
+            ->with('metodoPago')
+            ->whereDate('created_at',$fechaCarbon)
+            ->latest()
+            ->get();
+
+        $metodosPago = MetodoPago::all();
+            
+        $sesionData = $sesion ? new SesionCajaResource($sesion) : null;
+
+        return Inertia::render('caja/index',[
+            'movimientos' => $movimientos,
+            'sesionActiva' => $sesionData,
+            'cajas' => $fondos,
+            'metodos_pago' => $metodosPago,
+            'fecha_filtrada' => $fechaCarbon->format('Y-m-d'),
+            'ruta' => 'abrir-fondo'
+        ]); 
     }
 }

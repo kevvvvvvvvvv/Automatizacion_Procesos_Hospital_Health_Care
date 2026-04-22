@@ -84,7 +84,9 @@ const ModalCierreCaja = ({
                     Por favor, cuenta el dinero físico que hay en el cajón y escribe el total. El sistema calculará automáticamente si hay algún faltante o sobrante.
                 </p>
                 <p>Dinero esperado en caja: ${formatMoney(sesion.monto_esperado)}</p>
-                <p>Dinero esperado en fondo: ${formatMoney(fondo.monto_esperado)}</p>
+                {fondo && (
+                    <p>Dinero esperado en fondo: ${formatMoney(fondo.monto_esperado)}</p>
+                )}
                 <p>Dinero para el siguiente turno: ${formatMoney(montoRestante)}</p>
 
                 <form onSubmit={handleSubmit} className="py-8">
