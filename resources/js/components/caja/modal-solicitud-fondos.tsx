@@ -20,7 +20,7 @@ export const ModalSolicitudFondo = ({
     onClose
 }: Props) => {
     const { data, setData, post, processing, errors } = useForm({
-        caja_origen_id: 2, 
+        caja_origen_id: 2, // Fondo inciado por el contador
         caja_destino_id: sesionActiva.caja_id,
         monto: '',
         concepto: '',
