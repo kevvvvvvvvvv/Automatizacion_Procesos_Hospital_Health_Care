@@ -115,7 +115,7 @@ class RoleAndPermissionSeeder extends Seeder
             'consultar habitaciones',
 
             'consultar reservaciones quirofanos',
-
+            'editar reservaciones quirofanos',
             'consultar reservaciones consultorios',
         ]);
         
@@ -212,7 +212,7 @@ class RoleAndPermissionSeeder extends Seeder
             'consultar reservaciones',
 
             'consultar reservaciones quirofanos',
-
+            'editar reservaciones quirofanos',
             'consultar reservaciones consultorios'
         ]);
         
@@ -251,7 +251,7 @@ class RoleAndPermissionSeeder extends Seeder
             'consultar reservaciones',
 
             'consultar reservaciones quirofanos',
-
+            'editar reservaciones quirofanos',
             'consultar reservaciones consultorios'
         ]);
 
