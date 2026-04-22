@@ -47,16 +47,16 @@ class Medicamento extends Model
 
     public function productoServicio(): BelongsTo
     {
-        return $this->belongsTo(ProductoServicio::class,'id','id');
+        return $this->belongsTo(ProductoServicio::class, 'id');
     }
 
     public function viasAdministracion(): BelongsToMany
     {
-        return $this->belongsToMany(
-            CatalogoViaAdministracion::class, // 1. El modelo donde están los nombres (Oral, IV...)
-            'medicamento_vias',               // 2. El nombre exacto de tu TABLA INTERMEDIA en BD
-            'medicamento_id',                 // 3. La columna en la intermedia que apunta a Medicamento
-            'catalogo_via_administracion_id'  // 4. La columna en la intermedia que apunta al Catálogo
+       return $this->belongsToMany(
+            CatalogoViaAdministracion::class, 
+            'medicamento_vias',               
+            'medicamento_id',                 
+            'catalogo_via_administracion_id'  
         );
     }
 }
