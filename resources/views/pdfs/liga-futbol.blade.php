@@ -19,9 +19,10 @@
         .highlight { color: #2563eb; font-weight: bold; }
         
         .footer-legal { border: 1px solid #eee; padding: 10px; text-align: justify; font-size:10px;  }
-        .signature-line { border-top: 1px solid #000; width: 200px; margin-top: 40px; text-align: center; font-weight: bold; }
+        .signature-line { border-top: 1px solid #000; width: 200px; margin-top: 35px; text-align: center; font-weight: bold; }
+
         .text-red { color: #dc2626; font-weight: bold; text-align: center; }
-        
+        .text-black { olor: #000; font-weight: bold; text-align: center; }
         .header-logo {float: left; width: 150px; margin-bottom: 10px;}
         .logo {width: 100%; height: auto; object-fit: contain;}
         .clearfix::after {content: "";clear: both;display: table;}
@@ -143,17 +144,16 @@
         <div class="section-title">Comentarios y/o Sugerencias</div>
         <div style="height: 60px;"></div>
     </div>
-
-    <table style="border: none; margin-top: 20px;">
-        <tr style="border: none;">
-            <td style="border: none;">
-                <div class="signature-line">Firma de Padre o Tutor</div>
-            </td>
-        </tr>
-    </table>
-
     <p class="text-red">PROMOCIÓN DE PAQUETE SOLO VALIDO PAGANDO EN EFECTIVO NO APLICA EN OTRAS PROMOCIONES</p>
 
+                <br><p class="text-black">______________________</p>
+                <p class="text-black">Firma de Padre o Tutor</p>
+            
+    
+    <p class="text-black">HE LEÍDO Y ACEPTO LOS TÉRMINOS DEL PRESENTE CONTRATO ADHIRIÉNDOME A LA VOLUNTAD EXPRESADA EN EL MISMO.</p>
+
+    
+    <strong>CLÁUSULAS DEL CONTRATO DE ADHESIÓN: </strong><br>
     <div class="footer-legal">
         <strong>COBERTURA DEL SERVICIO MÉDICO:</strong><br>
         Este seguro es para atender las LESIONES AGUDAS que sufra un jugador de la liga. Las lesiones agudas son daños físicos que ocurren de forma repentina y súbita tales como: <br>
@@ -213,13 +213,15 @@
         <br>
         <strong>RESTRICCIONES:</strong> No incluye atención médica de enfermedades no degenerativas...<br>
     </div>
-    <table style="border: none; margin-top: 50px; margin-left: auto; margin-right: auto; width: 250px;">
+    <table style="border: none; margin-top: 40px; margin-left: auto; margin-right: auto; width: 250px;">
     <tr style="border: none;">
         <td style="border: none; text-align: center;">
             <div class="signature-line">Firma de enterado</div>
         </td>
     </tr>
+
 </table>
+            <p class="text-black">HE LEÍDO Y ACEPTO LOS TÉRMINOS DEL PRESENTE CONTRATO ADHIRIÉNDOME A LA VOLUNTAD EXPRESADA EN EL MISMO.</p>
 
 </body>
 </html>
