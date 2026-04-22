@@ -37,6 +37,7 @@ class DatabaseSeeder extends Seeder
             MetodoPagoSeeder::class,
             VentaSeeder::class,
             CajaSeeder::class,
+            SesionCajaSeeder::class,
         ]);
 
     }
