@@ -1,0 +1,108 @@
+version: '3.8'
+
+services:
+  # 1. Base de Datos 
+  db_server:
+    image: mysql:8.0
+    container_name: mysql_hospital
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - hospital_network
+
+  # --- CONFIGURACIÓN SISTEMA 1 ---
+  app_sistema_1:
+    build: .
+    container_name: php_web_1
+    restart: always
+    env_file: .env.sistema1
+    volumes:
+      - ./:/var/www/html
+    networks:
+      - hospital_network
+
+  worker_sistema_1:
+    build: .
+    container_name: php_worker_1
+    restart: always
+    env_file: .env.sistema1
+    volumes:
+      - ./:/var/www/html
+    command: php artisan queue:work --tries=3 --timeout=90
+    networks:
+      - hospital_network
+
+  reverb_sistema_1:
+    build: .
+    container_name: php_reverb_1
+    restart: always
+    env_file: .env.sistema1
+    volumes:
+      - ./:/var/www/html
+    command: php artisan reverb:start --host="0.0.0.0" --port=8080
+    ports:
+      - "8080:8080"
+    networks:
+      - hospital_network
+
+  # --- CONFIGURACIÓN SISTEMA 2 ---
+  app_sistema_2:
+    build: .
+    container_name: php_web_2
+    restart: always
+    env_file: .env.sistema2
+    volumes:
+      - ./:/var/www/html
+    networks:
+      - hospital_network
+
+  worker_sistema_2:
+    build: .
+    container_name: php_worker_2
+    restart: always
+    env_file: .env.sistema2
+    volumes:
+      - ./:/var/www/html
+    command: php artisan queue:work --tries=3 --timeout=90
+    networks:
+      - hospital_network
+
+  reverb_sistema_2:
+    build: .
+    container_name: php_reverb_2
+    restart: always
+    env_file: .env.sistema2
+    volumes:
+      - ./:/var/www/html
+    command: php artisan reverb:start --host="0.0.0.0" --port=8081
+    ports:
+      - "8081:8081"
+    networks:
+      - hospital_network
+
+  # --- PUERTA DE ENTRADA (NGINX) ---
+  nginx:
+    image: nginx:alpine
+    container_name: nginx_proxy
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./:/var/www/html
+      - ./nginx/conf.d:/etc/nginx/conf.d
+    networks:
+      - hospital_network
+    depends_on:
+      - app_sistema_1
+      - app_sistema_2
+
+networks:
+  hospital_network:
+    driver: bridge
+
+volumes:
+  mysql_data:
