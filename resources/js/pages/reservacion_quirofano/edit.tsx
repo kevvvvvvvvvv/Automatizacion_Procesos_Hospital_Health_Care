@@ -157,13 +157,21 @@ const toggleHorario = (horaSeleccionada: string) => {
         setData("horarios", Array.from(setUnico));
     }
 };
+        const isFirstRender = React.useRef(true);
+
         useEffect(() => {
-        // Al cambiar la fecha, pedimos los nuevos bloqueos
-        router.reload({ 
-            data: { fecha: data.fecha }, 
-            only: ['horariosOcupados'] 
-        });
-    }, [data.fecha]);
+            if (isFirstRender.current) {
+                isFirstRender.current = false;
+                return; // No borramos nada la primera vez que carga la página
+            }
+
+            setData("horarios", []); // Borramos solo en cambios manuales de fecha
+            
+            router.reload({ 
+                data: { fecha: data.fecha }, 
+                only: ['horariosOcupados'] 
+            });
+        }, [data.fecha]);
     const getError = (key: string) => serverErrors?.[key] || form.errors[key];
 
     const handleCheckboxArray = (key: "rayosx", subKey: "equipos", value: string) => {
