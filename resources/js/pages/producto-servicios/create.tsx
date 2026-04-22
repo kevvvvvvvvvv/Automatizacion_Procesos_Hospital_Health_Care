@@ -21,7 +21,7 @@ interface Props {
   estudios?: CatalogoEstudio;
   insumos?: Insumos;
   viasCatalogo: { id: number, via_administracion: string }[]; // Nueva Prop
-  viaActualId?: number;
+  viasSeleccionadas?: number[];
 }
 
 interface FormularioFormData {
@@ -57,7 +57,7 @@ interface FormularioFormData {
     link: string;
 }
 
-const ProductoServicioForm = ({ productoServicio, medicamentos, insumos, viasCatalogo, viaActualId, estudios }: Props)=> {
+const ProductoServicioForm = ({ productoServicio, medicamentos, insumos, viasCatalogo,  viasSeleccionadas, estudios }: Props)=> {
   const isEdit = !!productoServicio;
   const { data, setData, post, put, processing, errors } = useForm<FormularioFormData>({
   
@@ -201,7 +201,7 @@ const ProductoServicioForm = ({ productoServicio, medicamentos, insumos, viasCat
     >
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <SelectInput
-          label="Nombre capítulo dso"
+          label="Nombre capítulo "
           options={optionsTipo}
           placeholder="Seleccione un capítulo"
           value={data.tipo}
@@ -399,12 +399,10 @@ const ProductoServicioForm = ({ productoServicio, medicamentos, insumos, viasCat
              <SelectInput
               label="Es fraccionable"
               options={optionsFraccion}
-              placeholder="Seleeccion una opción"
+              placeholder="Seleccione una opción"
               value={data.fraccion ?? ''}
-              onChange={(value) =>
-                setData('fraccion', value as FormularioFormData['fraccion'])
-              }
-              error={errors.tipo}
+              onChange={(value) => setData('fraccion', value as string)}
+              error={errors.fraccion} // Cambiado de errors.tipo a errors.fraccion
             />
             <SelectInput
             label="Vías de administración"

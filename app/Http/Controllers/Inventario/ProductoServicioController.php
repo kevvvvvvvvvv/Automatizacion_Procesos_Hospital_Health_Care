@@ -116,10 +116,10 @@ class ProductoServicioController extends Controller
                     'fraccion'                  => $fraccion ? 1 : 0,
                 ]
             );
-
+            //dd($medicamento->toArray());
             // CORRECCIÓN 2: El dd() dice "via_administracion", no "viasAdministracion"
             // Y verificamos si el método en el modelo es 'vias' o 'viasAdministracion'
-            $viasIds = $request->via_administracion ?? [];
+            $viasIds = $request->viasAdministracion ?? [];
             
             if (method_exists($medicamento, 'vias')) {
                 $medicamento->vias()->sync($viasIds);
