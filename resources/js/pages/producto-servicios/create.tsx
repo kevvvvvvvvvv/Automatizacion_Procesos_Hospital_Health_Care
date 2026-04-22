@@ -252,7 +252,7 @@ const ProductoServicioForm = ({ productoServicio, medicamentos, insumos, viasCat
           error={errors.importe}
         />
         <InputText
-          id="iva"
+          id="iva dos"
           name="iva"
           label="IVA en producto o servicio"
           value={(data.iva ?? '').toString()}

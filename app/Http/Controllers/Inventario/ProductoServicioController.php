@@ -68,6 +68,8 @@ class ProductoServicioController extends Controller
             if ($request->filled('viasAdministracion')) {
                 $medicamento->vias()->sync($request->viasAdministracion);
             }
+            
+        dd($medicamento->toArray());
         } 
         elseif ($subtipo === 'ESTUDIOS') {
             // Solo entra aquí si es estudio, evitando el error de 'tipo_estudio' null en servicios
