@@ -53,7 +53,7 @@ export default function Dashboard() {
                     />)}
                 </div>
                 <div>
-                    {can('consultar formatos') && (
+                    {can('crear consentimientos') && (
                     <CardButton
                         icon={LuFileText} 
                         text="Formato Liga Fútbol"
