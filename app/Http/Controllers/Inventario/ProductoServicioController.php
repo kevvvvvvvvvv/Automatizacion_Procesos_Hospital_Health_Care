@@ -49,12 +49,10 @@ class ProductoServicioController extends Controller
  public function store(ProductoServicioRequest $request)
 {
     return DB::transaction(function () use ($request) {
-        // 1. Crear registro base (Esto guarda el Servicio siempre)
         $producto = ProductoServicio::create($request->validated());
        // dd($producto);
         $subtipo = strtoupper($request->subtipo);
 
-        // 2. Lógica para hijos específicos
         if ($subtipo === 'MEDICAMENTOS') {
             $medicamento = Medicamento::create([
                 'id' => $producto->id,
@@ -72,7 +70,6 @@ class ProductoServicioController extends Controller
         dd($medicamento->toArray());
         } 
         elseif ($subtipo === 'ESTUDIOS') {
-            // Solo entra aquí si es estudio, evitando el error de 'tipo_estudio' null en servicios
             $producto->estudio()->create([
                 'id'             => $producto->id,
                 'nombre'         => $request->nombre_prestacion ?? $request->nombre,
@@ -90,7 +87,6 @@ class ProductoServicioController extends Controller
                 'categoria_unitaria' => $request->categoria_unitaria,
             ]);
         }
-        // Si es 'SERVICIOS', simplemente termina aquí y el commit guarda el ProductoServicio.
 
         return Redirect::route('producto-servicios.index')
             ->with('success', "Registro de {$subtipo} guardado correctamente.");
@@ -105,7 +101,6 @@ class ProductoServicioController extends Controller
 
             if ($productoServicio->subtipo === 'MEDICAMENTOS') {
             
-            // CORRECCIÓN 1: Manejar el string "False" o "True" que viene del request
             $fraccion = filter_var($request->fraccion, FILTER_VALIDATE_BOOLEAN);
 
             $medicamento = $productoServicio->medicamento()->updateOrCreate(
@@ -121,11 +116,10 @@ class ProductoServicioController extends Controller
             $medicamento->viasAdministracion()->sync($request->via_administracion ?? []);
         }
             elseif ($productoServicio->subtipo === 'ESTUDIOS') {
-                // CORRECCIÓN: Usar $productoServicio y updateOrCreate
                 $productoServicio->estudio()->updateOrCreate(
                     ['id' => $productoServicio->id],
                     [
-                        'nombre'         => $request->nombre_prestacion, // <-- También aquí
+                        'nombre'         => $request->nombre_prestacion, 
                         'tipo_estudio'   => $request->tipo_estudio,
                         'departamento'   => $request->departamento,
                         'tiempo_entrega' => $request->tiempo_entrega,
@@ -151,20 +145,15 @@ class ProductoServicioController extends Controller
 
     public function edit(ProductoServicio $productoServicio) 
     {
-        $productoServicio->load(['medicamento.viasAdministracion', 'insumo']);
-        $viasSeleccionadas = [];
-        
-        if ($productoServicio->medicamento && $productoServicio->medicamento->vias) {
-            $viasSeleccionadas = $productoServicio->medicamento->vias->pluck('id')->toArray();
-        }
+    $productoServicio->load(['medicamento.viasAdministracion', 'insumo', 'estudio']);
 
-        return Inertia::render('producto-servicios/create', [
-            'productoServicio'  => $productoServicio,
-            'medicamentos'      => $productoServicio->medicamento, // Esto puede ser null
-            'insumos'           => $productoServicio->insumo,      // Esto puede ser null
-            'viasCatalogo'      => \App\Models\Inventario\CatalogoViaAdministracion::all(),
-            'viasSeleccionadas' => $viasSeleccionadas
-        ]);
+    return Inertia::render('producto-servicios/create', [
+        'productoServicio'  => $productoServicio,
+        'medicamentos'      => $productoServicio->medicamento,
+        'insumos'           => $productoServicio->insumo,
+        'estudios'          => $productoServicio->estudio, 
+        'viasCatalogo'      => CatalogoViaAdministracion::all(),
+        'viasSeleccionadas' => $productoServicio->medicamento?->viasAdministracion->pluck('id')->toArray() ?? []    ]);
     }
 
   
