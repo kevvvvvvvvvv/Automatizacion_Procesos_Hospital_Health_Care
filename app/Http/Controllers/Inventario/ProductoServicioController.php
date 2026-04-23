@@ -118,16 +118,7 @@ class ProductoServicioController extends Controller
                     'fraccion'                  => $fraccion ? 1 : 0,
                 ]
             );
-            //dd($medicamento->toArray());
-            // CORRECCIÓN 2: El dd() dice "via_administracion", no "viasAdministracion"
-            // Y verificamos si el método en el modelo es 'vias' o 'viasAdministracion'
-            $viasIds = $request->viasAdministracion ?? [];
-            
-            if (method_exists($medicamento, 'vias')) {
-                $medicamento->vias()->sync($viasIds);
-            } elseif (method_exists($medicamento, 'viasAdministracion')) {
-                $medicamento->viasAdministracion()->sync($viasIds);
-            }
+            $medicamento->viasAdministracion()->sync($request->via_administracion ?? []);
         }
             elseif ($productoServicio->subtipo === 'ESTUDIOS') {
                 // CORRECCIÓN: Usar $productoServicio y updateOrCreate
