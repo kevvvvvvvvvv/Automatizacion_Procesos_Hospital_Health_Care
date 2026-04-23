@@ -144,13 +144,14 @@ export const PanelCaja = ({
                         Retirar efectivo de fondo
                     </ActionButton>
                 )}
-
+                {fondo &&(
                 <ActionButton 
                     onClick={() => setIsEnviarDineroBovedaOpen(true)} 
                     className="bg-purple-50 border border-purple-200 text-purple-800 hover:bg-purple-100 font-bold"
                 >
                     Enviar dinero a contaduría
                 </ActionButton>
+                )}
             </div>    
 
             <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">

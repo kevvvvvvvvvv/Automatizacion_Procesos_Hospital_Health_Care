@@ -57,7 +57,6 @@ class ContaduriaController extends Controller
             ->where('estado',EstadoSesionCaja::ABIERTA->value)
             ->get();
 
-        // 5. Movimientos del DÍA SELECCIONADO (Aquí está la "paginación")
         $movimientosFiltro = MovimientoCaja::with(['sesionCaja.caja', 'user', 'metodoPago'])
             ->whereDate('created_at', $fechaCarbon)
             ->latest()
