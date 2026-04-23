@@ -199,7 +199,7 @@ class ReservacionQuirofanoController extends Controller
                 ->pluck('id');
             
             $habitacionAsignada = null;
-
+            //dd($quirofano->toArray());
             foreach ($quirofanos as $quirofanoId) {
                 $ocupado = ReservacionQuirofano::where('habitacion_id', $quirofanoId)
                     ->where('id', '!=', $quirofano->id) 

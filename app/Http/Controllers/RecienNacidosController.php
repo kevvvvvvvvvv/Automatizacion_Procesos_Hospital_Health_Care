@@ -105,12 +105,12 @@ class RecienNacidosController extends Controller
 
     } catch (\Exception $e) {
         DB::rollBack();
-        Log::error("Error al crear RN: " . $e->getMessage());
+        //Log::error("Error al crear RN: " . $e->getMessage());
         return Redirect::back()->with('error', 'Error al guardar: ' . $e->getMessage());
     }
 }
     public function edit(RecienNacido $reciennacido){
-       // if($reciennacido->estado == 'Cerrado') return redirect()->back()->with('error','La hoja de enfermeria de recien nacido se ha cerrado.');    
+        if($reciennacido->estado == 'Cerrado') return redirect()->back()->with('error','La hoja de enfermeria de recien nacido se ha cerrado.');    
        
         $reciennacido = $this->getRelaciones($reciennacido);
         $reciennacido->hoja_medicamentos = $reciennacido->hojaMedicamentos;
@@ -203,4 +203,28 @@ class RecienNacidosController extends Controller
 
     return Redirect::back()->with('success', 'Hoja de enfermería actualizada.');
 }
+ public function generarPDF(RecienNacido $reciennacido)
+    {
+        $reciennacido = $this->getRelaciones($reciennacido);
+
+        $headerData = [
+            'hoja' => $reciennacido,
+            'paciente' => $reciennacido->formularioInstancia->estancia->paciente,
+            'estancia' => $reciennacido->formularioInstancia->estancia
+        ];
+
+        $viewData = [
+            'notaData'=> $reciennacido,
+            'medico'=> $reciennacido->formularioInstancia->user,
+        ];
+
+        return $this->pdfGenerator->generateStandardPdf(
+            'pdfs.hoja-enfermeria-recien-nacido',
+            $viewData,
+            //$headerData,
+            'hoja-enfermeria-recien-nacido',
+            $reciennacido->formularioInstancia->estancia->id
+        );
+
+    }
 }
