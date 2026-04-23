@@ -20,7 +20,7 @@ interface Props {
   medicamentos?: Medicamento;
   estudios?: CatalogoEstudio;
   insumos?: Insumos;
-  viasCatalogo: { id: number, via_administracion: string }[]; // Nueva Prop
+  viasCatalogo: { id: number, via_administracion: string }[];
   viasSeleccionadas?: number[];
 }
 
@@ -57,7 +57,7 @@ interface FormularioFormData {
     link: string;
 }
 
-const ProductoServicioForm = ({ productoServicio, medicamentos, insumos, viasCatalogo,  viasSeleccionadas, estudios }: Props)=> {
+const ProductoServicioForm = ({ productoServicio, medicamentos, insumos, viasCatalogo,  viasSeleccionadas = [],  estudios }: Props)=> {
   const isEdit = !!productoServicio;
   const { data, setData, post, put, processing, errors } = useForm<FormularioFormData>({
   
@@ -78,8 +78,8 @@ const ProductoServicioForm = ({ productoServicio, medicamentos, insumos, viasCat
       volumen_total: medicamentos?.volumen_total ?? '',
       nombre_comercial: medicamentos?.nombre_comercial ?? '',
       gramaje: medicamentos?.gramaje ?? '',
-      fraccion: medicamentos?.fraccion ?? '',
-      via_administracion: [],
+      fraccion: medicamentos?.fraccion ? 'True' : 'False',
+      via_administracion: viasSeleccionadas.map(id => id.toString()),
 
       categoria: insumos?.categoria ?? '',
       especificacion: insumos?.especificacion ?? '',

@@ -47,7 +47,7 @@ class Medicamento extends Model
 
     public function productoServicio(): BelongsTo
     {
-        return $this->belongsTo(ProductoServicio::class, 'id');
+        return $this->belongsTo(ProductoServicio::class,'id','id');
     }
 
     public function viasAdministracion(): BelongsToMany
