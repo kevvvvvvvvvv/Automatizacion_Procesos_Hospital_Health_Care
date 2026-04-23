@@ -460,12 +460,11 @@ console.log("Hoja Data:", hoja?.id, hoja?.tipo_modelo);
                                                         </span>
                                                     </div>
 
-                                                    {med.aplicaciones.map((app, index) => (
+                                                    {(med.aplicaciones ?? []).map((app, index) => (
                                                         <div key={app.id} className="flex justify-between items-center">
                                                             <span>
                                                                 {index + 2}. {formatDateTime(app.fecha_aplicacion)}
                                                             </span>
-
                                                         </div>
                                                     ))}
                                                 </div>
