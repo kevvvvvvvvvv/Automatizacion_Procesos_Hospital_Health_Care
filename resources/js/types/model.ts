@@ -3,7 +3,7 @@ export const MORPH_MAP = {
     HOJA_ENFERMERIA_QUIROFANO: 'App\\Models\\Formulario\\HojaEnfermeriaQuirofano\\HojaEnfermeriaQuirofano',
     SOLICITUD_ESTUDIO: 'App\\Models\\SolicitudEstudio',
     PACIENTE: 'App\\Models\\Paciente',
-
+    NOTA_EVOLUCION: 'App\\Models\\Formulario\\NotaEvolucion\\NotaEvolucion',
 } as const;
 
 export type MorphType = typeof MORPH_MAP[keyof typeof MORPH_MAP];

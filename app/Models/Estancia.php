@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Illuminate\Database\Eloquent\Casts\Attribute;
+
 use App\Auditable;
 
 use App\Models\Venta\Venta;
@@ -180,5 +182,16 @@ class Estancia extends Model
     public function Consentimiento():hasMany
     {
         return $this->hasMany(Consentimiento::class);
+    } 
+
+    protected $appends = [
+        'tipo_modelo'
+    ];
+
+    public function tipoModelo(): Attribute
+    {
+        return Attribute::make(
+            get: fn ()=>(get_class($this)),
+        );
     } 
 }

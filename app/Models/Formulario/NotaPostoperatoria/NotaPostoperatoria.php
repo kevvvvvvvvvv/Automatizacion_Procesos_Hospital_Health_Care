@@ -170,7 +170,7 @@ class NotaPostoperatoria extends Model
         return $this->morphMany(CheckListItem::class, 'nota');
     }
 
-    protected $appends = ['model_type'];
+    protected $appends = ['tipo_modelo'];
 
     public function getModelTypeAttribute()
     {

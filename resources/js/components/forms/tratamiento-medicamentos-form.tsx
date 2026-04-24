@@ -1,17 +1,24 @@
-import React, { useState, useMemo } from 'react';
-import { ProductoServicio } from '@/types';
+import React, { useState } from 'react';
+import { NotaPostoperatoria, notasEvoluciones, ProductoServicio } from '@/types';
+import Swal from 'sweetalert2';
+
+import InputBoolean from '@/components/ui/input-boolean';
 import InputText from '@/components/ui/input-text';
-import InputTextArea from '@/components/ui/input-text-area';
 import SelectInput from '@/components/ui/input-select';
 import PrimaryButton from '@/components/ui/primary-button';
-import Swal from 'sweetalert2';
-import InputBoolean from '@/components/ui/input-boolean';
+import TextAreaInput from '../ui/input-text-area';
 
-interface Props {
-    value: string;
-    onChange: (value: string) => void;
-    error?: string;
-    medicamentos: ProductoServicio[];
+interface MedicamentoAgregado {
+    medicamento_id: string;
+    nombre: string;
+    dosis: string;
+    gramaje: string;
+    via: string;
+    via_label: string;
+    duracion: string;
+    unidad: string;
+    razon_necesaria: boolean;
+    temp_id: string;
 }
 
 const optionsGramaje = [
@@ -36,13 +43,13 @@ const opcionesViaMedicamento = [
     { value: 'Subcutánea', label: 'Subcutánea' },
 ];
 
-const PlanMedicamentos: React.FC<Props> = ({ value, onChange, error, medicamentos }) => {
-    
-    const medicamentosOptions = useMemo(() => 
-    medicamentos && Array.isArray(medicamentos) ? medicamentos.map(m => ({
-        value: m.id.toString(),
-        label: m.nombre_prestacion
-    })) : [], [medicamentos]);
+interface Props {
+    medicamentos: ProductoServicio[];
+    medicamentosAgregados: MedicamentoAgregado[]; 
+    onChange: (medicamentos: MedicamentoAgregado[]) => void;
+}
+
+const PlanMedicamentos: React.FC<Props> = ({ medicamentos, medicamentosAgregados, onChange }) => {
 
     const [local, setLocal] = useState({
         id: '', nombre: '', dosis: '', gramaje: '', via: '', via_label: '', duracion: '', unidad: 'horas', razon_necesaria: false,
@@ -54,12 +61,30 @@ const PlanMedicamentos: React.FC<Props> = ({ value, onChange, error, medicamento
             return;
         }
         
-        let texto = `• ${local.nombre} ${local.dosis} ${local.gramaje}, ${local.via_label}, ${local.razon_necesaria && 'Razón necesaria'}`;
-        texto += local.unidad === 'dosis unica' ? ', Dosis única.' : `, cada ${local.duracion} ${local.unidad}.`;
+        // 2. Creamos el objeto estructurado
+        const nuevoMedicamento = {
+            medicamento_id: local.id,
+            nombre: local.nombre,
+            dosis: local.dosis,
+            gramaje: local.gramaje,
+            via: local.via,
+            via_label: local.via_label,
+            duracion: local.duracion,
+            unidad: local.unidad,
+            razon_necesaria: local.razon_necesaria,
+            temp_id: crypto.randomUUID(),
+        };
 
-        onChange(value ? `${value}\n${texto}` : texto);
+        onChange([...medicamentosAgregados, nuevoMedicamento]);
         setLocal({ id: '', nombre: '', dosis: '', gramaje: '', via: '', via_label: '', duracion: '', unidad: 'horas', razon_necesaria: false });
     };
+
+
+    const textoGenerado = medicamentosAgregados.map(med => `• ${med.nombre} ${med.dosis}...`).join('\n');
+
+    const medicamentosOptions = medicamentos.map( med => (
+        { label: med.nombre_prestacion, value: med.id}
+    ))
 
     return (
         <div className="p-4 bg-white rounded-lg shadow-sm border mt-4">
@@ -125,18 +150,18 @@ const PlanMedicamentos: React.FC<Props> = ({ value, onChange, error, medicamento
                         onChange={(e) => setLocal(prev => ({ ...prev, razon_necesaria: e }))}
                     />
                 </div>
+                <div>
+                    <TextAreaInput
+                        label = 'Tratamiento de medicamentos'
+                        value ={textoGenerado} 
+                    />
+                </div>
                 <div className="flex justify-end">
                     <PrimaryButton type="button" onClick={handleAdd}>+ Agregar al plan</PrimaryButton>
                 </div>
             </div>
+            
 
-            <InputTextArea
-                label="Plan de medicamentos (campo libre)"
-                value={value}
-                onChange={(e) => onChange(e.target.value)}
-                error={error}
-                rows={5}
-            />
         </div>
     );
 };

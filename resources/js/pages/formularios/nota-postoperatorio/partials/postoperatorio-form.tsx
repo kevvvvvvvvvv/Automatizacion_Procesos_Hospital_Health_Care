@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useForm, Head } from '@inertiajs/react';
 import {
-  HojaEnfermeria,
   NotaPostoperatoria,
   Paciente,
   Estancia,

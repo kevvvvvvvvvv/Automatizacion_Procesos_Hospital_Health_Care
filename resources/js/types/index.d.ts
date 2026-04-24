@@ -921,6 +921,8 @@ export interface notasEvoluciones {
   manejo_medicamentos: string;
   manejo_medidas_generales: string;
   manejo_laboratorios: string;
+
+  tipo_modelo:string; 
  
 }
   /*
@@ -983,6 +985,8 @@ export interface NotaPostoperatoria {
     hallazgos_importancia: string;
 
     solicitud_patologia: SolicitudPatologia;
+
+    tipo_modelo:string;
 
     created_at: string; 
     updated_at: string; 

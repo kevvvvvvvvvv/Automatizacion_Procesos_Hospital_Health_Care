@@ -67,12 +67,11 @@ export const PostanestesicaForm = ({
                     </PrimaryButton>
                 }
             >
-
-                <Generalidades
-                    data={data} 
-                    setData={setData}
-                    errors={errors} 
-                />
+                    <Generalidades
+                        data={data} 
+                        setData={setData}
+                        errors={errors} 
+                    />
 
                     <InputTextArea
                         id="tecnica_anestesica"

@@ -1,6 +1,7 @@
 import React from 'react';
 import { useForm } from '@inertiajs/react';
-import { CatalogoEstudio, Estancia, Paciente, ProductoServicio, notasEvoluciones } from '@/types';  
+import { CatalogoEstudio, Estancia, Paciente, ProductoServicio, notasEvoluciones,  } from '@/types';  ;
+
 import PrimaryButton from '@/components/ui/primary-button';
 import FormLayout from '@/components/form-layout';
 import Generalidades from '@/components/forms/generalidades';
@@ -21,40 +22,41 @@ type Props = {
   onSubmit: (form:any) => void;
   submitLabel?: string; 
 };
-export const EvolucionForm =({
-    paciente,
-    estancia, 
+
+export const EvolucionForm =({ 
     onSubmit,
     evolucion,
     soluciones,
     medicamentos,
     estudios,
-    submitLabel = 'guardar'
-
+    submitLabel = 'Guardar'
 }: Props) => {
     const form = useForm({
-    evolucion_actualizacion: evolucion?.evolucion_actualizacion || '',
-    ta: evolucion?.ta || '',
-    fc: evolucion?.fc || '',
-    fr: evolucion?.fr || '',
-    spo2: evolucion?.spo2 || '',
-    temp: evolucion?.temp || '',
-    peso: evolucion?.peso || '',
-    talla: evolucion?.talla || '',
-    exploracion_fisica: evolucion?.exploracion_fisica || '',
-    resumen_del_interrogatorio: evolucion?.resumen_del_interrogatorio  || '',
-    resultados_relevantes: evolucion?.resultados_relevantes || '',
-    diagnostico_o_problemas_clinicos: evolucion?.diagnostico_o_problemas_clinicos || '',
-    pronostico: evolucion?.pronostico || '',
-    resultado_estudios: evolucion?.resultado_estudios || '',
-    tratamiento: evolucion?.tratamiento || '',
-    plan_de_estudio: evolucion?.plan_de_estudio || '',
-    manejo_dieta:  evolucion?.manejo_dieta || '',
-    manejo_soluciones:  evolucion?.manejo_soluciones || '',
-    manejo_medicamentos:  evolucion?.manejo_medicamentos || '',
-    manejo_medidas_generales:  evolucion?.manejo_medidas_generales || '',
-    manejo_laboratorios:  evolucion?.manejo_laboratorios || '',
+      evolucion_actualizacion: evolucion?.evolucion_actualizacion || '',
+      ta: evolucion?.ta || '',
+      fc: evolucion?.fc || '',
+      fr: evolucion?.fr || '',
+      spo2: evolucion?.spo2 || '',
+      temp: evolucion?.temp || '',
+      peso: evolucion?.peso || '',
+      talla: evolucion?.talla || '',
+      exploracion_fisica: evolucion?.exploracion_fisica || '',
+      resumen_del_interrogatorio: evolucion?.resumen_del_interrogatorio  || '',
+      resultados_relevantes: evolucion?.resultados_relevantes || '',
+      diagnostico_o_problemas_clinicos: evolucion?.diagnostico_o_problemas_clinicos || '',
+      pronostico: evolucion?.pronostico || '',
+      resultado_estudios: evolucion?.resultado_estudios || '',
+      tratamiento: evolucion?.tratamiento || '',
+      plan_de_estudio: evolucion?.plan_de_estudio || '',
+      manejo_dieta:  evolucion?.manejo_dieta || '',
+      manejo_soluciones:  evolucion?.manejo_soluciones || '',
+      manejo_medicamentos:  evolucion?.manejo_medicamentos || '',
+      manejo_medidas_generales:  evolucion?.manejo_medidas_generales || '',
+      manejo_laboratorios:  evolucion?.manejo_laboratorios || '',
+
+      medicamentos_agregados: [],
     });
+
     const { data, setData, processing, errors } = form;
         
         const handleSubmit = (e: React.FormEvent) => {
@@ -72,7 +74,7 @@ export const EvolucionForm =({
         onSubmit={handleSubmit}
         actions={
           <PrimaryButton type="submit" disabled={processing}>
-            {processing ? 'Creando...' : 'Crear Nota de Evolución'}
+            {processing ? 'Guardando...' : submitLabel}
           </PrimaryButton>
         }
       >
@@ -119,8 +121,8 @@ export const EvolucionForm =({
         </div>
         <div>
           <TratamientoMedicamentosForm
-            value={data.manejo_medicamentos}
-            onChange={(value) => setData('manejo_medicamentos', value)}
+            medicamentosAgregados={data.medicamentos_agregados}
+            onChange={(nuevosMedicamentos) => setData('medicamentos_agregados', nuevosMedicamentos)}
             medicamentos={medicamentos}
           />
           {errors.manejo_medicamentos && (
