@@ -50,7 +50,7 @@ const Index = ({ reservaciones }: Props) => {
     };
     // Lógica de formateo de horario extraída para reusabilidad
     const formatHorario = (horarios: string[]) => {
-        if (!horarios || horarios.length === 0) return { rago: "—", duracion: "" };
+        if (!horarios || horarios.length === 0) return { rango: "No asignado", duracion: "0 min" };
         try {
             const sorted = [...horarios].sort();
             const inicio = sorted[0].split(" ")[1].substring(0, 5);
@@ -60,13 +60,22 @@ const Index = ({ reservaciones }: Props) => {
             let finMinutos = minutos + 29;
             if (finMinutos === 60) { finHoras += 1; finMinutos = 0; }
             const fin = `${String(finHoras).padStart(2, '0')}:${String(finMinutos).padStart(2, '0')}`;
-            
+            const horariosOrdenados = [...horarios].sort();
+            const primero = horariosOrdenados[0];
+            const ultimo = horariosOrdenados[horariosOrdenados.length - 1];
+            const horaInicio = primero.split(" ")[1].substring(0, 5);
+            const horaFinRaw = ultimo.split(" ")[1].substring(0, 5);
+
+
             const duracionMinutos = horarios.length * 30;
             const h = Math.floor(duracionMinutos / 60);
             const m = duracionMinutos % 60;
             const duracion = h > 0 ? `${h}h ${m > 0 ? m + 'm' : ''}` : `${m} min`;
             
-            return { rango: `${inicio} - ${fin}`, duracion };
+            return {
+        rango: `${horaInicio} - ${horaFinRaw}`,
+        duracion: `${horarios.length * 30} min`
+    };
         } catch (e) { return { rango: "Error", duracion: "" }; }
     };
 
@@ -84,6 +93,12 @@ const Index = ({ reservaciones }: Props) => {
         {
             id: "horario_completo",
             header: "Horario",
+            // Esta función le dice a la tabla cómo comparar dos filas para este ID
+            sortingFn: (rowA, rowB) => {
+                const inicioA = rowA.original.horarios?.[0] || "";
+                const inicioB = rowB.original.horarios?.[0] || "";
+                return inicioA.localeCompare(inicioB);
+            },
             cell: ({ row }) => {
                 const { rango, duracion } = formatHorario(row.original.horarios);
                 return (
@@ -133,7 +148,14 @@ const Index = ({ reservaciones }: Props) => {
             ),
         },
     ], [can]);
-
+    const datosOrdenados = React.useMemo(() => {
+        return [...data].sort((a, b) => {
+            // Asumiendo que horarios es un array de strings ["2023-10-27 08:00:00", ...]
+            const horaA = a.horarios?.[0] || "";
+            const horaB = b.horarios?.[0] || "";
+            return horaA.localeCompare(horaB);
+        });
+    }, [data]);
     const table = useReactTable({
         data,
         columns,
