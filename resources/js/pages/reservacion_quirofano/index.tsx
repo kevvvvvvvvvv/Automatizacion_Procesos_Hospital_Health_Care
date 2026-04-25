@@ -229,7 +229,6 @@ const Index = ({ reservaciones }: Props) => {
                             value={dateFilter}
                             onChange={(e) => {
                                 setDateFilter(e.target.value);
-                                // Opcional: También podrías pasarlo al globalFilter de la tabla
                                 setGlobalFilter(e.target.value); 
                             }}
                             className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-2xl text-sm shadow-sm focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all appearance-none"
@@ -239,7 +238,7 @@ const Index = ({ reservaciones }: Props) => {
                                 onClick={() => {setDateFilter(""); setGlobalFilter("");}}
                                 className="absolute right-10 top-1/2 -translate-y-1/2 text-xs text-rose-500 font-bold hover:underline"
                             >
-                                <Trash size={16}/>
+                                <Trash size={15}/>
                             </button>
                         )}
                     </div>
