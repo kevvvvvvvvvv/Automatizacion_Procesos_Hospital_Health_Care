@@ -90,38 +90,27 @@ const EditReservacion: React.FC<Props> = ({
     const { data, setData, processing, errors } = form;
 
     const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+    e.preventDefault(); 
+        if (data.status !== 'cancelada' && data.horarios.length === 0) {
+                alert("Por favor seleccione al menos un horario si la cirugía no está cancelada.");
+                return;
+            }
 
-    // 1. Validación preventiva: Solo exigimos horarios si NO está cancelada
-    if (data.status !== 'cancelada' && data.horarios.length === 0) {
-        alert("Por favor seleccione al menos un horario si la cirugía no está cancelada.");
-        return;
-    }
-
-    // 2. Construcción del Payload siguiendo tu lógica
     const payload = {
         ...data,
         instrumentista: data.instrumentista.activa ? data.instrumentista.detalle : null,
         anestesiologo: data.anestesiologo.activa ? data.anestesiologo.detalle : null,
-        insumos_medicamentos: data.insumos_med.activa ? data.insumos_med.detalle : null,
+        insumos_medicamentos: data.insumos_med.activa ? data.insumos_med.detalle : null, // Nombre corregido
         esterilizar_detalle: data.esterilizar.activa ? data.esterilizar.detalle : null,
         rayosx_detalle: data.rayosx.activa ? data.rayosx.equipos.join(", ") : null,
         patologico_detalle: data.patologico.activa ? data.patologico.detalle : null,
         laparoscopia_detalle: data.laparoscopia.activa ? data.laparoscopia.detalle : null,
-        // Aseguramos que el motivo de cancelación solo viaje si es necesario
+        status: data.status,
         motivo_cancelacion: data.status === 'cancelada' ? data.motivo_cancelacion : null,
     };
 
-    // 3. Uso de form.put para que el botón detecte el estado 'processing' correctamente
-    form.put(route("quirofanos.update", quirofano.id), {
-        data: payload, // Pasamos el payload transformado
-        onSuccess: () => {
-            // Opcional: mensaje de éxito
-        },
-        onError: (err) => {
-            console.log("Errores del servidor:", err);
-        }
-    });
+    // CRITICAL: Enviamos 'payload', no 'data'
+    router.put(route("quirofanos.update", quirofano.id), payload);
 };
 
 const calcularCantidadBloques = (tiempo: string): number => {
@@ -179,7 +168,7 @@ const toggleHorario = (horaSeleccionada: string) => {
             setData("horarios", []); // Borramos solo en cambios manuales de fecha
             
             router.reload({ 
-                data: { fecha: data.fecha },  
+                data: { fecha: data.fecha }, 
                 only: ['horariosOcupados'] 
             });
         }, [data.fecha]);
