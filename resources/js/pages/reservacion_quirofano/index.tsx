@@ -11,7 +11,7 @@ import {
     flexRender,
     SortingState,
 } from "@tanstack/react-table";
-import { Pencil, Eye, Search, Calendar, Clock, User, Activity } from "lucide-react";
+import { Pencil, Eye, Search, Calendar, Clock, User, Activity, Trash } from "lucide-react";
 import { usePermission } from "@/hooks/use-permission";
 
 import MainLayout from "@/layouts/MainLayout";
@@ -39,10 +39,22 @@ interface Props {
 
 const Index = ({ reservaciones }: Props) => {
     const { can } = usePermission();
+     const [dateFilter, setDateFilter] = useState("");
     const [globalFilter, setGlobalFilter] = useState("");
     const [sorting, setSorting] = useState<SortingState>([]);
 
-    const data = useMemo(() => reservaciones ?? [], [reservaciones]);
+    //const data = useMemo(() => reservaciones ?? [], [reservaciones]);
+    // Modifica el useMemo de "data" al principio del componente:
+    const data = useMemo(() => {
+        let filtrados = reservaciones ?? [];
+
+        // Si hay una fecha seleccionada en el calendario, filtramos primero por ella
+        if (dateFilter) {
+            filtrados = filtrados.filter(res => res.fecha.includes(dateFilter));
+        }
+
+        return filtrados;
+    }, [reservaciones, dateFilter]);
     const statusStyles = {
     pendiente: "bg-amber-100 text-amber-700 border-amber-200",
     completada: "bg-emerald-100 text-emerald-700 border-emerald-200",
@@ -191,16 +203,47 @@ const Index = ({ reservaciones }: Props) => {
                 )}
             </div>
 
-            {/* Search Bar */}
-            <div className="relative group max-w-md">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-indigo-500 transition-colors" size={18} />
-                <input
-                    type="text"
-                    value={globalFilter}
-                    onChange={(e) => setGlobalFilter(e.target.value)}
-                    placeholder="Buscar paciente o cirujano..."
-                    className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-2xl text-sm shadow-sm focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all"
-                />
+           {/* Filtros Section */}
+            <div className="flex flex-col md:flex-row gap-4 items-end mb-6">
+                {/* Búsqueda por texto */}
+                <div className="relative group w-full md:max-w-md">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-indigo-500 transition-colors" size={18} />
+                    <input
+                        type="text"
+                        value={globalFilter}
+                        onChange={(e) => setGlobalFilter(e.target.value)}
+                        placeholder="Buscar paciente o cirujano..."
+                        className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-2xl text-sm shadow-sm focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all"
+                    />
+                </div>
+
+                {/* Filtro por Calendario */}
+                <div className="relative w-full md:w-64">
+                    <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1 ml-2">
+                        Filtrar por fecha
+                    </label>
+                    <div className="relative">
+                        <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+                        <input
+                            type="date"
+                            value={dateFilter}
+                            onChange={(e) => {
+                                setDateFilter(e.target.value);
+                                // Opcional: También podrías pasarlo al globalFilter de la tabla
+                                setGlobalFilter(e.target.value); 
+                            }}
+                            className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-2xl text-sm shadow-sm focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all appearance-none"
+                        />
+                        {dateFilter && (
+                            <button 
+                                onClick={() => {setDateFilter(""); setGlobalFilter("");}}
+                                className="absolute right-10 top-1/2 -translate-y-1/2 text-xs text-rose-500 font-bold hover:underline"
+                            >
+                                <Trash size={16}/>
+                            </button>
+                        )}
+                    </div>
+                </div>
             </div>
 
             {/* Mobile View (Cards) - Visible only on small screens */}
@@ -209,6 +252,12 @@ const Index = ({ reservaciones }: Props) => {
                     table.getRowModel().rows.map((row) => {
                         const { rango, duracion } = formatHorario(row.original.horarios);
                         const status = row.original.status || 'pendiente';
+                        const fechaFormateada = new Date(row.original.fecha).toLocaleDateString("es-MX", { 
+                            day: '2-digit', 
+                            month: 'short',
+                            year: 'numeric' 
+                        });
+
                         return (
                             <div 
                                 key={row.id} 
@@ -219,41 +268,48 @@ const Index = ({ reservaciones }: Props) => {
                                 }`}
                             >
                                 <div className="flex justify-between items-start mb-3">
-                                    <div className="flex items-center gap-2 bg-indigo-50 text-indigo-700 px-3 py-1 rounded-full text-xs font-bold">
-                                        <Clock size={14} /> {rango}
+                                    <div className="flex flex-col gap-1">
+                                        <div className="flex items-center gap-2 bg-indigo-50 text-indigo-700 px-3 py-1 rounded-full text-xs font-bold w-fit">
+                                            <Clock size={14} /> {rango}
+                                        </div>
+                                        <div className="flex items-center gap-1 text-[11px] text-gray-500 font-semibold ml-1">
+                                            <Calendar size={12} className="text-gray-400" />
+                                            {fechaFormateada}
+                                        </div>
                                     </div>
+
                                     <span className={`text-[10px] font-black uppercase tracking-widest px-1 ${status === 'cancelada' ? 'text-rose-600' : status === 'completada' ? 'text-emerald-600' : 'text-amber-600'}`}>
                                             ● {status}
                                     </span>
                                 </div>
+
                                 <h3 className="font-bold text-gray-800 text-lg mb-1">{row.original.paciente_nombre}</h3>
+                                
                                 <div className="space-y-2 mb-4">
                                     <div className="flex items-center gap-2 text-sm text-gray-500">
                                         <Activity size={14} className="text-gray-400" />
                                         <span>Cirujano: <span className="font-medium text-gray-700">{row.original.medico_operacion}</span></span>
                                     </div>
                                     {row.original.comentarios && (
-                                        <p className="text-xs text-gray-400 line-clamp-1 italic italic">"{row.original.comentarios}"</p>
+                                        <p className="text-xs text-gray-400 line-clamp-1 italic">"{row.original.comentarios}"</p>
                                     )}
                                 </div>
                                 <div className="flex gap-2" onClick={(e) => e.stopPropagation()}>
-                    
-                        <Link
-                            href={route("quirofanos.show", row.original.id)}
-                            className="p-2 text-gray-600 hover:bg-gray-100 rounded-full transition"
-                        >
-                            <Eye size={18} />
-                        </Link>
-                    
-                    {can('editar reservaciones quirofanos') && (
-                    <Link
-                        href={route("quirofanos.edit", row.original.id)}
-                        className="p-2 text-blue-600 hover:bg-blue-100 rounded-full transition"
-                    >
-                        <Pencil size={18} />
-                    </Link>
-                    )}
-                </div>
+                                    <Link
+                                        href={route("quirofanos.show", row.original.id)}
+                                        className="p-2 text-gray-600 hover:bg-gray-100 rounded-full transition"
+                                    >
+                                        <Eye size={18} />
+                                    </Link>
+                                    {can('editar reservaciones quirofanos') && (
+                                        <Link
+                                            href={route("quirofanos.edit", row.original.id)}
+                                            className="p-2 text-blue-600 hover:bg-blue-100 rounded-full transition"
+                                        >
+                                            <Pencil size={18} />
+                                        </Link>
+                                    )}
+                                </div>
                             </div>
                         );
                     })
@@ -261,7 +317,6 @@ const Index = ({ reservaciones }: Props) => {
                     <div className="text-center py-10 text-gray-400">No hay registros</div>
                 )}
             </div>
-
             {/* Desktop View (Table) - Hidden on mobile */}
             <div className="hidden md:block bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
                 <div className="overflow-x-auto">
