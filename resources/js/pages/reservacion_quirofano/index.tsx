@@ -71,21 +71,25 @@ const Index = ({
     cancelada: "bg-rose-100 text-rose-700 border-rose-200",
     };
     // Lógica de formateo de horario extraída para reusabilidad
-    const formatHorario = (horarios: string[]) => {
-        if (!horarios || horarios.length === 0) return { rango: "No asignado", duracion: "0 min" };
-
-
-        const horariosOrdenados = [...horarios].sort();
-        const primero = horariosOrdenados[0];
-        const ultimo = horariosOrdenados[horariosOrdenados.length - 1];
-        const horaInicio = primero.split(" ")[1].substring(0, 5);
-        const horaFinRaw = ultimo.split(" ")[1].substring(0, 5);
-
-        
-        return {
-            rango: `${horaInicio} - ${horaFinRaw}`,
-            duracion: `${horarios.length * 30} min`
-        };
+   const formatHorario = (horarios: string[]) => {
+        if (!horarios || horarios.length === 0) return { rago: "—", duracion: "" };
+        try {
+            const sorted = [...horarios].sort();
+            const inicio = sorted[0].split(" ")[1].substring(0, 5);
+            const ultimoBloque = sorted[sorted.length - 1].split(" ")[1];
+            const [horas, minutos] = ultimoBloque.split(":").map(Number);
+            let finHoras = horas;
+            let finMinutos = minutos + 29;
+            if (finMinutos === 60) { finHoras += 1; finMinutos = 0; }
+            const fin = `${String(finHoras).padStart(2, '0')}:${String(finMinutos).padStart(2, '0')}`;
+            
+            const duracionMinutos = horarios.length * 30;
+            const h = Math.floor(duracionMinutos / 60);
+            const m = duracionMinutos % 60;
+            const duracion = h > 0 ? `${h}h ${m > 0 ? m + 'm' : ''}` : `${m} min`;
+            
+            return { rango: `${inicio} - ${fin}`, duracion };
+        } catch (e) { return { rango: "Error", duracion: "" }; }
     };
 
     const columns = useMemo<ColumnDef<ReservacionQuirofano>[]>(() => [
@@ -102,7 +106,6 @@ const Index = ({
         {
             id: "horario_completo",
             header: "Horario",
-            // Esta función le dice a la tabla cómo comparar dos filas para este ID
             sortingFn: (rowA, rowB) => {
                 const inicioA = rowA.original.horarios?.[0] || "";
                 const inicioB = rowB.original.horarios?.[0] || "";
