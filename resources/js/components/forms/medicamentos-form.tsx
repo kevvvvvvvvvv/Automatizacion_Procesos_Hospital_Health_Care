@@ -45,7 +45,7 @@ const MedicamentosForm: React.FC<Props> = ({
     vias_administracion = []
 }) => {
     const [now, setNow] = useState(new Date());
-
+    const [offsetMinutes, setOffsetMinutes] = useState(0); // Nuevo: minutos para "adelantar" el reloj
     const viasOptions = vias_administracion.map(v=>({
         label: v.via_administracion,
         value: v.via_administracion,
@@ -98,10 +98,14 @@ const MedicamentosForm: React.FC<Props> = ({
             nombre_medicamento: ''  
         }));
     };
-    useEffect(() => {
-        const interval = setInterval(() => setNow(new Date()), 60000); 
-        return () => clearInterval(interval);
-    }, []);
+   useEffect(() => {
+    const interval = setInterval(() => {
+        const actualDate = new Date();
+        const adjustedDate = new Date(actualDate.getTime() + (offsetMinutes * 60000));
+        setNow(adjustedDate);
+    }, 3000); 
+    return () => clearInterval(interval);
+}, [offsetMinutes]); 
      
     
     const getStatusBoton = (med: HojaMedicamento) => {
@@ -212,7 +216,7 @@ const MedicamentosForm: React.FC<Props> = ({
     const handleSubmitList = (e: React.FormEvent) => {
     e.preventDefault();
 
-console.log("Hoja Data:", hoja?.id, hoja?.tipo_modelo);
+//console.log("Hoja Data:", hoja?.id, hoja?.tipo_modelo);
 
     if (!hoja?.id || !hoja?.tipo_modelo) {
         Swal.fire('Error', 'No se detectó la información de la hoja base.', 'error');
@@ -450,6 +454,21 @@ console.log("Hoja Data:", hoja?.id, hoja?.tipo_modelo);
            <div className="mt-12">
                 <h3 className="text-lg font-semibold mb-2">Historial de medicamentos guardados</h3>
                 <div className="overflow-x-auto border rounded-lg">
+                    {/* CONTROL DE TIEMPO EXTRA */}
+                <div className="flex items-center gap-2 bg-white p-2 rounded border shadow-sm">
+                    <label className="text-xs font-bold text-gray-600">¿Dosis administrada tarde?</label>
+                    <select 
+                        className="text-xs border-gray-300 rounded p-1"
+                        value={offsetMinutes}
+                        onChange={(e) => setOffsetMinutes(Number(e.target.value))}
+                    >
+                        <option value="0">Hora actual</option>
+                        <option value="15">+15 min</option>
+                        <option value="30">+30 min</option>
+                        <option value="60">+1 hr</option>
+                        <option value="480">+6 hrs</option>
+                    </select>
+                </div>
                     <table className="min-w-full divide-y divide-gray-200">
                         <thead>
                             <tr className='text-left text-gray-900'>
