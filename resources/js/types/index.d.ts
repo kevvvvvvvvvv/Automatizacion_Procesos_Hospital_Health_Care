@@ -592,6 +592,7 @@ export interface HojaMedicamento {
 
     producto_servicio?: ProductoServicio;
     aplicaciones: AplicacionMedicamento[];
+    created_at: string;
 }
 
 export interface NotificationData {
