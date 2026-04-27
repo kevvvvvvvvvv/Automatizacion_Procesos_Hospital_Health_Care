@@ -16,6 +16,7 @@ import { usePermission } from "@/hooks/use-permission";
 
 import MainLayout from "@/layouts/MainLayout";
 import AddButton from "@/components/ui/add-button";
+import DateInput from "@/components/ui/input-date";
 
 type ReservacionQuirofano = {
     id: number;
@@ -30,14 +31,23 @@ type ReservacionQuirofano = {
     comentarios: string;
     habitacion_nombre: string;
     estancia_id: number;
+    procedimiento: string;
     status: 'pendiente' | 'completada' | 'cancelada';
 };
 
 interface Props {
     reservaciones: ReservacionQuirofano[];
+    filtros: {
+        fecha_filtro: string;
+    };
 }
 
-const Index = ({ reservaciones }: Props) => {
+const Index = ({ 
+    reservaciones,
+    filtros 
+}: Props) => {
+
+
     const { can } = usePermission();
      const [dateFilter, setDateFilter] = useState("");
     const [globalFilter, setGlobalFilter] = useState("");
@@ -63,32 +73,19 @@ const Index = ({ reservaciones }: Props) => {
     // Lógica de formateo de horario extraída para reusabilidad
     const formatHorario = (horarios: string[]) => {
         if (!horarios || horarios.length === 0) return { rango: "No asignado", duracion: "0 min" };
-        try {
-            const sorted = [...horarios].sort();
-            const inicio = sorted[0].split(" ")[1].substring(0, 5);
-            const ultimoBloque = sorted[sorted.length - 1].split(" ")[1];
-            const [horas, minutos] = ultimoBloque.split(":").map(Number);
-            let finHoras = horas;
-            let finMinutos = minutos + 29;
-            if (finMinutos === 60) { finHoras += 1; finMinutos = 0; }
-            const fin = `${String(finHoras).padStart(2, '0')}:${String(finMinutos).padStart(2, '0')}`;
-            const horariosOrdenados = [...horarios].sort();
-            const primero = horariosOrdenados[0];
-            const ultimo = horariosOrdenados[horariosOrdenados.length - 1];
-            const horaInicio = primero.split(" ")[1].substring(0, 5);
-            const horaFinRaw = ultimo.split(" ")[1].substring(0, 5);
 
 
-            const duracionMinutos = horarios.length * 30;
-            const h = Math.floor(duracionMinutos / 60);
-            const m = duracionMinutos % 60;
-            const duracion = h > 0 ? `${h}h ${m > 0 ? m + 'm' : ''}` : `${m} min`;
-            
-            return {
-        rango: `${horaInicio} - ${horaFinRaw}`,
-        duracion: `${horarios.length * 30} min`
-    };
-        } catch (e) { return { rango: "Error", duracion: "" }; }
+        const horariosOrdenados = [...horarios].sort();
+        const primero = horariosOrdenados[0];
+        const ultimo = horariosOrdenados[horariosOrdenados.length - 1];
+        const horaInicio = primero.split(" ")[1].substring(0, 5);
+        const horaFinRaw = ultimo.split(" ")[1].substring(0, 5);
+
+        
+        return {
+            rango: `${horaInicio} - ${horaFinRaw}`,
+            duracion: `${horarios.length * 30} min`
+        };
     };
 
     const columns = useMemo<ColumnDef<ReservacionQuirofano>[]>(() => [
@@ -144,6 +141,11 @@ const Index = ({ reservaciones }: Props) => {
             cell: ({ row }) => <span className="text-xs font-bold text-gray-500 uppercase">{row.original.medico_operacion}</span>
         },
         {
+            accessorKey: "procedimiento",
+            header: "Procedimiento",
+            cell: ({ row }) => <span className="text-xs font-bold text-gray-500 uppercase">{row.original.procedimiento}</span>
+        },
+        {
             id: "acciones",
             header: () => <div className="text-right">Acciones</div>,
             cell: ({ row }) => (
@@ -160,14 +162,8 @@ const Index = ({ reservaciones }: Props) => {
             ),
         },
     ], [can]);
-    const datosOrdenados = React.useMemo(() => {
-        return [...data].sort((a, b) => {
-            // Asumiendo que horarios es un array de strings ["2023-10-27 08:00:00", ...]
-            const horaA = a.horarios?.[0] || "";
-            const horaB = b.horarios?.[0] || "";
-            return horaA.localeCompare(horaB);
-        });
-    }, [data]);
+
+
     const table = useReactTable({
         data,
         columns,
@@ -249,7 +245,7 @@ const Index = ({ reservaciones }: Props) => {
             <div className="grid grid-cols-1 gap-4 md:hidden">
                 {table.getRowModel().rows.length > 0 ? (
                     table.getRowModel().rows.map((row) => {
-                        const { rango, duracion } = formatHorario(row.original.horarios);
+                        const { rango } = formatHorario(row.original.horarios);
                         const status = row.original.status || 'pendiente';
                         const fechaFormateada = new Date(row.original.fecha).toLocaleDateString("es-MX", { 
                             day: '2-digit', 
