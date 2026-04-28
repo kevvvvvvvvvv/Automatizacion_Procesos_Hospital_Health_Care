@@ -12,10 +12,10 @@ window.Pusher = Pusher;
 window.Echo = new Echo({
     broadcaster: 'reverb',
     key: import.meta.env.VITE_REVERB_APP_KEY,
-    wsHost: import.meta.env.VITE_REVERB_HOST ?? window.location.hostname,
-    wsPort: import.meta.env.VITE_REVERB_PORT ?? 8080,
-    wssPort: import.meta.env.VITE_REVERB_PORT ?? 8080,
-    forceTLS: (import.meta.env.VITE_REVERB_SCHEME ?? 'http') === 'https',
+    wsHost: document.querySelector('meta[name="reverb-host"]')?.getAttribute('content') || import.meta.env.VITE_REVERB_HOST || window.location.hostname,
+    wsPort: (document.querySelector('meta[name="reverb-port"]')?.getAttribute('content') || import.meta.env.VITE_REVERB_PORT) ?? 8080,
+    wssPort: (document.querySelector('meta[name="reverb-port"]')?.getAttribute('content') || import.meta.env.VITE_REVERB_PORT) ?? 8080,
+    forceTLS: (document.querySelector('meta[name="reverb-scheme"]')?.getAttribute('content') || import.meta.env.VITE_REVERB_SCHEME || 'http') === 'https',
     enabledTransports: ['ws', 'wss'],
     authEndpoint: '/broadcasting/auth',
 });

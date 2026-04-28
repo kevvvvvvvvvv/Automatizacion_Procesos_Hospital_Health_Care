@@ -12,7 +12,7 @@ use App\Models\Paciente;
 use App\Models\User;
 use App\Models\Habitacion\Habitacion;
 use App\Models\Estancia;
-
+use Carbon\Carbon;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
@@ -33,14 +33,22 @@ class ReservacionQuirofanoController extends Controller
             ];
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $reservaciones = ReservacionQuirofano::with([
-                'user:id,nombre,apellido_paterno',
-                'habitacion:id,identificador',
-                'medicoOperacionRel:id,nombre,apellido_paterno'
-            ])
-            ->orderBy('fecha', 'desc')
+        $fechaIso = $request->input('fecha_filtro');
+
+        $query = ReservacionQuirofano::with([
+            'user:id,nombre,apellido_paterno',
+            'habitacion:id,identificador',
+            'medicoOperacionRel:id,nombre,apellido_paterno'
+        ]);
+
+        if ($fechaIso) {
+            $fechaLimpia = Carbon::parse($fechaIso)->format('Y-m-d');
+            $query->whereDate('fecha', $fechaLimpia);
+        }
+
+        $reservaciones = $query->orderBy('fecha', 'desc')
             ->get()
             ->map(fn ($res) => [
                 'id' => $res->id,
@@ -52,6 +60,7 @@ class ReservacionQuirofanoController extends Controller
                 'anestesiologo' => $res->anestesiologo,
                 'horarios' => $res->horarios,
                 'comentarios' => $res->comentarios,
+                'procedimiento' => $res->procedimiento,
                 'medico_operacion' => $res->medicoOperacionRel 
                 ? "{$res->medicoOperacionRel->nombre} {$res->medicoOperacionRel->apellido_paterno}" 
                 : 'No asignado',
@@ -61,7 +70,10 @@ class ReservacionQuirofanoController extends Controller
             ]);
 
         return Inertia::render('reservacion_quirofano/index', [
-            'reservaciones' => $reservaciones
+            'reservaciones' => $reservaciones,
+            'filtros' => [
+                    'fecha_filtro' => $fechaIso ? Carbon::parse($fechaIso)->format('Y-m-d') : ''
+                ],
         ]);
     }
 
@@ -188,64 +200,60 @@ class ReservacionQuirofanoController extends Controller
         ]);
     }
 
-    public function update(ReservacionQuirofanoRequest $request, ReservacionQuirofano $quirofano)
-    {
-        $data = $request->validated();
-        $LOCALIZACION = 'Plan de Ayutla';
+   public function update(ReservacionQuirofanoRequest $request, ReservacionQuirofano $quirofano)
+{
+    $data = $request->validated();
+    $LOCALIZACION = 'Plan de Ayutla';
 
-        try {
-            $quirofanos = Habitacion::where('tipo', 'Quirofano')
-                ->where('ubicacion', $LOCALIZACION)
-                ->pluck('id');
+    // 1. Validar disponibilidad solo si no se cancela
+    if ($request->status !== 'cancelada') {
+        $quirofanos = Habitacion::where('tipo', 'Quirofano')
+            ->where('ubicacion', $LOCALIZACION)
+            ->pluck('id');
             
-            $habitacionAsignada = null;
-            //dd($quirofano->toArray());
-            foreach ($quirofanos as $quirofanoId) {
-                $ocupado = ReservacionQuirofano::where('habitacion_id', $quirofanoId)
-                    ->where('id', '!=', $quirofano->id) 
-                    ->where('fecha', $data['fecha'])
-                    ->where(function ($query) use ($data) {
-                        foreach ($data['horarios'] as $hora) {
-                            $query->orWhereJsonContains('horarios', $hora);
-                        }
-                    })->exists();
+        $habitacionAsignada = null;
 
-                if (!$ocupado) {
-                    $habitacionAsignada = $quirofanoId;
-                    break;
-                }
+        foreach ($quirofanos as $quirofanoId) {
+            $ocupado = ReservacionQuirofano::where('habitacion_id', $quirofanoId)
+                ->where('id', '!=', $quirofano->id) 
+                ->where('fecha', $data['fecha'])
+                ->where(function ($query) use ($data) {
+                    foreach ($data['horarios'] as $hora) {
+                        $query->orWhereJsonContains('horarios', $hora);
+                    }
+                })->exists();
+
+            if (!$ocupado) {
+                $habitacionAsignada = $quirofanoId;
+                break;
             }
-
-            if (!$habitacionAsignada) {
-                return back()->withErrors(['horarios' => 'No hay quirófanos disponibles para este nuevo horario.']);
-            }
-            $quirofano->fill($data);
-            $quirofano->status = $request->status;
-            $quirofano->motivo_cancelacion = ($request->status === 'cancelada') 
-                ? $request->motivo_cancelacion 
-                : null;
-            $quirofano->comentarios = $request->comentarios;
-            $quirofano->instrumentista = $request->instrumentista;
-            $quirofano->anestesiologo = $request->anestesiologo;
-            $quirofano->insumos_medicamentos = $request->insumos_medicamentos;
-            $quirofano->esterilizar_detalle = $request->esterilizar_detalle;
-            $quirofano->rayosx_detalle = $request->rayosx_detalle;
-            $quirofano->patologico_detalle = $request->patologico_detalle;
-            $quirofano->laparoscopia_detalle = $request->laparoscopia_detalle;
-
-            $quirofano->habitacion_id = $habitacionAsignada;
-            $quirofano->localizacion = $LOCALIZACION;
-
-            $quirofano->save();
-
-            return redirect()->route('quirofanos.index')->with('success', 'Reservación actualizada correctamente.');
-
-        } catch (\Exception $e) {
-            return back()->withErrors([
-                'error' => 'Error al actualizar: ' . $e->getMessage()
-            ]);
         }
+
+        if (!$habitacionAsignada) {
+            return back()->withErrors(['horarios' => 'No hay quirófanos disponibles.']);
+        }
+        $quirofano->habitacion_id = $habitacionAsignada;
     }
+
+    // 2. Mapear los campos manualmente desde el request para asegurar que entren como null si es necesario
+    $quirofano->fill($data); // Esto llena los campos validados del Request
+    
+    // Forzamos los valores del request (que ya transformamos en React a null si no están activos)
+    $quirofano->instrumentista = $request->instrumentista;
+    $quirofano->anestesiologo = $request->anestesiologo;
+    $quirofano->insumos_medicamentos = $request->insumos_medicamentos;
+    $quirofano->esterilizar_detalle = $request->esterilizar_detalle;
+    $quirofano->rayosx_detalle = $request->rayosx_detalle;
+    $quirofano->patologico_detalle = $request->patologico_detalle;
+    $quirofano->laparoscopia_detalle = $request->laparoscopia_detalle;
+    
+    $quirofano->status = $request->status;
+    $quirofano->motivo_cancelacion = ($request->status === 'cancelada') ? $request->motivo_cancelacion : null;
+
+    $quirofano->save();
+
+    return redirect()->route('quirofanos.index')->with('success', 'Actualizado correctamente.');
+}
 
     public function show(ReservacionQuirofano $quirofano)
     {

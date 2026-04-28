@@ -21,7 +21,7 @@ public function rules(): array
         'status' => 'required|in:pendiente,completada,cancelada',
         'motivo_cancelacion' => 'required_if:status,cancelada|nullable|string|min:10',
         'fecha' => ['required'],
-        'horarios' => ['required_unless:status,cancelada', 'array'],
+        'horarios' => ['nullable', 'array'],
     ];
 }
 
