@@ -44,7 +44,8 @@ const MedicamentosForm: React.FC<Props> = ({
     medicamentos = [], 
     vias_administracion = []
 }) => {
-
+    const [now, setNow] = useState(new Date());
+    const [offsetMinutes, setOffsetMinutes] = useState(0); // Nuevo: minutos para "adelantar" el reloj
     const viasOptions = vias_administracion.map(v=>({
         label: v.via_administracion,
         value: v.via_administracion,
@@ -97,7 +98,49 @@ const MedicamentosForm: React.FC<Props> = ({
             nombre_medicamento: ''  
         }));
     };
+   useEffect(() => {
+    const interval = setInterval(() => {
+        const actualDate = new Date();
+        const adjustedDate = new Date(actualDate.getTime() + (offsetMinutes * 60000));
+        setNow(adjustedDate);
+    }, 3000); 
+    return () => clearInterval(interval);
+}, [offsetMinutes]); 
+     
+    
+    const getStatusBoton = (med: HojaMedicamento) => {
+        const fechaRegistro = new Date(med.created_at || new Date()); // Asumiendo que existe created_at
+        const diffHorasDesdeRegistro = (now.getTime() - fechaRegistro.getTime()) / (1000 * 60 * 60);
 
+        if (diffHorasDesdeRegistro >= 24) {
+            return { habilitado: false, visible: false, mensaje: "Expiró (24h)" };
+        }
+
+        if (!med.fecha_hora_inicio) {
+            return { habilitado: true, visible: true, mensaje: "" };
+        }
+
+        if (med.unidad === 'horas') {
+            const frecuencia = (med.duracion_tratamiento);
+            
+            const ultimaFechaIso = med.aplicaciones && med.aplicaciones.length > 0 
+                ? med.aplicaciones[med.aplicaciones.length - 1].fecha_aplicacion 
+                : med.fecha_hora_inicio;
+            
+            const ultimaAplicacion = new Date(ultimaFechaIso);
+            const proximaDosis = new Date(ultimaAplicacion.getTime() + frecuencia * 60 * 60 * 1000);
+            const diffMinutosParaSiguiente = (proximaDosis.getTime() - now.getTime()) / (1000 * 60);
+            const puedeAdministrar = diffMinutosParaSiguiente <= 5;
+
+            return { 
+                habilitado: puedeAdministrar, 
+                visible: true, 
+                mensaje: !puedeAdministrar ? `Disponible en ${Math.round(diffMinutosParaSiguiente)} min` : "" 
+            };
+        }
+
+        return { habilitado: true, visible: true, mensaje: "" };
+    };
     useEffect(()=>{
         if(localData.unidad === 'dosis unica'){
             setLocalData(prevState=>({
@@ -173,7 +216,7 @@ const MedicamentosForm: React.FC<Props> = ({
     const handleSubmitList = (e: React.FormEvent) => {
     e.preventDefault();
 
-console.log("Hoja Data:", hoja?.id, hoja?.tipo_modelo);
+//console.log("Hoja Data:", hoja?.id, hoja?.tipo_modelo);
 
     if (!hoja?.id || !hoja?.tipo_modelo) {
         Swal.fire('Error', 'No se detectó la información de la hoja base.', 'error');
@@ -223,7 +266,7 @@ console.log("Hoja Data:", hoja?.id, hoja?.tipo_modelo);
             }
         });
     };
-
+   
     const viasAdministracionOptions = () => {
 
         if (localData.es_manual) {
@@ -408,82 +451,94 @@ console.log("Hoja Data:", hoja?.id, hoja?.tipo_modelo);
                 </div>
             </form>
 
-            <div className="mt-12">
+           <div className="mt-12">
                 <h3 className="text-lg font-semibold mb-2">Historial de medicamentos guardados</h3>
                 <div className="overflow-x-auto border rounded-lg">
+                    {/* CONTROL DE TIEMPO EXTRA */}
+                <div className="flex items-center gap-2 bg-white p-2 rounded border shadow-sm">
+                    <label className="text-xs font-bold text-gray-600">¿Dosis administrada tarde?</label>
+                    <select 
+                        className="text-xs border-gray-300 rounded p-1"
+                        value={offsetMinutes}
+                        onChange={(e) => setOffsetMinutes(Number(e.target.value))}
+                    >
+                        <option value="0">Hora actual</option>
+                        <option value="15">+15 min</option>
+                        <option value="30">+30 min</option>
+                        <option value="60">+1 hr</option>
+                        <option value="480">+6 hrs</option>
+                    </select>
+                </div>
                     <table className="min-w-full divide-y divide-gray-200">
                         <thead>
-                            <tr className='text-left'>
-                                <th className="px-4 py-4 text-sm text-gray-900">Nombre del medicamento</th>
-                                <th className="px-4 py-4 text-sm text-gray-900">Dosis</th>
-                                <th className="px-4 py-4 text-sm text-gray-900">Duración (frecuencia)</th>
-                                <th className="px-4 py-4 text-sm text-gray-900">Via administración</th>
-                                <th className="px-4 py-4 text-sm text-gray-900">Fecha de aplicación</th>
-                                <th className="px-4 py-4 text-sm text-gray-900">Acciones</th>
+                            <tr className='text-left text-gray-900'>
+                                <th className="px-4 py-4 text-sm">Nombre</th>
+                                <th className="px-4 py-4 text-sm">Dosis</th>
+                                <th className="px-4 py-4 text-sm">Frecuencia</th>
+                                <th className="px-4 py-4 text-sm">Historial</th>
+                                <th className="px-4 py-4 text-sm">Acciones</th>
                             </tr>
                         </thead>
                         <tbody className="bg-white divide-y divide-gray-200">
-                            {(hoja?.hoja_medicamentos ?? []).length === 0 ? (
-                                <tr>
-                                    <td className="px-4 py-4 text-sm text-gray-500">No hay medicamentos</td>
-                                </tr>
-                            ) : (
-                                (hoja?.hoja_medicamentos ?? []).map((med: HojaMedicamento) => (
-                                    <tr key={med.id}>
-                                        <td className="px-4 py-4 text-sm text-gray-900">
-                                            {med.nombre_medicamento|| '...'}
+                            {(hoja?.hoja_medicamentos ?? []).map((med: HojaMedicamento) => {
+                                const status = getStatusBoton(med);
+                                
+                                // Si no debe ser visible (pasó 24h), no renderizamos la fila o mostramos aviso
+                                if (!status.visible) return (
+                                    <tr key={med.id} className="bg-gray-50 opacity-50">
+                                        <td colSpan={5} className="px-4 py-2 text-xs italic text-gray-400">
+                                            {med.nombre_medicamento} - Registro cerrado por límite de 24h.
                                         </td>
-                                        <td className="px-4 py-4 text-sm text-gray-500">{med.dosis + ' ' + med.gramaje}</td>
-                                        <td className="px-4 py-4 text-sm text-gray-500">{med.duracion_tratamiento + ' ' + med.unidad}</td>
-                                        <td className="px-4 py-4 text-sm text-gray-500">{med.via_administracion}</td>
+                                    </tr>
+                                );
 
-                                        <td className="px-2 py-1 text-sm text-gray-500" style={{ minWidth: '200px' }}>
-                                            {!med.fecha_hora_inicio && (
+                                return (
+                                    <tr key={med.id}>
+                                        <td className="px-4 py-4 text-sm font-medium">{med.nombre_medicamento}</td>
+                                        <td className="px-4 py-4 text-sm text-gray-500">{med.dosis} {med.gramaje}</td>
+                                        <td className="px-4 py-4 text-sm text-gray-500">{med.duracion_tratamiento} {med.unidad}</td>
+                                        
+                                        <td className="px-4 py-4 text-sm text-gray-500">
+                                            <div className="flex flex-col text-xs">
+                                                {med.fecha_hora_inicio && (
+                                                    <span>1. {formatDateTime(med.fecha_hora_inicio)}</span>
+                                                )}
+                                                {(med.aplicaciones ?? []).map((app, index) => (
+                                                    <span key={app.id}>{index + 2}. {formatDateTime(app.fecha_aplicacion)}</span>
+                                                ))}
+                                            </div>
+                                        </td>
+
+                                        <td className="px-4 py-4 text-sm">
+                                            {!med.fecha_hora_inicio ? (
                                                 <PrimaryButton
                                                     type="button"
-                                                    onClick={() => {
-                                                        const now_iso = new Date().toISOString();
-                                                        handleDateUpdate(med.id, now_iso);
-                                                    }}
+                                                    disabled={!status.habilitado}
+                                                    onClick={() => handleDateUpdate(med.id, new Date().toISOString())}
                                                 >
                                                     Registrar 1ra dosis
                                                 </PrimaryButton>
-                                            )}
-
-                                            {med.fecha_hora_inicio && (
-                                                <div className="flex flex-col space-y-2">
-                                                    
-
-                                                    <div className="flex justify-between items-center">
-                                                        <span>
-                                                            1. {formatDateTime(med.fecha_hora_inicio)}
+                                            ) : (
+                                                <div className="flex flex-col items-start gap-1">
+                                                    <PrimaryButton
+                                                        type="button"
+                                                        className={!status.habilitado ? 'opacity-50 cursor-not-allowed bg-gray-400' : ''}
+                                                        disabled={!status.habilitado}
+                                                        onClick={() => handleStoreAplicacion(med.id)}
+                                                    >
+                                                        + Siguiente dosis
+                                                    </PrimaryButton>
+                                                    {status.mensaje && (
+                                                        <span className="text-[10px] text-orange-600 font-bold animate-pulse">
+                                                            {status.mensaje}
                                                         </span>
-                                                    </div>
-
-                                                    {(med.aplicaciones ?? []).map((app, index) => (
-                                                        <div key={app.id} className="flex justify-between items-center">
-                                                            <span>
-                                                                {index + 2}. {formatDateTime(app.fecha_aplicacion)}
-                                                            </span>
-                                                        </div>
-                                                    ))}
+                                                    )}
                                                 </div>
                                             )}
                                         </td>
-
-                                        <td className="px-4 py-4 text-sm space-x-2 whitespace-nowrap">
-                                            {med.fecha_hora_inicio && (
-                                            <PrimaryButton
-                                                type="button"
-                                                onClick={() => handleStoreAplicacion(med.id)}
-                                            >
-                                                + Registrar siguiente dosis
-                                            </PrimaryButton>
-                                            )}
-                                        </td>
                                     </tr>
-                                ))
-                            )}
+                                );
+                            })}
                         </tbody>
                     </table>
                 </div>

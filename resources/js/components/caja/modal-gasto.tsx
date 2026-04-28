@@ -144,7 +144,9 @@ export const conceptosPorArea = {
         ]
     },
     LIGA: {
-        ingresos: [],
+        ingresos: [
+        {value: 'pago_seguro', label: 'Pago del seguro'}
+        ],
         egresos: [
         { value: 'retiro_efectivo', label: 'Retiro de efectivo' }
         ]

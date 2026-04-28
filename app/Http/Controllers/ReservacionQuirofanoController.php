@@ -12,7 +12,7 @@ use App\Models\Paciente;
 use App\Models\User;
 use App\Models\Habitacion\Habitacion;
 use App\Models\Estancia;
-
+use Carbon\Carbon;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
@@ -33,14 +33,22 @@ class ReservacionQuirofanoController extends Controller
             ];
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $reservaciones = ReservacionQuirofano::with([
-                'user:id,nombre,apellido_paterno',
-                'habitacion:id,identificador',
-                'medicoOperacionRel:id,nombre,apellido_paterno'
-            ])
-            ->orderBy('fecha', 'desc')
+        $fechaIso = $request->input('fecha_filtro');
+
+        $query = ReservacionQuirofano::with([
+            'user:id,nombre,apellido_paterno',
+            'habitacion:id,identificador',
+            'medicoOperacionRel:id,nombre,apellido_paterno'
+        ]);
+
+        if ($fechaIso) {
+            $fechaLimpia = Carbon::parse($fechaIso)->format('Y-m-d');
+            $query->whereDate('fecha', $fechaLimpia);
+        }
+
+        $reservaciones = $query->orderBy('fecha', 'desc')
             ->get()
             ->map(fn ($res) => [
                 'id' => $res->id,
@@ -52,6 +60,7 @@ class ReservacionQuirofanoController extends Controller
                 'anestesiologo' => $res->anestesiologo,
                 'horarios' => $res->horarios,
                 'comentarios' => $res->comentarios,
+                'procedimiento' => $res->procedimiento,
                 'medico_operacion' => $res->medicoOperacionRel 
                 ? "{$res->medicoOperacionRel->nombre} {$res->medicoOperacionRel->apellido_paterno}" 
                 : 'No asignado',
@@ -61,7 +70,10 @@ class ReservacionQuirofanoController extends Controller
             ]);
 
         return Inertia::render('reservacion_quirofano/index', [
-            'reservaciones' => $reservaciones
+            'reservaciones' => $reservaciones,
+            'filtros' => [
+                    'fecha_filtro' => $fechaIso ? Carbon::parse($fechaIso)->format('Y-m-d') : ''
+                ],
         ]);
     }
 
