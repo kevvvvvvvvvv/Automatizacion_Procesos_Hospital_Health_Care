@@ -53,18 +53,31 @@ const Index = ({
     const [globalFilter, setGlobalFilter] = useState("");
     const [sorting, setSorting] = useState<SortingState>([]);
 
-    //const data = useMemo(() => reservaciones ?? [], [reservaciones]);
-    // Modifica el useMemo de "data" al principio del componente:
-    const data = useMemo(() => {
-        let filtrados = reservaciones ?? [];
+  const data = useMemo(() => {
+    let filtrados = reservaciones ?? [];
+    if (dateFilter) {
+        filtrados = filtrados.filter(res => res.fecha.includes(dateFilter));
+    }
 
-        // Si hay una fecha seleccionada en el calendario, filtramos primero por ella
-        if (dateFilter) {
-            filtrados = filtrados.filter(res => res.fecha.includes(dateFilter));
+    const ahora = new Date().getTime();
+
+    return [...filtrados].sort((a, b) => {
+        const tiempoA = new Date(a.fecha).getTime();
+        const tiempoB = new Date(b.fecha).getTime();
+        const hoyInicio = new Date().setHours(0, 0, 0, 0);
+        const esPasadoA = tiempoA < hoyInicio;
+        const esPasadoB = tiempoB < hoyInicio;
+        if (esPasadoA !== esPasadoB) {
+            return esPasadoA ? 1 : -1;
         }
-
-        return filtrados;
-    }, [reservaciones, dateFilter]);
+        if (tiempoA !== tiempoB) {
+            return tiempoA - tiempoB; 
+        }
+        const horaA = a.horarios?.[0] || "";
+        const horaB = b.horarios?.[0] || "";
+        return horaA.localeCompare(horaB);
+    });
+}, [reservaciones, dateFilter]);
     const statusStyles = {
     pendiente: "bg-amber-100 text-amber-700 border-amber-200",
     completada: "bg-emerald-100 text-emerald-700 border-emerald-200",
