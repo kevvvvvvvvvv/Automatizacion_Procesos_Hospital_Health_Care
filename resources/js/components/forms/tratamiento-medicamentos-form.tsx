@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { NotaPostoperatoria, notasEvoluciones, ProductoServicio } from '@/types';
+import { ProductoServicio, MedicamentoAgregado } from '@/types';
 import Swal from 'sweetalert2';
 
 import InputBoolean from '@/components/ui/input-boolean';
@@ -7,19 +7,6 @@ import InputText from '@/components/ui/input-text';
 import SelectInput from '@/components/ui/input-select';
 import PrimaryButton from '@/components/ui/primary-button';
 import TextAreaInput from '../ui/input-text-area';
-
-interface MedicamentoAgregado {
-    medicamento_id: string;
-    nombre: string;
-    dosis: string;
-    gramaje: string;
-    via: string;
-    via_label: string;
-    duracion: string;
-    unidad: string;
-    razon_necesaria: boolean;
-    temp_id: string;
-}
 
 const optionsGramaje = [
     {value: 'mililitros', label: 'Mililitros (ml)'},
@@ -46,7 +33,7 @@ const opcionesViaMedicamento = [
 interface Props {
     medicamentos: ProductoServicio[];
     medicamentosAgregados: MedicamentoAgregado[]; 
-    onChange: (medicamentos: MedicamentoAgregado[]) => void;
+    onChange: (medicamentos: MedicamentoAgregado[]) => void; 
 }
 
 const PlanMedicamentos: React.FC<Props> = ({ medicamentos, medicamentosAgregados, onChange }) => {

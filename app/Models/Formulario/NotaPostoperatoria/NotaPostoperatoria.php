@@ -11,6 +11,7 @@ use App\Models\Estudio\SolicitudPatologia;
 use App\Models\Formulario\FormularioInstancia;
 use App\Models\Formulario\PersonalEmpleado;
 use App\Models\Formulario\CheckListItem;
+use App\Models\Formulario\HojaEnfermeria\HojaMedicamento;
 
 /**
  * @property int $id
@@ -180,5 +181,10 @@ class NotaPostoperatoria extends Model
     public function solicitudPatologia(): MorphMany
     {
         return $this->morphMany(SolicitudPatologia::class, 'itemable');
+    }
+
+    public function medicamentos()
+    {
+        return $this->morphMany(HojaMedicamento::class, 'medicable');
     }
 }

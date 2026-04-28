@@ -18,6 +18,7 @@ use App\Models\Estancia;
 use App\Models\Formulario\FormularioCatalogo;
 use App\Models\Formulario\FormularioInstancia;
 use App\Models\Estudio\CatalogoEstudio;
+use App\Models\Formulario\HojaEnfermeria\HojaMedicamento;
 use App\Models\Inventario\ProductoServicio;
 
 class NotaEvolucionController extends Controller implements HasMiddleware
@@ -58,9 +59,12 @@ class NotaEvolucionController extends Controller implements HasMiddleware
 
     public function store(NotaEvolucionRequest $request, Paciente $paciente, Estancia $estancia)
     {
+        // 1. Validar datos
         $validateData = $request->validated();
+
         DB::beginTransaction();
         try {
+            // 2. Crear la instancia del formulario (el padre de todo)
             $formularioInstancia = FormularioInstancia::create([
                 'fecha_hora' => now(),
                 'estancia_id' => $estancia->id,
@@ -68,18 +72,41 @@ class NotaEvolucionController extends Controller implements HasMiddleware
                 'user_id' => Auth::id(),
             ]);
 
+            // 3. Crear la Nota de Evolución vinculada a la instancia
             $notaEvolucion = NotaEvolucion::create([
                 'id' => $formularioInstancia->id,
                 ...$validateData
             ]);
 
+            // 4. Procesar los medicamentos agregados (si existen)
+            if (!empty($request->medicamentos_agregados)) {
+                foreach ($request->medicamentos_agregados as $med) {
+                    HojaMedicamento::create([
+                        'producto_servicio_id'  => $med['medicamento_id'],
+                        'nombre_medicamento'    => $med['nombre'],
+                        'dosis'                 => $med['dosis'],
+                        'gramaje'               => $med['gramaje'],
+                        'unidad'                => $med['unidad'],
+                        'via_administracion'    => $med['via'], // o 'via_label' según prefieras guardar
+                        'duracion_tratamiento'  => $med['duracion'],
+                        'fecha_hora_solicitud'  => now(),
+                        'estado'                => 'solicitado', // Valor por defecto
+                        'medicable_type'        => get_class($notaEvolucion), // 'App\Models\NotaEvolucion'
+                        'medicable_id'          => $notaEvolucion->id,
+                    ]);
+                }
+            }
+
             DB::commit();
 
             return Redirect::route('estancias.show', $estancia->id)
-            ->with('success','Se ha creado la nota de evolución');
+                ->with('success', 'Se ha creado la nota de evolución e indicaciones correctamente.');
+
         } catch (\Exception $e) {
             DB::rollBack();
-            return Redirect::back()->with('error', 'Error al crear nota de evolución: ' . $e->getMessage());
+            // Log para debuguear el error exacto
+            \Log::error("Error en NotaEvolucion: " . $e->getMessage());
+            return Redirect::back()->with('error', 'Error al crear nota: ' . $e->getMessage());
         }
     }
 

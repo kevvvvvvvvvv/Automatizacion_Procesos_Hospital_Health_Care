@@ -145,7 +145,7 @@ const PlanPostoperatorioChecklist: React.FC<Props> = ({ nota, checklistInicial =
          const [sectionId, indexStr] = taskId.split('-');
          await axios.post(route('checklist.toggle'), {
              nota_id: nota.id,
-            nota_type: nota.model_type,
+            nota_type: nota.tipo_modelo,
              section_id: sectionId,
              task_index: parseInt(indexStr),
              is_completed: isChecked

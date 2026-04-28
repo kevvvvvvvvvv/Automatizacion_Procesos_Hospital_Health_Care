@@ -41,6 +41,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|HojaSignos whereTensionArterialSistolica($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|HojaSignos whereUpdatedAt($value)
  * @mixin \Eloq uent
+ * @property string $registrable_type
+ * @property int $registrable_id
+ * @property-read Model|\Eloquent $registrable
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|HojaSignos whereRegistrableId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|HojaSignos whereRegistrableType($value)
+ * @mixin \Eloquent
  */
 class HojaSignos extends Model
 {

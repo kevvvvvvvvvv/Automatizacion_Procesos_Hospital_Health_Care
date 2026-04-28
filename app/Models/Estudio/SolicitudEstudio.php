@@ -41,6 +41,8 @@ use App\Models\Formulario\FormularioInstancia;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|SolicitudEstudio whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|SolicitudEstudio whereUserLlenaId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|SolicitudEstudio whereUserSolicitaId($value)
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, Paquete> $paquetes
+ * @property-read int|null $paquetes_count
  * @mixin \Eloquent
  */
 class SolicitudEstudio extends Model

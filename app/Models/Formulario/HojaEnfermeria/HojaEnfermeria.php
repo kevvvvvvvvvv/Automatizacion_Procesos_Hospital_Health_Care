@@ -57,6 +57,8 @@ use App\Models\Estudio\SolicitudPatologia;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|HojaEnfermeria whereObservaciones($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|HojaEnfermeria whereTurno($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|HojaEnfermeria whereUpdatedAt($value)
+ * @property-read mixed $oxigeno_activo
+ * @property-read mixed $tipo_modelo
  * @mixin \Eloquent
  */
 class HojaEnfermeria extends Model

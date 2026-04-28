@@ -51,6 +51,31 @@ use App\Models\Formulario\HojaOxigeno;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|HojaEnfermeriaQuirofano whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|HojaEnfermeriaQuirofano whereServiciosEspeciales($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|HojaEnfermeriaQuirofano whereUpdatedAt($value)
+ * @property string|null $nota_enfermeria
+ * @property string|null $posicion_paciente
+ * @property string|null $procedimiento_quirurgico
+ * @property string|null $placa_cauterio
+ * @property string|null $medio_oxigeno
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Formulario\HojaEnfermeriaQuirofano\ConteoMaterialQuirofano> $conteoMaterialQuirofano
+ * @property-read int|null $conteo_material_quirofano_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, EgresoLiquido> $egresoLiquidos
+ * @property-read int|null $egreso_liquidos_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, HojaMedicamento> $hojaMedicamentos
+ * @property-read int|null $hoja_medicamentos_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, HojaSignos> $hojaSignos
+ * @property-read int|null $hoja_signos_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, HojaTerapiaIV> $hojasTerapiaIV
+ * @property-read int|null $hojas_terapia_i_v_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Formulario\HojaEnfermeriaQuirofano\Isquemia> $isquemias
+ * @property-read int|null $isquemias_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, HojaOxigeno> $oxigenoActivo
+ * @property-read int|null $oxigeno_activo_count
+ * @property-read mixed $tipo_modelo
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|HojaEnfermeriaQuirofano whereMedioOxigeno($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|HojaEnfermeriaQuirofano whereNotaEnfermeria($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|HojaEnfermeriaQuirofano wherePlacaCauterio($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|HojaEnfermeriaQuirofano wherePosicionPaciente($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|HojaEnfermeriaQuirofano whereProcedimientoQuirurgico($value)
  * @mixin \Eloquent
  */
 class HojaEnfermeriaQuirofano extends Model

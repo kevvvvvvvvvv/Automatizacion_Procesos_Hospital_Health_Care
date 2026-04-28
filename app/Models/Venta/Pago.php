@@ -52,6 +52,11 @@ use Stripe\Product;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Pago whereMetadataCajero($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Pago whereMontoIngresado($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Pago whereMontoRestante($value)
+ * @property int $requiere_factura
+ * @property int|null $sesion_caja_id
+ * @property-read SesionCaja|null $sesionCaja
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Pago whereRequiereFactura($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Pago whereSesionCajaId($value)
  * @mixin \Eloquent
  */
 class Pago extends Model

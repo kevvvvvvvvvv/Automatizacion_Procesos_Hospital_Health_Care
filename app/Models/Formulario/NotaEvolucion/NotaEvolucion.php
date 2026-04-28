@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 use App\Models\Formulario\FormularioInstancia;
 use App\Models\Formulario\CheckListItem;
+use App\Models\Formulario\HojaEnfermeria\HojaMedicamento;
 
 /**
  * @property int $id
@@ -108,8 +109,13 @@ class NotaEvolucion extends Model
 
     protected $appends = ['tipo_modelo'];
 
-    public function getModelTypeAttribute()
+    public function getTipoModeloAttribute()
     {
         return self::class; 
+    }
+
+    public function medicamentos()
+    {
+        return $this->morphMany(HojaMedicamento::class, 'medicable');
     }
 }

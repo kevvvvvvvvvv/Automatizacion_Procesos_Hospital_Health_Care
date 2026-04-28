@@ -1,16 +1,16 @@
 import React from 'react';
 import { useForm } from '@inertiajs/react';
-import { CatalogoEstudio, Estancia, Paciente, ProductoServicio, notasEvoluciones,  } from '@/types';  ;
+import { CatalogoEstudio, Estancia, MedicamentoAgregado, Paciente, ProductoServicio, notasEvoluciones,  } from '@/types';  ;
 
 import PrimaryButton from '@/components/ui/primary-button';
 import FormLayout from '@/components/form-layout';
+import TextAreaInput from '@/components/ui/input-text-area';
 import Generalidades from '@/components/forms/generalidades';
 import TratamientoDietasForm from '@/components/forms/tratamiento-dietas-form';
 import TratamientoSolucionesForm from '@/components/forms/tratamiento-soluciones-form';
 import TratamientoMedicamentosForm from '@/components/forms/tratamiento-medicamentos-form';
 import TratamientoLaboratoriosForm from '@/components/forms/tratamiento-laboratorios-form';
 import TratamientoMedidasGeneralesForm from '@/components/forms/tratamiento-medidas-generales-form';
-
 
 type Props = {
   paciente: Paciente;
@@ -22,6 +22,8 @@ type Props = {
   onSubmit: (form:any) => void;
   submitLabel?: string; 
 };
+
+
 
 export const EvolucionForm =({ 
     onSubmit,
@@ -54,7 +56,7 @@ export const EvolucionForm =({
       manejo_medidas_generales:  evolucion?.manejo_medidas_generales || '',
       manejo_laboratorios:  evolucion?.manejo_laboratorios || '',
 
-      medicamentos_agregados: [],
+      medicamentos_agregados: [] as MedicamentoAgregado[],
     });
 
     const { data, setData, processing, errors } = form;
@@ -64,9 +66,6 @@ export const EvolucionForm =({
             onSubmit(form);
             
         };
-
-  const textAreaClasses = `w-full px-3 py-2 rounded-md shadow-sm border text-gray-900 bg-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#2a2b56] focus:border-[#2a2b56] transition`;
-  const labelClasses = `block text-sm font-medium text-gray-700 mb-1`;
 
   return(
     <FormLayout
@@ -78,24 +77,13 @@ export const EvolucionForm =({
           </PrimaryButton>
         }
       >
-        {/* Sección 1: Evolución y Actualización */}
-        <div className="mb-4">
-          <label htmlFor="evolucion_actualizacion" className={labelClasses}>
-            Evolución y Actualización
-          </label>
-          <textarea
-            id="evolucion_actualizacion"
-            className={textAreaClasses}
-            value={data.evolucion_actualizacion}
-            onChange={(e) => setData('evolucion_actualizacion', e.target.value)}
-            placeholder="Ingrese la evolución y actualización"
-            rows={4}
-            autoComplete="off"
-          />
-          {errors.evolucion_actualizacion && (
-            <div className="text-red-500 text-sm">{errors.evolucion_actualizacion}</div>
-          )}
-        </div>
+        <TextAreaInput
+          label = 'Evolución y actualización'
+          value = {data.evolucion_actualizacion}
+          onChange={(e) => setData('evolucion_actualizacion', e.target.value)}
+          rows={4}
+          error={errors.evolucion_actualizacion}
+        />
 
         <Generalidades data={data} setData={setData} errors={errors} />
 

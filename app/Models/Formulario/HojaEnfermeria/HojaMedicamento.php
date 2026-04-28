@@ -50,6 +50,12 @@ use App\Models\Formulario\RecienNacido\RecienNacido;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|HojaMedicamento whereUnidad($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|HojaMedicamento whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|HojaMedicamento whereViaAdministracion($value)
+ * @property string $medicable_type
+ * @property int $medicable_id
+ * @property-read Model|\Eloquent $medicable
+ * @property-read RecienNacido|null $recienNacido
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|HojaMedicamento whereMedicableId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|HojaMedicamento whereMedicableType($value)
  * @mixin \Eloquent
  */
 class HojaMedicamento extends Model

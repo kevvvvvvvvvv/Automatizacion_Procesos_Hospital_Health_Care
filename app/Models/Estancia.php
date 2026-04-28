@@ -75,6 +75,7 @@ use App\Models\Habitacion\Habitacion;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Estancia whereUpdatedBy($value)
  * @property string $tipo_ingreso
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Estancia whereTipoIngreso($value)
+ * @property-read mixed $tipo_modelo
  * @mixin \Eloquent
  */
 class Estancia extends Model
