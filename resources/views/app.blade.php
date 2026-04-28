@@ -46,6 +46,10 @@
         @viteReactRefresh
         @vite(['resources/js/app.tsx', "resources/js/pages/{$page['component']}.tsx"])
         @inertiaHead
+
+        <meta name="reverb-host" content="{{ env('REVERB_HOST') }}">
+        <meta name="reverb-port" content="{{ env('REVERB_PORT') }}">
+        <meta name="reverb-scheme" content="{{ env('REVERB_SCHEME') }}">
     </head>
     <body class="font-sans antialiased">
         @inertia
