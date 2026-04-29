@@ -7,14 +7,14 @@
         @page {
             size: A4;
             margin-top: 5cm;
-            margin-bottom: 1.5cm;
-            margin-left: 1.2cm;
-            margin-right: 1.2cm;
+            margin-bottom: 1.2cm;
+            margin-left: 1cm;
+            margin-right: 1cm;
 
             @bottom-right {
                 content: "Página " counter(page) " de " counter(pages);
                 font-family: Calibri, Arial, sans-serif;
-                font-size: 9pt;
+                font-size: 6pt;
                 color: #888;
             }
         }
@@ -53,7 +53,7 @@
         body {
             font-family: Calibri, Arial, sans-serif; 
             margin: 0; 
-            font-size: 10.5pt; 
+            font-size: 8pt; 
             color: #333;
             line-height: 1.4;
         }
@@ -106,13 +106,11 @@
     <main>
         <h1>Declaración de Consentimiento Bajo Información por Anestesia</h1>
 
-
         {{-- CAMPOS ESPECÍFICOS --}}
         <h3>Campos Específicos</h3>
         <div class="section-content">
-            <p>Familiar Responsable y/o Representante legal: {{ $estancia->nombre_completo ?? 'Sin datos.' }}</p>
-            <p>Diagnóstico Preoperatorio: {{ $paciente->diagnostico_preoperatorio ?? 'Sin datos.' }}</p>
-            <p>Cirugía Programada: {{ $paciente->cirugia_programada ?? 'Sin datos.' }} Carácter de la Cirugía o Procedimiento: Electiva: {{ $paciente->caracter_cirugia == 'Electiva' ? 'X' : '' }} o Urgente: {{ $paciente->caracter_cirugia == 'Urgente' ? 'X' : '' }}</p>
+            <p>Diagnóstico Preoperatorio: {{ $hc->diagnostico ?? '' }}</p>
+            <p>Carácter de la Cirugía o Procedimiento: Electiva {{ $paciente->caracter_cirugia == 'Electiva' ? 'X' : '' }} o Urgente {{ $paciente->caracter_cirugia == 'Urgente' ? 'X' : '' }}</p>
         </div>
 
         {{-- CUERPO DEL CONSENTIMIENTO --}}
