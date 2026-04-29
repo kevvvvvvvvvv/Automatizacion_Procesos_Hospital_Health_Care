@@ -18,6 +18,7 @@ use Carbon\Carbon;
 use App\Model\FormularioInstancia;
 use App\Models\Estancia;
 use App\Models\Consentimiento;
+use App\Models\Formulario\HistoriaClinica\HistoriaClinica;
 use App\Models\Paciente;
 
 class ConsentimientoController extends Controller
@@ -103,72 +104,75 @@ class ConsentimientoController extends Controller
         }
     }
 
-public function generarPDF(string $file, Request $request, Paciente $paciente, Estancia $estancia, Consentimiento $consentimiento)
-{   
-    if ($request->has('consentimiento_id')) {
-        $consentimientoId = intval($request->query('consentimiento_id'));
-        
-        $consentimiento = Consentimiento::with([
-            'user.credenciales', // <--- Importante
-            'estancia.paciente',
-            'estancia.familiarResponsable',
-            'estancia.formularioInstancias.hojaFrontal.medico.credenciales'
-        ])->find($consentimientoId);
+    public function generarPDF(string $file, Request $request, Paciente $paciente, Estancia $estancia, Consentimiento $consentimiento)
+    {   
+        if ($request->has('consentimiento_id')) {
+            $consentimientoId = intval($request->query('consentimiento_id'));
+            
+            $consentimiento = Consentimiento::with([
+                'user.credenciales',
+                'estancia.paciente',
+                'estancia.familiarResponsable',
+                'estancia.formularioInstancias.hojaFrontal.medico.credenciales'
+            ])->find($consentimientoId);
 
-        if (!$consentimiento) abort(404, "Consentimiento no encontrado.");
+            if (!$consentimiento) abort(404, "Consentimiento no encontrado.");
 
-        $instanciaConFrontal = $consentimiento->estancia->formularioInstancias
-            ->whereNotNull('hojaFrontal')
-            ->first();
-        $medicoFrontal = $instanciaConFrontal ? $instanciaConFrontal->hojaFrontal->medico : null;
+            $instanciaConFrontal = $consentimiento->estancia->formularioInstancias
+                ->whereNotNull('hojaFrontal')
+                ->first();
+            $medicoFrontal = $instanciaConFrontal ? $instanciaConFrontal->hojaFrontal->medico : null;
 
-        $fecha = $consentimiento->created_at;
-        $meses = [1 => 'enero', 2 => 'febrero', 3 => 'marzo', 4 => 'abril', 5 => 'mayo', 6 => 'junio', 
-                  7 => 'julio', 8 => 'agosto', 9 => 'septiembre', 10 => 'octubre', 11 => 'noviembre', 12 => 'diciembre'];
-        
-        // 2. Pasamos los datos a la vista. 
-        // Si usas el médico que inició sesión o creó el registro:
-        $medicoFirmante = $consentimiento->user; 
+            $fecha = $consentimiento->created_at;
+            $meses = [1 => 'enero', 2 => 'febrero', 3 => 'marzo', 4 => 'abril', 5 => 'mayo', 6 => 'junio', 
+                    7 => 'julio', 8 => 'agosto', 9 => 'septiembre', 10 => 'octubre', 11 => 'noviembre', 12 => 'diciembre'];
+            
+            $medicoFirmante = $consentimiento->user; 
 
-        $viewData = [
-            'notaData' => $consentimiento,
-            'paciente' => $consentimiento->estancia->paciente,
-            'medico'   => $medicoFirmante, // Ahora este objeto tiene 'credenciales'
-            'estancia' => $consentimiento->estancia,
-            'fecha' => [
-                'dia' => $fecha->day,
-                'mes' => $meses[$fecha->month],
-                'anio' => $fecha->year,
-            ],
-        ];
-        
-        $imagePath = public_path('images/Logo_HC_2.png');
-        $logo = null; 
+            $historia = $this->cargarHistoriaClinica($consentimiento);
 
-        if (file_exists($imagePath)) {
-            $imageData = base64_encode(file_get_contents($imagePath));
-            $imageMime = mime_content_type($imagePath);
-            $logo = 'data:' . $imageMime . ';base64,' . $imageData;
+            $viewData = [
+                'notaData' => $consentimiento,
+                'paciente' => $consentimiento->estancia->paciente,
+                'medico'   => $medicoFirmante, 
+                'estancia' => $consentimiento->estancia,
+                'fecha' => [
+                    'dia' => $fecha->day,
+                    'mes' => $meses[$fecha->month],
+                    'anio' => $fecha->year,
+                ],
+                'hc' => $historia,
+            ];
+            
+            $imagePath = public_path('images/Logo_HC_2.png');
+            $logo = null; 
+
+            if (file_exists($imagePath)) {
+                $imageData = base64_encode(file_get_contents($imagePath));
+                $imageMime = mime_content_type($imagePath);
+                $logo = 'data:' . $imageMime . ';base64,' . $imageData;
+            }
+
+            $headerData = [
+                'logoDataUri' => $logo,
+                'notaData' => $consentimiento,
+                'paciente' => $consentimiento->estancia?->paciente,
+                'medico' => $medicoFirmante, 
+                'estancia'=> $consentimiento->estancia
+            ];
+
+            
+
+            return Pdf::view($consentimiento->route_pdf, $viewData)
+                ->format('Letter')
+                ->name('consentimiento-' . ($consentimiento->estancia->folio ?? 'SN') . '.pdf')
+                ->withBrowsershot(function (Browsershot $browsershot) {
+                    $this->configureBrowsershot($browsershot);
+                })
+                ->headerView('headerConsentimiento', $headerData)
+                ->inline();
         }
-
-        $headerData = [
-            'logoDataUri' => $logo,
-            'notaData' => $consentimiento,
-            'paciente' => $consentimiento->estancia?->paciente,
-            'medico' => $medicoFirmante, 
-            'estancia'=> $consentimiento->estancia
-        ];
-
-        return Pdf::view($consentimiento->route_pdf, $viewData)
-            ->format('Letter')
-            ->name('consentimiento-' . ($consentimiento->estancia->folio ?? 'SN') . '.pdf')
-            ->withBrowsershot(function (Browsershot $browsershot) {
-                $this->configureBrowsershot($browsershot);
-            })
-            ->headerView('headerConsentimiento', $headerData)
-            ->inline();
-    }
-}
+    }   
     protected function configureBrowsershot(Browsershot $browsershot)
     {
         $chromePath = config('services.browsershot.chrome_path');
@@ -182,5 +186,13 @@ public function generarPDF(string $file, Request $request, Paciente $paciente, E
         }
     }
 
+    private function cargarHistoriaClinica(Consentimiento $consentimiento)
+    {
+        $historia = HistoriaClinica::whereHas('formularioInstancia', function ($query) use ($consentimiento) {
+            $query->where('estancia_id', $consentimiento->estancia->id);
+        })->first();
+
+        return $historia;
+    }
 
 }
