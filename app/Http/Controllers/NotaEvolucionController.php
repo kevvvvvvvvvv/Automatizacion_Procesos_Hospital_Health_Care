@@ -11,6 +11,7 @@ use Redirect;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
+use App\Services\Formularios\HojaMedicamentoService; 
 
 use App\Models\Formulario\NotaEvolucion\NotaEvolucion;  
 use App\Models\Paciente;
@@ -57,7 +58,7 @@ class NotaEvolucionController extends Controller implements HasMiddleware
         ]);
     }
 
-    public function store(NotaEvolucionRequest $request, Paciente $paciente, Estancia $estancia)
+    public function store(NotaEvolucionRequest $request, Paciente $paciente, Estancia $estancia, HojaMedicamentoService $medicamentoService)
     {
         $validateData = $request->validated();
 
@@ -75,23 +76,9 @@ class NotaEvolucionController extends Controller implements HasMiddleware
                 ...$validateData
             ]);
 
-            if (!empty($request->medicamentos_agregados)) {
-                foreach ($request->medicamentos_agregados as $med) {
-                    HojaMedicamento::create([
-                        'producto_servicio_id'  => $med['medicamento_id'],
-                        'nombre_medicamento'    => $med['nombre'],
-                        'dosis'                 => $med['dosis'],
-                        'gramaje'               => $med['gramaje'],
-                        'unidad'                => $med['unidad'],
-                        'via_administracion'    => $med['via'], 
-                        'duracion_tratamiento'  => $med['duracion'],
-                        'fecha_hora_solicitud'  => now(),
-                        'estado'                => 'solicitado', 
-                        'medicable_type'        => get_class($notaEvolucion), 
-                        'medicable_id'          => $formularioInstancia->id,
-                    ]);
-                }
-            }
+            $medicamentos = $request->input('medicamentos_agregados', []);
+            
+            $medicamentoService->registrarMedicamentos($notaEvolucion, $medicamentos);
 
             DB::commit();
 
@@ -124,7 +111,8 @@ class NotaEvolucionController extends Controller implements HasMiddleware
     {
         $notasevolucione->load([
             'formularioInstancia.estancia.paciente',
-            'formularioInstancia.user'
+            'formularioInstancia.user',
+            'medicamentos',
         ]);
 
         $soluciones = ProductoServicio::where('tipo','INSUMOS')->get();
@@ -146,11 +134,15 @@ class NotaEvolucionController extends Controller implements HasMiddleware
         NotaEvolucionRequest $request, 
         Paciente $paciente, 
         Estancia $estancia, 
-        NotaEvolucion $notasevolucione)
+        NotaEvolucion $notasevolucione,
+        HojaMedicamentoService $medicamentoService)
     {
 
         $validateData = $request->validated();
         $notasevolucione->update($validateData);
+
+        $medicamentosRequest = $request->input('medicamentos_agregados', []);
+        $medicamentoService->sincronizarMedicamentos($notasevolucione, $medicamentosRequest);
         
         return redirect()->route('notasevoluciones.show', [
             'paciente' => $paciente->id,

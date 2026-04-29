@@ -57,7 +57,20 @@ export const EvolucionForm =({
       manejo_medidas_generales:  evolucion?.manejo_medidas_generales || '',
       manejo_laboratorios:  evolucion?.manejo_laboratorios || '',
 
-      medicamentos_agregados: [] as MedicamentoAgregado[],
+      medicamentos_agregados: evolucion?.medicamentos ? 
+        evolucion.medicamentos.map(med => ({
+            medicamento_id: med.producto_servicio_id.toString(),
+            nombre: med.nombre_medicamento,
+            dosis: med.dosis.toString(),
+            gramaje: med.gramaje,
+            via: med.via_administracion,
+            via_label: med.via_administracion,
+            duracion: med.duracion_tratamiento.toString(),
+            unidad: med.unidad,
+            razon_necesaria: false, 
+            temp_id: med.id.toString(), 
+        })) 
+        : [] as MedicamentoAgregado[],
     });
 
     const { data, setData, processing, errors } = form;
@@ -137,10 +150,6 @@ export const EvolucionForm =({
             <div className="text-red-500 text-sm">{errors.manejo_medidas_generales}</div>
           )}
         </div>
-        <MedicamentosForm
-          
-        />
-        
       </FormLayout>
     )
 }
