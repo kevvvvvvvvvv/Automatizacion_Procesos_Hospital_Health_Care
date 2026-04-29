@@ -114,7 +114,7 @@ class NotaEvolucion extends Model
         return self::class; 
     }
 
-    public function medicamentos()
+    public function medicamentos(): MorphMany
     {
         return $this->morphMany(HojaMedicamento::class, 'medicable');
     }

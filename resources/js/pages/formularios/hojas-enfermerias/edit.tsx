@@ -91,6 +91,7 @@ const Create: CreateComponent = ({
             </h2>
             <PlanPostoperatorioChecklist
                 nota={nota} 
+                hoja={hojaenfermeria}
                 checklistInicial={checklistInicial}
             />
         </div>

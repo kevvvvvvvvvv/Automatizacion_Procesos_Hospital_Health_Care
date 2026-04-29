@@ -81,10 +81,11 @@ class HojaMedicamento extends Model
 
         'nombre_medicamento'
     ];
+    
     public function medicable()
-{
-    return $this->morphTo();
-}
+    {
+        return $this->morphTo();
+    }
 
     public function productoServicio():BelongsTo
     {   

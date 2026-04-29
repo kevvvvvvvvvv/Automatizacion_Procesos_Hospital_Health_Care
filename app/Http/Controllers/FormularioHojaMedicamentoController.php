@@ -27,7 +27,7 @@ class FormularioHojaMedicamentoController extends Controller
         $validatedData = $request->validated();
         
         $modelType = $request->input('medicable_type'); 
-        $modelId = $request->input('medicable_id');
+        $modelId = $request->input('medicable_id');;
 
         if (!$modelType || !class_exists($modelType)) {
             return redirect()->back()->with('error', 'El tipo de formulario no es válido.');
@@ -49,6 +49,8 @@ class FormularioHojaMedicamentoController extends Controller
                         $tieneStock = ($producto->cantidad >= 1) && ($producto->tipo !== 'SERVICIO');
                     }
                 }
+
+               
 
                 $nuevoMedicamento = $parent->hojaMedicamentos()->create([
                     'producto_servicio_id' => $productoId, 

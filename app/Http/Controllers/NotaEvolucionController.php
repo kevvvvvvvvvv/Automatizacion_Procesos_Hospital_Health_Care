@@ -59,12 +59,10 @@ class NotaEvolucionController extends Controller implements HasMiddleware
 
     public function store(NotaEvolucionRequest $request, Paciente $paciente, Estancia $estancia)
     {
-        // 1. Validar datos
         $validateData = $request->validated();
 
         DB::beginTransaction();
         try {
-            // 2. Crear la instancia del formulario (el padre de todo)
             $formularioInstancia = FormularioInstancia::create([
                 'fecha_hora' => now(),
                 'estancia_id' => $estancia->id,
@@ -72,13 +70,11 @@ class NotaEvolucionController extends Controller implements HasMiddleware
                 'user_id' => Auth::id(),
             ]);
 
-            // 3. Crear la Nota de Evolución vinculada a la instancia
             $notaEvolucion = NotaEvolucion::create([
                 'id' => $formularioInstancia->id,
                 ...$validateData
             ]);
 
-            // 4. Procesar los medicamentos agregados (si existen)
             if (!empty($request->medicamentos_agregados)) {
                 foreach ($request->medicamentos_agregados as $med) {
                     HojaMedicamento::create([
@@ -87,12 +83,12 @@ class NotaEvolucionController extends Controller implements HasMiddleware
                         'dosis'                 => $med['dosis'],
                         'gramaje'               => $med['gramaje'],
                         'unidad'                => $med['unidad'],
-                        'via_administracion'    => $med['via'], // o 'via_label' según prefieras guardar
+                        'via_administracion'    => $med['via'], 
                         'duracion_tratamiento'  => $med['duracion'],
                         'fecha_hora_solicitud'  => now(),
-                        'estado'                => 'solicitado', // Valor por defecto
-                        'medicable_type'        => get_class($notaEvolucion), // 'App\Models\NotaEvolucion'
-                        'medicable_id'          => $notaEvolucion->id,
+                        'estado'                => 'solicitado', 
+                        'medicable_type'        => get_class($notaEvolucion), 
+                        'medicable_id'          => $formularioInstancia->id,
                     ]);
                 }
             }
@@ -104,7 +100,6 @@ class NotaEvolucionController extends Controller implements HasMiddleware
 
         } catch (\Exception $e) {
             DB::rollBack();
-            // Log para debuguear el error exacto
             \Log::error("Error en NotaEvolucion: " . $e->getMessage());
             return Redirect::back()->with('error', 'Error al crear nota: ' . $e->getMessage());
         }

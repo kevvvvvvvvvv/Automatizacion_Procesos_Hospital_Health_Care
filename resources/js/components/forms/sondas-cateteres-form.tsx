@@ -79,7 +79,6 @@ const SondasCateteresForm: React.FC<Props> = ({ hoja, estancia, sondas_cateters 
         }
     }*/
 
-    console.log(hoja);
 
     return (
         <div>

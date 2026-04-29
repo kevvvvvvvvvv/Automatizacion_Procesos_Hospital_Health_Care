@@ -939,7 +939,7 @@ export interface notasEvoluciones {
   manejo_medidas_generales: string;
   manejo_laboratorios: string;
 
-  medicamentos_agregados: HojaMedicamento[];
+  medicamentos: HojaMedicamento[];
 
   tipo_modelo:string; 
  
@@ -1000,12 +1000,11 @@ export interface NotaPostoperatoria {
     manejo_medicamentos: string;
     manejo_medidas_generales: string;
     manejo_laboratorios: string;
-
     hallazgos_importancia: string;
 
     solicitud_patologia: SolicitudPatologia;
-
     tipo_modelo:string;
+    medicamentos: HojaMedicamento[];
 
     created_at: string; 
     updated_at: string; 

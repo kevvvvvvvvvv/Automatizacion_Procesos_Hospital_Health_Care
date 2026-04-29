@@ -1,27 +1,33 @@
-import React, { useState, useMemo } from 'react';
-import { ChecklistItemData, NotaPostoperatoria, notasEvoluciones } from '@/types';
+import React, { useState } from 'react';
+import { ChecklistItemData, NotaPostoperatoria, notasEvoluciones, HojaMedicamento, HojaEnfermeria } from '@/types';
 import axios from 'axios';
 import { route } from 'ziggy-js' 
+import Swal from 'sweetalert2';
+import { router } from '@inertiajs/react';
 
-interface ChecklistSectionProps {
+
+
+interface ChecklistSectionEstructuradaProps<T> {
     title: string;
-    sectionId: string; 
-    tasks: string[]; 
-    completedTasks: Set<string>; 
-    onCheckChange: (taskId: string, isChecked: boolean) => void;
+    items: T[];
+    renderText: (item: T) => string;
+    isCompleted: (item: T) => boolean;
+    onToggle: (item: T) => void;
+    onSave?: (item: T) => void;
 }
 
-const ChecklistSection: React.FC<ChecklistSectionProps> = ({ 
+function ChecklistSectionEstructurada<T extends { id: number }>({ 
     title, 
-    sectionId, 
-    tasks, 
-    completedTasks, 
-    onCheckChange 
-}) => {
+    items, 
+    renderText, 
+    isCompleted, 
+    onToggle,
+    onSave,
+}: ChecklistSectionEstructuradaProps<T>) {
     const [isOpen, setIsOpen] = useState(false);
 
-    const completedCount = tasks.filter((_, idx) => completedTasks.has(`${sectionId}-${idx}`)).length;
-    const totalCount = tasks.length;
+    const totalCount = items.length;
+    const completedCount = items.filter(isCompleted).length;
     const isComplete = totalCount > 0 && completedCount === totalCount;
     const isEmpty = totalCount === 0;
 
@@ -31,7 +37,6 @@ const ChecklistSection: React.FC<ChecklistSectionProps> = ({
 
     return (
         <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden transition-all duration-300 hover:shadow-md">
-
             <button 
                 onClick={() => setIsOpen(!isOpen)}
                 className="w-full flex items-center justify-between p-4 bg-white hover:bg-gray-50 transition-colors text-left group"
@@ -55,7 +60,6 @@ const ChecklistSection: React.FC<ChecklistSectionProps> = ({
                     </div>
                 </div>
             </button>
-
             {isOpen && (
                 <div className="p-4 pt-0 border-t border-gray-50 animate-fadeIn">
                     {isEmpty ? (
@@ -64,33 +68,34 @@ const ChecklistSection: React.FC<ChecklistSectionProps> = ({
                         </div>
                     ) : (
                         <ul className="space-y-1 mt-2">
-                            {tasks.map((taskText, index) => {
-                                const taskId = `${sectionId}-${index}`;
-                                const isChecked = completedTasks.has(taskId);
-
+                            {items.map((item) => {
+                                const isChecked = isCompleted(item);
                                 return (
-                                    <li key={taskId}>
-                                        <label 
-                                            htmlFor={taskId} 
-                                            className={`flex items-start p-2 rounded-lg cursor-pointer transition-all duration-200 ${isChecked ? 'bg-gray-50' : 'hover:bg-blue-50'}`}
-                                        >
+                                    <li key={item.id} className="flex justify-between items-center p-2 rounded-lg transition-all duration-200 hover:bg-blue-50">
+                                        <label className={`flex items-start cursor-pointer flex-1`}>
                                             <div className="relative flex items-center mt-0.5">
                                                 <input
-                                                    id={taskId}
                                                     type="checkbox"
-                                                    className="peer h-4 w-4 cursor-pointer appearance-none rounded border border-gray-300 shadow-sm checked:border-blue-500 checked:bg-blue-500 hover:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-200 focus:ring-offset-0"
+                                                    className="peer h-4 w-4 cursor-pointer..."
                                                     checked={isChecked}
-                                                    onChange={(e) => onCheckChange(taskId, e.target.checked)}
+                                                    onChange={() => onToggle(item)}
                                                 />
-                                                <svg className="pointer-events-none absolute h-3 w-3 left-0.5 top-0.5 text-white opacity-0 peer-checked:opacity-100" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="3">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                                                </svg>
                                             </div>
-
                                             <span className={`ml-3 text-sm leading-snug transition-colors ${isChecked ? 'text-gray-400 line-through' : 'text-gray-700'}`}>
-                                                {taskText}
+                                                {renderText(item)}
                                             </span>
                                         </label>
+
+                                        {onSave && (
+                                            <button
+                                                onClick={() => onSave(item)}
+                                                className="ml-2 px-3 py-1 text-xs font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md shadow-sm transition-colors shrink-0"
+                                                title="Mandar a la hoja de enfermería"
+                                            >
+                                                + Guardar
+                                            </button>
+                                        )}
+                                        
                                     </li>
                                 );
                             })}
@@ -100,63 +105,67 @@ const ChecklistSection: React.FC<ChecklistSectionProps> = ({
             )}
         </div>
     );
-};
+}
 
 
 interface Props {
     nota: NotaPostoperatoria | notasEvoluciones |null | undefined;
+    hoja: HojaEnfermeria;
     checklistInicial?: ChecklistItemData[];
 }
 
-const parseTasksFromText = (text: string | null | undefined): string[] => {
-    if (!text || text.trim() === '') {
-        return [];
-    }
-    return text.split('\n')
-               .map(line => line.trim()) 
-               .filter(line => line.length > 0) 
-               .map(line => line.replace(/^•\s*/, '')); 
-};
+const PlanPostoperatorioChecklist: React.FC<Props> = ({ 
+    nota, 
+    hoja,
+}) => {
 
-const PlanPostoperatorioChecklist: React.FC<Props> = ({ nota, checklistInicial = [] }) => {
-
-    const [completedTasks, setCompletedTasks] = useState(() => {
-        const initialSet = new Set<string>();
-        if (checklistInicial) {
-            checklistInicial.forEach(item => {
-                initialSet.add(`${item.section_id}-${item.task_index}`);
-            });
+    const handleGuardarMedicamento = (med: HojaMedicamento) => {
+        if (!hoja?.id) {
+            return;
         }
-        return initialSet;
-    });
-    
-    const handleCheckChange = async (taskId: string, isChecked: boolean) => {
-        if(!nota) return;
-         setCompletedTasks(prev => {
-                const newSet = new Set(prev);
-                if (isChecked) {
-                    newSet.add(taskId);
-                } else {
-                    newSet.delete(taskId);
-                }
-             return newSet;
-         });
 
-         const [sectionId, indexStr] = taskId.split('-');
-         await axios.post(route('checklist.toggle'), {
-             nota_id: nota.id,
-            nota_type: nota.tipo_modelo,
-             section_id: sectionId,
-             task_index: parseInt(indexStr),
-             is_completed: isChecked
-         });
+        Swal.fire({
+            title: '¿Agregar medicamento?',
+            text: `Se registrará "${med.nombre_medicamento}" directamente en la hoja de enfermería actual.`,
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Sí, agregar a la hoja',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                router.post(route('hojasmedicamentos.store'), {
+                    medicable_id: hoja.id,
+                    medicable_type: hoja.tipo_modelo,
+                    medicamentos_agregados: [{
+                        id: med.producto_servicio_id, 
+                        nombre_medicamento: med.nombre_medicamento,
+                        dosis: med.dosis,
+                        gramaje: med.gramaje,
+                        unidad: med.unidad,
+                        via_id: med.via_administracion,
+                        duracion: med.duracion_tratamiento,
+                        inicio: '',
+                    }]
+                }, {
+                    preserveScroll: true,
+                });
+            }
+        });
     };
 
-    const dietaTasks = useMemo(() => parseTasksFromText(nota?.manejo_dieta), [nota?.manejo_dieta]);
-    const solucionesTasks = useMemo(() => parseTasksFromText(nota?.manejo_soluciones), [nota?.manejo_soluciones]);
-    const medicamentosTasks = useMemo(() => parseTasksFromText(nota?.manejo_medicamentos), [nota?.manejo_medicamentos]);
-    const medidasTasks = useMemo(() => parseTasksFromText(nota?.manejo_medidas_generales), [nota?.manejo_medidas_generales]);
-    const laboratoriosTasks = useMemo(() => parseTasksFromText(nota?.manejo_laboratorios), [nota?.manejo_laboratorios]);
+
+    const toggleMedicamento = async (id: number, currentEstado: string) => {
+        const nuevoEstado = currentEstado === 'completado' ? 'solicitado' : 'completado';
+        try {
+            await axios.patch(route('indicaciones.medicamentos.update-estado', id), {
+                estado: nuevoEstado
+            });
+        } catch (error) {
+            console.error("Error al actualizar medicamento", error);
+        }
+    };
 
     if (!nota) {
         return <div className="text-center text-gray-500">No se han cargado instrucciones.</div>;
@@ -164,7 +173,7 @@ const PlanPostoperatorioChecklist: React.FC<Props> = ({ nota, checklistInicial =
 
     return (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
-            <ChecklistSection
+{/*             <ChecklistSection
                 title="Plan de dieta"
                 sectionId="dieta"
                 tasks={dietaTasks}
@@ -178,16 +187,19 @@ const PlanPostoperatorioChecklist: React.FC<Props> = ({ nota, checklistInicial =
                 tasks={solucionesTasks}
                 completedTasks={completedTasks}
                 onCheckChange={handleCheckChange}
-            />
+            /> */}
             
-            <ChecklistSection
-                title="Plan de medicamentos"
-                sectionId="medicamentos"
-                tasks={medicamentosTasks}
-                completedTasks={completedTasks}
-                onCheckChange={handleCheckChange}
+            <ChecklistSectionEstructurada
+                title="Plan de Medicamentos"
+                items={nota.medicamentos || []} 
+                renderText={(med: HojaMedicamento) => 
+                    `${med.nombre_medicamento} - ${med.dosis}${med.gramaje} c/${med.duracion_tratamiento} hrs (${med.via_administracion})`
+                }
+                isCompleted={(med: HojaMedicamento) => med.estado === 'completado'} 
+                onToggle={(med: HojaMedicamento) => toggleMedicamento(med.id, med.estado)}
+                onSave={(med: HojaMedicamento) => handleGuardarMedicamento(med)}
             />
-
+{/* 
             <ChecklistSection
                 title="Medidas generales"
                 sectionId="medidas"
@@ -202,7 +214,7 @@ const PlanPostoperatorioChecklist: React.FC<Props> = ({ nota, checklistInicial =
                 tasks={laboratoriosTasks}
                 completedTasks={completedTasks}
                 onCheckChange={handleCheckChange}
-            />
+            /> */}
         </div>
     );
 };
