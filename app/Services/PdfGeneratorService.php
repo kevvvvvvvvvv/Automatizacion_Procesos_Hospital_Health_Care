@@ -25,6 +25,8 @@ class PdfGeneratorService
         string $fileNameBase,
         string $folio
     ) {
+        putenv('CHROME_DISABLE_CRASHPAD=true');
+
         $logoDataUri = $this->getLogoDataUri('images/Logo_HC_2.png');
         $headerData['logoDataUri'] = $logoDataUri;
         $pdf = Pdf::view($viewName, $data)
