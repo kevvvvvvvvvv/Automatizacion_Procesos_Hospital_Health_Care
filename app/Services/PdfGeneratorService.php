@@ -18,29 +18,18 @@ class PdfGeneratorService
      * @param string $folio El folio o identificador para el nombre del archivo.
      * @return \Illuminate\Http\Response
      */
-public function generateStandardPdf(
+    public function generateStandardPdf(
         string $viewName,
         array $data,
         array $headerData,
         string $fileNameBase,
         string $folio
     ) {
-        putenv('CHROME_DISABLE_CRASHPAD=true');
-
         $logoDataUri = $this->getLogoDataUri('images/Logo_HC_2.png');
         $headerData['logoDataUri'] = $logoDataUri;
-        
         $pdf = Pdf::view($viewName, $data)
             ->withBrowsershot(function (Browsershot $browsershot) {
-                $browsershot->setChromePath(env('BROWSERSHOT_CHROME_PATH', '/usr/bin/chromium'))
-                    ->noSandbox()
-                    ->addChromiumArguments([
-                        'disable-dev-shm-usage',
-                        'disable-gpu',
-                        'single-process',
-                        'disable-crash-reporter'
-                    ])
-                    ->setEnvironment(['CHROME_DISABLE_CRASHPAD' => 'true']);
+                $this->configureBrowsershot($browsershot);
             })
             ->headerView('header', $headerData) 
             ->inline($fileNameBase . '-' . $folio . '.pdf');
@@ -56,18 +45,15 @@ public function generateStandardPdf(
      */
     protected function configureBrowsershot(Browsershot $browsershot)
     {
-        $chromePath = env('BROWSERSHOT_CHROME_PATH', '/usr/bin/chromium');
-
-        $browsershot->setChromePath($chromePath)
-            ->noSandbox()
-            ->addChromiumArguments([
+        $chromePath = config('services.browsershot.chrome_path');
+        if ($chromePath) {
+            $browsershot->setChromePath($chromePath);
+            $browsershot->noSandbox();
+            $browsershot->addChromiumArguments([
                 'disable-dev-shm-usage',
                 'disable-gpu',
-                'disable-software-rasterizer',
-                'disable-setuid-sandbox',
-                'disable-crash-reporter',
-                'single-process' 
             ]);
+        }
     }
     
     /**
