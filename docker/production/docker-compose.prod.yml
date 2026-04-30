@@ -96,6 +96,7 @@ services:
     volumes:
       - /var/www/Automatizacion_Procesos_Hospital_Health_Care/docker/nginx/conf.d:/etc/nginx/conf.d
       - /var/www/Automatizacion_Procesos_Hospital_Health_Care/docker/nginx/certbot-data:/etc/letsencrypt
+      - /var/www/Automatizacion_Procesos_Hospital_Health_Care:/var/www/html
     networks:
       - hospital_network
     depends_on:
