@@ -1,48 +1,239 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Hoja de Enfermería Recién Nacido</title>
     <style>
-        @page { margin: 1cm; }
-        body { font-family: sans-serif; font-size: 9pt; line-height: 1.2; color: #333; }
-        
-        /* Encabezado Estilo Hospitalario */
-        .header { width: 100%; border-bottom: 2px solid #000; margin-bottom: 10px; padding-bottom: 5px; }
-        .header table { width: 100%; }
-        .title { text-align: center; font-weight: bold; font-size: 14pt; text-transform: uppercase; }
-        
-        /* Información General */
-        .info-section { width: 100%; margin-bottom: 15px; border: 1px solid #ccc; padding: 5px; background-color: #f9f9f9; }
-        .info-table { width: 100%; border-collapse: collapse; }
-        .info-table td { padding: 2px 5px; }
-        .label { font-weight: bold; text-transform: uppercase; font-size: 8pt; }
+        @page {
+            size: A4;
+            margin-top: 5.5cm;
+            margin-bottom: 1.5cm;
+            margin-left: 0.3cm;
+            margin-right: 0.3cm;
 
-        /* Estilo de Tablas de Datos */
-        table.data-table { width: 100%; border-collapse: collapse; margin-bottom: 15px; table-layout: fixed; }
-        table.data-table th, table.data-table td { border: 1px solid #000; padding: 3px; text-align: center; font-size: 8pt; word-wrap: break-word; }
-        table.data-table th { background-color: #e2e2e2; font-weight: bold; text-transform: uppercase; }
+            @bottom-right {
+                content: "Página " counter(page) " de " counter(pages);
+                font-family: Calibri, Arial, sans-serif;
+                font-size: 8pt;
+                color: #888;
+            }
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Calibri, Arial, sans-serif; 
+            margin: 0; 
+            font-size: 7pt; 
+            color: #333;
+            line-height: 1.4;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 16pt;
+            margin-bottom: 20px;
+        }
+
+        h3 {
+            margin-top: 15px;
+            margin-bottom: 8px;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 3px;
+            font-size: 11pt;
+            page-break-after: avoid;
+        }
+
+        h4 {
+            margin-top: 10px;
+            margin-bottom: 8px;
+            padding-bottom: 3px;
+            font-size: 7pt;
+        }
+
+        p {
+            margin: 0 0 8px 0;
+        }
+
+        .negritas {
+            font-weight: 900;
+        }
+
+        .one-line{
+            display: inline-block;
+            padding-right: 10px;
+        }
+
+        .contenedor-flex {
+            display: flex;
+            gap: 10px;
+        }
+
+        .cosa-inicio,
+        .cosa-fin {
+            flex: 1;
+        }
+
+        .section-content {
+            padding-left: 5px;
+        }
+
+        .signature-section {
+            text-align: center;
+            margin-top: 60px; 
+            page-break-inside: avoid; 
+        }
+        .signature-line {
+            border-top: 1px solid #333;
+            width: 280px; 
+            margin: 0 auto 5px auto; 
+        }
+        .signature-section p {
+            margin: 0;
+            line-height: 1.4;
+        }
+        .credentials-list {
+            font-size: 8pt; 
+            color: #555;
+            margin-top: 8px;
+        }
+
+        .texto-preformateado {
+            white-space: pre-wrap;
+            word-wrap: break-word; 
+        }
         
-        .section-title { background-color: #2c3e50; color: white; padding: 5px; font-weight: bold; margin-bottom: 5px; text-transform: uppercase; font-size: 10pt; }
+        table {
+            width: 100%;
+            border-collapse: collapse; 
+            margin-bottom: 20px;
+            font-size: 7pt;
+        }
 
-        /* Colores específicos para balance */
-        .text-green { color: green; font-weight: bold; }
-        .text-red { color: red; font-weight: bold; }
+        thead th {
+            background-color: #f0f0f0;
+            color: #222;
+            border-bottom: 2px solid #444;
+            text-align: left;
+            padding: 8px;
+            font-weight: bold;
+            font-size: 8pt;
+            text-transform: uppercase;
+        }
 
-        footer { position: fixed; bottom: 0; width: 100%; text-align: center; font-size: 7pt; border-top: 1px solid #ccc; padding-top: 5px; }
+
+        tbody td {
+            padding: 8px 6px; 
+            border-bottom: 1px solid #ddd; 
+            vertical-align: top; 
+            color: #444;
+            font-size: 7pt;
+        }
+
+        tbody tr:nth-child(even) {
+            background-color: #fcfcfc;
+        }
+
+        .empty-cell {
+            text-align: center;
+            font-style: italic;
+            color: #777;
+            padding: 20px;
+        }
+
+        .empty-data {
+            text-align: left;
+            font-style: italic;
+            color: #777;
+        }
+
+        .fecha-item {
+            display: block;
+            margin-bottom: 2px;
+            font-size: 7pt;
+        }
+
+
+        .col-fecha { width: 15%; }
+        .col-dato { width: 21%; } 
+        
+        .dato-valor {
+            font-weight: bold;
+            font-size: 7pt;
+            color: #000;
+        }
+        
+        .dato-desc {
+            display: block; 
+            font-size: 8.5pt;
+            color: #555;
+            font-style: italic;
+            margin-top: 2px;
+        }
+
+        .text-center { text-align: center; }
+        .score-valor { font-weight: bold; color: #333; }
+        .sin-dato {
+            color: #ccc;
+            font-size: 7pt; 
+        }        
+        .w-20{
+            width: 20%;
+        }
+
+        tr {
+            page-break-inside: avoid;
+        }
+
+        table td, 
+        table th {
+            padding: 2px 4px; 
+            margin: 0;
+            line-height: 1;
+            /*font-size: 8pt;*/ 
+        }
+        
+        table td p {
+            margin: 0;
+            padding: 0;
+        }
+
+        span {
+            font-size: 7pt;
+        }
+
+        .graficas-container {
+            display: table; 
+            width: 100%;
+            margin-top: 20px;
+        }
+        .grafica-item {
+            display: inline-block;
+            width: 33%; 
+            margin-bottom: 5px;
+            text-align: center;
+            vertical-align: top;
+        }
+        .grafica-img {
+            width: 100%;
+            height: auto;
+            border: 1px solid #ddd;
+            padding: 5px;
+        }
+
+        .text-gray-400{
+            text: rgb(167, 167, 167);
+
+        }
+
     </style>
 </head>
 <body>
-
-    <div class="header">
-        <table>
-            <tr>
-                <td width="20%">[LOGO HOSPITAL]</td>
-                <td width="60%" class="title">Hoja de Enfermería Recién Nacido</td>
-                <td width="20%" style="text-align: right;">Folio: {{ $hoja->id }}</td>
-            </tr>
-        </table>
-    </div>
+    <h1>Hoja de enfermería de servicio de recien nacido</h1>
 
     <div class="info-section">
         <table class="info-table">
@@ -59,7 +250,7 @@
         </table>
     </div>
 
-    <div class="section-title">Signos Vitales</div>
+    <h4>Signos Vitales</h4>
     <table class="data-table">
         <thead>
             <tr>
@@ -74,7 +265,7 @@
             </tr>
         </thead>
         <tbody>
-            @foreach($signos as $s)
+            @foreach($hoja->hojaSignos as $s)
             <tr>
                 <td>{{ \Carbon\Carbon::parse($s->fecha_hora_registro)->format('d/m H:i') }}</td>
                 <td>{{ $s->tension_arterial_sistolica }}/{{ $s->tension_arterial_diastolica }}</td>
@@ -89,7 +280,7 @@
         </tbody>
     </table>
 
-    <div class="section-title">Somatometría y Valoración Neonatal</div>
+    <h4>Somatometría y Valoración Neonatal</h4>
     <table class="data-table">
         <thead>
             <tr>
@@ -104,7 +295,7 @@
             </tr>
         </thead>
         <tbody>
-            @foreach($somatometrias as $som)
+            @foreach($hoja->somatometrias as $som)
             <tr>
                 <td>{{ \Carbon\Carbon::parse($som->created_at)->format('d/m H:i') }}</td>
                 <td>{{ $som->perimetro_cefalico }} cm</td>
@@ -119,7 +310,7 @@
         </tbody>
     </table>
 
-    <div class="section-title">Medicamentos</div>
+    <h4>Medicamentos</h4>
     <table class="data-table">
         <thead>
             <tr>
@@ -131,7 +322,7 @@
             </tr>
         </thead>
         <tbody>
-            @foreach($medicamentos as $med)
+            @foreach($hoja->hojamedicamentos as $med)
             <tr>
                 <td>{{ $med->productoServicio->nombre_prestacion }}</td>
                 <td>{{ $med->dosis }}</td>
@@ -147,35 +338,38 @@
         </tbody>
     </table>
 
-    <div class="section-title">Soluciones y Terapias IV</div>
+    <h4>Soluciones y Terapias IV</h4>
     <table class="data-table">
         <thead>
             <tr>
-                <th>Solución / Mezcla</th>
-                <th>Volumen</th>
-                <th>Goteo/Velocidad</th>
-                <th>Instalación</th>
-                <th>Observaciones</th>
+                <th style="width: 25%">Solución</th>
+                <th style="width: 25%">Cantidad (ml)</th>
+                <th style="width: 25%">Duración</th>
+                <th style="width: 25%">Flujo (ml/hora)</th>
             </tr>
         </thead>
         <tbody>
-            @foreach($terapias as $ter)
+            @foreach($hoja->hojasTerapiaIV as $terapia)
             <tr>
-                <td>
-                    @foreach($ter->detalleSoluciones as $sol)
-                        {{ $sol->solucion->nombre_prestacion }} ({{ $sol->cantidad }}ml) @if(!$loop->last) + @endif
-                    @endforeach
-                </td>
-                <td>{{ $ter->volumen_total }} ml</td>
-                <td>{{ $ter->velocidad_infusion }} ml/h</td>
-                <td>{{ \Carbon\Carbon::parse($ter->fecha_hora_instalacion)->format('d/m H:i') }}</td>
-                <td>{{ $ter->observaciones }}</td>
-            </tr>
+                        <td>
+                            {{$terapia->nombre_solucion}}
+                            @if ($terapia->medicamentos && $terapia->medicamentos->isNotEmpty())
+                                @foreach ($terapia->medicamentos as $medicamento)
+                                    <div class='text-gray-400'>
+                                        {{ $medicamento->nombre_medicamento }} | {{$medicamento->dosis }} {{ $medicamento->unidad_medida }}
+                                    </div>
+                                @endforeach
+                            @endif
+                        </td>
+                        <td>{{$terapia->cantidad}}</td>
+                        <td>{{$terapia->duracion}}</td>
+                        <td>{{$terapia->flujo_ml_hora}}</td>
+                    </tr>
             @endforeach
         </tbody>
     </table>
 
-    <div class="section-title">Control de Líquidos (Ingresos y Egresos)</div>
+    <h4>Control de Líquidos (Ingresos y Egresos)</div>
     <table class="data-table">
         <thead>
             <tr>
@@ -190,7 +384,7 @@
             </tr>
         </thead>
         <tbody>
-            @foreach($liquidos as $liq)
+            @foreach($hoja->ingresos_egresos as $liq)
             <tr>
                 <td>{{ \Carbon\Carbon::parse($liq->created_at)->format('d/m H:i') }}</td>
                 <td>{{ $liq->seno_materno ?: '-' }}</td>
@@ -207,14 +401,30 @@
         </tbody>
     </table>
 
-    <div style="margin-top: 20px;">
-        <strong>Observaciones Generales:</strong>
-        <p style="border: 1px solid #ccc; padding: 10px; min-height: 50px;">{{ $hoja->observaciones }}</p>
-    </div>
+    @if(isset($medico))
+            @php
+                $firmante = $medico->colaborador_responsable ?? $medico;
+            @endphp
 
-    <footer>
-        Impreso por: {{ Auth::user()->name }} - Fecha: {{ now()->format('d/m/Y H:i') }} - Registro generado mediante el Sistema ECE
-    </footer>
+            <div class="signature-section">
+                <div class="signature-line"></div>
+                <p style="font-size: 9pt; color: #555;">Nombre completo, cédula profesional y firma del médico</p>
+                
+                <p>
+                    {{ $firmante->nombre_completo }} 
+                </p>
 
+                @if($firmante->credenciales->isNotEmpty())
+                    <div class="credentials-list">
+                        @foreach($firmante->credenciales as $credencial)
+                            <p>
+                                <strong>Título:</strong> {{ $credencial->titulo }} | 
+                                <strong>Cédula Profesional:</strong> {{ $credencial->cedula_profesional }}
+                            </p>
+                        @endforeach
+                    </div>
+                @endif
+            </div>
+        @endif
 </body>
 </html>
