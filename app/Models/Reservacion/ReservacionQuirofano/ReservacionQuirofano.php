@@ -58,6 +58,12 @@ use App\Models\Habitacion\Habitacion;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ReservacionQuirofano whereTratante($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ReservacionQuirofano whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ReservacionQuirofano whereUserId($value)
+ * @property string $status
+ * @property string|null $motivo_cancelacion
+ * @property-read User|null $medicoOperacionRel
+ * @property-read User|null $medicoTratante
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ReservacionQuirofano whereMotivoCancelacion($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ReservacionQuirofano whereStatus($value)
  * @mixin \Eloquent
  */
 class ReservacionQuirofano extends Model

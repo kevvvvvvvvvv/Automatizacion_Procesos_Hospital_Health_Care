@@ -183,7 +183,8 @@ class FormularioHojaEnfermeriaController extends Controller implements HasMiddle
         return Redirect::route('estancias.show',$hojasenfermeria->formularioInstancia->estancia_id)->with('success', $message);
     }
 
-    private function obtenerListaTratamiento(Estancia $estancia){
+    private function obtenerListaTratamiento(Estancia $estancia)
+    {
         $notaPostoperatoria = $estancia->notasPostoperatorias()->latest()->first();
         $notaEvolucion = $estancia->notasEvoluciones()->latest()->first();
 
@@ -200,7 +201,7 @@ class FormularioHojaEnfermeriaController extends Controller implements HasMiddle
         }
 
         if ($nota) {
-            $nota->load('checklistItems');
+            $nota->load(['checklistItems', 'medicamentos.productoServicio']);
         }
         
         return $nota;

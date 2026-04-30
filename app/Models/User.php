@@ -95,6 +95,11 @@ use Illuminate\Support\Facades\Auth;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User withoutRole($roles, $guard = null)
  * @property-read \Illuminate\Database\Eloquent\Collection<int, Backups> $backups
  * @property-read int|null $backups_count
+ * @property int|null $created_by
+ * @property int|null $updated_by
+ * @property-read User|null $creator
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereCreatedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereUpdatedBy($value)
  * @mixin \Eloquent
  */
 class User extends Authenticatable 

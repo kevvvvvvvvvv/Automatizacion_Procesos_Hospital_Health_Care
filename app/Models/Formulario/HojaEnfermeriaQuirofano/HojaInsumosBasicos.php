@@ -24,6 +24,8 @@ use App\Models\Inventario\ProductoServicio;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|HojaInsumosBasicos whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|HojaInsumosBasicos whereProductoServicioId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|HojaInsumosBasicos whereUpdatedAt($value)
+ * @property string|null $nombre_insumo
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|HojaInsumosBasicos whereNombreInsumo($value)
  * @mixin \Eloquent
  */
 class HojaInsumosBasicos extends Model

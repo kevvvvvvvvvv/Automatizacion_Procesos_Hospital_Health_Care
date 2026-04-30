@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Illuminate\Database\Eloquent\Casts\Attribute;
+
 use App\Auditable;
 
 use App\Models\Venta\Venta;
@@ -73,6 +75,7 @@ use App\Models\Habitacion\Habitacion;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Estancia whereUpdatedBy($value)
  * @property string $tipo_ingreso
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Estancia whereTipoIngreso($value)
+ * @property-read mixed $tipo_modelo
  * @mixin \Eloquent
  */
 class Estancia extends Model
@@ -180,5 +183,16 @@ class Estancia extends Model
     public function Consentimiento():hasMany
     {
         return $this->hasMany(Consentimiento::class);
+    } 
+
+    protected $appends = [
+        'tipo_modelo'
+    ];
+
+    public function tipoModelo(): Attribute
+    {
+        return Attribute::make(
+            get: fn ()=>(get_class($this)),
+        );
     } 
 }

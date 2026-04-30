@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 use App\Models\Formulario\FormularioInstancia;
 use App\Models\Formulario\CheckListItem;
+use App\Models\Formulario\HojaEnfermeria\HojaMedicamento;
 
 /**
  * @property int $id
@@ -69,6 +70,7 @@ class NotaEvolucion extends Model
 {
     public const CATALOGO_ID = 12;
     protected $table = 'notas_evoluciones';
+    public $incrementing = false;
     protected $fillable = [
         'id',
         'evolucion_actualizacion',
@@ -86,7 +88,6 @@ class NotaEvolucion extends Model
         'plan_de_estudio',
         'tratamiento',
 
-        // Pronóstico
         'pronostico',
 
         'manejo_dieta',
@@ -106,10 +107,15 @@ class NotaEvolucion extends Model
         return $this->morphMany(CheckListItem::class, 'nota');
     }
 
-    protected $appends = ['model_type'];
+    protected $appends = ['tipo_modelo'];
 
-    public function getModelTypeAttribute()
+    public function getTipoModeloAttribute()
     {
         return self::class; 
+    }
+
+    public function medicamentos(): MorphMany
+    {
+        return $this->morphMany(HojaMedicamento::class, 'medicable');
     }
 }

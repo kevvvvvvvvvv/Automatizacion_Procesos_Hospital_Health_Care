@@ -26,6 +26,8 @@ use App\Models\Formulario\HojaEnfermeriaQuirofano\HojaEnfermeriaQuirofano;
 use App\Models\Formulario\LigaFutbol\LigaFutbol;
 use App\Models\Encuestas\EncuestaSatisfaccion;
 use App\Models\Encuestas\EncuestaPersonal;
+use App\Models\Formulario\Paquete\Paquete;
+use App\Models\ResumenMedico as ModelsResumenMedico;
 
 /**
  * @property int $id
@@ -68,6 +70,8 @@ use App\Models\Encuestas\EncuestaPersonal;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|FormularioInstancia whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|FormularioInstancia whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|FormularioInstancia whereUserId($value)
+ * @property-read HistoriaClinica|null $historiaclinica
+ * @property-read Paquete|null $paquete
  * @mixin \Eloquent
  */
 class FormularioInstancia extends Model
@@ -88,7 +92,7 @@ class FormularioInstancia extends Model
     }
     public function resumenMedico(): HasOne
     {
-            return $this->hasOne(ResumenMedico::class, 'id', 'id');
+            return $this->hasOne(ModelsResumenMedico::class, 'id', 'id');
     }
     public function historiaclinica(): HasOne
     {

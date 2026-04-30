@@ -42,10 +42,10 @@ const formatDateTime = (isoString: string | null) => {
 const MedicamentosForm: React.FC<Props> = ({ 
     hoja, 
     medicamentos = [], 
-    vias_administracion = []
+    vias_administracion = [],
 }) => {
     const [now, setNow] = useState(new Date());
-    const [offsetMinutes, setOffsetMinutes] = useState(0); // Nuevo: minutos para "adelantar" el reloj
+    const [offsetMinutes, setOffsetMinutes] = useState(0); 
     const viasOptions = vias_administracion.map(v=>({
         label: v.via_administracion,
         value: v.via_administracion,
@@ -216,7 +216,6 @@ const MedicamentosForm: React.FC<Props> = ({
     const handleSubmitList = (e: React.FormEvent) => {
     e.preventDefault();
 
-//console.log("Hoja Data:", hoja?.id, hoja?.tipo_modelo);
 
     if (!hoja?.id || !hoja?.tipo_modelo) {
         Swal.fire('Error', 'No se detectó la información de la hoja base.', 'error');
@@ -286,7 +285,6 @@ const MedicamentosForm: React.FC<Props> = ({
         return viasOptions; 
     };
 
-    console.log('Errores: ', errors);
 
     return (
         <div>

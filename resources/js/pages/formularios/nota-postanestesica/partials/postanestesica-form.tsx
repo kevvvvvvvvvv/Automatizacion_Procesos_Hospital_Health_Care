@@ -1,33 +1,22 @@
 import React from 'react';
-import { Head, useForm } from '@inertiajs/react';
-import { HojaEnfermeria, NotaPostanestesica, Paciente, Estancia } from '@/types';
-import { route } from 'ziggy-js';
+import { useForm } from '@inertiajs/react';
+import { NotaPostanestesica } from '@/types';
 
-// Componentes de UI
 import PrimaryButton from '@/components/ui/primary-button';
 import FormLayout from '@/components/form-layout';
-import PacienteCard from '@/components/paciente-card'; 
-import MainLayout from '@/layouts/MainLayout';
 import Generalidades from '@/components/forms/generalidades'; 
 import InputTextArea from '@/components/ui/input-text-area';
 import InputTime from '@/components/ui/input-time';
-import pacientes from '@/routes/pacientes';
-
-
 
 interface Props {
-    paciente: Paciente;
-    estancia: Estancia;
     nota?: NotaPostanestesica | null;
     onSubmit: (from: any) => void;
 }
 export const PostanestesicaForm = ({
-    paciente, 
-    estancia,
     nota,
     onSubmit,
 }: Props) =>{
-    //console.log('Datos recibidos en nota:', nota);
+
     const form = useForm({
         ta: nota?.ta || '',
         fc: nota?.fc?.toString() || '',
@@ -67,17 +56,16 @@ export const PostanestesicaForm = ({
                     </PrimaryButton>
                 }
             >
-
-                <Generalidades
-                    data={data} 
-                    setData={setData}
-                    errors={errors} 
-                />
+                    <Generalidades
+                        data={data} 
+                        setData={setData}
+                        errors={errors} 
+                    />
 
                     <InputTextArea
                         id="tecnica_anestesica"
                         label="Técnica anestésica utilizada"
-                        value={data.tecnica_anestesica} // <--- Ahora sí es reactivo
+                        value={data.tecnica_anestesica}
                         onChange={(e) => setData('tecnica_anestesica', e.target.value)}
                         rows={3}
                         error={errors.tecnica_anestesica}

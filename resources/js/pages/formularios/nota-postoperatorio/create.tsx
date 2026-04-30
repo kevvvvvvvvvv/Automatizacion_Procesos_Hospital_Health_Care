@@ -1,6 +1,6 @@
 import React,{ useState} from 'react';
 import { Head, useForm } from '@inertiajs/react';
-import { HojaEnfermeria, NotaPostoperatoria, Paciente, Estancia, User, ProductoServicio, CatalogoEstudio } from '@/types';
+import { MedicamentoAgregado,HojaEnfermeria, NotaPostoperatoria, Paciente, Estancia, User, ProductoServicio, CatalogoEstudio } from '@/types';
 import { route } from 'ziggy-js';
 import Swal from 'sweetalert2';
 
@@ -116,6 +116,21 @@ const NotaPostoperatoriaForm: NotaPostoperatoriaComponent= ({ paciente, estancia
         pieza_remitida: nota?.solicitud_patologia?.pieza_remitida || '',
         datos_clinicos: nota?.solicitud_patologia?.datos_clinicos || '',
         empresa_enviar: nota?.solicitud_patologia?.empresa_enviar || '',
+
+        medicamentos_agregados: nota?.medicamentos ? 
+            nota.medicamentos.map(med => ({
+                medicamento_id: med.producto_servicio_id.toString(),
+                nombre: med.nombre_medicamento,
+                dosis: med.dosis.toString(),
+                gramaje: med.gramaje,
+                via: med.via_administracion,
+                via_label: med.via_administracion,
+                duracion: med.duracion_tratamiento.toString(),
+                unidad: med.unidad,
+                razon_necesaria: false, 
+                temp_id: med.id.toString(), 
+            })) 
+            : [] as MedicamentoAgregado[],
     });
 
     const [localTransfusion, setLocalTransfusion] = useState({
@@ -211,7 +226,7 @@ const NotaPostoperatoriaForm: NotaPostoperatoriaComponent= ({ paciente, estancia
 
             <Head title="Crear nota postoperatoria" />
             <FormLayout
-                title='Registrar nota postoperatoria 2.2'
+                title='Registrar nota postoperatoria'
                 onSubmit={handleSubmit}
                 actions={<PrimaryButton type="submit" disabled={processing}>{processing ? 'Creando...' : 'Crear nota postoperatoria'}</PrimaryButton>}>
 
@@ -472,8 +487,8 @@ const NotaPostoperatoriaForm: NotaPostoperatoriaComponent= ({ paciente, estancia
                         </div>
                         <div>
                            <TratamientoMedicamentosForm
-                                value={data.manejo_medicamentos}
-                                onChange={value=>setData('manejo_medicamentos',value)}
+                                medicamentosAgregados={data.medicamentos_agregados}
+                                onChange={value=>setData('medicamentos_agregados',value)}
                                 medicamentos={medicamentos}
                            />
                         </div>

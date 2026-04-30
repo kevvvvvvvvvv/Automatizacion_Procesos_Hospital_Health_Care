@@ -27,7 +27,7 @@ class HojaMedicamentoRequest extends FormRequest
             'medicamentos_agregados' => 'required|array|min:1',
             'medicamentos_agregados.*.id' => 'nullable|exists:producto_servicios,id', 
             'medicamentos_agregados.*.nombre_medicamento' => 'required_without:medicamentos_agregados.*.id|nullable|string|max:255',
-            'medicamentos_agregados.*.dosis' => 'required|string|max:255',
+            'medicamentos_agregados.*.dosis' => 'required',
             'medicamentos_agregados.*.via_id' => 'nullable|string|max:255',
             'medicamentos_agregados.*.gramaje' => 'required',
             'medicamentos_agregados.*.duracion' => 'required|numeric', 

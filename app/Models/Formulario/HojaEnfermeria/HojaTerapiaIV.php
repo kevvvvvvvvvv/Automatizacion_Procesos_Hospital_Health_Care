@@ -34,6 +34,16 @@ use App\Models\Formulario\RecienNacido\RecienNacido;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|HojaTerapiaIV whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|HojaTerapiaIV whereSolucion($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|HojaTerapiaIV whereUpdatedAt($value)
+ * @property string|null $nombre_solucion
+ * @property string $terapiable_type
+ * @property int $terapiable_id
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, HojaTerapiaIVMedicamento> $medicamentos
+ * @property-read int|null $medicamentos_count
+ * @property-read RecienNacido|null $recienNacido
+ * @property-read Model|\Eloquent $terapiable
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|HojaTerapiaIV whereNombreSolucion($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|HojaTerapiaIV whereTerapiableId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|HojaTerapiaIV whereTerapiableType($value)
  * @mixin \Eloquent
  */
 class HojaTerapiaIV extends Model

@@ -587,12 +587,27 @@ export interface HojaMedicamento {
     fecha_hora_surtido_farmacia: string;
     farmaceutico_id: number;
     fecha_hora_recibido_enfermeria: srting;
+    
+    razon_necesaria?: string;
 
     nombre_medicamento: string;
 
     producto_servicio?: ProductoServicio;
     aplicaciones: AplicacionMedicamento[];
     created_at: string;
+}
+
+interface MedicamentoAgregado {
+    medicamento_id: string;
+    nombre: string;
+    dosis: string;
+    gramaje: string;
+    via: string;
+    via_label: string;
+    duracion: string;
+    unidad: string;
+    razon_necesaria: boolean;
+    temp_id: string;
 }
 
 export interface NotificationData {
@@ -916,12 +931,17 @@ export interface notasEvoluciones {
   pronostico: string;
   plan_de_estudio:string;
   tratamiento: string;
-  resultado_estudios:string;
+  resultado_relevantes:string;
+
   manejo_dieta: string;
   manejo_soluciones: string;
   manejo_medicamentos: string;
   manejo_medidas_generales: string;
   manejo_laboratorios: string;
+
+  medicamentos: HojaMedicamento[];
+
+  tipo_modelo:string; 
  
 }
   /*
@@ -980,10 +1000,12 @@ export interface NotaPostoperatoria {
     manejo_medicamentos: string;
     manejo_medidas_generales: string;
     manejo_laboratorios: string;
-
     hallazgos_importancia: string;
 
     solicitud_patologia: SolicitudPatologia;
+    tipo_modelo:string;
+    
+    medicamentos: HojaMedicamento[];
 
     created_at: string; 
     updated_at: string; 

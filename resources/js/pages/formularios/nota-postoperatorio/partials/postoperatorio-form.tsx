@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { useForm, Head } from '@inertiajs/react';
 import {
-  HojaEnfermeria,
   NotaPostoperatoria,
   Paciente,
   Estancia,
   User,
   ProductoServicio,
   CatalogoEstudio,
+  MedicamentoAgregado
 } from '@/types';
 import Swal from 'sweetalert2';
 import InputDateTime from '@/components/ui/input-date-time';
@@ -24,10 +24,6 @@ import TratamientoMedicamentosForm from '@/components/forms/tratamiento-medicame
 import TratamientoLaboratoriosForm from '@/components/forms/tratamiento-laboratorios-form';
 import EnvioPieza from '@/components/forms/envio-piezas';
 import Generalidades from '@/components/forms/generalidades';
-
-/* =========================
-   Tipos
-========================= */
 
 type Props = {
   paciente: Paciente;
@@ -127,6 +123,21 @@ export const NotaPostoperatoriaForm = ({
     pieza_remitida: nota?.solicitud_patologia?.pieza_remitida || '',
     datos_clinicos: nota?.solicitud_patologia?.datos_clinicos || '',
     empresa_enviar: nota?.solicitud_patologia?.empresa_enviar || '',
+
+    medicamentos_agregados: nota?.medicamentos ? 
+        nota.medicamentos.map(med => ({
+            medicamento_id: med.producto_servicio_id.toString(),
+            nombre: med.nombre_medicamento,
+            dosis: med.dosis.toString(),
+            gramaje: med.gramaje,
+            via: med.via_administracion,
+            via_label: med.via_administracion,
+            duracion: med.duracion_tratamiento.toString(),
+            unidad: med.unidad,
+            razon_necesaria: false, 
+            temp_id: med.id.toString(), 
+        })) 
+        : [] as MedicamentoAgregado[],
   });
   const optionsAyudantes = users.map(user => ({
     value: user.id.toString(),
@@ -477,8 +488,8 @@ export const NotaPostoperatoriaForm = ({
                         </div>
                         <div>
                            <TratamientoMedicamentosForm
-                                value={data.manejo_medicamentos}
-                                onChange={value=>setData('manejo_medicamentos',value)}
+                                medicamentosAgregados={data.medicamentos_agregados}
+                                onChange={value=>setData('medicamentos_agregados',value )}
                                 medicamentos={medicamentos}
                            />
                         </div>
