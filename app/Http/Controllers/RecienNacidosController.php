@@ -208,20 +208,21 @@ class RecienNacidosController extends Controller
         $reciennacido = $this->getRelaciones($reciennacido);
 
         $headerData = [
-            'hoja' => $reciennacido,
+            'historiaclinica' => $reciennacido,
             'paciente' => $reciennacido->formularioInstancia->estancia->paciente,
             'estancia' => $reciennacido->formularioInstancia->estancia
         ];
 
         $viewData = [
-            'notaData'=> $reciennacido,
+            'hoja'=> $reciennacido,
             'medico'=> $reciennacido->formularioInstancia->user,
+            'paciente' => $reciennacido->formularioInstancia->estancia->paciente
         ];
 
         return $this->pdfGenerator->generateStandardPdf(
             'pdfs.hoja-enfermeria-recien-nacido',
             $viewData,
-            //$headerData,
+            $headerData,
             'hoja-enfermeria-recien-nacido',
             $reciennacido->formularioInstancia->estancia->id
         );
