@@ -18,7 +18,7 @@ class PdfGeneratorService
      * @param string $folio El folio o identificador para el nombre del archivo.
      * @return \Illuminate\Http\Response
      */
-    public function generateStandardPdf(
+public function generateStandardPdf(
         string $viewName,
         array $data,
         array $headerData,
@@ -29,9 +29,18 @@ class PdfGeneratorService
 
         $logoDataUri = $this->getLogoDataUri('images/Logo_HC_2.png');
         $headerData['logoDataUri'] = $logoDataUri;
+        
         $pdf = Pdf::view($viewName, $data)
             ->withBrowsershot(function (Browsershot $browsershot) {
-                $this->configureBrowsershot($browsershot);
+                $browsershot->setChromePath(env('BROWSERSHOT_CHROME_PATH', '/usr/bin/chromium'))
+                    ->noSandbox()
+                    ->addChromiumArguments([
+                        'disable-dev-shm-usage',
+                        'disable-gpu',
+                        'single-process',
+                        'disable-crash-reporter'
+                    ])
+                    ->setEnvironment(['CHROME_DISABLE_CRASHPAD' => 'true']);
             })
             ->headerView('header', $headerData) 
             ->inline($fileNameBase . '-' . $folio . '.pdf');
