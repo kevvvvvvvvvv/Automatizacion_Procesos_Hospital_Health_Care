@@ -508,7 +508,7 @@ export interface HojaInsumosBasicos {
 
 export interface HojaTerapiaIV {
     id: number;
-    terapiable_id: number;   // Cambiado para ser polimórfico
+    terapiable_id: number;   
     terapiable_type: string;
     solucion: ProductoServicio;
     nombre_solucion: string;
@@ -521,6 +521,18 @@ export interface HojaTerapiaIV {
 
     medicamentos: HojaTerapiaIVMedicamento[];
     detalle_soluciones: ProductoServicio;
+}
+
+export interface TerapiaIVAgregado{
+    solucion_id: string;
+    nombre_solucion: string;
+    duracion: number;
+    cantidad: number;
+    flujo: number;
+    fecha_hora_inicio: string;
+    medicamentos: TerapiaIVMedicamentoAgregado[];
+    es_manual: boolean;
+    temp_id: string; 
 }
 
 export interface HojaEscalaValoracion {
@@ -940,6 +952,7 @@ export interface notasEvoluciones {
   manejo_laboratorios: string;
 
   medicamentos: HojaMedicamento[];
+  soluciones: HojaTerapiaIV[];
 
   tipo_modelo:string; 
  
@@ -1006,6 +1019,7 @@ export interface NotaPostoperatoria {
     tipo_modelo:string;
     
     medicamentos: HojaMedicamento[];
+    soluciones: HojaTerapiaIV[];
 
     created_at: string; 
     updated_at: string; 
@@ -1297,6 +1311,17 @@ export interface HojaTerapiaIVMedicamento{
     created_at: string;
     updated_at: string;
 }
+
+export interface TerapiaIVMedicamentoAgregado{
+    id: string;
+    producto_servicio_id: number;
+    nombre_medicamento: string;
+    dosis: number;
+    unidad_medida: string;
+    es_manual: boolean;
+    temp_id:string;
+}
+
 export interface ResumenMedico{
     id: number;
     resumen_medico: string;

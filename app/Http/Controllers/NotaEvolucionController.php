@@ -62,6 +62,8 @@ class NotaEvolucionController extends Controller implements HasMiddleware
     {
         $validateData = $request->validated();
 
+        dd($request->toArray());
+
         DB::beginTransaction();
         try {
             $formularioInstancia = FormularioInstancia::create([
@@ -77,6 +79,7 @@ class NotaEvolucionController extends Controller implements HasMiddleware
             ]);
 
             $medicamentos = $request->input('medicamentos_agregados', []);
+            $soluciones = $request->input('soluciones_agregados', []);
             
             $medicamentoService->registrarMedicamentos($notaEvolucion, $medicamentos);
 
