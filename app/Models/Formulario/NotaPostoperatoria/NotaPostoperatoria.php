@@ -173,7 +173,7 @@ class NotaPostoperatoria extends Model
 
     protected $appends = ['tipo_modelo'];
 
-    public function getModelTypeAttribute()
+    public function getTipoModeloAttribute()
     {
         return self::class; 
     }

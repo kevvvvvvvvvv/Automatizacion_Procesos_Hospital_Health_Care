@@ -70,6 +70,7 @@ class NotaEvolucion extends Model
 {
     public const CATALOGO_ID = 12;
     protected $table = 'notas_evoluciones';
+    public $incrementing = false;
     protected $fillable = [
         'id',
         'evolucion_actualizacion',
@@ -87,7 +88,6 @@ class NotaEvolucion extends Model
         'plan_de_estudio',
         'tratamiento',
 
-        // Pronóstico
         'pronostico',
 
         'manejo_dieta',

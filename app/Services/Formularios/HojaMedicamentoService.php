@@ -42,7 +42,24 @@ class HojaMedicamentoService
             if ($nuevoMedicamento->producto_servicio_id) {
                 $nuevoMedicamento->load('productoServicio');
             }
+            $textoActual = $this->construirTextoMedicamentos(
+                $nombre,
+                $med['gramaje'],
+                $med['dosis'],
+                $med['unidad'],
+                $via,
+                $med['duracion']
+            );
+
+            if (!empty($textoActual)) {
+                $textosMedicamentos[] = "• " . $textoActual;
+            }
         }
+        $textoManejoMedicamentos = implode("\n", $textosMedicamentos);
+
+        $parent->update([
+            'manejo_medicamentos' => $textoManejoMedicamentos
+        ]);
     }
 
     /**
@@ -67,5 +84,28 @@ class HojaMedicamentoService
         if (!empty($medicamentosNuevos)) {
             $this->registrarMedicamentos($parent, $medicamentosNuevos);
         }
+    }
+
+
+    private function construirTextoMedicamentos(
+        string $nombre_medicamento,
+        string $gramaje,
+        string $dosis,
+        string $unidad,
+        string $via,
+        string $duracion
+    ): string {
+
+        $texto = sprintf(
+            "%s%s - Tomar %s %s vía %s%s.",
+            $nombre_medicamento,
+            $gramaje,
+            $dosis,
+            $unidad,
+            $via,
+            $duracion
+        );
+
+        return trim(preg_replace('/\s+/', ' ', $texto));
     }
 }

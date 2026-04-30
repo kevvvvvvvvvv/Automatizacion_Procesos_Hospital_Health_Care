@@ -1004,6 +1004,7 @@ export interface NotaPostoperatoria {
 
     solicitud_patologia: SolicitudPatologia;
     tipo_modelo:string;
+    
     medicamentos: HojaMedicamento[];
 
     created_at: string; 

@@ -11,7 +11,6 @@ import TratamientoSolucionesForm from '@/components/forms/tratamiento-soluciones
 import TratamientoMedicamentosForm from '@/components/forms/tratamiento-medicamentos-form';
 import TratamientoLaboratoriosForm from '@/components/forms/tratamiento-laboratorios-form';
 import TratamientoMedidasGeneralesForm from '@/components/forms/tratamiento-medidas-generales-form';
-import MedicamentosForm from '@/components/forms/medicamentos-form';
 
 type Props = {
   paciente: Paciente;
