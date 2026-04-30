@@ -45,18 +45,18 @@ class PdfGeneratorService
      */
     protected function configureBrowsershot(Browsershot $browsershot)
     {
-        $chromePath = config('services.browsershot.chrome_path');
-        if ($chromePath) {
-            $browsershot->setChromePath($chromePath);
-            $browsershot->noSandbox();
-            $browsershot->addChromiumArguments([
+        $chromePath = env('BROWSERSHOT_CHROME_PATH', '/usr/bin/chromium');
+
+        $browsershot->setChromePath($chromePath)
+            ->noSandbox()
+            ->addChromiumArguments([
                 'disable-dev-shm-usage',
                 'disable-gpu',
                 'disable-software-rasterizer',
                 'disable-setuid-sandbox',
-                'disable-crash-reporter'
+                'disable-crash-reporter',
+                'single-process' 
             ]);
-        }
     }
     
     /**
