@@ -52,6 +52,8 @@ class PdfGeneratorService
             $browsershot->addChromiumArguments([
                 'disable-dev-shm-usage',
                 'disable-gpu',
+                'disable-crash-reporter',
+                'crash-dumps-dir=/tmp'
             ]);
         }
     }
