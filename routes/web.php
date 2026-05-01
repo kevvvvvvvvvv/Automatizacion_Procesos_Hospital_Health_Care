@@ -53,7 +53,7 @@ use App\Http\Controllers\FormularioHojaHabitusExteriorController;
 use App\Http\Controllers\FormularioHojaRiesgoCaidaController;
 use App\Http\Controllers\HojaControlLiquidoController;
 use App\Http\Controllers\HojaEscalaValoracionController;
-
+use App\Http\Controllers\CirugiaSeguraController;
 use App\Http\Controllers\Caja\CajaController;
 use App\Http\Controllers\Caja\ContaduriaController;
 use App\Http\Controllers\Caja\TraspasoController;
@@ -184,6 +184,7 @@ Route::resource('pacientes.estancias.notasevoluciones', NotaEvolucionController:
 Route::resource('pacientes.estancias.notaspreanestesicas', NotaPreAnestesicaController::class)->shallow()->middleware('auth');
 Route::resource('pacientes.estancias.hojasenfermeriasquirofanos',HojaEnfermeriaQuirofanoController::class)->shallow()->middleware('auth');
 Route::put('/hojasenfermeriasquirofanos/{hojasenfermeriaquirofanos}/cerrraHoja',[HojaEnfermeriaQuirofanoController::class, 'cerrarHoja'])->name('hojasenfermeriasquirofanos.cerrarHoja')->middleware('auth');
+Route::resource('pacientes.estancias.cirugiasegura', CirugiaSeguraController::class)->shallow()->middleware('auth');
 
 Route::resource('paciente.estancias.resumenmedico', ResumenMedicoController::class)->shallow()->middleware('auth');
 Route::resource('pacientes.estancias.consentimientos', ConsentimientoController::class)->shallow()->middleware('auth');
