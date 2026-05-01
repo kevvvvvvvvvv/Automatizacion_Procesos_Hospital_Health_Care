@@ -45,7 +45,8 @@ class PdfGeneratorService
      */
     protected function configureBrowsershot(Browsershot $browsershot)
     {
-        $chromePath = config('services.browsershot.chrome_path');
+        $chromePath = config('services.browsershot.chrome_path') 
+                  ?? '/root/.cache/puppeteer/chrome-headless-shell/linux-147.0.7727.57/chrome-headless-shell-linux64/chrome-headless-shell';
         if ($chromePath) {
             $browsershot->setChromePath($chromePath);
             $browsershot->noSandbox();
