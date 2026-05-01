@@ -54,7 +54,8 @@ class PdfGeneratorService
                 'disable-gpu',
                 'disable-crash-reporter',
                 'crash-dumps-dir=/tmp'
-            ]);
+            ])
+            ->setEnvironment(['CHROME_DISABLE_CRASHPAD' => 'true']);
         }
     }
     
