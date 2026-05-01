@@ -43,6 +43,7 @@ class FormularioCatalogo extends Model
     public const ID_RESUMEN_MEDICO = 18;
     public const ID_PAQUETES = 19;
     public const ID_ENFERMERIA_RN = 20;
+    public const ID_CIRIGIA_SEGURA = 21;
 
     public $incrementing = false; 
     protected $keyType = 'int';
