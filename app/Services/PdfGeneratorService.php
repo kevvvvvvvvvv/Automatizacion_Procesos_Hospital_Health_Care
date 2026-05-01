@@ -50,12 +50,18 @@ class PdfGeneratorService
             $browsershot->setChromePath($chromePath);
             $browsershot->noSandbox();
             $browsershot->addChromiumArguments([
-                'disable-dev-shm-usage',
-                'disable-gpu',
-                'disable-crash-reporter',
-                'crash-dumps-dir=/tmp'
-            ])
-            ->setEnvironment(['CHROME_DISABLE_CRASHPAD' => 'true']);
+            'disable-dev-shm-usage',
+            'disable-gpu',
+            'disable-crash-reporter', 
+            'disable-software-rasterizer',
+            'single-process',
+            'no-zygote',
+        ])
+        ->setEnvironment([
+            'HOME' => '/tmp',
+            'XDG_CONFIG_HOME' => '/tmp',
+            'XDG_CACHE_HOME' => '/tmp',
+        ]);
         }
     }
     
