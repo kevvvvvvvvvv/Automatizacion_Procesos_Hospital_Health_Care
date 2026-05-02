@@ -9,7 +9,7 @@ use Redirect;
 use App\Models\Formulario\FormularioCatalogo;
 use App\Models\Formulario\FormularioInstancia;
 use App\Models\Formulario\CirugiaSegura\CirugiaSegura;
-use Illuminate\Http\Requests\CirugiaSeguraRequest;
+use App\Http\Requests\CirugiaSeguraRequest;
 use App\Models\Paciente;
 use App\Models\Estancia;
 use Inertia\Inertia;
@@ -24,7 +24,9 @@ class CirugiaSeguraController extends Controller
     }
     public function store(CirugiaSeguraRequest $request, Paciente $paciente, Estancia $estancia )
     {
+        dd($request);
         $validateData = $request->validated();
+        dd($request->all());
         DB::beginTransaction();
         try {
             $formularioinstancia = FormularioInstancia::create ([
