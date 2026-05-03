@@ -35,6 +35,10 @@ const Index = ({ pacientes }: IndexProps) => {
     const columns = useMemo<ColumnDef<Paciente>[]>(
         () => [
             {
+                accessorKey: 'id',
+                header: 'ID',
+            },
+            {
                 accessorKey: 'curp',
                 header: 'CURP',
             },

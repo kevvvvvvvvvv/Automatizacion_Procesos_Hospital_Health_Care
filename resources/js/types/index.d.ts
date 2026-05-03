@@ -1628,3 +1628,34 @@ export interface EgresoLiquido {
 
     created_at: string;
 }
+export interface CirugiaSegura{
+id: number; 
+servicio_procedencia: string;
+cirugia_programada: string;
+cirugia_realizada: string;
+grupo_rh:string;
+confirmar_indentidad: boolean;
+sitio_quirurgico: boolean;
+funcionamiento_aparatos: boolean;
+oximetro: boolean;
+alergias: string;
+via_aerea: boolean;
+riesgo_hemorragia: boolean;
+hemoderivados:boolean;
+profilaxis: boolean;
+miembros_equipo: boolean;
+indentidad_paciente: boolean;
+pasos_criticos: string;
+tiempo_aproximado: number | string;
+perdida_sanguinea: number | string;
+revision_anestesiologo: boolean;
+esterilizacion: boolean;
+dudas_problemas: boolean;
+imagenes_diagnosticas: boolean;
+nombre_procedimiento: boolean;
+recuento_instrumentos: boolean
+faltantes: boolean;
+observaciones : string;
+etiquetado_muestras: boolean;
+aspectos_criticos: string;
+}

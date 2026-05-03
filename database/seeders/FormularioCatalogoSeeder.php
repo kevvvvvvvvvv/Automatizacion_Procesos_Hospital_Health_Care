@@ -145,5 +145,11 @@ class FormularioCatalogoSeeder extends Seeder
             'nombre_tabla_fisica' => 'recien_nacidos',
             'route_prefix' => 'reciennacido',
         ]);
+        FormularioCatalogo::create([
+            'id' => 21,
+            'nombre_formulario' => 'Verificación de cirugía segura',
+            'nombre_tabla_fisica' => 'cirugia_seguras',
+            'route_prefix' => 'cirugiasegura'
+        ]);
     }
 }
