@@ -22,6 +22,11 @@ RUN apt-get update && apt-get install -y \
 
 RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip
 
+RUN npx puppeteer browsers install chrome-headless-shell && \
+    mkdir -p /usr/local/share/chrome-php && \
+    cp -r /root/.cache/puppeteer/chrome-headless-shell/linux-*/chrome-headless-shell-linux64/* /usr/local/share/chrome-php/ && \
+    chmod -R 777 /usr/local/share/chrome-php
+
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www/html
