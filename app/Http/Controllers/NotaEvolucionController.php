@@ -12,6 +12,7 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
 use App\Services\Formularios\HojaMedicamentoService; 
+use App\Services\Formularios\HojaSolucionService;
 
 use App\Models\Formulario\NotaEvolucion\NotaEvolucion;  
 use App\Models\Paciente;
@@ -58,11 +59,15 @@ class NotaEvolucionController extends Controller implements HasMiddleware
         ]);
     }
 
-    public function store(NotaEvolucionRequest $request, Paciente $paciente, Estancia $estancia, HojaMedicamentoService $medicamentoService)
+    public function store(
+        NotaEvolucionRequest $request, 
+        Paciente $paciente, 
+        Estancia $estancia, 
+        HojaMedicamentoService $medicamentoService,
+        HojaSolucionService $solucionSevice)
     {
         $validateData = $request->validated();
 
-        dd($request->toArray());
 
         DB::beginTransaction();
         try {
@@ -79,9 +84,10 @@ class NotaEvolucionController extends Controller implements HasMiddleware
             ]);
 
             $medicamentos = $request->input('medicamentos_agregados', []);
-            $soluciones = $request->input('soluciones_agregados', []);
+            $soluciones = $request->input('soluciones_agregadas', []);
             
             $medicamentoService->registrarMedicamentos($notaEvolucion, $medicamentos);
+            $solucionSevice->registrarSoluciones($notaEvolucion,$soluciones);
 
             DB::commit();
 
@@ -138,15 +144,19 @@ class NotaEvolucionController extends Controller implements HasMiddleware
         Paciente $paciente, 
         Estancia $estancia, 
         NotaEvolucion $notasevolucione,
-        HojaMedicamentoService $medicamentoService)
+        HojaMedicamentoService $medicamentoService,
+        HojaSolucionService $solucionService)
     {
 
         $validateData = $request->validated();
         $notasevolucione->update($validateData);
 
         $medicamentosRequest = $request->input('medicamentos_agregados', []);
+        $solucionesRequest = $request->input('soluciones_agregados', []);
+
         $medicamentoService->sincronizarMedicamentos($notasevolucione, $medicamentosRequest);
-        
+        $solucionService->sincronizarSoluciones($notasevolucione,$solucionesRequest);        
+
         return redirect()->route('notasevoluciones.show', [
             'paciente' => $paciente->id,
             'estancia' => $estancia->id,
