@@ -15,7 +15,7 @@ import CardButton from '@/components/ui/card-button';
 import {PageProps} from '@/types';
 
 export default function Dashboard() {
-    const { can } = usePermission();
+    const { can, hasRole } = usePermission();
     const { auth } = usePage<PageProps>().props;
     
     if (!("Notification" in window)) {
@@ -152,25 +152,30 @@ export default function Dashboard() {
                     )}
                     
                 </div>
+                {hasRole('caja') && (
+                    <div>
+                    {can('consultar caja') && (
+                        <CardButton
+                            icon={FaCashRegister}
+                            text="Caja"
+                            onClick={() => router.visit(route('caja.index'))}
+                        />
+                    )} 
+                    </div>
+                )}
 
-                <div>
-                   {can('consultar caja') && (
-                    <CardButton
-                        icon={FaCashRegister}
-                        text="Caja"
-                        onClick={() => router.visit(route('caja.index'))}
-                    />
-                   )} 
-                </div>
-                <div>
-                   {can('consultar contaduria') && (
-                    <CardButton
-                        icon={FaCashRegister}
-                        text="Contaduría"
-                        onClick={() => router.visit(route('contaduria.index'))}
-                    />
-                   )} 
-                </div>
+                {hasRole('contador') && (
+                    <div>
+                    {can('consultar contaduria') && (
+                        <CardButton
+                            icon={FaCashRegister}
+                            text="Contaduría"
+                            onClick={() => router.visit(route('contaduria.index'))}
+                        />
+                    )} 
+                    </div>
+                )}
+                
                 <div>
                     {can('consultar fondos') && (
                     <CardButton
