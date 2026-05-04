@@ -122,6 +122,7 @@ class NotaEvolucionController extends Controller implements HasMiddleware
             'formularioInstancia.estancia.paciente',
             'formularioInstancia.user',
             'medicamentos',
+            'soluciones',
         ]);
 
         $soluciones = ProductoServicio::where('tipo','INSUMOS')->get();

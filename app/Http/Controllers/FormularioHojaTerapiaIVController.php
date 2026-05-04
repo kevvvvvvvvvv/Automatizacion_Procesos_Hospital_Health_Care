@@ -21,7 +21,7 @@ class FormularioHojaTerapiaIVController extends Controller
    public function store(TerapiaIVRequest $request)
     {
         $validatedData = $request->validated();
-        
+
         $modelType = $request->input('terapiable_type');
         $modelId = $request->input('terapiable_id');
 
@@ -59,8 +59,8 @@ class FormularioHojaTerapiaIVController extends Controller
             return Redirect::back()->with('success', 'Terapias y medicamentos guardados exitosamente.');
 
         } catch (\Exception $e) {
-            \Log::error('Error al guardar Terapia IV: ' . $e->getMessage());
-            return redirect()->back()->with('error', 'Error: ' . $e->getMessage());;
+            \Log::error('Error al guardar terapia IV: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Error al registrar la terapia IV.');;
         }
     }
 
@@ -118,8 +118,8 @@ class FormularioHojaTerapiaIVController extends Controller
 
         } catch (\Exception $e) {
             DB::rollBack();
-            \Log::error('Error update Terapia IV: ' . $e->getMessage());
-            return Redirect::back()->with('error', 'Error al procesar.');
+            \Log::error('Error al actualizar la terapia IV: ' . $e->getMessage());
+            return Redirect::back()->with('error', 'Error al actualizar la terapia IV.');
         }
     }
 }
