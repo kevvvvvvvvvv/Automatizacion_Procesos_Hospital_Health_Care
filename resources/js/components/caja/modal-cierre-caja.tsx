@@ -20,7 +20,7 @@ const ModalCierreCaja = ({
 }: Props) => {
     const { data, setData, post, processing, errors } = useForm({
         monto_declarado: '',
-        monto_enviado_contaduria: '',
+        monto_enviado_contaduria: '0',
     });
 
     const [montoRestante, setMontoRestante] = useState(0);
@@ -98,15 +98,16 @@ const ModalCierreCaja = ({
                         onValueChange={(e) => setData('monto_declarado',e ?? '')}
                         error={errors.monto_declarado}
                     />
-
-                    <MoneyInput
-                        id=''
-                        name=''
-                        label='Monto a enviar a contaduría'
-                        value={data.monto_enviado_contaduria}
-                        onValueChange={e => setData('monto_enviado_contaduria', e ?? '')}
-                        error={errors.monto_enviado_contaduria}
-                    />
+                    {fondo && ( 
+                        <MoneyInput
+                            id=''
+                            name=''
+                            label='Monto a enviar a contaduría'
+                            value={data.monto_enviado_contaduria}
+                            onValueChange={e => setData('monto_enviado_contaduria', e ?? '')}
+                            error={errors.monto_enviado_contaduria}
+                        />
+                    )}
 
                     <div className="mt-8 flex justify-end space-x-3">
                         <PrimaryButton
