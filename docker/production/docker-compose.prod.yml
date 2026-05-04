@@ -6,7 +6,7 @@ services:
     restart: always
     environment:
       - TZ=America/Mexico_City
-      - MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
     volumes:
       - mysql_data:/var/lib/mysql
     networks:
