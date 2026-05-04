@@ -356,6 +356,9 @@ class RoleAndPermissionSeeder extends Seeder
 
         $roleContador->syncPermissions([
             'consultar pacientes',
+
+            'consultar colaboradores',
+
             'consultar estancias',
             
             'consultar ventas',
