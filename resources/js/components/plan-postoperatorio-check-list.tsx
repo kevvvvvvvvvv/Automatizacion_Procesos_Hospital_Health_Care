@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ChecklistItemData, NotaPostoperatoria, notasEvoluciones, HojaMedicamento, HojaEnfermeria } from '@/types';
+import { ChecklistItemData, NotaPostoperatoria, notasEvoluciones, HojaMedicamento, HojaEnfermeria, HojaTerapiaIV } from '@/types';
 import axios from 'axios';
 import { route } from 'ziggy-js' 
 import Swal from 'sweetalert2';
@@ -179,18 +179,18 @@ const PlanPostoperatorioChecklist: React.FC<Props> = ({
                 tasks={dietaTasks}
                 completedTasks={completedTasks}
                 onCheckChange={handleCheckChange}
-            />
-            
-            <ChecklistSection
-                title="Plan de soluciones"
-                sectionId="soluciones"
-                tasks={solucionesTasks}
-                completedTasks={completedTasks}
-                onCheckChange={handleCheckChange}
-            /> */}
+            />*/}
             
             <ChecklistSectionEstructurada
-                title="Plan de Medicamentos"
+                title="Plan de soluciones"
+                items={nota.soluciones || []}
+                renderText={(sol: HojaTerapiaIV) =>
+                    `${sol.nombre_solucion} - ${sol.flujo_ml_hora} ml/hr ${sol.}`
+                }
+            /> 
+            
+            <ChecklistSectionEstructurada
+                title="Plan de medicamentos"
                 items={nota.medicamentos || []} 
                 renderText={(med: HojaMedicamento) => 
                     `${med.nombre_medicamento} - ${med.dosis}${med.gramaje} c/${med.duracion_tratamiento} hrs (${med.via_administracion})`
