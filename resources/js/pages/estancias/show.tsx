@@ -228,7 +228,7 @@ const Show = ({ estancia, historiaclinica }: ShowEstanciaProps) => {
                                                 </Link>
                                             )}
                                         </Menu.Item>{/**/}
-                                        {/*<Menu.Item> 
+                                        <Menu.Item> 
                                             {({ active }) => (
                                                 <Link
                                                     href={route('pacientes.estancias.cirugiasegura.create', { paciente: paciente.id, estancia: estancia.id })}
@@ -239,7 +239,7 @@ const Show = ({ estancia, historiaclinica }: ShowEstanciaProps) => {
                                                     Añadir lista de verificación de cirugía segura
                                                 </Link>
                                             )}
-                                        </Menu.Item>*/}
+                                        </Menu.Item>{/**/}
                                     </>
                                     )}
                                     <Menu.Item>

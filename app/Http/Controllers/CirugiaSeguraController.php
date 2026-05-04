@@ -9,7 +9,7 @@ use Redirect;
 use App\Models\Formulario\FormularioCatalogo;
 use App\Models\Formulario\FormularioInstancia;
 use App\Models\Formulario\CirugiaSegura\CirugiaSegura;
-use Illuminate\Http\Requests\CirugiaSeguraRequest;
+use App\Http\Requests\CirugiaSeguraRequest;
 use App\Models\Paciente;
 use App\Models\Estancia;
 use Inertia\Inertia;
