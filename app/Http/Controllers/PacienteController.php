@@ -33,7 +33,7 @@ class PacienteController extends Controller implements HasMiddleware
 
     public function index()
     {
-        $pacientes = Paciente::all();
+        $pacientes = Paciente::orderBy('id', 'desc')->get();
         return Inertia::render('pacientes/index', ['pacientes' => $pacientes]);
     }
 

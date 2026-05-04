@@ -33,6 +33,10 @@ const DoctorIndex = ({doctores} : Props) => {
   const columns = useMemo<ColumnDef<User>[]>(
     () => [
       {
+        accessorKey: 'id',
+        header: 'ID',
+      },
+      {
         accessorKey: 'nombre_completo',
         header: 'Nombre Completo',
       },

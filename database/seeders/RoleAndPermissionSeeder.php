@@ -309,6 +309,10 @@ class RoleAndPermissionSeeder extends Seeder
             'eliminar solicitudes estudios',
             
             'consultar habitaciones',
+
+            'consultar productos y servicios',
+            'crear productos y servicios',
+            'editar productos y servicios',
         ]);
 
         $roleQuimico->syncPermissions([
