@@ -185,3 +185,4 @@ class NotaEvolucionController extends Controller implements HasMiddleware
 
     }
 }
+
