@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ChecklistItemData, NotaPostoperatoria, notasEvoluciones, HojaMedicamento, HojaEnfermeria } from '@/types';
+import { ChecklistItemData, NotaPostoperatoria, notasEvoluciones, HojaMedicamento, HojaEnfermeria, HojaTerapiaIV } from '@/types';
 import axios from 'axios';
 import { route } from 'ziggy-js' 
 import Swal from 'sweetalert2';
@@ -155,6 +155,51 @@ const PlanPostoperatorioChecklist: React.FC<Props> = ({
         });
     };
 
+    const handleGuardarSolucion = (sol: HojaTerapiaIV) => {
+        if (!hoja?.id) {
+            return;
+        }
+
+        Swal.fire({
+            title: '¿Agregar solución?',
+            text: `Se registrará "${sol.nombre_solucion}" directamente en la hoja de enfermería actual.`,
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Sí, agregar a la hoja',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                const medicamentosFormateados = sol.medicamentos?.map(med => ({
+                    es_manual: med.producto_servicio_id ? false : true,
+                    id: med.id, 
+                    nombre: med.nombre_medicamento,
+                    dosis: med.dosis,
+                    unidad: med.unidad_medida,
+                })) || [];
+
+                router.post(route('hojasterapiasiv.store'), {
+                    terapiable_id: hoja.id,
+                    terapiable_type: hoja.tipo_modelo,
+                    terapias_agregadas: [
+                        {
+                            es_manual: sol.detalle_soluciones.id ? false : true,
+                            solucion_id: sol.detalle_soluciones.id ?? null,
+                            nombre_solucion: sol.nombre_solucion,
+                            cantidad: sol.cantidad,
+                            duracion: sol.duracion,
+                            flujo: sol.flujo_ml_hora,
+                            medicamentos: medicamentosFormateados
+                        }
+                    ]
+                }, {
+                    preserveScroll: true,
+                });
+            }
+        });
+    };
+
 
     const toggleMedicamento = async (id: number, currentEstado: string) => {
         const nuevoEstado = currentEstado === 'completado' ? 'solicitado' : 'completado';
@@ -179,18 +224,25 @@ const PlanPostoperatorioChecklist: React.FC<Props> = ({
                 tasks={dietaTasks}
                 completedTasks={completedTasks}
                 onCheckChange={handleCheckChange}
-            />
-            
-            <ChecklistSection
-                title="Plan de soluciones"
-                sectionId="soluciones"
-                tasks={solucionesTasks}
-                completedTasks={completedTasks}
-                onCheckChange={handleCheckChange}
-            /> */}
+            />*/}
             
             <ChecklistSectionEstructurada
-                title="Plan de Medicamentos"
+                title="Plan de soluciones"
+                items={nota.soluciones || []}
+                renderText={(sol: HojaTerapiaIV) => {
+                    const listaMedicamentos = sol.medicamentos
+                        ?.map(med => `  • ${med.nombre_medicamento}`)
+                        .join('\n') || '';
+
+                    return `${sol.nombre_solucion} - ${sol.flujo_ml_hora} ml/hr\n${listaMedicamentos}`;
+                }}
+                isCompleted={(sol: HojaTerapiaIV) => false}
+                onToggle={(sol: HojaTerapiaIV) => toggleSolucion(sol.id)}
+                onSave={(sol: HojaTerapiaIV) => handleGuardarSolucion(sol)}
+            /> 
+            
+            <ChecklistSectionEstructurada
+                title="Plan de medicamentos"
                 items={nota.medicamentos || []} 
                 renderText={(med: HojaMedicamento) => 
                     `${med.nombre_medicamento} - ${med.dosis}${med.gramaje} c/${med.duracion_tratamiento} hrs (${med.via_administracion})`

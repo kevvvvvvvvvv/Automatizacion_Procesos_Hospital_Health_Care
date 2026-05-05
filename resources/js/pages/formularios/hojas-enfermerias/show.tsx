@@ -125,10 +125,9 @@ const Show = ({
             <InfoCard
                 title={`Hoja de enfermería en hospitalización de: ${hoja.formulario_instancia.estancia.paciente.nombre_completo}`}
             >
-                Hola
-
-
+                {hoja.observaciones}
             </InfoCard>
+
             <NavigationTabs/>
             <div className='mt-4'>
                 {renderActiveSection()}

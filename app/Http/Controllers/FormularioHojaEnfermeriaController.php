@@ -201,7 +201,7 @@ class FormularioHojaEnfermeriaController extends Controller implements HasMiddle
         }
 
         if ($nota) {
-            $nota->load(['checklistItems', 'medicamentos.productoServicio']);
+            $nota->load(['checklistItems', 'medicamentos.productoServicio', 'soluciones.detalleSoluciones', 'soluciones.medicamentos.productoServicio']);
         }
         
         return $nota;

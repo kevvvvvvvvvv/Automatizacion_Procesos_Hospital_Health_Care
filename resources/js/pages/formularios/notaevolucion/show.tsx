@@ -17,16 +17,8 @@ interface ShowNotaEvolucionProps{
     estancia: Estancia;
 }
 
-const Show = ({notasevolucione, paciente, estancia}: ShowNotaEvolucionProps) => {
+const Show = ({notasevolucione, paciente}: ShowNotaEvolucionProps) => {
    
-
-    const dateOptions: Intl.DateTimeFormatOptions = {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-  };
 
   return (
     <>
@@ -43,13 +35,13 @@ const Show = ({notasevolucione, paciente, estancia}: ShowNotaEvolucionProps) => 
             value={notasevolucione.evolucion_actualizacion}/>
         </div>
         <h2 className='text-lg font-semibold text-gray-800 mb-2'>
-            Signos Vitales
+            Signos vitales
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         
         
             <InfoField
-            label= "Tensión Arterial"
+            label= "Tensión arterial"
             value= {notasevolucione.ta || 'N/A'}/>
             <InfoField
             label= "Frecuencia cardiaca"
@@ -87,12 +79,12 @@ const Show = ({notasevolucione, paciente, estancia}: ShowNotaEvolucionProps) => 
         </div>
         <div className="space-y-2 mb-6">
             <h2 className='text-lg font-semibold text-gray-800 mb-2'>
-           Tratamiento e Indicaciones médicas</h2>
+           Tratamiento e indicaciones médicas</h2>
             <InfoField
             label="Plan de dieta"
             value = {notasevolucione.manejo_dieta || 'N/A'}/>
             <InfoField
-            label="Plan de soliciones"
+            label="Plan de soluciones"
             value = {notasevolucione.manejo_soluciones || 'N/A'}/>
             <InfoField
             label = "Plan de medicamentos"
