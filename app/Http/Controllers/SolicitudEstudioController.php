@@ -2,19 +2,22 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Formulario\SolicitudEstudio\SolicitudEstudioUpdateRequest;
 use App\Http\Requests\SolicitudEstudioRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
-
+use Spatie\Browsershot\Browsershot;
+use Spatie\LaravelPdf\Facades\Pdf;
+use Illuminate\Support\Facades\Notification;
 use App\Notifications\NuevaSolicitudEstudios;
 use Inertia\Inertia;
 use App\Services\TwilioWhatsAppService;
 use App\Services\PdfGeneratorService;
 use App\Services\VentaService;
-
+use Illuminate\Support\Facades\Storage;
 
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Routing\Controllers\HasMiddleware;
@@ -152,28 +155,14 @@ class SolicitudEstudioController extends Controller implements HasMiddleware
         ]);
     }
 
-    public function update(Request $request, SolicitudEstudio $solicitudes_estudio, VentaService $venta)
+    public function update(SolicitudEstudioUpdateRequest $request, SolicitudEstudio $solicitudes_estudio, VentaService $venta)
     {
-        $request->validate([
-            'grupos' => 'required|array',
-            'grupos.*.fecha_hora_grupo' => 'nullable|date',
-            'grupos.*.problema_clinico' => 'nullable|string|max:500',
-            'grupos.*.incidentes_accidentes' => 'nullable|string|max:500',
-            'grupos.*.archivos' => 'nullable|array',
-            'grupos.*.archivos.*' => 'file|mimes:pdf,jpg,jpeg,png,xlsx,xls|max:10240',
-            
-            'grupos.*.items' => 'required|array',
-            'grupos.*.items.*.id' => 'required|exists:solicitud_items,id',
-            'grupos.*.items.*.cancelado' => 'boolean',
-            'grupos.*.items.*.catalogo_estudio_id' => 'required|exists:catalogo_estudios,id',
-        ]);
-
+        $validatedData = $request->validated();
         $solicitudes_estudio->load('formularioInstancia.estancia');
-        $estancia_id = $solicitudes_estudio->formularioInstancia->estancia->id;
 
         try {
-            DB::transaction(function () use ($request, $estancia_id, $venta) {
-                foreach ($request->grupos as $index => $grupoData) {
+            DB::transaction(function () use ($validatedData, $request) {
+                foreach ($validatedData['grupos'] as $index => $grupoData) {
                     
                     $archivosProcesados = [];
 
@@ -203,6 +192,13 @@ class SolicitudEstudioController extends Controller implements HasMiddleware
                             ];
 
                             if (!empty($archivosProcesados)) {
+                                $archivosViejos = $item->archivos; 
+                                foreach ($archivosViejos as $archivoViejo) {
+                                    if (Storage::disk('public')->exists($archivoViejo->ruta_archivo_resultado)) {
+                                        Storage::disk('public')->delete($archivoViejo->ruta_archivo_resultado);
+                                    }
+                                }
+                                $item->archivos()->delete();
                                 foreach ($archivosProcesados as $archivoData) {
                                     $item->archivos()->create([
                                         'nombre_archivo' => $archivoData['nombre'],
@@ -382,6 +378,7 @@ class SolicitudEstudioController extends Controller implements HasMiddleware
 
         return match ($depto) {
             
+            // --- GRUPO: LABORATORIO ---
             'BACTEROLOGÍA',
             'COAGULACIÓN',
             'HEMATOLOGÍA',
@@ -392,12 +389,15 @@ class SolicitudEstudioController extends Controller implements HasMiddleware
             'UROANÁLISIS',
             'OTROS ESTUDIOS Y/O PERFILES' => User::role('técnico de laboratorio')->get(),
 
+            // --- GRUPO: RAYOS X / IMAGENOLOGÍA ---
             'RADIOLOGÍA GENERAL',
             'TOMOGRAFÍA COMPUTADA',
-            'ULTRASONIDO',
+            'ULTRASONIDO' => User::role('radiólogo')->get(),
+
+            // --- GRUPO: RESONANCIA (O puedes unirlo al anterior) ---
             'RESONANCIA MAGNÉTICA' => User::role('radiólogo')->get(),
 
-            default => User::role('técnico de laboratorio')->get(),
+            default => User::role('administrador')->get(),
         };
     }
 
@@ -427,7 +427,6 @@ class SolicitudEstudioController extends Controller implements HasMiddleware
         }
 
     }
-
     /*
     public function enviarRecordatorioCita(TwilioWhatsAppService $twilio)
     {
