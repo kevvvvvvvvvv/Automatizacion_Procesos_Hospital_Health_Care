@@ -21,17 +21,17 @@ class PdfGeneratorService
     public function generateStandardPdf(
         string $viewName,
         array $data,
-        array $headerData,
+        //array $headerData,
         string $fileNameBase,
         string $folio
     ) {
         $logoDataUri = $this->getLogoDataUri('images/Logo_HC_2.png');
-        $headerData['logoDataUri'] = $logoDataUri;
+        //$headerData['logoDataUri'] = $logoDataUri;
         $pdf = Pdf::view($viewName, $data)
             ->withBrowsershot(function (Browsershot $browsershot) {
                 $this->configureBrowsershot($browsershot);
             })
-            ->headerView('header', $headerData) 
+            //->headerView('header', $headerData) 
             ->inline($fileNameBase . '-' . $folio . '.pdf');
 
         return $pdf;

@@ -150,6 +150,12 @@ export const conceptosPorArea = {
         egresos: [
         { value: 'retiro_efectivo', label: 'Retiro de efectivo' }
         ]
+    },
+    HOSPITALIZACION: {
+        ingresos: [
+            { value: 'corta_estancia', label: 'Corta estancia' },
+        ],
+        egresos: [],
     }
 };
 
@@ -164,7 +170,8 @@ export const areasDisponibles = [
     { value: 'ANTICIPO_CIRUGIA', label: 'Anticipo de Cirugía' },
     { value: 'PRESTAMO', label: 'Préstamo' },
     { value: 'FONDO_COMPRAS_MERCADO', label: 'Fondo Compras Mercado' },
-    { value: 'LIGA', label: 'Liga' }
+    { value: 'LIGA', label: 'Liga' },
+    { value: 'HOSPITALIZACION', label: 'Hospitalización'},
 ];
 
 const tiposCajas = [

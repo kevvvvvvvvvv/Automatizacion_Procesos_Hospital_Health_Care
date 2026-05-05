@@ -27,6 +27,7 @@ use App\Models\Formulario\LigaFutbol\LigaFutbol;
 use App\Models\Encuestas\EncuestaSatisfaccion;
 use App\Models\Encuestas\EncuestaPersonal;
 use App\Models\Formulario\Paquete\Paquete;
+use App\Models\Formulario\CirugiaSegura\CirugiaSegura;
 use App\Models\ResumenMedico as ModelsResumenMedico;
 
 /**
@@ -178,6 +179,9 @@ class FormularioInstancia extends Model
     public function encuestaPersonal(): HasOne
     {
         return $this->hasOne(EncuestaPersonal::class, 'id', 'id');
+    }
+    public function cirugiasegura(): HasOne {
+        return $this->hasOne(CirugiaSegura::class, 'id', 'id' );
     }
     /*public function ligaFutbol(): HasOne
     {

@@ -49,7 +49,7 @@ class CirugiaSeguraRequest extends FormRequest
             'nombre_procedimiento'  => 'required|boolean',
             'recuento_instrumentos' => 'required|boolean',
             'faltantes'             => 'required|boolean',
-            'etiquedado'            => 'required|boolean',
+            'etiquetado_muestras'            => 'required|boolean',
             // Números
             'tiempo_aproximado'      => 'nullable|integer|min:0',
             'perdida_sanguinea'      => 'nullable|integer|min:0',
