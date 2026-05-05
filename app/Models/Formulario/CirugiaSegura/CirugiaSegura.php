@@ -39,9 +39,9 @@ class CirugiaSegura extends Model
         'etiquetado_muestras',
         'aspectos_criticos'
     ];
-    public function formularioInstancia(): BelongsTo 
+     public function formularioInstancia(): BelongsTo
     {
-        return $this->belongsTo(FormularioInstancia);
+        return $this->belongsTo(FormularioInstancia::class, 'id', 'id');
     }
     
 }

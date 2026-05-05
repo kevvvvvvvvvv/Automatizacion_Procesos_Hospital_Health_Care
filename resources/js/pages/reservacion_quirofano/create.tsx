@@ -279,14 +279,28 @@ const toggleHorario = (horaSeleccionada: string) => {
                    <div className="border rounded-lg p-5 bg-white shadow-sm h-fit">
                         <label className="font-bold text-sm block mb-2">Selección de Horario</label>
                         <input 
-                            type="date" 
-                            className="w-full border rounded p-2 mb-4" 
-                            value={data.fecha} 
-                            onChange={e => {
-                                setData("fecha", e.target.value);
-                                setData("horarios", []); 
-                            }}
-                        />
+                        type="date" 
+                        className="w-full border rounded p-2 mb-4" 
+                        value={data.fecha} 
+                        onChange={e => {
+                            const nuevaFecha = e.target.value;
+                            setData("fecha", nuevaFecha);
+                            setData("horarios", []); 
+                            router.get(
+                                route("quirofanos.create"), 
+                                { 
+                                    fecha: nuevaFecha,
+                                    paciente_id: data.paciente_id,
+                                    estancia_id: data.estancia_id 
+                                }, 
+                                { 
+                                    preserveState: true, 
+                                    replace: true,       
+                                    only: ['horariosOcupados'], 
+                                }
+                            );
+                        }}
+                    />
                         <div className="grid grid-cols-3 sm:grid-cols-4 gap-5">
                         {horariosLista.map(h => {
                             const horaConSegundo = `${h}:00`;
