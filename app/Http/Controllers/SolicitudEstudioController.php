@@ -8,9 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
-use Spatie\Browsershot\Browsershot;
-use Spatie\LaravelPdf\Facades\Pdf;
-use Illuminate\Support\Facades\Notification;
+
 use App\Notifications\NuevaSolicitudEstudios;
 use Inertia\Inertia;
 use App\Services\TwilioWhatsAppService;
@@ -384,7 +382,6 @@ class SolicitudEstudioController extends Controller implements HasMiddleware
 
         return match ($depto) {
             
-            // --- GRUPO: LABORATORIO ---
             'BACTEROLOGÍA',
             'COAGULACIÓN',
             'HEMATOLOGÍA',
@@ -395,15 +392,12 @@ class SolicitudEstudioController extends Controller implements HasMiddleware
             'UROANÁLISIS',
             'OTROS ESTUDIOS Y/O PERFILES' => User::role('técnico de laboratorio')->get(),
 
-            // --- GRUPO: RAYOS X / IMAGENOLOGÍA ---
             'RADIOLOGÍA GENERAL',
             'TOMOGRAFÍA COMPUTADA',
-            'ULTRASONIDO' => User::role('radiólogo')->get(),
-
-            // --- GRUPO: RESONANCIA (O puedes unirlo al anterior) ---
+            'ULTRASONIDO',
             'RESONANCIA MAGNÉTICA' => User::role('radiólogo')->get(),
 
-            default => User::role('administrador')->get(),
+            default => User::role('técnico de laboratorio')->get(),
         };
     }
 
@@ -433,6 +427,7 @@ class SolicitudEstudioController extends Controller implements HasMiddleware
         }
 
     }
+
     /*
     public function enviarRecordatorioCita(TwilioWhatsAppService $twilio)
     {
