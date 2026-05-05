@@ -102,7 +102,10 @@ const Index = ({
             const duracion = h > 0 ? `${h}h ${m > 0 ? m + 'm' : ''}` : `${m} min`;
             
             return { rango: `${inicio} - ${fin}`, duracion };
-        } catch (e) { return { rango: "Error", duracion: "" }; }
+        } catch (error) { 
+            console.log(error);
+            return { rango: "Error", duracion: "" }; 
+        }
     };
 
     const columns = useMemo<ColumnDef<ReservacionQuirofano>[]>(() => [
@@ -295,6 +298,7 @@ const Index = ({
                                 </div>
 
                                 <h3 className="font-bold text-gray-800 text-lg mb-1">{row.original.paciente_nombre}</h3>
+                                <p className="font-bold text-gray-400 text-sm mb-1">{row.original.procedimiento}</p>
                                 
                                 <div className="space-y-2 mb-4">
                                     <div className="flex items-center gap-2 text-sm text-gray-500">

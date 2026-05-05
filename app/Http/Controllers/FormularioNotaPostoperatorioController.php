@@ -26,7 +26,7 @@ use Spatie\LaravelPdf\Facades\Pdf;
 use App\Services\PdfGeneratorService;
 use App\Services\VentaService; 
 use App\Services\Formularios\HojaMedicamentoService;
-
+use App\Services\Formularios\HojaSolucionService;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
@@ -87,7 +87,13 @@ class FormularioNotaPostoperatorioController extends Controller implements HasMi
         ]);
     }
 
-    public function store(NotaPostoperatoriaRequest $request, Paciente $paciente, Estancia $estancia, VentaService $ventaService,HojaMedicamentoService $medicamentoService)
+    public function store(
+        NotaPostoperatoriaRequest $request, 
+        Paciente $paciente, 
+        Estancia $estancia, 
+        VentaService $ventaService,
+        HojaMedicamentoService $medicamentoService,
+        HojaSolucionService $solucionService)
     {
         $validatedData = $request->validated();
 
@@ -101,7 +107,11 @@ class FormularioNotaPostoperatorioController extends Controller implements HasMi
             $this->guardarRelaciones($nota, $validatedData);
 
             $medicamentos = $request->input('medicamentos_agregados', []);
+            $soluciones = $request->input('soluciones_agregadas', []);
+            
             $medicamentoService->registrarMedicamentos($nota,$medicamentos);
+            $solucionService->registrarSoluciones($nota,$soluciones);
+            
 
             DB::commit();
 

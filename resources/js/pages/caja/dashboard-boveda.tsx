@@ -82,7 +82,11 @@ export default function DashboardBoveda({
             { wch: 12 }, 
         ];
         worksheet['!cols'] = wscols;
-        XLSX.writeFile(workbook, `Reporte_Movimientos_${new Date().toISOString().split('T')[0]}.xlsx`);
+
+        const ultimoMovimiento = movimientos.at(-1);
+        const fechaRaw = ultimoMovimiento?.created_at ? new Date(ultimoMovimiento.created_at) : new Date();
+        const fechaFormateada = fechaRaw.toISOString().split('T')[0];
+        XLSX.writeFile(workbook, `Reporte_Movimientos_${fechaFormateada}.xlsx`);
     }
 
     useEffect(() => {
@@ -348,7 +352,7 @@ export default function DashboardBoveda({
                                         </tbody>
                                     </table>
                                 </div>
-                                <div className="flex justify-end mb-4">
+                                <div className="flex justify-end mb-4 mr-4">
                                     <button
                                         onClick={()=>exportarExcel(filteredMovimientos)}
                                         className="flex items-center px-4 py-2 bg-green-600 hover:bg-green-700 text-white text-sm font-bold rounded-lg transition-colors shadow-sm"

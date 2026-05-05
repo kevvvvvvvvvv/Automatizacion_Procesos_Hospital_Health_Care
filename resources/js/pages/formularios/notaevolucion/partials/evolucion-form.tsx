@@ -1,6 +1,6 @@
 import React from 'react';
 import { useForm } from '@inertiajs/react';
-import { CatalogoEstudio, Estancia, MedicamentoAgregado, Paciente, ProductoServicio, notasEvoluciones,  } from '@/types';  ;
+import { CatalogoEstudio, Estancia, MedicamentoAgregado, Paciente, ProductoServicio, TerapiaIVAgregado, TerapiaIVMedicamentoAgregado, notasEvoluciones,  } from '@/types';  ;
 
 import PrimaryButton from '@/components/ui/primary-button';
 import FormLayout from '@/components/form-layout';
@@ -70,6 +70,31 @@ export const EvolucionForm =({
             temp_id: med.id.toString(), 
         })) 
         : [] as MedicamentoAgregado[],
+
+      soluciones_agregadas: evolucion?.soluciones ?
+        evolucion.soluciones.map(sol => ({
+          solucion_id: sol.solucion?.id?.toString() || '',
+          nombre_solucion: sol.nombre_solucion,
+          duracion: Number(sol.duracion),
+          cantidad: Number(sol.cantidad),
+          flujo: Number(sol.flujo_ml_hora),
+          temp_id: sol.id.toString(),
+          fecha_hora_inicio: sol.fecha_hora_inicio || '', 
+          es_manual: false, 
+
+          medicamentos: sol.medicamentos ?
+            sol.medicamentos.map(med => ({
+                id: med.id.toString(), 
+                producto_servicio_id: med.producto_servicio_id, 
+                nombre_medicamento: med.nombre_medicamento,     
+                dosis: Number(med.dosis),
+                unidad_medida: med.unidad_medida,
+                es_manual: false,    
+                temp_id: med.id.toString(),                           
+            }))
+          : [] as TerapiaIVMedicamentoAgregado[], 
+        }))
+        : [] as TerapiaIVAgregado[],
     });
 
     const { data, setData, processing, errors } = form;
@@ -112,9 +137,10 @@ export const EvolucionForm =({
 
         <div>
           <TratamientoSolucionesForm
-            value={data.manejo_soluciones}
-            onChange={(value) => setData('manejo_soluciones', value)}
+            solucionesAgregadas={data.soluciones_agregadas}
+            onChange={(value) => setData('soluciones_agregadas', value)}
             soluciones={soluciones}
+            medicamentos={medicamentos}
           />
           {errors.manejo_soluciones && (
             <div className="text-red-500 text-sm">{errors.manejo_soluciones}</div>

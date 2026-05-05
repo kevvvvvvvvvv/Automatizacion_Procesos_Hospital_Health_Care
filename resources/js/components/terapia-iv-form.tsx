@@ -1,6 +1,6 @@
-import React, { useState } from 'react'; // Importar useState
+import React, { useState } from 'react'; 
 import { useForm, router } from '@inertiajs/react';
-import { HojaEnfermeria, HojaEnfermeriaQuirofano, ProductoServicio, RecienNacido } from '@/types';
+import { HojaEnfermeria, HojaEnfermeriaQuirofano, HojaTerapiaIVMedicamento, ProductoServicio, RecienNacido } from '@/types';
 import { route } from 'ziggy-js';
 import { optionsUnidadMedida } from '@/constant/const';
 import Swal from 'sweetalert2';
@@ -433,7 +433,7 @@ const TerapiaIVForm: React.FC<Props> = ({
                                 <tr key={terapia.id}>
                                     <td className="px-4 py-4 text-sm text-gray-900">
                                         {terapia.detalle_soluciones?.nombre_prestacion || '...'}
-                                            {terapia.medicamentos.map((medicamento,index)=>(
+                                            {terapia.medicamentos.map((medicamento: HojaTerapiaIVMedicamento, index: number)=>(
                                                 <div key={index} className='text-gray-400'>
                                                     {medicamento.nombre_medicamento} {medicamento.dosis} {medicamento.unidad_medida}
                                                 </div>

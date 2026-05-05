@@ -71,7 +71,11 @@ export const PanelCaja = ({
             { wch: 12 }, 
         ];
         worksheet['!cols'] = wscols;
-        XLSX.writeFile(workbook, `Reporte_Movimientos_${new Date().toISOString().split('T')[0]}.xlsx`);
+
+        const ultimoMovimiento = movimientos.at(-1);
+        const fechaRaw = ultimoMovimiento?.created_at ? new Date(ultimoMovimiento.created_at) : new Date();
+        const fechaFormateada = fechaRaw.toISOString().split('T')[0]; 
+        XLSX.writeFile(workbook, `Reporte_Movimientos_${fechaFormateada}.xlsx`);
     };
 
     return (

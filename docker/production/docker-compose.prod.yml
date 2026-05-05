@@ -5,7 +5,8 @@ services:
     container_name: mysql_hospital
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      - TZ=America/Mexico_City
+      - MYSQL_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
     volumes:
       - mysql_data:/var/lib/mysql
     networks:
@@ -17,6 +18,8 @@ services:
     container_name: php_web_1
     restart: always
     env_file: .env.ayutla
+    environment:
+      - TZ=America/Mexico_City
     volumes:
       - ./:/var/www/html     
     networks:
@@ -56,6 +59,8 @@ services:
     env_file: .env.ordaz
     volumes:
       - ./:/var/www/html
+    environment:
+      - TZ=America/Mexico_City
     networks:
       hospital_network:
         aliases:
