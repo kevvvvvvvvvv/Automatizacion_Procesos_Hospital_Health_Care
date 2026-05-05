@@ -150,6 +150,11 @@ export const conceptosPorArea = {
         egresos: [
         { value: 'retiro_efectivo', label: 'Retiro de efectivo' }
         ]
+    },
+    HOSPITALIZACION: {
+        ingreso: [
+            { value: 'corta_estancia', label: 'Corta estancia' },
+        ]
     }
 };
 
