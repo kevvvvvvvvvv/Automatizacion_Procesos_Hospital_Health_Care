@@ -37,7 +37,7 @@ const CreateNotaEvolucion: React.FC<Props> = ({ paciente, estancia, soluciones, 
         paciente={paciente}
         estancia={estancia}
       />
-      <Head title="Crear Nota de Evolución" />
+      <Head title="Crear nota de evolución" />
       <EvolucionForm 
       paciente = { paciente }
       estancia = { estancia }

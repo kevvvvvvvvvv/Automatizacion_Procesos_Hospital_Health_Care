@@ -12,6 +12,7 @@ use App\Models\Formulario\FormularioInstancia;
 use App\Models\Formulario\PersonalEmpleado;
 use App\Models\Formulario\CheckListItem;
 use App\Models\Formulario\HojaEnfermeria\HojaMedicamento;
+use App\Models\Formulario\HojaEnfermeria\HojaTerapiaIV;
 
 /**
  * @property int $id
@@ -183,8 +184,14 @@ class NotaPostoperatoria extends Model
         return $this->morphMany(SolicitudPatologia::class, 'itemable');
     }
 
-    public function medicamentos()
+    public function medicamentos(): MorphMany
     {
         return $this->morphMany(HojaMedicamento::class, 'medicable');
     }
+
+    public function soluciones(): MorphMany
+    {
+        return $this->morphMany(HojaTerapiaIV::class,'terapiable'); 
+    }
+
 }

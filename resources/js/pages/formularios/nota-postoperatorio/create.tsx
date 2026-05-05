@@ -1,6 +1,6 @@
 import React,{ useState} from 'react';
 import { Head, useForm } from '@inertiajs/react';
-import { MedicamentoAgregado,HojaEnfermeria, NotaPostoperatoria, Paciente, Estancia, User, ProductoServicio, CatalogoEstudio } from '@/types';
+import { MedicamentoAgregado,HojaEnfermeria, NotaPostoperatoria, Paciente, Estancia, User, ProductoServicio, CatalogoEstudio, TerapiaIVMedicamentoAgregado, TerapiaIVAgregado } from '@/types';
 import { route } from 'ziggy-js';
 import Swal from 'sweetalert2';
 
@@ -131,6 +131,30 @@ const NotaPostoperatoriaForm: NotaPostoperatoriaComponent= ({ paciente, estancia
                 temp_id: med.id.toString(), 
             })) 
             : [] as MedicamentoAgregado[],
+              soluciones_agregadas: nota?.soluciones ?
+                nota.soluciones.map(sol => ({
+                  solucion_id: sol.solucion?.id?.toString() || '',
+                  nombre_solucion: sol.nombre_solucion,
+                  duracion: Number(sol.duracion),
+                  cantidad: Number(sol.cantidad),
+                  flujo: Number(sol.flujo_ml_hora),
+                  temp_id: sol.id.toString(),
+                  fecha_hora_inicio: sol.fecha_hora_inicio || '', 
+                  es_manual: false, 
+        
+                  medicamentos: sol.medicamentos ?
+                    sol.medicamentos.map(med => ({
+                        id: med.id.toString(), 
+                        producto_servicio_id: med.producto_servicio_id, 
+                        nombre_medicamento: med.nombre_medicamento,     
+                        dosis: Number(med.dosis),
+                        unidad_medida: med.unidad_medida,
+                        es_manual: false,    
+                        temp_id: med.id.toString(),                           
+                    }))
+                  : [] as TerapiaIVMedicamentoAgregado[], 
+                }))
+                : [] as TerapiaIVAgregado[],
     });
 
     const [localTransfusion, setLocalTransfusion] = useState({
@@ -479,9 +503,10 @@ const NotaPostoperatoriaForm: NotaPostoperatoriaComponent= ({ paciente, estancia
                     <div>
                         <div>
                             <TratamientoSolucionesForm
-                                value={data.manejo_soluciones}
-                                onChange={value=>setData('manejo_soluciones',value)}
+                                solucionesAgregadas={data.soluciones_agregadas}
+                                onChange={value=>setData('soluciones_agregadas',value)}
                                 soluciones={soluciones}
+                                medicamentos={medicamentos}
                             />
 
                         </div>

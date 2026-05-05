@@ -283,6 +283,12 @@ const Create = ({ submitLabel = "Guardar", paciente, estancia, cirugia }: Props)
                         onChange={(val) => setData('faltantes', val)}
                         error={errors.faltantes} // <--- AÑADE ESTO
                     />
+                    <BooleanInput
+                        label="¿Existen faltantes de instrumentos y/o textiles?"
+                        value={data.faltantes}
+                        onChange={(val) => setData('faltantes', val)}
+                        error={errors.faltantes} // <--- AÑADE ESTO
+                    />
                     <div className="mt-6">
                         <InputText
                             id="observaciones"

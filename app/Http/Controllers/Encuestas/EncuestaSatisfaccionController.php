@@ -21,23 +21,13 @@ use Illuminate\Routing\Controllers\Middleware;
 
 use App\Services\PdfGeneratorService;
 
-class EncuestaSatisfaccionController extends Controller implements HasMiddleware
+class EncuestaSatisfaccionController extends Controller
 {
     use AuthorizesRequests;
     protected PdfGeneratorService $pdfGenerator;
 
     public function __construct(PdfGeneratorService $pdfGenerator){
         $this->pdfGenerator = $pdfGenerator;
-    }
-
-    public static function middleware(): array
-    {
-        $permission = \Spatie\Permission\Middleware\PermissionMiddleware::class;
-        return [
-            new Middleware($permission . ':consultar hojas', only: ['index', 'show', 'generarPDF']),
-            new Middleware($permission . ':crear hojas', only: ['create', 'store']),
-            new Middleware($permission . ':eliminar hojas', only: ['destroy']),
-        ];
     }
 
     public function create(Estancia $estancia)

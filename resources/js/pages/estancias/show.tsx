@@ -1,7 +1,6 @@
 import React from 'react';
 import { Head, Link, usePage } from '@inertiajs/react';
-import { Plus,ChevronDown, Pencil, Eye } from 'lucide-react'; 
-import { Menu } from '@headlessui/react';
+import { Plus, Pencil, Eye } from 'lucide-react'; 
 import { route } from 'ziggy-js';
 import { Printer } from 'lucide-react'; 
 import MainLayout from '@/layouts/MainLayout';
@@ -9,6 +8,7 @@ import { Estancia, Paciente, User, FormularioInstancia, Habitacion, FamiliarResp
 import InfoCard from '@/components/ui/info-card';
 import InfoField from '@/components/ui/info-field';
 import { usePermission } from '@/hooks/use-permission';
+import DropdownDocumentos from '@/components/estancia/dropdown-documentos-medicos';
 
 interface ShowEstanciaProps {
     estancia: Estancia & {
@@ -62,19 +62,19 @@ const Show = ({ estancia, historiaclinica }: ShowEstanciaProps) => {
             }
             
             {(hasRole('administrador') || hasRole('medico') || hasRole('medico especialista')) && (
-            <div className="flex justify-end w-full mb-4">
-                <Link 
-                href={route("quirofanos.create", {
-                        paciente: paciente.id,
-                        estancia: estancia.id
-                    })}
-                    className="inline-flex items-center justify-center gap-2 px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white hover:opacity-90 transition"
+                <div className="flex justify-end w-full mb-4">
+                    <Link 
+                    href={route("quirofanos.create", {
+                            paciente: paciente.id,
+                            estancia: estancia.id
+                        })}
+                        className="inline-flex items-center justify-center gap-2 px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white hover:opacity-90 transition"
 
-                    style={{ backgroundColor: '#1B1C38' }}
-                >
-                    Programar cirugía
-                </Link>
-            </div>
+                        style={{ backgroundColor: '#1B1C38' }}
+                    >
+                        Programar cirugía
+                    </Link>
+                </div>
             )}
 
             <InfoCard title={`Estancia para: ${paciente.nombre} ${paciente.apellido_paterno} ${paciente.apellido_materno}`}>
@@ -119,296 +119,20 @@ const Show = ({ estancia, historiaclinica }: ShowEstanciaProps) => {
             </InfoCard>
             
             <div className="mt-8">
-    <a href={route('estancia.solicitudes-estudios.create', estancia.id)} className="text-blue-600 hover:underline mb-4 inline-block">
-        Solicitar estudio
-    </a>
-    <div>
-    <h2 className="text-xl font-semibold">Formularios registrados</h2>
-    </div>
-    {(can('crear hojas enfermerias') || can('crear documentos medicos') || can('crear consentimientos')) && (
-        <div className="flex justify-between items-center mb-4">
-            {/* GRUPO IZQUIERDA: Título y Menú de Encuestas */}
-            <div className="flex items-center gap-4">
-                {/*<Link
-                href={route('paciente.estancias.resumenmedico.create', { paciente: paciente.id, estancia: estancia.id })}
-                    className={` 'bg-blue-500 text-white' : 'text-gray-900'} group flex rounded-md items-center w-full px-2 py-2 text-sm`}
-                                    >
-                                        Añadir encuesta de satisfacción
-                                    </Link>*/}
-                                   
-               {/*} <Link
-                    href={route('pacientes.estancias.paquetes.create', { paciente: paciente.id, estancia: estancia.id })}
-                    className="group flex rounded-md items-center w-full px-2 py-2 text-sm bg-blue-500 text-white hover:bg-blue-600"
-                >
-                    Añadir paquete
-                </Link>*/}
-                <Menu as="div" className="relative inline-block text-left">
-                    <Menu.Button className="inline-flex items-center justify-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700 transition">
-                        <Plus size={16} className="mr-2"/>
-                        Encuesta de satisfacción
-                        <ChevronDown size={16} className="ml-2 -mr-1" />
-                    </Menu.Button>
-                    <Menu.Items className="absolute left-0 w-68 mt-2 origin-top-left bg-white divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-50">
-                        <div className="px-1 py-1">
-                            <Menu.Item>
-                                {({ active }) => (
-                                    <Link
-                                        href={route('estancias.encuesta-satisfaccions.create', { estancia: estancia.id })}
-                                        className={`${active ? 'bg-blue-500 text-white' : 'text-gray-900'} group flex rounded-md items-center w-full px-2 py-2 text-sm`}
-                                    >
-                                        Añadir encuesta de satisfacción
-                                    </Link>
-                                )}
-                            </Menu.Item>
-                            <Menu.Item>
-                                {({ active }) => (
-                                    <Link
-                                        href={route('estancias.encuestapersonal.create', { estancia: estancia.id })}
-                                        className={`${active ? 'bg-blue-500 text-white' : 'text-gray-900'} group flex rounded-md items-center w-full px-2 py-2 text-sm`}
-                                    >
-                                        Añadir encuesta de personal
-                                    </Link>
-                                )}
-                            </Menu.Item>
-                        </div>
-                    </Menu.Items>
-                </Menu>
-            </div>
-
-            {/* GRUPO DERECHA: Botón Añadir Documento */}
-            <div className="relative inline-block text-left">
-                <Menu as="div">
-                    <Menu.Button className="inline-flex items-center justify-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700 transition">
-                        <Plus size={16} className="mr-2"/>
-                        Añadir documento
-                        <ChevronDown size={16} className="ml-2 -mr-1" />
-                    </Menu.Button>
-
-                    <Menu.Items className="absolute right-0 w-56 mt-2 origin-top-right bg-white divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-                                <div className="px-1 py-1">
-                                    {can('crear hojas enfermerias') && (
-                                    <>
-                                        <Menu.Item> 
-                                            {({ active }) => (
-                                                <Link
-                                                    href={route('pacientes.estancias.hojasenfermerias.create', { paciente: paciente.id, estancia: estancia.id })}
-                                                    className={`${
-                                                        active ? 'bg-blue-500 text-white' : 'text-gray-900'
-                                                    } group flex rounded-md items-center w-full px-2 py-2 text-sm`}
-                                                >
-                                                    Añadir hoja de enfermería en hospitalizacion
-                                                </Link>
-                                            )}
-                                        </Menu.Item>
-                                        <Menu.Item>
-                                            {({ active }) => (
-                                                <Link
-                                                    href={route('pacientes.estancias.hojasenfermeriasquirofanos.store', { 
-                                                        paciente: paciente.id, 
-                                                        estancia: estancia.id 
-                                                    })}
-                                                    method="post" 
-                                                    className={`${
-                                                        active ? 'bg-blue-500 text-white' : 'text-gray-900'
-                                                    } group flex rounded-md text-left w-full px-2 py-2 text-sm`}
-                                                >
-                                                    Añadir hoja de enfermería en quirófano
-                                                </Link>
-                                            )}
-                                        </Menu.Item>
-                                       <Menu.Item> 
-                                            {({ active }) => (
-                                                <Link
-                                                    href={route('pacientes.estancias.reciennacido.create', { paciente: paciente.id, estancia: estancia.id })}
-                                                    className={`${
-                                                        active ? 'bg-blue-500 text-white' : 'text-gray-900'
-                                                    } group flex rounded-md items-center w-full px-2 py-2 text-sm`}
-                                                >
-                                                    Añadir hoja de enfermería de recien nacido
-                                                </Link>
-                                            )}
-                                        </Menu.Item>{/**/}
-                                        <Menu.Item> 
-                                            {({ active }) => (
-                                                <Link
-                                                    href={route('pacientes.estancias.cirugiasegura.create', { paciente: paciente.id, estancia: estancia.id })}
-                                                    className={`${
-                                                        active ? 'bg-blue-500 text-white' : 'text-gray-900'
-                                                    } group flex rounded-md items-center w-full px-2 py-2 text-sm`}
-                                                >
-                                                    Añadir lista de verificación de cirugía segura
-                                                </Link>
-                                            )}
-                                        </Menu.Item>{/**/}
-                                    </>
-                                    )}
-                                    <Menu.Item>
-                                        {({ active }) => (
-                                            <Link
-                                                href={route('pacientes.estancias.hojasfrontales.create', { paciente: paciente.id, estancia: estancia.id })}
-                                                className={`${
-                                                    active ? 'bg-blue-500 text-white' : 'text-gray-900'
-                                                } group flex rounded-md items-center w-full px-2 py-2 text-sm`}
-                                            >
-                                                Añadir hoja frontal
-                                            </Link>
-                                        )}
-                                    </Menu.Item>
-                                    
-                                    {(can('crear documentos medicos')) && (
-                                    <>
-                                    <Menu.Item>
-                                        {({ active }) => (
-                                            <Link
-                                                href={route('pacientes.estancias.historiasclinicas.create', { paciente: paciente.id, estancia: estancia.id })}
-                                                className={`${
-                                                    active ? 'bg-blue-500 text-white' : 'text-gray-900'
-                                                } group flex rounded-md items-center w-full px-2 py-2 text-sm`}
-                                            >
-                                                Añadir historia clínica
-                                            </Link>
-                                        )}
-                                    </Menu.Item>
-                                   <Menu.Item>
-                                        {({ active }) => (
-                                            <Link
-                                                href={route('pacientes.estancias.interconsultas.create', { paciente: paciente.id, estancia: estancia.id })}
-                                                className={`${
-                                                    active ? 'bg-blue-500 text-white' : 'text-gray-900'
-                                                } group flex rounded-md items-center w-full px-2 py-2 text-sm`}
-                                            >
-                                                Añadir interconsulta
-                                            </Link>
-                                        )}
-                                    </Menu.Item>
-                                    <Menu.Item>
-                                        {({ active }) => (
-                                            <Link
-                                                href={route('pacientes.estancias.traslados.create', { paciente: paciente.id, estancia: estancia.id })}
-                                                className={`${
-                                                    active ? 'bg-blue-500 text-white' : 'text-gray-900'
-                                                } group flex rounded-md items-center w-full px-2 py-2 text-sm`}
-                                            >
-                                                Añadir nota traslado
-                                            </Link>
-                                        )}
-                                    </Menu.Item>
-                                    <Menu.Item>
-                                        {({ active }) => (
-                                            <Link
-                                                href={route('pacientes.estancias.preoperatorias.create', { paciente: paciente.id, estancia: estancia.id })}
-                                                className={`${
-                                                    active ? 'bg-blue-500 text-white' : 'text-gray-900'
-                                                } group flex rounded-md items-center w-full px-2 py-2 text-sm`}
-                                            >
-                                                Añadir nota preoperatoria
-                                            </Link>
-                                        )}
-                                    </Menu.Item>
-                                    <Menu.Item>
-                                        {({ active }) => (
-                                            <Link
-                                                href={route('pacientes.estancias.notaspostoperatorias.create', { paciente: paciente.id, estancia: estancia.id })}
-                                                 className={`${
-                                                    active ? 'bg-blue-500 text-white' : 'text-gray-900'
-                                                } group flex rounded-md items-center w-full px-2 py-2 text-sm`}
-                                            >
-                                                Añadir nota postoperatoria
-                                            </Link>
-                                        )}
-                                    </Menu.Item>
-                                    <Menu.Item>
-                                        {({ active }) => (
-                                            <Link
-                                                href={route('pacientes.estancias.notasurgencias.create', { paciente: paciente.id, estancia: estancia.id })}
-                                                className={`${
-                                                    active ? 'bg-blue-500 text-white' : 'text-gray-900'
-                                                } group flex rounded-md items-center w-full px-2 py-2 text-sm`}
-                                            >
-                                                Añadir nota de urgencias
-                                            </Link>
-                                        )}
-                                    </Menu.Item>
-                                    <Menu.Item>
-                                        {({ active }) => (
-                                            <Link
-                                                href={route('pacientes.estancias.notasegresos.create', { paciente: paciente.id, estancia: estancia.id })}
-                                                 className={`${
-                                                    active ? 'bg-blue-500 text-white' : 'text-gray-900'
-                                                } group flex rounded-md items-center w-full px-2 py-2 text-sm`}
-                                            >
-                                                Añadir nota de egreso
-                                             
-                                            </Link>
-                                        )}
-                                    </Menu.Item>
-                                    <Menu.Item>
-                                        {({ active }) => (
-                                            <Link
-                                                href={route('pacientes.estancias.notasevoluciones.create', { paciente: paciente.id, estancia: estancia.id })}
-                                                 className={`${
-                                                    active ? 'bg-blue-500 text-white' : 'text-gray-900'
-                                                } group flex rounded-md items-center w-full px-2 py-2 text-sm`}
-                                            >
-                                                Añadir nota de evolución
-                                             
-                                            </Link>
-                                        )}
-                                    </Menu.Item>
-                                    <Menu.Item>
-                                        {({ active }) => (
-                                            <Link
-                                                href={route('pacientes.estancias.notaspreanestesicas.create', { paciente: paciente.id, estancia: estancia.id })}
-                                                 className={`${
-                                                    active ? 'bg-blue-500 text-white' : 'text-gray-900'
-                                                } group flex rounded-md items-center w-full px-2 py-2 text-sm`}
-                                            >
-                                                Añadir nota preanestésica
-                                             
-                                            </Link>
-                                        )}
-                                    </Menu.Item>
-                                    <Menu.Item>
-                                        {({ active }) => (
-                                            <Link
-                                                href={route('pacientes.estancias.notaspostanestesicas.create', { paciente: paciente.id, estancia: estancia.id })}
-                                                 className={`${
-                                                    active ? 'bg-blue-500 text-white' : 'text-gray-900'
-                                                } group flex rounded-md items-center w-full px-2 py-2 text-sm`}
-                                            >
-                                                Añadir nota postanestésica
-                                             
-                                            </Link>
-                                        )}
-                                    </Menu.Item>
-                                   
-                                    </>
-                                    )}
-                                    {can('crear consentimientos') && (
-                                    <Menu.Item>
-                                        {({ active }) => (
-                                            <Link
-                                                href={route('pacientes.estancias.consentimientos.create', { 
-                                                    paciente: paciente.id, 
-                                                    estancia: estancia.id 
-                                                })}
-                                                method="get" 
-                                                className={`${
-                                                    active ? 'bg-blue-500 text-white' : 'text-gray-900'
-                                                } group flex rounded-md text-left w-full px-2 py-2 text-sm`}
-                                            >
-                                                Añadir consentimiento
-                                            </Link>
-                                        )}
-                                    </Menu.Item>
-                                    )}
-                                </div>
-                            </Menu.Items>
-                        </Menu>         
+                <div className="flex justify-between items-center mb-4 mt-4">
+                    <div></div>
+                    <div className="relative inline-block text-left">
+                        <DropdownDocumentos
+                            paciente={estancia.paciente}
+                            estancia={estancia}
+                        />
                     </div>
                 </div>
-            )}
-            </div>            
+                <div>
+                    <h2 className="text-xl font-semibold">Formularios registrados</h2>
+                </div>
+            </div>
+
             <div className="mt-8">
                 <div className="space-y-4">
                     {formulario_instancias && formulario_instancias.length > 0 ? (
@@ -521,7 +245,7 @@ const Show = ({ estancia, historiaclinica }: ShowEstanciaProps) => {
                                         return (
                                             <div
                                                 key={c.id}
-                                                className="p-4 border rounded-md bg-gray-50 flex justify-between items-center"
+                                                 className="p-4 border rounded-md bg-gray-50 flex justify-between items-center"
                                             >
                                                 <div>
                                                     <p className="font-semibold text-indigo-600">
@@ -554,10 +278,9 @@ const Show = ({ estancia, historiaclinica }: ShowEstanciaProps) => {
                                         No hay consentimientos registrados para esta estancia.
                                     </p>
                                 )}
-                        </div>
-            </div>
+                    </div>
+                </div>
             </div>    
-             
         </>
     );
 };
