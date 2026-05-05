@@ -292,8 +292,25 @@ const toggleHorario = (horaSeleccionada: string) => {
 
                     <div className="border rounded-lg p-5 bg-white shadow-sm h-fit">
                         <label className="font-bold text-sm block mb-2">Selección de Horario</label>
-                        <input type="date" className="w-full border rounded p-2 mb-4" value={data.fecha} onChange={e => setData("fecha", e.target.value)} />
-                        
+                        <input 
+                            type="date" 
+                            className="w-full border rounded p-2 mb-4" 
+                            value={data.fecha} 
+                            onChange={e => {
+                                const nuevaFecha = e.target.value;
+                                setData("fecha", nuevaFecha); 
+
+                                router.get(
+                                    route("quirofanos.edit", quirofano.id), 
+                                    { fecha: nuevaFecha }, 
+                                    { 
+                                        preserveState: true, 
+                                        preserveScroll: true,
+                                        only: ['horariosOcupados'], 
+                                    }
+                                );
+                            }}
+                        />
                         <div className={`grid grid-cols-3 sm:grid-cols-4 gap-5 ${data.status === 'cancelada' ? 'opacity-50 pointer-events-none' : ''}`}>
                         {horariosLista.map(h => {
                             const horaConSegundo = `${h}:00`;

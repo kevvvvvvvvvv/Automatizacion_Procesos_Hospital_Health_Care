@@ -93,7 +93,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
         return Inertia::render('dashboard-healthcare');
     })->name('dashboard');
 });
-
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('dashboard-documentos', function () {
+        return Inertia::render('dashboard-documentos');
+    })->name('dashboard-documentos');
+});
 Route::middleware(['auth', 'verified'])->group(function (){
     Route::get('dashboard-reporte', function (){
         return Inertia::render('dashboard-reportes');
@@ -163,7 +167,6 @@ Route::resource('pacientes.estancias.reciennacido',RecienNacidosController::clas
 
 Route::resource('respaldo', BackupsController::class)->middleware('auth');
 Route::get('respaldo/{backup}/download', [BackupsController::class, 'download'])->name('bd.respaldo.download')->middleware('auth');
-Route::resource('pacientes.estancias.paquetes', PaqueteController::class)->shallow()->middleware('auth');
 
 Route::resource('pacientes.responsable', FamiliarResponsableController::class)->middleware('auth');
 Route::resource('pacientes.estancias', EstanciaController::class)->shallow()->middleware('auth');
@@ -276,7 +279,7 @@ Route::get('/liga-futbol/pdf', [LigaFutbolController::class, 'generarPdf'])
 ->name('liga-futbol.pdf')
 ->middleware('auth');
 
-Route::get('/paquetes/{paquete}/pdf', [PaqueteController::class, 'generarPDF'])
+Route::get('/paquetes/pdf', [PaqueteController::class, 'generarPDF'])
     ->name('paquetes.pdf')
     ->middleware('auth');
 
@@ -362,6 +365,9 @@ Route::get('/reciennacido/{reciennacido}/pdf', [RecienNacidosController::class, 
     ->name('reciennacido.pdf')
     ->middleware('auth');
 
+Route::get('/cirugiasegura/{cirugiasegura}/pdf', [CirugiaSeguraController::class, 'generarPDF'])
+    ->name('cirugiasegura.pdf')
+    ->middleware('auth');
 // Farmacia
 Route::get('farmacia/solicitudes-medicamentos/{hojasenfermeria}', [FarmaciaController::class, 'show'])
     ->name('solicitudes-medicamentos.show')

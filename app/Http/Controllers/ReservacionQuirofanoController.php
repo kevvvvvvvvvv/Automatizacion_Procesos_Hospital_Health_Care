@@ -79,8 +79,8 @@ class ReservacionQuirofanoController extends Controller
 
     public function create(Request $request)
     {
-        $paciente = Paciente::find($request->paciente);
-        $estancia = Estancia::find($request->estancia);
+        $paciente = Paciente::find($request->paciente ?? $request->paciente);
+        $estancia = Estancia::find($request->estancia ?? $request->estancia);
         $pacienteData = $paciente ?: ($estancia?->paciente);
         $fechaSeleccionada = $request->fecha ?? now()->toDateString(); 
 
@@ -172,33 +172,40 @@ class ReservacionQuirofanoController extends Controller
             ]);
         }
     }
-    public function edit(ReservacionQuirofano $quirofano)
-    {
-        $horariosOcupados = ReservacionQuirofano::where('fecha', $quirofano->fecha)
+    public function edit(ReservacionQuirofano $quirofano, Request $request) 
+{
+    $paciente = Paciente::find($quirofano->paciente_id); 
+    $estancia = Estancia::find($quirofano->estancia_id);
+    $pacienteData = $paciente ?: ($estancia?->paciente);
+
+    $fechaSeleccionada = $request->input('fecha', $quirofano->fecha);
+
+    $horariosOcupados = ReservacionQuirofano::where('fecha', $fechaSeleccionada)
         ->where('status', '!=', 'cancelada')
         ->where('id', '!=', $quirofano->id) 
         ->get()
         ->pluck('horarios')
         ->flatten()
         ->toArray();
-        //  dd($horariosOcupados);
-        //dd($quirofano->toArray());
-        return Inertia::render('reservacion_quirofano/edit', [
-            'quirofano' => $quirofano,
-            'horariosOcupados' => $horariosOcupados,
-            'medicos' => User::select('id', 'nombre', 'apellido_paterno', 'apellido_materno')
-                ->get()
-                ->map(fn ($u) => [
-                    'id' => $u->id,
-                    'nombre_completo' => "{$u->nombre} {$u->apellido_paterno} {$u->apellido_materno}"
-                ]),
-            'limitesDinamicos' => Habitacion::where('tipo', 'Quirofano')
-                ->selectRaw('ubicacion, COUNT(*) as total')
-                ->groupBy('ubicacion')
-                ->pluck('total', 'ubicacion')
-                ->toArray(),
-        ]);
-    }
+
+    return Inertia::render('reservacion_quirofano/edit', [
+        'quirofano'        => $quirofano,
+        'paciente'         => $pacienteData, 
+        'estancia'         => $estancia,
+        'horariosOcupados' => $horariosOcupados,
+        'medicos'          => User::select('id', 'nombre', 'apellido_paterno', 'apellido_materno')
+            ->get()
+            ->map(fn ($u) => [
+                'id' => $u->id,
+                'nombre_completo' => "{$u->nombre} {$u->apellido_paterno} {$u->apellido_materno}"
+            ]),
+        'limitesDinamicos' => Habitacion::where('tipo', 'Quirofano')
+            ->selectRaw('ubicacion, COUNT(*) as total')
+            ->groupBy('ubicacion')
+            ->pluck('total', 'ubicacion')
+            ->toArray(),
+    ]);
+}
 
    public function update(ReservacionQuirofanoRequest $request, ReservacionQuirofano $quirofano)
 {

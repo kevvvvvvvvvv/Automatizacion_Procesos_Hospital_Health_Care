@@ -58,6 +58,8 @@ const Create = ({ submitLabel = "Guardar", paciente, estancia, cirugia }: Props)
 }, [errors]);
     const handleSubmit = (e: React.FormEvent) => {
         // Asegúrate de poner el nombre de tu ruta aquí, ej: 'cirugia.store'
+        
+        e.preventDefault();
         post(route('pacientes.estancias.cirugiasegura.store', {
             paciente: paciente.id,
             estancia: estancia.id
@@ -132,16 +134,19 @@ const Create = ({ submitLabel = "Guardar", paciente, estancia, cirugia }: Props)
                         label="¿Se marco el sitio quirúrgico?"
                         value={data.sitio_quirurgico ?? ''}
                         onChange={(val) => setData('sitio_quirurgico', val)}
+                        error={errors.sitio_quirurgico}
                     />
                     <BooleanInput
                         label="¿Se ha comprado el funcionamiento de los aparatos de anestesia y medicamentos existentes?"
                         value={data.funcionamiento_aparatos ?? ''}
                         onChange={(val) => setData('funcionamiento_aparatos', val)}
+                        error={errors.funcionamiento_aparatos}
                     />
                     <BooleanInput
                         label="¿Se ha colocado el oximetro de pulso al paciente y funciona?"
                         value={data.oximetro ?? ''}
                         onChange={(val) => setData('oximetro', val)}
+                        error={errors.oximetro}
                     />
                     {/* alergias */} 
                     <div className="mt-6">
@@ -151,28 +156,33 @@ const Create = ({ submitLabel = "Guardar", paciente, estancia, cirugia }: Props)
                             label="¿Tiene el paciente alergias conocidas?"
                             value={data.alergias ?? ''}
                             onChange={(e) => setData('alergias', e.target.value)}
-                        />
+                            error={errors.alergias}
+                       />
                     </div>
 
                     <BooleanInput
                         label="¿Vía aérea dificil y/o riesgo de aspiración? (Se cuenta con material, equipo y ayuda disponible)"
                         value={data.via_aerea ?? ''} // Ajusta el label según tu necesidad
                         onChange={(val) => setData('via_aerea', val)}
+                        error={errors.via_aerea}
                     />
                     <BooleanInput
                         label="¿Riesgo de hemorragia en adulto >500ml. (niños > 7 ml/kg)? (Se ha previsto la disponibilidad de liquidos y dos vías centrales)"
                         value={data.riesgo_hemorragia ?? ''}
                         onChange={(val) => setData('riesgo_hemorragia', val)}
+                        error={errors.riesgo_hemorragia}
                     />
                     <BooleanInput
                         label="¿Posible necesidad de Hemoderivados y soluciones disponibles? (Se ha realizado el cruce de sangre previamente)"
                         value={data.hemoderivados ?? ''}
                         onChange={(val) => setData('hemoderivados', val)}
+                        error={errors.hemoderivados}
                     />
                     <BooleanInput
                         label="¿Se ha administrado profilaxis antibiótica (últimos 60 min)?"
                         value={data.profilaxis ?? ''}
                         onChange={(val) => setData('profilaxis', val)}
+                        error={errors.profilaxis}
                     />
                 </div>
 
@@ -183,11 +193,13 @@ const Create = ({ submitLabel = "Guardar", paciente, estancia, cirugia }: Props)
                         label="Se han presentado todos los miembros del equipo por su nombre y funcion"
                         value={data.miembros_equipo ?? ''}
                         onChange={(val) => setData('miembros_equipo', val)}
+                        error={errors.miembros_equipo}
                     />
                     <BooleanInput
                         label="¿Confirmar identidad del paciente, sitio y procedimiento?"
                         value={data.indentidad_paciente ?? ''}
                         onChange={(val) => setData('indentidad_paciente', val)}
+                        error={errors.indentidad_paciente}
                     />
                    
                    
@@ -200,6 +212,7 @@ const Create = ({ submitLabel = "Guardar", paciente, estancia, cirugia }: Props)
                         label="¿Cúales serán los pasos criticos o no sistematizados?"
                         value={data.pasos_criticos ?? ''}
                         onChange={(e) => setData('pasos_criticos', e.target.value)}
+                        error={errors.pasos_criticos}
                     />
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8">
                     <InputText
@@ -224,22 +237,26 @@ const Create = ({ submitLabel = "Guardar", paciente, estancia, cirugia }: Props)
                         label="¿Anestesiólogo revisa si el paciente presenta alguna morbilidad?"
                         value={data.revision_anestesiologo ?? ''}
                         onChange={(val) => setData('revision_anestesiologo', val)}
+                        error={errors.revision_anestesiologo}
                     />
                     <BooleanInput
                         label="¿Equipo de enfermería ha confirmado la esterilización del instrumental, ropa quirúrgica y consumibles?"
                         value={data.esterilizacion ?? ''}
                         onChange={(val) => setData('esterilizacion', val)}
+                        error={errors.esterilizacion}
                     />
                     
                     <BooleanInput
                         label="¿Existen dudas o problemas relacionados con el instrumental y los equipos?"
                         value={data.dudas_problemas ?? ''}
                         onChange={(val) => setData('dudas_problemas', val)}
+                        error={errors.dudas_problemas}
                     />
                     <BooleanInput
                         label="¿Se pueden visualizar las imagenes diagnosticas esenciales?"
                         value={data.imagenes_diagnosticas ?? ''}
                         onChange={(val) => setData('imagenes_diagnosticas', val)}
+                        error={errors.imagenes_diagnosticas}
                     />
                     </div>
 
@@ -252,11 +269,19 @@ const Create = ({ submitLabel = "Guardar", paciente, estancia, cirugia }: Props)
                         label="El personal de enfermería confirma verbalmente nombre del procedimiento realizado"
                         value={data.nombre_procedimiento ?? ''}
                         onChange={(val) => setData('nombre_procedimiento', val)}
+                        error={errors.nombre_procedimiento}
                     />
                     <BooleanInput
                         label="Se realizó el recuento de instrumentos, agujas y textiles completos"
                         value={data.recuento_instrumentos ?? ''}
                         onChange={(val) => setData('recuento_instrumentos', val)}
+                        error={errors.recuento_instrumentos}
+                    />
+                    <BooleanInput
+                        label="¿Existen faltantes de instrumentos y/o textiles?"
+                        value={data.faltantes}
+                        onChange={(val) => setData('faltantes', val)}
+                        error={errors.faltantes} // <--- AÑADE ESTO
                     />
                     <BooleanInput
                         label="¿Existen faltantes de instrumentos y/o textiles?"
@@ -271,12 +296,14 @@ const Create = ({ submitLabel = "Guardar", paciente, estancia, cirugia }: Props)
                             label="Observaciones"
                             value={data.observaciones ?? ''}
                             onChange={(e) => setData('observaciones', e.target.value)}
+                            error={errors.observaciones}
                         />
                     </div>
                     <BooleanInput
                         label="Se efectuó el etiquetado de muestras con lectura en voz alta, incluyendo el nombre del paciente, cirujano, anestesiólogo y personal de enfermería"
                         value={data.etiquetado_muestras ?? ''}
                         onChange={(val) => setData('etiquetado_muestras', val)}
+                        error={errors.etiquetado_muestras}
                     />
                     <div className="mt-6">
                         <InputText
@@ -285,6 +312,7 @@ const Create = ({ submitLabel = "Guardar", paciente, estancia, cirugia }: Props)
                             label="¿Cuáles son los aspectos críticos de la recuperación y el tratamiento del paciente en el posoperatorio inmediato?"
                             value={data.aspectos_criticos ?? ''}
                             onChange={(e) => setData('aspectos_criticos', e.target.value)}
+                            error={errors.aspectos_criticos}
                         />
                     </div>
 

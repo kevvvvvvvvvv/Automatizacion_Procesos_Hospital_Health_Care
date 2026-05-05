@@ -54,10 +54,10 @@ export default function Dashboard() {
                 </div>
                 <div>
                     {can('crear consentimientos') && (
-                    <CardButton
-                        icon={LuFileText} 
-                        text="Formato Liga Fútbol"
-                        onClick={() => window.open(route('liga-futbol.pdf'), '_blank')}
+                     <CardButton
+                        icon={FaFileSignature}
+                        text="Documentos"
+                        onClick={() => router.visit(route('dashboard-documentos'))}
                     />
                     )}
                 </div>
@@ -185,7 +185,7 @@ export default function Dashboard() {
                     />
                     )}
                 </div>
-                <div>
+                {/*<div>
                     {can('Reportes') && (
                      <CardButton
                         icon={FaFileSignature}
@@ -193,7 +193,7 @@ export default function Dashboard() {
                         onClick={() => router.visit(route('dashboard-reporte'))}
                     />
                     )}
-                </div>                
+                </div>  */}              
             </MainLayout>
         </>
     );
