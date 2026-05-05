@@ -45,8 +45,8 @@ class NotaEvolucionController extends Controller implements HasMiddleware
 
     public function create(Paciente $paciente, Estancia $estancia)
     {
-        $soluciones = ProductoServicio::where('tipo','INSUMOS')->get();
-        $medicamentos = ProductoServicio::where('tipo','INSUMOS')->get();
+        $soluciones = ProductoServicio::where('nombre_prestacion', 'like', 'SOLUCION%')->get();
+        $medicamentos = ProductoServicio::where('subtipo','MEDICAMENTOS')->get();
         $estudios = CatalogoEstudio::where('tipo_estudio','Laboratorio')->get();
 
 
@@ -148,13 +148,14 @@ class NotaEvolucionController extends Controller implements HasMiddleware
         HojaMedicamentoService $medicamentoService,
         HojaSolucionService $solucionService)
     {
+        
 
         $validateData = $request->validated();
         $notasevolucione->update($validateData);
 
         $medicamentosRequest = $request->input('medicamentos_agregados', []);
-        $solucionesRequest = $request->input('soluciones_agregados', []);
-
+        $solucionesRequest = $request->input('soluciones_agregadas', []);
+        
         $medicamentoService->sincronizarMedicamentos($notasevolucione, $medicamentosRequest);
         $solucionService->sincronizarSoluciones($notasevolucione,$solucionesRequest);        
 

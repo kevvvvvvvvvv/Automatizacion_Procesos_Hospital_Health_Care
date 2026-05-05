@@ -85,8 +85,7 @@ class FormularioHojaTerapiaIVController extends Controller
                                             ->first();
 
                 if ($producto) {
-                    // ACCESO POLIMÓRFICO AL PACIENTE:
-                    // Accedemos a través de 'terapiable', que puede ser HojaEnfermeria o RecienNacido
+
                     $parent = $hojasterapiasiv->terapiable; 
                     $estanciaId = $parent->formularioInstancia->estancia->id;
 
@@ -107,7 +106,7 @@ class FormularioHojaTerapiaIVController extends Controller
                         $ventaService->crearVenta([$itemParaVenta], $estanciaId, Auth::id());
                     }
 
-                    $producto->decrement('cantidad', 1); // Bajamos 1 unidad
+                    $producto->decrement('cantidad', 1);
                 }
             }
 
