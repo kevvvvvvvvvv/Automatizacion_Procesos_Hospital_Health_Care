@@ -260,8 +260,8 @@ const Index = ({
                 </div>
             </div>
 
-            {/* Mobile View (Cards) - Visible only on small screens */}
-            <div className="grid grid-cols-1 gap-4 md:hidden">
+           {/* Grid View (Cards) - Adaptable de 1 a 4 columnas */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:mb-6">
                 {table.getRowModel().rows.length > 0 ? (
                     table.getRowModel().rows.map((row) => {
                         const { rango } = formatHorario(row.original.horarios);
@@ -276,60 +276,72 @@ const Index = ({
                             <div 
                                 key={row.id} 
                                 onClick={() => router.get(route("quirofanos.show", row.original.id))}
-                                className={`bg-white p-5 rounded-2xl border-l-4 shadow-sm active:scale-[0.98] transition-transform ${
+                                className={`bg-white p-4 rounded-2xl border-l-4 shadow-sm hover:shadow-md active:scale-[0.97] transition-all cursor-pointer flex flex-col relative ${
                                     status === 'cancelada' ? 'border-l-rose-500' : 
                                     status === 'completada' ? 'border-l-emerald-500' : 'border-l-indigo-500'
                                 }`}
                             >
-                                <div className="flex justify-between items-start mb-3">
-                                    <div className="flex flex-col gap-1">
-                                        <div className="flex items-center gap-2 bg-indigo-50 text-indigo-700 px-3 py-1 rounded-full text-xs font-bold w-fit">
-                                            <Clock size={14} /> {rango}
+                                {can('editar reservaciones quirofanos') && (
+                                    <div className="absolute top-3 right-3" onClick={(e) => e.stopPropagation()}>
+                                        <Link
+                                            href={route("quirofanos.edit", row.original.id)}
+                                            className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-colors inline-block"
+                                        >
+                                            <Pencil size={18} />
+                                        </Link>
+                                    </div>
+                                )}
+
+                                <div className="pr-8"> 
+                                    <div className="flex flex-col gap-1 mb-2">
+                                        <div className="flex items-center gap-1.5 bg-indigo-50 text-indigo-700 px-2 py-0.5 rounded-full text-[10px] font-bold w-fit">
+                                            <Clock size={12} /> {rango}
                                         </div>
-                                        <div className="flex items-center gap-1 text-[11px] text-gray-500 font-semibold ml-1">
-                                            <Calendar size={12} className="text-gray-400" />
+                                        <div className="flex items-center gap-1 text-[10px] text-gray-500 font-semibold ml-1">
+                                            <Calendar size={10} className="text-gray-400" />
                                             {fechaFormateada}
                                         </div>
                                     </div>
 
-                                    <span className={`text-[10px] font-black uppercase tracking-widest px-1 ${status === 'cancelada' ? 'text-rose-600' : status === 'completada' ? 'text-emerald-600' : 'text-amber-600'}`}>
-                                            ● {status}
+                                    <span className={`text-[9px] font-black uppercase tracking-widest block mb-2 ${
+                                        status === 'cancelada' ? 'text-rose-600' : 
+                                        status === 'completada' ? 'text-emerald-600' : 'text-amber-600'
+                                    }`}>
+                                        ● {status}
                                     </span>
+
+                                    <h3 className="font-bold text-gray-800 text-base leading-tight mb-1 line-clamp-2">
+                                        {row.original.paciente_nombre}
+                                    </h3>
+                                    
+                                    <p className="font-bold text-indigo-500/70 text-[10px] mb-3 uppercase tracking-tight line-clamp-1">
+                                        {row.original.procedimiento}
+                                    </p>
+                                    
+                                    <div className="space-y-1.5">
+                                        <div className="flex items-center gap-2 text-[11px] text-gray-500">
+                                            <User size={12} className="text-gray-400 shadow-sm" />
+                                            <span className="truncate">Dr. <span className="font-medium text-gray-700">{row.original.medico_operacion}</span></span>
+                                        </div>
+                                        
+                                        {row.original.comentarios && (
+                                            <p className="text-[10px] text-gray-400 line-clamp-2 italic bg-gray-50 p-1.5 rounded-lg border border-gray-100">
+                                                "{row.original.comentarios}"
+                                            </p>
+                                        )}
+                                    </div>
                                 </div>
 
-                                <h3 className="font-bold text-gray-800 text-lg mb-1">{row.original.paciente_nombre}</h3>
-                                <p className="font-bold text-gray-400 text-sm mb-1">{row.original.procedimiento}</p>
-                                
-                                <div className="space-y-2 mb-4">
-                                    <div className="flex items-center gap-2 text-sm text-gray-500">
-                                        <Activity size={14} className="text-gray-400" />
-                                        <span>Cirujano: <span className="font-medium text-gray-700">{row.original.medico_operacion}</span></span>
-                                    </div>
-                                    {row.original.comentarios && (
-                                        <p className="text-xs text-gray-400 line-clamp-1 italic">"{row.original.comentarios}"</p>
-                                    )}
-                                </div>
-                                <div className="flex gap-2" onClick={(e) => e.stopPropagation()}>
-                                    <Link
-                                        href={route("quirofanos.show", row.original.id)}
-                                        className="p-2 text-gray-600 hover:bg-gray-100 rounded-full transition"
-                                    >
-                                        <Eye size={18} />
-                                    </Link>
-                                    {can('editar reservaciones quirofanos') && (
-                                        <Link
-                                            href={route("quirofanos.edit", row.original.id)}
-                                            className="p-2 text-blue-600 hover:bg-blue-100 rounded-full transition"
-                                        >
-                                            <Pencil size={18} />
-                                        </Link>
-                                    )}
+                                <div className="mt-auto pt-3 flex justify-end">
+                                    <span className="text-[9px] text-gray-300 font-mono italic">ID: #{row.original.id}</span>
                                 </div>
                             </div>
                         );
                     })
                 ) : (
-                    <div className="text-center py-10 text-gray-400">No hay registros</div>
+                    <div className="col-span-full text-center py-12 text-gray-400 font-medium bg-gray-50 rounded-2xl border-2 border-dashed border-gray-200">
+                        No se encontraron cirugías programadas
+                    </div>
                 )}
             </div>
             {/* Desktop View (Table) - Hidden on mobile */}
