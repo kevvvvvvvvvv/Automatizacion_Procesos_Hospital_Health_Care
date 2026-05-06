@@ -86,7 +86,8 @@ export const conceptosPorArea = {
         ],
         egresos: [
         { value: 'comision', label: 'Comisión' },
-        { value: 'patologia', label: 'Patología' }
+        { value: 'patologia', label: 'Patología' },
+        { value: 'pago_estudios', label: 'Pago de estudios'},
         ]
     },
     ULTRASONIDO: {
