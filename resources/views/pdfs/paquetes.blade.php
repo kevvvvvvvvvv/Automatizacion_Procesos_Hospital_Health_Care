@@ -178,8 +178,9 @@
             ['titulo' => 'Paquetes Cirugía', 'items' => ['Colecistectomía por laparo', 'HTA', 'Cesárea', 'Vasectomía', 'RTUP', 'Hernioplastia umbilical', 'Hernia inguinal', 'Quiste de ovario', 'Hernioplastia bilateral', 'Fractura']],
             ['titulo' => 'Estudios de Laboratorio', 'subareas' => [
                 ['nombre' => 'Estudios de orina', 'items' => ['Examen general de orina', 'Proteínas totales en orina', 'Depuración de creatinina', 'Calcio en orina']],
-                ['nombre' => 'Pruebas de hemostasia', 'items' => ['Tiempo de protrombina', 'Tiempo de tromboplastina (APTT)', 'Coagulograma básico', 'Tiempo de sangrado', 'Tiempo de coagulación']],
-                ['nombre' => 'Hematología y Química', 'items' => ['Biometría hemática', 'Grupo y factor RH', 'Hemoglobina glicosilada', 'Química sanguínea (6 elem.)', 'Electrolitos', 'Perfil hepático']]
+                ['nombre' => 'Química clínica', 'items' => ['Hemoglobina glicosilada', 'Química sanguínea (6 elem.)', 'Electrolitos', 'Perfil hepático', 'Acido urico en suero', 'Creatina en suero', 'Química sanguinea de 36 elementos', 'Reacciones febriles']],
+                ['nombre' => 'Pruebas de hemostasia', 'items' => ['Tiempo de protrombina', 'Tiempo de tromboplastina parcial activado (APTT)', 'Coagulograma básico (TP, TTP, TS, TC, BH)', 'Tiempo de sangrado (Adhesividad plaquetaria)', 'Tiempo de coagulación']],
+                ['nombre' => 'Hematología ', 'items' => ['Biometría hemática', 'Grupo y factor RH', 'Velocidad de sedminetación globular']]
             ]],
             ['titulo' => 'Estudios de Imagen', 'items' => ['Abdomen completo', 'Hígado y vías biliares', 'Renal y vías excretoras', 'Pélvico ginecológico', 'Tele de tórax', 'Columna lumbar OA y lateral']],
             ['titulo' => 'Consulta Especialidad', 'items' => ['Ginecología', 'Urología', 'Oncología', 'Cirugía general', 'Internista']]
