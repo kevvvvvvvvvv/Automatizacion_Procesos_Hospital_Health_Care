@@ -122,11 +122,11 @@ class NotaEvolucionController extends Controller implements HasMiddleware
             'formularioInstancia.estancia.paciente',
             'formularioInstancia.user',
             'medicamentos',
-            'soluciones',
+            'soluciones.medicamentos',
         ]);
 
-        $soluciones = ProductoServicio::where('tipo','INSUMOS')->get();
-        $medicamentos = ProductoServicio::where('tipo','INSUMOS')->get();
+        $soluciones = ProductoServicio::where('nombre_prestacion', 'like', 'SOLUCION%')->get();
+        $medicamentos = ProductoServicio::where('subtipo','MEDICAMENTOS')->get();
         $estudios = CatalogoEstudio::where('tipo_estudio','Laboratorio')->get();
 
         return Inertia::render('formularios/notaevolucion/edit', [

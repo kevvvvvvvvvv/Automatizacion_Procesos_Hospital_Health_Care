@@ -11,15 +11,16 @@ use Redirect;
 
 class HojaSolucionService
 {
+    
     /**
-     * Procesa y guarda un arreglo de medicamentos vinculados a un modelo padre.
+     * Procesa y guarda un arreglo de soluciones con sus medicamentos vinculados a un modelo padre.
      * * @param mixed $parent El modelo padre (Nota evolución, Nota postoperatoria e Indicaciones médicas.)
-     * @param array $medicamentos El arreglo de medicamentos desde el Request
+     * @param array $soluciones El arreglo de medicamentos desde el Request
      */
-    public function registrarSoluciones($parent, array $soluciones)
+    public function registrarSoluciones($parent, array $soluciones,bool $actualizarPadre = true)
     {  
         if (empty($soluciones)) {
-            return;
+            return [];
         }
 
         $textosSoluciones = [];
@@ -31,7 +32,6 @@ class HojaSolucionService
             $duracion   = $sol['duracion'] ?? 0;
             $flujo      = $sol['flujo'] ?? 0;
 
-            // 1. Creamos la solución
             $nuevaSolucion = $parent->soluciones()->create([
                 'solucion'        => $solucionId,
                 'nombre_solucion' => $nombre,
@@ -40,13 +40,10 @@ class HojaSolucionService
                 'flujo_ml_hora'   => $flujo,
             ]);
 
-            // 2. Extraemos los medicamentos
             $medicamentos = $sol['medicamentos'] ?? [];
             
-            // Arreglo temporal para guardar los nombres de los medicamentos para el texto
             $nombresMedicamentosParaTexto = [];
 
-            // 3. Guardamos cada medicamento (SIN el dd)
             foreach ($medicamentos as $med) {
                 $nombreMed = $med['nombre_medicamento'] ?? '';
                 
@@ -62,13 +59,12 @@ class HojaSolucionService
                 ]);
             }
 
-            // 4. Construimos el texto INCLUYENDO la lista de medicamentos
             $textoActual = $this->construirTextoSolucion(
                 $nombre, 
                 (string)$cantidad, 
                 (string)$duracion, 
                 (string)$flujo,
-                $nombresMedicamentosParaTexto // <- Le pasamos el arreglo de nombres
+                $nombresMedicamentosParaTexto 
             );
 
             if (!empty($textoActual)) {
@@ -76,128 +72,108 @@ class HojaSolucionService
             }
         }
 
-        // 5. Opcional: Si en este método también actualizas el modelo padre con el texto
-        if (!empty($textosSoluciones)) {
+        if ($actualizarPadre && !empty($textosSoluciones)) {
             $parent->update([
                 'manejo_soluciones' => implode("\n", $textosSoluciones)
             ]);
         }
+
+        return $textosSoluciones;
     }
 
     public function sincronizarSoluciones($parent, array $soluciones)
     {
-        // 1. Ahora buscamos el ID ya sea en 'id' o en 'temp_id' (si es numérico)
         $idsExistentesQueSeQuedan = collect($soluciones)
             ->map(fn($sol) => $sol['id'] ?? $sol['temp_id'] ?? null)
-            ->filter(fn($id) => is_numeric($id)) // Solo nos quedamos con números (ignoramos los UUID)
+            ->filter(fn($id) => is_numeric($id))
             ->toArray();
  
-        if (!empty($soluciones)) {
-            $parent->soluciones()
-                ->whereNotIn('id', $idsExistentesQueSeQuedan)
-                ->delete();
-        }
+        $parent->soluciones()
+            ->whereNotIn('id', $idsExistentesQueSeQuedan)
+            ->delete();
 
-        $textosSoluciones = [];
+        $textosSolucionesActualizadas = [];
+        $solucionesNuevas = [];
 
         foreach ($soluciones as $solData) {
-            try {
-                // Sacamos el ID real validando si temp_id es numérico
-                $realId = $solData['id'] ?? $solData['temp_id'] ?? null;
-                $esExistente = is_numeric($realId);
+            $realId = $solData['id'] ?? $solData['temp_id'] ?? null;
+            $esExistente = is_numeric($realId);
 
-                if ($esExistente) {
-                    // ACTUALIZACIÓN (UPDATE)
-                    $solucionModelo = $parent->soluciones()->find($realId);
-                    
-                    if ($solucionModelo) {
-                        // Si solucion_id viene null pero la base de datos ya tenía uno, lo conservamos
-                        $idCatalogo = $solData['solucion_id'] ?? $solucionModelo->solucion;
+            if ($esExistente) {
+                $solucionModelo = $parent->soluciones()->find($realId);
+                
+                if ($solucionModelo) {
+                    $idCatalogo = $solData['solucion_id'] ?? $solucionModelo->solucion;
 
-                        $solucionModelo->update([
-                            'solucion'        => $idCatalogo,
-                            'nombre_solucion' => $solData['nombre_solucion'] ?? '',
-                            'cantidad'        => $solData['cantidad'] ?? 0,
-                            'duracion'        => $solData['duracion'] ?? 0,
-                            'flujo_ml_hora'   => $solData['flujo'] ?? 0,
-                        ]);
-                    }
-                } else {
-                    // CREACIÓN (CREATE)
-                    $solucionModelo = $parent->soluciones()->create([
-                        'solucion'        => $solData['solucion_id'] ?? null, 
+                    $solucionModelo->update([
+                        'solucion'        => $idCatalogo,
                         'nombre_solucion' => $solData['nombre_solucion'] ?? '',
                         'cantidad'        => $solData['cantidad'] ?? 0,
                         'duracion'        => $solData['duracion'] ?? 0,
                         'flujo_ml_hora'   => $solData['flujo'] ?? 0,
                     ]);
-                }
 
-                $nombresMedicamentosParaTexto = [];
+                    $nombresMedicamentosParaTexto = [];
 
-                if ($solucionModelo && isset($solData['medicamentos'])) {
-                    
-                    $medIdsQueSeQuedan = collect($solData['medicamentos'])
-                        ->pluck('id')
-                        ->filter()
-                        ->toArray();
+                    if (isset($solData['medicamentos'])) {
+                        $medIdsQueSeQuedan = collect($solData['medicamentos'])
+                            ->pluck('id')->filter()->toArray();
 
-                    $solucionModelo->medicamentos()
-                        ->whereNotIn('id', $medIdsQueSeQuedan)
-                        ->delete();
+                        $solucionModelo->medicamentos()
+                            ->whereNotIn('id', $medIdsQueSeQuedan)
+                            ->delete();
 
-                    foreach ($solData['medicamentos'] as $medData) {
-                        
-                        $nombreMed = $medData['nombre'] ?? $medData['nombre_medicamento'] ?? '';
-                        if ($nombreMed) {
-                            $nombresMedicamentosParaTexto[] = $nombreMed;
-                        }
+                        foreach ($solData['medicamentos'] as $medData) {
+                            $nombreMed = $medData['nombre'] ?? $medData['nombre_medicamento'] ?? '';
+                            if ($nombreMed) {
+                                $nombresMedicamentosParaTexto[] = $nombreMed;
+                            }
 
-                        if (empty($medData['id'])) {
-                            $solucionModelo->medicamentos()->create([
-                                'producto_servicio_id' => $medData['producto_servicio_id'] ?? $medData['id'] ?? null, 
-                                'nombre_medicamento'   => $nombreMed,
-                                'dosis'                => $medData['dosis'] ?? '',
-                                'unidad_medida'        => $medData['unidad'] ?? $medData['unidad_medida'] ?? '',
-                            ]);
-                        } else {
-                            $medExistente = $solucionModelo->medicamentos()->find($medData['id']);
-                            if ($medExistente) {
-                                $medExistente->update([
-                                    'producto_servicio_id' => $medData['producto_servicio_id'] ?? $medData['id'] ?? null,
+                            if (empty($medData['id'])) {
+                                $solucionModelo->medicamentos()->create([
+                                    'producto_servicio_id' => $medData['producto_servicio_id'] ?? $medData['id'] ?? null, 
                                     'nombre_medicamento'   => $nombreMed,
                                     'dosis'                => $medData['dosis'] ?? '',
                                     'unidad_medida'        => $medData['unidad'] ?? $medData['unidad_medida'] ?? '',
                                 ]);
+                            } else {
+                                $medExistente = $solucionModelo->medicamentos()->find($medData['id']);
+                                if ($medExistente) {
+                                    $medExistente->update([
+                                        'producto_servicio_id' => $medData['producto_servicio_id'] ?? $medData['id'] ?? null,
+                                        'nombre_medicamento'   => $nombreMed,
+                                        'dosis'                => $medData['dosis'] ?? '',
+                                        'unidad_medida'        => $medData['unidad'] ?? $medData['unidad_medida'] ?? '',
+                                    ]);
+                                }
                             }
                         }
                     }
+
+                    $textoActual = $this->construirTextoSolucion(
+                        $solData['nombre_solucion'] ?? null,
+                        (string)($solData['cantidad'] ?? ''),
+                        (string)($solData['duracion'] ?? ''),
+                        (string)($solData['flujo'] ?? ''),
+                        $nombresMedicamentosParaTexto
+                    );
+
+                    if (!empty($textoActual)) {
+                        $textosSolucionesActualizadas[] = "• " . $textoActual;
+                    }
                 }
-
-                $textoActual = $this->construirTextoSolucion(
-                    $solData['nombre_solucion'] ?? null,
-                    (string)($solData['cantidad'] ?? ''),
-                    (string)($solData['duracion'] ?? ''),
-                    (string)($solData['flujo'] ?? ''),
-                    $nombresMedicamentosParaTexto
-                );
-
-                if (!empty($textoActual)) {
-                    $textosSoluciones[] = "• " . $textoActual;
-                }
-
-            } catch (\Exception $e) {
-                dd("El código tronó en el foreach: " . $e->getMessage(), "Datos que causaron el error:", $solData);
+            } else {
+                $solucionesNuevas[] = $solData;
             }
         }
 
-        if (!empty($textosSoluciones)) {
-            $parent->update([
-                'manejo_soluciones' => implode("\n", $textosSoluciones)
-            ]);
-        }
-    }
+        $textosNuevos = $this->registrarSoluciones($parent, $solucionesNuevas, false);
+        $textosFinales = array_merge($textosSolucionesActualizadas, $textosNuevos);
 
+        $parent->update([
+            'manejo_soluciones' => !empty($textosFinales) ? implode("\n", $textosFinales) : null
+        ]);
+    }
 
     /**
      * Construye una cadena de texto legible para el manejo de una solución y sus medicamentos.

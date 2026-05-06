@@ -73,8 +73,8 @@ class FormularioNotaPostoperatorioController extends Controller implements HasMi
     public function create(Paciente $paciente, Estancia $estancia)
     {
         $personal = User::all();
-        $soluciones = ProductoServicio::where('tipo','INSUMOS')->get();
-        $medicamentos = ProductoServicio::where('tipo','INSUMOS')->get();
+        $soluciones = ProductoServicio::where('nombre_prestacion', 'like', 'SOLUCION%')->get();
+        $medicamentos = ProductoServicio::where('subtipo','MEDICAMENTOS')->get();
         $estudios = CatalogoEstudio::where('tipo_estudio','Laboratorio')->get();
 
         return Inertia::render('formularios/nota-postoperatorio/create',[
