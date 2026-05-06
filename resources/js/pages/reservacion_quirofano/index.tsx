@@ -123,6 +123,11 @@ const Index = ({ reservaciones, filtros }: Props) => {
             accessorKey: "paciente_nombre",
             header: "Paciente",
             cell: ({ row }) => <span className="font-semibold text-gray-700">{row.original.paciente_nombre}</span>
+        },
+        {
+            accessorKey:  "procedimiento",
+            header: 'Procedimiento',
+            cell: ({ row }) => <span className="font-semibold text-gray-700">{row.original.procedimiento}</span>
         }, 
         {
             accessorKey: "status",
